@@ -7,7 +7,9 @@ import type { Router } from 'vue-router';
 export function setupRouterGuard(router: Router) {
     // 前置守卫
     router.beforeEach(async (to, from, next) => {
-        // 暂不处理逻辑
+        const {title} = to.meta;
+        const siteName = "电子灭虫录";
+        document.title = title ? `${title} - ${siteName}` : siteName;
         next();
     });
 

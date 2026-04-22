@@ -21,6 +21,9 @@ export const baseRouter: RouteRecordRaw[] = [
                 path: '', // 默认访问 / 时显示 Dashboard
                 name: 'Home',
                 component: () => import('@/views/home/Home.vue'),
+                meta: {
+                    title: '首页'
+                }
             }
         ]
     }
