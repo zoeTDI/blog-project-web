@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 
 // 主题状态：light 或 dark
 const themeMode = ref<'light' | 'dark'>('light');
-
+const logoSrc = ref('');
 // 切换主题方法
 const toggleTheme = () => {
   themeMode.value = themeMode.value === 'light' ? 'dark' : 'light';
@@ -27,7 +27,14 @@ onMounted(() => {
     <header class="layout-header">
       <div class="header-content">
         <div class="logo" @click="$router.push('/')">
-          <span class="logo-text">DESIGN & LOG</span>
+          <div v-if="logoSrc && logoSrc.trim() !== ''" class="logo-img-wrapper">
+            <img :src="logoSrc" alt="Logo" class="logo-img" />
+          </div>
+
+          <div class="logo-text-group">
+            <div class="site-title">BLOG'S TITLE</div>
+            <div class="site-slogan">记录、探索与生活的极简志</div>
+          </div>
         </div>
 
         <nav class="header-nav">
@@ -116,15 +123,64 @@ onMounted(() => {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
+  transition: opacity 0.3s ease;
 }
 
-.logo-text {
-  font-family: var(--heading); /* 使用全局衬线体 */
+.logo:hover {
+  opacity: 0.8;
+}
+
+/* Logo 图片包裹区 */
+.logo-img-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-img {
+  height: 40px; /* 根据设计需求调整高度 */
+  width: auto;
+  /* 如果是深色模式下黑色 Logo 不清晰，可配合 filter 处理 */
+  transition: filter 0.4s ease;
+}
+
+/* 右侧文字组：上下排列 */
+.logo-text-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+/* 上部分：网站名称 */
+.site-title {
+  font-family: var(--heading); /* 全局衬线体 */
   font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 2px;
+  font-weight: 600;
   color: var(--text-h);
+  letter-spacing: 1px;
+}
+
+/* 下部分：个性签名 */
+.site-slogan {
+  font-family: var(--sans); /* 签名可以使用无衬线体增加现代感 */
+  font-size: 11px;
+  color: var(--text);
+  opacity: 0.7;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+  text-transform: uppercase; /* 可选：开启大写增加极简质感 */
+}
+
+/* 响应式微调 */
+@media (max-width: 768px) {
+  .site-title { font-size: 18px; }
+  .site-slogan { font-size: 10px; }
+  .logo-img { height: 32px; }
 }
 
 /* 主题切换按钮 */
