@@ -1,28 +1,21 @@
 <script setup lang="ts">
+// 规则：根元素类名包含 view-switcher
 interface Props {
   modelValue: string;
   total: number;
-  // 1. 响应式列数控制
-  cols?: {
-    desktop?: number;
-    tablet?: number;
-    mobile?: number;
-  };
-  // 2. 统计信息显示开关
+  cols?: { desktop?: number; tablet?: number; mobile?: number; };
   showCount?: boolean;
-  // 3. 底部边框开关
   showBorder?: boolean;
-  // 4. 动态模式选项
   options?: Array<{ label: string; value: string }>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   showCount: true,
   showBorder: true,
-  cols: () => ({desktop: 4, tablet: 2, mobile: 1}),
+  cols: () => ({ desktop: 4, tablet: 2, mobile: 1 }),
   options: () => [
-    {label: 'LIST', value: 'list'},
-    {label: 'CARD', value: 'card'}
+    { label: 'LIST', value: 'list' },
+    { label: 'CARD', value: 'card' }
   ]
 });
 
@@ -35,14 +28,10 @@ const setMode = (mode: string) => {
 
 <template>
   <div class="view-switcher-container">
-    <div
-        class="view-switcher-action-bar"
-        :class="{ 'no-border': !showBorder }"
-    >
+    <div class="view-switcher-action-bar" :class="{ 'no-border': !showBorder }">
       <div class="action-left">
         <span v-if="showCount" class="results-count">ALL POSTS / {{ total }}</span>
       </div>
-
       <div class="action-right">
         <div class="mode-controls">
           <button
@@ -58,11 +47,12 @@ const setMode = (mode: string) => {
     </div>
 
     <div
-        class="view-switcher-content"
+        class="view-switcher-grid"
+        :class="[`is-layout-${modelValue}`]"
         :style="{
-        '--cols-desktop': cols.desktop,
-        '--cols-tablet': cols.tablet,
-        '--cols-mobile': cols.mobile
+        '--desktop-grid': cols.desktop,
+        '--tablet-grid': cols.tablet,
+        '--mobile-grid': cols.mobile
       }"
     >
       <slot></slot>
@@ -78,6 +68,29 @@ const setMode = (mode: string) => {
   padding: 12px 0;
   margin-bottom: 32px;
   border-bottom: 1px solid var(--border);
+}
+
+.view-switcher-grid {
+  display: grid;
+  transition: all 0.5s ease;
+}
+
+.is-layout-list {
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.is-layout-card {
+  grid-template-columns: repeat(var(--desktop-grid), 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .is-layout-card { grid-template-columns: repeat(var(--tablet-grid), 1fr); }
+}
+
+@media (max-width: 640px) {
+  .is-layout-card { grid-template-columns: repeat(var(--mobile-grid), 1fr); }
 }
 
 .view-switcher-action-bar.no-border {
