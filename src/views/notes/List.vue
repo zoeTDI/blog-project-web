@@ -1,20 +1,13 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import {ArticleRenderer, ViewSwitcher} from "@/components/viewSwitcher";
-
-interface Article {
-  id: number;
-  title: string;
-  summary: string;
-  date: string;
-  tags: string[];
-  cover?: string; // 可选的头图
-}
+import type {Article} from "#/article.ts";
+import {useLoadingStore} from "@/store/useLoadingStore.ts";
 
 // 1. 网页公告数据
 const announcement = {
   title: "四月进度与学习笔记更新说明",
-  content: `这是一个超过500字的示例内容...（此处省略实际字数）。
+  content: `这是一个超过500字的示例内容...（此处省略实际字数）。\n
   在这里你可以写下近期的技术感悟、博客的更新日志或者是对读者的寄语。
   我们的系统会自动检测这段文字的长度，如果超过500个字符，
   它将呈现出一种优雅的半透明渐变遮罩效果，引导用户点击查看全文。
@@ -27,16 +20,17 @@ const announcement = {
 
 // 3. 公告区域内容
 const isExpanded = ref(false);
-const threshold = 500;
+const contentRef = ref<HTMLElement | null>(null);
+const needsCollapse = ref(false);
+const MAX_VISUAL_HEIGHT = 280; // 设定最大显示高度（像素）
 
-const needsCollapse = computed(() => announcement.content.length > threshold);
-
-const displayedContent = computed(() => {
-  if (!needsCollapse.value || isExpanded.value) {
-    return announcement.content;
+// 检测高度的函数
+const checkHeight = () => {
+  if (contentRef.value) {
+    // 如果实际高度大于阈值，则需要折叠
+    needsCollapse.value = contentRef.value.scrollHeight > MAX_VISUAL_HEIGHT;
   }
-  return announcement.content.slice(0, threshold) + '...';
-})
+};
 
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value;
@@ -74,6 +68,8 @@ const fetchArticlesApi = async (page: number) => {
   })
 }
 
+const loadingStore = useLoadingStore();
+
 const loadMore = async () => {
   if (isLoading.value || noMore.value) return;
   isLoading.value = true;
@@ -86,26 +82,38 @@ const loadMore = async () => {
   isLoading.value = false;
 }
 
-onMounted(() => {
-  loadMore();
+onMounted(async () => {
+  await nextTick();
+  checkHeight();
+  window.addEventListener('resize', () => {
+    checkHeight()
+  });
+  await loadMore();
+  loadingStore.endLoading();
 })
 </script>
 
 <template>
   <div class="list">
-    <section class="announcement-section" :class="{ 'is-collapsed': !isExpanded && needsCollapse }">
+    <section class="announcement-section">
       <h2 class="announcement-title">{{ announcement.title }}</h2>
 
       <div class="announcement-content-wrapper">
-        <div class="announcement-text">
-          {{ displayedContent }}
+        <div
+            ref="contentRef"
+            class="announcement-text"
+            :style="{
+            maxHeight: (!isExpanded && needsCollapse) ? MAX_VISUAL_HEIGHT + 'px' : 'none'
+          }"
+        >
+          {{ announcement.content }}
         </div>
 
         <div v-if="needsCollapse && !isExpanded" class="content-mask" @click="toggleExpand">
-          <button class="expand-btn">展开全部内容</button>
+          <button class="expand-btn">展开详细内容</button>
         </div>
 
-        <div v-if="isExpanded" class="collapse-footer">
+        <div v-if="needsCollapse && isExpanded" class="collapse-footer">
           <button class="expand-btn" @click="toggleExpand">收起详细内容</button>
         </div>
       </div>
@@ -120,6 +128,7 @@ onMounted(() => {
           :key="article.id"
           :article="article"
           :mode="viewMode"
+          :meta-config="{ showDate: true, showViews: true, showTags: true, showLikes: true, showAuthor: true, showUpdatedDate: true, showComments: true, showFavorites: true }"
       />
     </ViewSwitcher>
 
@@ -171,31 +180,30 @@ onMounted(() => {
   background-color: var(--accent);
 }
 
+.announcement-text {
+  white-space: pre-wrap;
+  line-height: 1.8;
+  overflow: hidden; /* 必须配合 max-height 使用 */
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* 增加平滑的展开效果 */
+}
+
 .announcement-content-wrapper {
   position: relative;
-  line-height: 1.8;
-  font-size: 16px;
-  color: var(--text);
 }
 
-.announcement-text {
-  white-space: pre-wrap; /* 保留换行 */
-}
-
-/* 渐变遮罩层 */
+/* 渐变遮罩层样式微调 */
 .content-mask {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 100px; /* 遮罩高度 */
-  background: linear-gradient(to bottom, transparent, var(--bg));
+  height: 120px; /* 稍微加高遮罩，让渐变更自然 */
+  background: linear-gradient(to bottom, transparent, var(--bg) 90%);
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  padding-bottom: 10px;
+  padding-bottom: 0;
   cursor: pointer;
-  transition: height 0.3s ease;
 }
 
 .content-mask:hover {
