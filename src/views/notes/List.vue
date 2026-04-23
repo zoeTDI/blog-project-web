@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {computed, onMounted, ref} from "vue";
+import {ArticleRenderer, ViewSwitcher} from "@/components/viewSwitcher";
 
 interface Article {
   id: number;
@@ -109,68 +110,30 @@ onMounted(() => {
         </div>
       </div>
     </section>
-    <div class="action-bar">
-      <div class="action-left">
-        <span class="results-count">ALL POSTS / {{ allArticles.length }}</span>
+    <ViewSwitcher v-model="viewMode" :total="allArticles.length">
+      <div :class="['articles-grid-wrapper', viewMode === 'list' ? 'layout-list' : 'layout-card']">
+        <ArticleRenderer
+            v-for="article in allArticles"
+            :key="article.id"
+            :article="article"
+            :mode="viewMode"
+        />
       </div>
+    </ViewSwitcher>
 
-      <div class="action-right">
-        <div class="view-switcher">
-          <button
-              :class="['switch-btn', { active: viewMode === 'list' }]"
-              @click="setViewMode('list')"
-              title="列表模式"
-          >
-            <span class="btn-text">LIST</span>
-          </button>
+    <div class="load-more-section">
+      <button
+          v-if="!noMore"
+          :disabled="isLoading"
+          @click="loadMore"
+          class="load-more-btn"
+      >
+        <span v-if="isLoading" class="loading-spinner">LOADING...</span>
+        <span v-else>LOAD MORE</span>
+      </button>
 
-          <button
-              :class="['switch-btn', { active: viewMode === 'card' }]"
-              @click="setViewMode('card')"
-              title="卡片模式"
-          >
-            <span class="btn-text">CARD</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div :class="['articles-container', viewMode === 'list' ? 'is-list' : 'is-card']">
-      <article v-for="article in allArticles" :key="article.id" class="article-item">
-        <div v-if="article.cover" class="article-cover">
-          <img :src="article.cover" alt="cover"/>
-        </div>
-
-        <div class="article-info">
-          <header class="info-header">
-            <h2 class="article-title">{{ article.title }}</h2>
-            <p class="article-summary">{{ article.summary }}</p>
-          </header>
-
-          <footer class="info-footer">
-            <span class="article-date">{{ article.date }}</span>
-            <div class="article-tags">
-          <span v-for="tag in article.tags" :key="tag" class="tag-item">
-            #{{ tag }}
-          </span>
-            </div>
-          </footer>
-        </div>
-      </article>
-      <div class="load-more-section">
-        <button
-            v-if="!noMore"
-            :disabled="isLoading"
-            @click="loadMore"
-            class="load-more-btn"
-        >
-          <span v-if="isLoading" class="loading-spinner">LOADING...</span>
-          <span v-else>LOAD MORE</span>
-        </button>
-
-        <div v-else class="no-more-text">
-          — END OF JOURNEY —
-        </div>
+      <div v-else class="no-more-text">
+        — END OF JOURNEY —
       </div>
     </div>
   </div>
@@ -261,227 +224,26 @@ onMounted(() => {
   justify-content: center;
 }
 
-.action-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  margin-bottom: 32px;
-  border-bottom: 1px solid var(--border); /* 操作栏下方的细分割线 */
-}
-
-.results-count {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: var(--text);
-  opacity: 0.6;
-}
-
-.view-switcher {
-  display: flex;
-  gap: 1px; /* 按钮之间的微小间距 */
-  background-color: var(--border); /* 利用背景色做中间竖线 */
-  border: 1px solid var(--border);
-}
-
-.switch-btn {
-  background-color: var(--bg);
-  border: none;
-  padding: 6px 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-
-.btn-text {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: var(--text);
-  opacity: 0.5;
-}
-
-/* 激活状态样式 */
-.switch-btn.active {
-  background-color: var(--accent-bg); /* 淡淡的紫色背景 */
-}
-
-.switch-btn.active .btn-text {
-  color: var(--accent);
-  opacity: 1;
-  font-weight: 600;
-}
-
-.switch-btn:hover:not(.active) .btn-text {
-  opacity: 1;
-}
-
-/* 响应式：移动端隐藏左侧计数以节省空间 */
-@media (max-width: 480px) {
-  .results-count {
-    display: none;
-  }
-
-  .action-bar {
-    justify-content: flex-end;
-  }
-}
-
-.articles-container {
+.articles-grid-wrapper {
   display: grid;
   transition: all 0.5s ease;
 }
 
-.article-item {
-  background-color: var(--bg-color);
-  border: 1px solid var(--border);
-  display: flex;
-  overflow: hidden;
-  transition: transform 0.3s ease, border-color 0.3s;
-}
-
-.article-item:hover {
-  border-color: var(--accent);
-}
-
-.article-title {
-  font-family: var(--heading);
-  color: var(--text-h);
-  margin-bottom: 8px;
-}
-
-.article-summary {
-  font-size: 14px;
-  color: var(--text);
-  opacity: 0.8;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.article-info {
-  display: flex;
-  flex-direction: column; /* 开启纵向 Flex 布局 */
-  flex: 1;
-}
-
-.info-footer {
-  margin-top: auto; /* 核心技巧：将 footer 推至容器底部 */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 16px; /* 增加一点间距，防止文字太近 */
-}
-
-.article-date {
-  font-family: var(--mono);
-  font-size: 12px;
-  opacity: 0.6;
-}
-
-.tag-item {
-  font-size: 11px;
-  margin-left: 8px;
-  color: var(--accent);
-}
-
-/* --- 1. 列表模式 (List Mode) --- */
-.is-list {
-  grid-template-columns: 1fr; /* 独占一行 */
+.layout-list {
+  grid-template-columns: 1fr;
   gap: 24px;
 }
 
-.is-list .article-item {
-  display: flex;
-  flex-direction: row;
-  padding: 24px;
-  min-height: 180px; /* 设置最小高度，确保图片占据高度时 footer 依然在最下面 */
-}
-
-.is-list .article-cover {
-  order: 2;
-  width: 240px;
-  height: 150px; /* 列表模式固定图片高度 */
-  margin-left: 32px;
-  flex-shrink: 0;
-}
-
-.is-list .article-info {
-  flex: 1;
-  order: 1; /* 文字在左 */
-}
-
-.is-list .article-cover {
-  order: 2; /* 图片在右 */
-  width: 240px;
-  height: 150px;
-  margin-left: 32px;
-  flex-shrink: 0;
-}
-
-/* --- 2. 卡片模式 (Card Mode) --- */
-.is-card {
-  grid-template-columns: repeat(4, 1fr); /* 一行4个 */
+.layout-card {
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
-.is-card .article-item {
-  display: flex;
-  flex-direction: column;
-  height: 420px; /* 固定卡片总高度 */
-}
-
-.is-card .article-cover {
-  width: 100%;
-  height: 55%; /* 有图时占据 55% */
-  flex-shrink: 0;
-}
-
-.is-card .article-info {
-  padding: 20px;
-  /* 当 .article-cover 不存在时，这里会自动填满 100% 的高度 */
-}
-
-.is-card .info-footer {
-  margin-top: auto; /* 将日期和标签推到底部 */
-}
-
-/* 图片通用处理 */
-.article-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s;
-}
-
-.article-item:hover .article-cover img {
-  transform: scale(1.05);
-}
-
-/* 响应式断点 */
 @media (max-width: 1200px) {
-  .is-card {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .layout-card { grid-template-columns: repeat(2, 1fr); }
 }
-
 @media (max-width: 768px) {
-  .is-card {
-    grid-template-columns: 1fr;
-  }
-
-  .is-list .article-item {
-    flex-direction: column;
-  }
-
-  .is-list .article-cover {
-    width: 100%;
-    margin: 16px 0 0 0;
-    order: -1;
-  }
+  .layout-card { grid-template-columns: 1fr; }
 }
 
 .load-more-section {
