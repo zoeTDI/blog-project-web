@@ -110,8 +110,13 @@ onMounted(() => {
         </div>
       </div>
     </section>
-    <ViewSwitcher v-model="viewMode" :total="allArticles.length">
-      <div :class="['articles-grid-wrapper', viewMode === 'list' ? 'layout-list' : 'layout-card']">
+    <ViewSwitcher
+        v-model="viewMode"
+        :total="allArticles.length"
+        :cols="{ desktop: 3, tablet: 2, mobile: 1 }"
+        :show-count="true"
+    >
+      <div :class="['articles-grid-container', viewMode === 'list' ? 'is-layout-list' : 'is-layout-card']">
         <ArticleRenderer
             v-for="article in allArticles"
             :key="article.id"
@@ -224,26 +229,34 @@ onMounted(() => {
   justify-content: center;
 }
 
-.articles-grid-wrapper {
+.articles-grid-container {
   display: grid;
   transition: all 0.5s ease;
 }
 
-.layout-list {
+/* 列表模式：始终为 1 列 */
+.is-layout-list {
   grid-template-columns: 1fr;
   gap: 24px;
 }
 
-.layout-card {
-  grid-template-columns: repeat(4, 1fr);
+/* 卡片模式：使用 ViewSwitcher 传下来的 CSS 变量 */
+.is-layout-card {
+  /* 使用 var(--cols-xxx) 获取 ViewSwitcher 注入的值 */
+  grid-template-columns: repeat(var(--cols-desktop), 1fr);
   gap: 20px;
 }
 
-@media (max-width: 1200px) {
-  .layout-card { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 1024px) {
+  .is-layout-card {
+    grid-template-columns: repeat(var(--cols-tablet), 1fr);
+  }
 }
-@media (max-width: 768px) {
-  .layout-card { grid-template-columns: 1fr; }
+
+@media (max-width: 640px) {
+  .is-layout-card {
+    grid-template-columns: repeat(var(--cols-mobile), 1fr);
+  }
 }
 
 .load-more-section {

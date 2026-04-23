@@ -1,41 +1,70 @@
 <script setup lang="ts">
-defineProps<{
-  modelValue: 'list' | 'card';
+interface Props {
+  modelValue: string;
   total: number;
-}>();
+  // 1. 响应式列数控制
+  cols?: {
+    desktop?: number;
+    tablet?: number;
+    mobile?: number;
+  };
+  // 2. 统计信息显示开关
+  showCount?: boolean;
+  // 3. 底部边框开关
+  showBorder?: boolean;
+  // 4. 动态模式选项
+  options?: Array<{ label: string; value: string }>;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showCount: true,
+  showBorder: true,
+  cols: () => ({desktop: 4, tablet: 2, mobile: 1}),
+  options: () => [
+    {label: 'LIST', value: 'list'},
+    {label: 'CARD', value: 'card'}
+  ]
+});
 
 const emit = defineEmits(['update:modelValue']);
 
-const setMode = (mode: 'list' | 'card') => {
+const setMode = (mode: string) => {
   emit('update:modelValue', mode);
 };
 </script>
 
 <template>
   <div class="view-switcher-container">
-    <div class="view-switcher-action-bar">
+    <div
+        class="view-switcher-action-bar"
+        :class="{ 'no-border': !showBorder }"
+    >
       <div class="action-left">
-        <span class="results-count">ALL POSTS / {{ total }}</span>
+        <span v-if="showCount" class="results-count">ALL POSTS / {{ total }}</span>
       </div>
+
       <div class="action-right">
         <div class="mode-controls">
           <button
-              :class="['switch-btn', { active: modelValue === 'list' }]"
-              @click="setMode('list')"
+              v-for="opt in options"
+              :key="opt.value"
+              :class="['switch-btn', { active: modelValue === opt.value }]"
+              @click="setMode(opt.value)"
           >
-            <span class="btn-text">LIST</span>
-          </button>
-          <button
-              :class="['switch-btn', { active: modelValue === 'card' }]"
-              @click="setMode('card')"
-          >
-            <span class="btn-text">CARD</span>
+            <span class="btn-text">{{ opt.label }}</span>
           </button>
         </div>
       </div>
     </div>
 
-    <div class="view-switcher-content">
+    <div
+        class="view-switcher-content"
+        :style="{
+        '--cols-desktop': cols.desktop,
+        '--cols-tablet': cols.tablet,
+        '--cols-mobile': cols.mobile
+      }"
+    >
       <slot></slot>
     </div>
   </div>
@@ -49,6 +78,10 @@ const setMode = (mode: 'list' | 'card') => {
   padding: 12px 0;
   margin-bottom: 32px;
   border-bottom: 1px solid var(--border);
+}
+
+.view-switcher-action-bar.no-border {
+  border-bottom: none;
 }
 
 .results-count {
@@ -98,6 +131,7 @@ const setMode = (mode: 'list' | 'card') => {
   opacity: 1;
 }
 
+/* 响应式：控制统计信息的显示 */
 @media (max-width: 480px) {
   .results-count { display: none; }
   .view-switcher-action-bar { justify-content: flex-end; }
