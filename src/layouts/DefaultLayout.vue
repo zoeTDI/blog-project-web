@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import CaSwitch, {type SwitchOption} from "@/components/ca/caSwitch";
+import {MoonIcon, SunIcon} from "@heroicons/vue/24/outline";
 
 // 主题状态：light 或 dark
 const themeMode = ref<'light' | 'dark'>('light');
 const logoSrc = ref('');
-// 切换主题方法
-const toggleTheme = () => {
-  themeMode.value = themeMode.value === 'light' ? 'dark' : 'light';
-  // 同步到本地存储，实现持久化
-  localStorage.setItem('theme', themeMode.value);
+
+const caSwitchOptions: SwitchOption[] = [
+  {value: 'light', label: 'LIGHT', icon: SunIcon},
+  {value: 'dark', label: 'DARK', icon: MoonIcon}
+]
+
+const handleThemeChange = (newTheme: 'light' | 'dark') => {
+  themeMode.value = newTheme;
+  localStorage.setItem('theme', newTheme);
 };
 
-// 初始化时从本地加载主题偏好
 onMounted(() => {
   const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
   if (savedTheme) {
@@ -36,13 +41,7 @@ onMounted(() => {
             <div class="site-slogan">记录、探索与生活的极简志</div>
           </div>
         </div>
-
-        <nav class="header-nav">
-          <button @click="toggleTheme" class="theme-switch">
-            <span class="mode-label">{{ themeMode === 'light' ? 'NIGHT' : 'DAY' }}</span>
-            <div class="switch-icon"></div>
-          </button>
-        </nav>
+        <ca-switch v-model="themeMode" @update:model-value="handleThemeChange" :options="caSwitchOptions" mode="full" class="icon" />
       </div>
     </header>
 
@@ -181,28 +180,6 @@ onMounted(() => {
   .site-title { font-size: 18px; }
   .site-slogan { font-size: 10px; }
   .logo-img { height: 32px; }
-}
-
-/* 主题切换按钮 */
-.theme-switch {
-  background: none;
-  border: 1px solid var(--border);
-  padding: 6px 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-}
-
-.theme-switch:hover {
-  border-color: var(--accent);
-}
-
-.mode-label {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text);
 }
 
 /* 内容主体 */
