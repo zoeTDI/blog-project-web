@@ -41,7 +41,7 @@ const internalValue = computed({
       </div>
       <div class="action-right">
         <div class="action-right">
-          <ca-radio-group v-model="internalValue" size="L" layout="button-group">
+          <ca-radio-group v-model="internalValue" size="M" layout="button-group">
             <ca-radio
                 v-for="opt in options"
                 :key="opt.value"

@@ -3,6 +3,7 @@ import {nextTick, onMounted, ref} from "vue";
 import {ArticleRenderer, ViewSwitcher} from "@/components/viewSwitcher";
 import type {Article} from "#/article.ts";
 import {useLoadingStore} from "@/store/useLoadingStore.ts";
+import {CaButton} from "@/components/ca/caButton";
 
 // 1. 网页公告数据
 const announcement = {
@@ -89,7 +90,7 @@ onMounted(async () => {
     checkHeight()
   });
   await loadMore();
-  loadingStore.endLoading();
+  await loadingStore.endLoading();
 })
 </script>
 
@@ -109,12 +110,11 @@ onMounted(async () => {
           {{ announcement.content }}
         </div>
 
-        <div v-if="needsCollapse && !isExpanded" class="content-mask" @click="toggleExpand">
-          <button class="expand-btn">展开详细内容</button>
+        <div v-if="needsCollapse && !isExpanded" class="content-mask">
+          <ca-button type="text" @click="toggleExpand">EXPAND</ca-button>
         </div>
-
-        <div v-if="needsCollapse && isExpanded" class="collapse-footer">
-          <button class="expand-btn" @click="toggleExpand">收起详细内容</button>
+        <div v-if="isExpanded" class="collapse-footer">
+          <CaButton type="text" @click="toggleExpand">CLOSE</CaButton>
         </div>
       </div>
     </section>
@@ -133,19 +133,9 @@ onMounted(async () => {
     </ViewSwitcher>
 
     <div class="load-more-section">
-      <button
-          v-if="!noMore"
-          :disabled="isLoading"
-          @click="loadMore"
-          class="load-more-btn"
-      >
-        <span v-if="isLoading" class="loading-spinner">LOADING...</span>
-        <span v-else>LOAD MORE</span>
-      </button>
-
-      <div v-else class="no-more-text">
-        — END OF JOURNEY —
-      </div>
+      <CaButton  :loading="isLoading" hover-effect="expand" @click="loadMore">
+        LOAD MORE
+      </CaButton>
     </div>
   </div>
 </template>
@@ -183,8 +173,7 @@ onMounted(async () => {
 .announcement-text {
   white-space: pre-wrap;
   line-height: 1.8;
-  overflow: hidden; /* 必须配合 max-height 使用 */
-  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* 增加平滑的展开效果 */
+  overflow: hidden;
 }
 
 .announcement-content-wrapper {
@@ -210,24 +199,6 @@ onMounted(async () => {
   height: 120px; /* 悬停时遮罩稍微上移，增加引导性 */
 }
 
-/* 极简按钮样式 */
-.expand-btn {
-  background: none;
-  border: 1px solid var(--border);
-  padding: 8px 24px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  letter-spacing: 1px;
-}
-
-.expand-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
 .collapse-footer {
   margin-top: 20px;
   display: flex;
@@ -241,51 +212,4 @@ onMounted(async () => {
   padding-bottom: 40px;
 }
 
-.load-more-btn {
-  background: none;
-  border: 1px solid var(--border);
-  padding: 12px 40px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text);
-  cursor: pointer;
-  letter-spacing: 2px;
-  transition: all 0.3s ease;
-}
-
-.load-more-btn:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
-  padding: 12px 60px; /* 悬停时稍微拉长，增加动态感 */
-}
-
-.load-more-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.no-more-text {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text);
-  opacity: 0.4;
-  letter-spacing: 4px;
-}
-
-/* 简单的加载文字闪烁动画 */
-.loading-spinner {
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
-  100% {
-    opacity: 1;
-  }
-}
 </style>
