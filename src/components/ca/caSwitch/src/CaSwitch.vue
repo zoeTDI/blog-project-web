@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { computed, type Component } from 'vue';
+import { computed } from 'vue';
 import { CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline';
-import type {SwitchOption} from "@/components/ca/caSwitch";
+import type { SwitchOption } from "./types.ts";
+import type {ComponentSize} from "#/component.ts";
 
 const props = withDefaults(defineProps<{
   modelValue: any;
   options?: [SwitchOption, SwitchOption];
   prefix?: string;
   mode?: 'full' | 'icon';
+  size?: ComponentSize; // 新增 size 属性
 }>(), {
   mode: 'icon',
-  prefix: ''
+  prefix: '',
+  size: 'M' // 默认为 M
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -20,15 +23,12 @@ const defaultOptions: [SwitchOption, SwitchOption] = [
   { value: false, label: 'OFF', icon: XMarkIcon }
 ];
 
-// 获取最终使用的配置
 const currentOptions = computed(() => props.options || defaultOptions);
 
-// 计算当前匹配的选项对象
 const activeOption = computed(() => {
   return currentOptions.value.find(opt => opt.value === props.modelValue) || currentOptions.value[0];
 });
 
-// 切换逻辑：在两个布尔值（或自定义选项值）之间切换
 const toggle = () => {
   const [opt1, opt2] = currentOptions.value;
   const nextValue = props.modelValue === opt1.value ? opt2.value : opt1.value;
@@ -39,7 +39,7 @@ const toggle = () => {
 <template>
   <div
       class="ca-switch"
-      :class="[`is-${mode}`]"
+      :class="[`is-${mode}`, `size-${size}`]"
       @click="toggle"
       :title="activeOption.label"
   >
@@ -63,46 +63,54 @@ const toggle = () => {
   transition: all 0.2s ease;
   user-select: none;
   background-color: transparent;
+  gap: 8px; /* 文字和图标的间距 */
 }
 
 .ca-switch:hover {
   border-color: var(--accent);
 }
 
-.is-icon {
-  padding: 8px;
-}
+/* --- 尺寸控制逻辑 --- */
 
-.is-full {
-  padding: 6px 12px;
-  gap: 12px;
-}
+/* 1. 仅图标模式 (is-icon) */
+.is-icon.size-S { padding: 6px; }
+.is-icon.size-M { padding: 8px; } /* 修改前的原尺寸 */
+.is-icon.size-L { padding: 12px; }
 
+/* 2. 全模式 (is-full) */
+.is-full.size-S { padding: 4px 10px; }
+.is-full.size-M { padding: 6px 14px; } /* 修改前的原尺寸 */
+.is-full.size-L { padding: 10px 20px; }
+
+/* 3. 内部元素尺寸调整 */
+.size-S .ca-switch__text { font-size: 10px; }
+.size-S .ca-icon { width: 12px; height: 12px; }
+
+.size-M .ca-switch__text { font-size: 11px; } /* 修改前的原尺寸 */
+.size-M .ca-icon { width: 14px; height: 14px; }
+
+.size-L .ca-switch__text { font-size: 14px; }
+.size-L .ca-icon { width: 18px; height: 18px; }
+
+/* --- 基础文本样式 --- */
 .ca-switch__text {
   font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text);
-  white-space: nowrap;
   letter-spacing: 1px;
+  display: flex;
+  gap: 4px;
 }
 
 .ca-switch__prefix {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
-.ca-switch__icon-holder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.ca-switch__label {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .ca-icon {
-  width: 16px;
-  height: 16px;
   color: var(--accent);
-}
-
-.ca-switch:active .ca-icon {
-  transform: scale(0.85);
+  display: block;
 }
 </style>
