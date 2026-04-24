@@ -1,29 +1,35 @@
 <script setup lang="ts">
-// 规则：根元素类名包含 view-switcher
+import {CaRadio, CaRadioGroup} from "@/components/ca/caSegmented";
+import {Bars3Icon, Squares2X2Icon} from '@heroicons/vue/24/outline';
+import {computed} from "vue"; // 建议引入图标增强视觉
+
 interface Props {
   modelValue: string;
   total: number;
   cols?: { desktop?: number; tablet?: number; mobile?: number; };
   showCount?: boolean;
   showBorder?: boolean;
-  options?: Array<{ label: string; value: string }>;
+  // options 属性在原子化组件模式下变为可选，因为你可以直接在模板中写死，也可以保留
+  options?: Array<{ label: string; value: string; icon?: any }>;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   showCount: true,
   showBorder: true,
-  cols: () => ({ desktop: 4, tablet: 2, mobile: 1 }),
+  cols: () => ({desktop: 4, tablet: 2, mobile: 1}),
   options: () => [
-    { label: 'LIST', value: 'list' },
-    { label: 'CARD', value: 'card' }
+    {label: 'LIST', value: 'list', icon: Bars3Icon},
+    {label: 'CARD', value: 'card', icon: Squares2X2Icon}
   ]
 });
 
 const emit = defineEmits(['update:modelValue']);
 
-const setMode = (mode: string) => {
-  emit('update:modelValue', mode);
-};
+const internalValue = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+});
+
 </script>
 
 <template>
@@ -33,15 +39,16 @@ const setMode = (mode: string) => {
         <span v-if="showCount" class="results-count">ALL POSTS / {{ total }}</span>
       </div>
       <div class="action-right">
-        <div class="mode-controls">
-          <button
-              v-for="opt in options"
-              :key="opt.value"
-              :class="['switch-btn', { active: modelValue === opt.value }]"
-              @click="setMode(opt.value)"
-          >
-            <span class="btn-text">{{ opt.label }}</span>
-          </button>
+        <div class="action-right">
+          <ca-radio-group v-model="internalValue" size="S">
+            <ca-radio
+                v-for="opt in options"
+                :key="opt.value"
+                :value="opt.value"
+                :label="opt.label"
+                :icon="opt.icon"
+            />
+          </ca-radio-group>
         </div>
       </div>
     </div>
@@ -86,11 +93,15 @@ const setMode = (mode: string) => {
 }
 
 @media (max-width: 1024px) {
-  .is-layout-card { grid-template-columns: repeat(var(--tablet-grid), 1fr); }
+  .is-layout-card {
+    grid-template-columns: repeat(var(--tablet-grid), 1fr);
+  }
 }
 
 @media (max-width: 640px) {
-  .is-layout-card { grid-template-columns: repeat(var(--mobile-grid), 1fr); }
+  .is-layout-card {
+    grid-template-columns: repeat(var(--mobile-grid), 1fr);
+  }
 }
 
 .view-switcher-action-bar.no-border {
@@ -105,35 +116,6 @@ const setMode = (mode: string) => {
   opacity: 0.6;
 }
 
-.mode-controls {
-  display: flex;
-  gap: 1px;
-  background-color: var(--border);
-  border: 1px solid var(--border);
-}
-
-.switch-btn {
-  background-color: var(--bg);
-  border: none;
-  padding: 6px 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-
-.btn-text {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: var(--text);
-  opacity: 0.5;
-}
-
-.switch-btn.active {
-  background-color: var(--accent-bg);
-}
-
 .switch-btn.active .btn-text {
   color: var(--accent);
   opacity: 1;
@@ -146,7 +128,12 @@ const setMode = (mode: string) => {
 
 /* 响应式：控制统计信息的显示 */
 @media (max-width: 480px) {
-  .results-count { display: none; }
-  .view-switcher-action-bar { justify-content: flex-end; }
+  .results-count {
+    display: none;
+  }
+
+  .view-switcher-action-bar {
+    justify-content: flex-end;
+  }
 }
 </style>
