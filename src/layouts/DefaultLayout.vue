@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import CaSwitch, {type SwitchOption} from "@/components/ca/caSwitch";
 import {MoonIcon, SunIcon} from "@heroicons/vue/24/outline";
+import {CaInkTree} from "@/components/background/caInkTree";
 
 // 主题状态：light 或 dark
 const themeMode = ref<'light' | 'dark'>('light');
@@ -27,6 +28,7 @@ onMounted(() => {
 
 <template>
   <div :class="['app-wrapper', themeMode]">
+    <CaInkTree />
     <div class="layout-border"></div>
 
     <header class="layout-header">
@@ -92,6 +94,19 @@ onMounted(() => {
   background-color: var(--bg);
   color: var(--text);
   transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.app-wrapper {
+  isolation: isolate; /* 强制创建一个新的层级上下文 */
+}
+
+/* 关键：给所有实际内容组件提升层级 */
+.layout-header,
+.layout-main,
+.layout-footer,
+.layout-border {
+  position: relative;
+  z-index: 1; /* 必须大于 CaInkTree 的 0 */
 }
 
 /* 极简细线条外框 */
