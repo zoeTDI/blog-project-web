@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {CaRadio, CaRadioGroup} from "@/components/ca/caSegmented";
+
 import {Bars3Icon, Squares2X2Icon} from '@heroicons/vue/24/outline';
-import {computed} from "vue"; // 建议引入图标增强视觉
+import {computed} from "vue";
+import {CaRadio, CaRadioGroup} from "@/components/ca/caRadioGroup"; // 建议引入图标增强视觉
 
 interface Props {
   modelValue: string;
@@ -40,7 +41,7 @@ const internalValue = computed({
       </div>
       <div class="action-right">
         <div class="action-right">
-          <ca-radio-group v-model="internalValue" size="S">
+          <ca-radio-group v-model="internalValue" size="L" layout="button-group">
             <ca-radio
                 v-for="opt in options"
                 :key="opt.value"
