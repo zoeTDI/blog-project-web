@@ -28,15 +28,29 @@ export const baseRouter: RouteRecordRaw[] = [
         ]
     },
     {
-        path: '/notes',
+        path: '/',
         component: () => import('@/layouts/DefaultLayout.vue'),
         children: [
             {
-                path: '',
-                name: 'NoteList',
+                path: '/notes',
+                name: 'Notes',
                 component: () => import('@/views/notes/List.vue'),
                 meta: {
                     title: '博客文章'
+                }
+            }
+        ]
+    },
+    {
+        path: '/',
+        component: () => import('@/layouts/DefaultLayout.vue'),
+        children: [
+            {
+                path: '/archives',
+                name: 'Archives',
+                component: () => import('@/views/archive/Archive.vue'),
+                meta: {
+                    title: '归档'
                 }
             }
         ]
