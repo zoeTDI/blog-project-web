@@ -7,9 +7,17 @@ interface Tag {
   count: number;
 }
 
-const props = defineProps<{
+// const props = defineProps<{
+//   tags: Tag[];
+// }>();
+
+const props = withDefaults(defineProps<{
   tags: Tag[];
-}>();
+  height: number
+}>(), {
+  tags: [],
+  height: 280,
+})
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const containerRef = ref<HTMLDivElement | null>(null);
@@ -163,7 +171,7 @@ watch(() => props.tags, draw, { deep: true });
 </script>
 
 <template>
-  <div ref="containerRef" class="ca-tag-cloud-wrapper">
+  <div ref="containerRef" class="ca-tag-cloud-wrapper" :style="{height: `${height}px`}">
     <canvas
         ref="canvasRef"
         @mousemove="handleMouseMove"
@@ -176,7 +184,7 @@ watch(() => props.tags, draw, { deep: true });
 <style scoped>
 .ca-tag-cloud-wrapper {
   width: 100%;
-  height: 280px; /* 显式高度防止容器坍缩 */
+  /*height: 280px;  显式高度防止容器坍缩 */
   overflow: hidden;
   position: relative;
 }
