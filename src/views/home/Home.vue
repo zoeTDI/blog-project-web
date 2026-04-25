@@ -21,14 +21,16 @@ onMounted(() => {
     <div class="divider"></div>
 
     <div class="nav-grid">
-      <div class="grid-item" @click="$router.push('/notes')">
+      <div class="grid-item">
         <div class="item-header">
           <span class="index">01</span>
           <span class="tag">COLLECTION</span>
         </div>
         <div class="item-body">
-          <h2>NOTES</h2>
-          <p>心得 / 经验 / 归档</p>
+          <h2><router-link :to="{name: 'Notes'}">NOTES</router-link></h2>
+          <p>心得 / 经验 /
+            <router-link :to="{name: 'Archives'}">归档</router-link>
+          </p>
         </div>
       </div>
 
@@ -60,7 +62,7 @@ onMounted(() => {
 <style scoped>
 .home-map {
   padding: 80px 40px;
-  max-width: 1200px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
 }
 

@@ -142,7 +142,7 @@ onMounted(async () => {
 
 <style scoped>
 .list {
-  max-width: 1000px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 40px 20px;
 }
