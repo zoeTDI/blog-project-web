@@ -6,6 +6,7 @@ import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {CaSection} from "@/components/ca/caSection";
 import {TagCloud} from "@/components/tagCloud";
 import {CaList, CaListItem} from "@/components/ca/caList";
+import {CaTimeline, type TimelineGroup} from "@/components/ca/caTimeline";
 
 // 标签云
 // Mock 标签数据
@@ -36,6 +37,58 @@ const categories = ref([
   {name: 'UI/UX 设计', count: 5},
   {name: '读书笔记', count: 10}
 ]);
+
+const year2024Data = ref([
+  {
+    title: '2025',
+    items: [
+      {
+        itemTitle: '03',
+        values: [
+          {date: '2025-06-25', title: '深入理解Vue3响应原理', tags: ['Vue3', '源码']}
+        ]
+      }
+    ]
+  },
+  {
+    title: '2024',
+    items: [
+      {
+        itemTitle: '03',
+        values: [
+          {date: '2024-03-25', title: '深入理解 Vue3 响应式原理', tags: ['Vue3', '源码']},
+          {date: '2024-03-12', title: 'Canvas 性能优化实践', tags: ['Canvas', '性能']}
+        ]
+      },
+      {
+        itemTitle: '02',
+        values: [
+          {date: '2024-03-25', title: '深入理解 Vue3 响应式原理', tags: ['Vue3', '源码']},
+          {date: '2024-03-12', title: 'Canvas 性能优化实践', tags: ['Canvas', '性能']}
+        ]
+      }
+    ]
+  },
+  {
+    title: '2023',
+    items: [
+      {
+        itemTitle: '03',
+        values: [
+          {date: '2024-03-25', title: '深入理解 Vue3 响应式原理', tags: ['Vue3', '源码']},
+          {date: '2024-03-12', title: 'Canvas 性能优化实践', tags: ['Canvas', '性能']}
+        ]
+      },
+      {
+        itemTitle: '02',
+        values: [
+          {date: '2024-03-25', title: '深入理解 Vue3 响应式原理', tags: ['Vue3', '源码']},
+          {date: '2024-03-12', title: 'Canvas 性能优化实践', tags: ['Canvas', '性能']}
+        ]
+      }
+    ]
+  },
+])
 
 const height = 280;
 
@@ -76,7 +129,19 @@ onMounted(() => {
     <ca-row style="margin-top: 40px">
       <ca-col>
         <ca-section title="按月份 / BY MONTH" subtitle="ALL POSTS / 10">
-          Note List
+          <ca-timeline :data="year2024Data">
+            <template #default="{ item }">
+              <router-link :to="item.to || {}" class="custom-card-link">
+                <span class="post-date">{{ item.date }}</span>
+                <span class="post-title">{{ item.title }}</span>
+                <div class="post-tags">
+                <span v-for="tag in item.tags" :key="tag" class="post-tag">
+                  #{{ tag }}
+                </span>
+                </div>
+              </router-link>
+            </template>
+          </ca-timeline>
         </ca-section>
       </ca-col>
     </ca-row>
@@ -101,6 +166,49 @@ onMounted(() => {
 .category-scroll-container {
   overflow-y: auto;
   padding-right: 10px;
+}
+
+/* 时间轴相关 */
+.custom-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.custom-card-link:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.post-date {
+  font-size: 0.85em;
+  font-family: var(--mono);
+  color: var(--text);
+  margin-right: 16px;
+  opacity: 0.7;
+}
+
+.post-title {
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.post-tags {
+  margin-top: 6px;
+  display: flex;
+  gap: 12px;
+}
+
+.post-tag {
+  font-size: 0.8em;
+  transition: all 0.2s ease;
+}
+
+.post-tag:hover {
+  color: var(--accent);
 }
 
 /* 美化滚动条 (可选) */
