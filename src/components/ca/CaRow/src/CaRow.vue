@@ -1,32 +1,28 @@
 <script setup lang="ts">
 import { provide, computed } from 'vue';
 
-const props = withDefaults(defineProps<{
-  gutter?: number; // 栅格间距
-  justify?: 'start' | 'end' | 'center' | 'space-around' | 'space-between';
-  align?: 'top' | 'middle' | 'bottom';
-}>(), {
-  gutter: 0,
-  justify: 'start',
-  align: 'top'
+interface RowProps {
+  gap?: number;
+  offset?: number;
+}
+
+const props = withDefaults(defineProps<RowProps>(), {
+  gap: 0,
+  offset: 0
 });
 
-// 将 gutter 注入给子组件 Col
-provide('CaRowGutter', computed(() => props.gutter));
+provide('CaRowGap', computed(() => props.gap));
+provide('CaRowOffset', computed(() => props.offset));
 
-const rowStyle = computed(() => {
-  const margin = props.gutter > 0 ? `${props.gutter / -2}px` : '';
-  return {
-    marginLeft: margin,
-    marginRight: margin,
-    justifyContent: props.justify,
-    alignItems: props.align === 'middle' ? 'center' : (props.align === 'bottom' ? 'flex-end' : 'flex-start')
-  };
-});
+const rowStyles = computed(() => ({
+  gap: `${props.gap}px`,
+  // 将 gap 暴露为 CSS 变量，供子组件计算
+  '--ca-row-gap': `${props.gap}px`
+}));
 </script>
 
 <template>
-  <div class="ca-row" :style="rowStyle">
+  <div class="ca-row" :style="rowStyles">
     <slot />
   </div>
 </template>
@@ -35,6 +31,8 @@ const rowStyle = computed(() => {
 .ca-row {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
   box-sizing: border-box;
+  /* 确保 gap 产生的额外宽度不会撑破容器（在特定 flex 模式下有用） */
 }
 </style>
