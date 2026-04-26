@@ -1,5 +1,6 @@
 import type {RouteLocationNormalized, Router} from 'vue-router';
 import {useLoadingStore} from "@/store/useLoadingStore.ts";
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 const handleDocumentTitle = (to: RouteLocationNormalized) => {
     // 修改标题
@@ -25,6 +26,10 @@ export function setupRouterGuard(router: Router) {
     router.beforeEach(async (to, from, next) => {
         // 设置加载进度条
         const loadingStore = useLoadingStore();
+        if (to.name === ROUTER_NAMES.TAG_DETAIL && !to.query?.id) {
+            next({name: ROUTER_NAMES.NOT_FOUND});
+            return;
+        }
         loadingStore.startLoading();
         handleDocumentTitle(to);
         next();
