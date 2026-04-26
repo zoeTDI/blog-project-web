@@ -114,12 +114,14 @@ onMounted(() => {
     </ca-row>
     <ca-row :gap="40">
       <ca-col :span="18">
-        <ca-section title="所有标签 / ALL TAGS">
+        <ca-section>
+          <template #title>所有标签 / ALL TAGS</template>
           <tag-cloud :tags="tags" :height="height" :on-tag-click="handleTagClick"/>
         </ca-section>
       </ca-col>
       <ca-col :span="6">
-        <ca-section title="所有分类 / ALL CATEGORIES">
+        <ca-section>
+          <template #title>所有分类 / ALL CATEGORIES</template>
           <div class="category-scroll-container" :style="{height: `${height}px`}">
             <ca-list mode="plain">
               <ca-list-item v-for="cat in categories" :key="cat.name">
@@ -135,7 +137,9 @@ onMounted(() => {
     </ca-row>
     <ca-row style="margin-top: 40px">
       <ca-col>
-        <ca-section title="按月份 / BY MONTH" subtitle="ALL POSTS / 10">
+        <ca-section>
+          <template #title>按月份 / BY MONTH</template>
+          <template #subtitle>ALL POSTS / 10</template>
           <ca-timeline :data="year2024Data">
             <template #default="{ item }">
               <router-link :to="item.to || {}" class="custom-card-link">

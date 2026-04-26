@@ -11,11 +11,11 @@ const loadingStore = useLoadingStore();
 
 
 const getTagName = () => {
-  return route.query?.name || 'UNDEFINED';
+  return route.query?.name || '';
 }
 
 onMounted(() => {
-
+  console.log(route.query);
   loadingStore.endLoading();
 })
 
@@ -25,7 +25,12 @@ onMounted(() => {
   <div class="by-tag">
     <ca-row>
       <ca-col>
-        <ca-section :title="`标签 / TAG ${getTagName()}`"></ca-section>
+        <ca-section>
+          <template #title>标签 / TAG {{getTagName()}}</template>
+          <template #subtitle>
+            
+          </template>
+        </ca-section>
       </ca-col>
     </ca-row>
     <ca-row>
@@ -40,5 +45,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
+.by-tag {
+  width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 40px 20px;
+}
 </style>

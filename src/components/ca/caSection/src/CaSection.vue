@@ -1,25 +1,35 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+// // 若需要对header区域进行更复杂的控制时可恢复这些内容
+// import {computed, useSlots} from 'vue';
+//
+// const slots = useSlots();
+//
+// const hasTitle = computed(() => {
+//   return !!slots?.title;
+// })
+//
+// const hasSubtitle = computed(() => {
+//   return !!slots?.subtitle;
+// })
+//
+// const hasHeader = computed(() => {
+//   return hasTitle.value || hasSubtitle.value;
+// })
 
-interface Props {
-  title?: string;
-  subtitle?: string;
-}
-
-const props = defineProps<Props>();
-
-// 判断是否需要渲染标题区域
-const hasHeader = computed(() => !!(props.title || props.subtitle));
 </script>
 
 <template>
   <div class="ca-section">
-    <header v-if="hasHeader" class="ca-section-header">
+    <header v-if="$slots.title || $slots.subtitle" class="ca-section-header">
       <div class="header-left">
-        <h3 v-if="title" class="section-title">{{ title }}</h3>
+        <h3 v-if="$slots.title" class="section-title">
+          <slot name="title"></slot>
+        </h3>
       </div>
       <div class="header-right">
-        <span v-if="subtitle" class="section-subtitle">{{ subtitle }}</span>
+        <span v-if="$slots.subtitle" class="section-subtitle">
+          <slot name="subtitle"></slot>
+        </span>
       </div>
     </header>
 
