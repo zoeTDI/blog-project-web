@@ -16,6 +16,14 @@
 //   return hasTitle.value || hasSubtitle.value;
 // })
 
+import {computed} from "vue";
+
+const props = withDefaults(defineProps<{
+  hasContent: boolean;
+}>(), {hasContent: true})
+
+const hasContent = computed(() => props.hasContent);
+
 </script>
 
 <template>
@@ -33,7 +41,7 @@
       </div>
     </header>
 
-    <div class="ca-section-content">
+    <div v-if="hasContent" class="ca-section-content">
       <slot />
     </div>
   </div>
