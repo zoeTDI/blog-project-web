@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import {onMounted, ref, watch, onUnmounted, nextTick} from 'vue';
-import {useRouter} from 'vue-router';
 
 interface Tag {
+  id: number;
   name: string;
   count: number;
 }
 
 const props = withDefaults(defineProps<{
   tags: Tag[];
-  height: number
+  height: number;
+  onTagClick?: (tag: Tag) => void;
 }>(), {
-  tags: [],
+  tags: () => [],
   height: 280,
 })
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const containerRef = ref<HTMLDivElement | null>(null);
-const router = useRouter();
 
 interface Box {
   x: number;
@@ -138,8 +138,9 @@ const handleMouseMove = (e: MouseEvent) => {
 };
 
 const handleCanvasClick = () => {
-  if (hoverName.value) {
-    router.push({name: 'NoteList', query: {tag: hoverName.value}});
+  if (hoverName.value && props.onTagClick) {
+    const targetTag = props.tags.find(t => t.name === hoverName.value);
+    props.onTagClick(targetTag);
   }
 };
 
