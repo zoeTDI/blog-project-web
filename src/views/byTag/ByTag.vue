@@ -206,6 +206,9 @@ onMounted(async () => {
   flex-wrap: wrap;
   column-gap: 12px;
   font-size: 14px;
+  max-height: 180px;
+  overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .other-tags__item {
