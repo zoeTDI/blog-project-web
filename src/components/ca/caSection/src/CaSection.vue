@@ -56,7 +56,6 @@ const hasHeader = computed(() => !!(props.title || props.subtitle));
   font-size: 14px; /* 标题与副标题大小相同 */
   color: var(--text-h);
   letter-spacing: 0.5px;
-  text-transform: uppercase;
 }
 
 /* 副标题样式：采用无衬线体或等宽体，增加现代感 */
@@ -66,7 +65,6 @@ const hasHeader = computed(() => !!(props.title || props.subtitle));
   color: var(--text);
   opacity: 0.5;
   letter-spacing: 1px;
-  text-transform: uppercase;
 }
 
 .ca-section-content {
