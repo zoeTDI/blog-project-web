@@ -91,7 +91,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="by-tag">
+  <div class="tag-detail">
     <ca-row>
       <ca-col>
         <ca-section :has-content="false">
@@ -145,7 +145,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.by-tag {
+.tag-detail {
   width: var(--content-max-width);
   margin: 0 auto;
   padding: var(--content-padding);

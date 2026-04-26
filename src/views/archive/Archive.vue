@@ -28,17 +28,17 @@ const tags = ref([
 ]);
 
 const categories = ref([
-  {name: '前端开发', count: 12},
-  {name: '后端技术', count: 8},
-  {name: '随笔感悟', count: 15},
-  {name: 'UI/UX 设计', count: 5},
-  {name: '读书笔记', count: 10},
-  {name: '前端开发', count: 12},
-  {name: '后端技术', count: 8},
-  {name: '随笔感悟', count: 15},
-  {name: 'UI/UX 设计', count: 5},
-  {name: '读书笔记', count: 10}
-]);
+  {id: 1, name: '前端开发', count: 12},
+  {id: 2, name: '后端技术', count: 8},
+  {id: 3, name: '随笔感悟', count: 15},
+  {id: 4, name: 'UI/UX 设计', count: 5},
+  {id: 5, name: '读书笔记', count: 10},
+  {id: 6, name: '前端开发', count: 12},
+  {id: 7, name: '后端技术', count: 8},
+  {id: 8, name: '随笔感悟', count: 15},
+  {id: 9, name: 'UI/UX 设计', count: 5},
+  {id: 10, name: '读书笔记', count: 10},
+])
 
 const year2024Data = ref([
   {
@@ -125,7 +125,7 @@ onMounted(() => {
           <div class="category-scroll-container" :style="{height: `${height}px`}">
             <ca-list mode="plain">
               <ca-list-item v-for="cat in categories" :key="cat.name">
-                <router-link :to="{}"><span class="cat-name">{{ cat.name }}</span></router-link>
+                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, query: {...cat}}"><span class="cat-name">{{ cat.name }}</span></router-link>
                 <template #suffix>
                   <span class="cat-count">{{ cat.count }}</span>
                 </template>
