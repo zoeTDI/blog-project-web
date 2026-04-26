@@ -163,7 +163,7 @@ onMounted(() => {
 .archive {
   max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: var(--content-padding);
 }
 
 .page-title {
