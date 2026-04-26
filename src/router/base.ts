@@ -39,6 +39,11 @@ export const baseRouter: RouteRecordRaw[] = [
                 meta: {
                     title: '博客文章'
                 }
+            },
+            {
+                path: '/postDetail',
+                name: ROUTER_NAMES.POST_DETAIL,
+                component: () => import('@/views/postDetail/PostDetail.vue'),
             }
         ]
     },

@@ -51,6 +51,10 @@ const activeMetaList = computed(() => {
 const handleTagClick = (value) => {
   router.push({name: ROUTER_NAMES.TAG_DETAIL, query: {...value}});
 }
+const toPostDetail = () => {
+  console.log(props.article)
+  router.push({name: ROUTER_NAMES.POST_DETAIL, query: {id: props.article.id}});
+}
 </script>
 
 <template>
@@ -60,7 +64,7 @@ const handleTagClick = (value) => {
     </div>
 
     <div class="article-info">
-      <header class="info-header">
+      <header class="info-header" @click="toPostDetail">
         <h2 class="article-title">{{ article.title }}</h2>
         <p class="article-summary">{{ article.summary }}</p>
       </header>
@@ -94,6 +98,10 @@ const handleTagClick = (value) => {
 .article-renderer-item:hover {
   border-color: var(--accent);
   transform: translateY(-2px);
+}
+
+.info-header {
+  cursor: pointer;
 }
 
 .article-info {
