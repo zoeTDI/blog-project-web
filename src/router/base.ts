@@ -59,5 +59,19 @@ export const baseRouter: RouteRecordRaw[] = [
                 component: () => import('@/views/byTag/ByTag.vue')
             }
         ]
-    }
+    },
+    {
+        path: '/',
+        component: () => import('@/layouts/DefaultLayout.vue'),
+        children: [
+            {
+                path: '/:pathMatch(.*)*',
+                name: 'NotFound',
+                component: () => import('@/views/error/NotFound.vue'),
+                meta: {
+                    title: '404 Not Found',
+                }
+            }
+        ]
+    },
 ]
