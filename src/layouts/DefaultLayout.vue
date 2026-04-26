@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import {ref, onMounted} from 'vue';
 import CaSwitch, {type SwitchOption} from "@/components/ca/caSwitch";
 import {MoonIcon, SunIcon} from "@heroicons/vue/24/outline";
 import {CaInkTree} from "@/components/background/caInkTree";
+import {CaSearch} from "@/components/ca/caSearch";
 
 // 主题状态：light 或 dark
 const themeMode = ref<'light' | 'dark'>('light');
@@ -28,14 +29,14 @@ onMounted(() => {
 
 <template>
   <div :class="['app-wrapper', themeMode]">
-    <CaInkTree />
+    <CaInkTree/>
     <div class="layout-border"></div>
 
     <header class="layout-header">
       <div class="header-content">
         <div class="logo" @click="$router.push('/')">
           <div v-if="logoSrc && logoSrc.trim() !== ''" class="logo-img-wrapper">
-            <img :src="logoSrc" alt="Logo" class="logo-img" />
+            <img :src="logoSrc" alt="Logo" class="logo-img"/>
           </div>
 
           <div class="logo-text-group">
@@ -43,12 +44,17 @@ onMounted(() => {
             <div class="site-slogan">记录、探索与生活的极简志</div>
           </div>
         </div>
-        <ca-switch v-model="themeMode" @update:model-value="handleThemeChange" :options="caSwitchOptions" mode="full" class="icon" />
+        <div class="header-actions">
+          <ca-search type="expand"/>
+          <ca-switch v-model="themeMode" @update:model-value="handleThemeChange" :options="caSwitchOptions" mode="full"
+                     class="icon"/>
+        </div>
+
       </div>
     </header>
 
     <main class="layout-main">
-      <router-view />
+      <router-view/>
     </main>
 
     <footer class="layout-footer">
@@ -66,7 +72,7 @@ onMounted(() => {
                 target="_blank"
                 class="beian-item"
             >
-              <img src="@/assets/备案编号图标.png" alt="公安备案图标" class="gongan-icon" />
+              <img src="@/assets/备案编号图标.png" alt="公安备案图标" class="gongan-icon"/>
               <span>某公网安备 XXXXXXXXXXXXXX号</span>
             </a>
 
@@ -170,6 +176,13 @@ onMounted(() => {
   line-height: 1.2;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
 /* 上部分：网站名称 */
 .site-title {
   font-family: var(--heading); /* 全局衬线体 */
@@ -192,9 +205,17 @@ onMounted(() => {
 
 /* 响应式微调 */
 @media (max-width: 768px) {
-  .site-title { font-size: 18px; }
-  .site-slogan { font-size: 10px; }
-  .logo-img { height: 32px; }
+  .site-title {
+    font-size: 18px;
+  }
+
+  .site-slogan {
+    font-size: 10px;
+  }
+
+  .logo-img {
+    height: 32px;
+  }
 }
 
 /* 内容主体 */
