@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type {Article, MetaConfig} from "#/article.ts";
+import {useRouter} from "vue-router";
 
+const router = useRouter();
 const props = defineProps<{
   article: Article;
   mode: 'list' | 'card';
@@ -44,6 +46,10 @@ const activeMetaList = computed(() => {
   }
   return list;
 });
+
+const handleTagClick = (value) => {
+  router.push({name: 'Tag', query: {...value}});
+}
 </script>
 
 <template>
@@ -68,7 +74,7 @@ const activeMetaList = computed(() => {
         </div>
 
         <div v-if="config.showTags && article.tags?.length" class="meta-group-tags">
-          <span v-for="tag in article.tags" :key="tag" class="tag-item">#{{ tag }}</span>
+          <span v-for="tag in article.tags" :key="tag" class="tag-item" @click="handleTagClick(tag)">#{{ tag }}</span>
         </div>
       </footer>
     </div>
@@ -160,6 +166,13 @@ const activeMetaList = computed(() => {
 .tag-item {
   font-size: 11px;
   color: var(--accent);
+  cursor: pointer;
+  transition: all .3s ease;
+  padding: 2px 4px;
+}
+
+.tag-item:hover {
+  background-color: var(--bg-gray);
 }
 
 /* --- 模式特定样式 --- */

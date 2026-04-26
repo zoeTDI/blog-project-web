@@ -195,7 +195,7 @@ onMounted(async () => {
 
 .current-tag {
   font-size: 1.4em;
-  background-color: #E9E9E5;
+  background-color: var(--bg-gray);
   padding: 4px 8px;
   border-radius: 4px;
 }
