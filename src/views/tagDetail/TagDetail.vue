@@ -85,10 +85,6 @@ const mockData = [
 
 onMounted(async () => {
   tagList.value = await mockApiFetch(mockData, 800);
-  tagList.value.filter((item) => {
-    let id = route.query?.id || -1;
-    return item != id;
-  })
   loadingStore.endLoading();
 })
 
