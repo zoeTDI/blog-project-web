@@ -1,5 +1,20 @@
-import type { Router } from 'vue-router';
+import type {RouteLocationNormalized, Router} from 'vue-router';
 import {useLoadingStore} from "@/store/useLoadingStore.ts";
+
+const handleDocumentTitle = (to: RouteLocationNormalized) => {
+    // 修改标题
+    let title = '';
+    switch (to.name) {
+        case 'Tag':
+            title = 'Tag';
+            break;
+        default:
+            title = to.meta?.title;
+            break;
+    }
+    const siteName = import.meta.env.VITE_SITE_TITLE || "电子灭虫录";
+    document.title = title ? `${title} - ${siteName}` : siteName;
+}
 
 /**
  * 路由守卫函数
@@ -11,10 +26,7 @@ export function setupRouterGuard(router: Router) {
         // 设置加载进度条
         const loadingStore = useLoadingStore();
         loadingStore.startLoading();
-        // 修改标题
-        const {title} = to.meta;
-        const siteName = "电子灭虫录";
-        document.title = title ? `${title} - ${siteName}` : siteName;
+        handleDocumentTitle(to);
         next();
     });
 

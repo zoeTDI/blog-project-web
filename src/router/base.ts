@@ -52,6 +52,11 @@ export const baseRouter: RouteRecordRaw[] = [
                 meta: {
                     title: '归档'
                 }
+            },
+            {
+                path: '/tag',
+                name: 'Tag',
+                component: () => import('@/views/byTag/ByTag.vue')
             }
         ]
     }
