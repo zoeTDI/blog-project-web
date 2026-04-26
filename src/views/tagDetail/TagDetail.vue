@@ -9,6 +9,7 @@ import {ArrowLeftIcon} from "@heroicons/vue/24/outline";
 import CaTimeLine from "@/components/ca/caTimeline/src/CaTimeLine.vue";
 import type {TimelineGroup} from "@/components/ca/caTimeline";
 import {mockApiFetch} from "@/utils/mock.ts";
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 const route = useRoute();
 const loadingStore = useLoadingStore();
@@ -100,7 +101,7 @@ onMounted(async () => {
         <ca-section :has-content="false">
           <template #title>标签 / TAG {{ getTagName() }}</template>
           <template #subtitle>
-            <router-link class="back-to-archives" :to="{name: 'Archives'}">
+            <router-link class="back-to-archives" :to="{name: ROUTER_NAMES.ARCHIVES}">
               <arrow-left-icon class="icon"/>
               Back to Archive
             </router-link>
@@ -134,7 +135,7 @@ onMounted(async () => {
               <div class="other-tags">
                 <span class="other-tags__item" v-for="item in tagList.filter((tag) => tag?.id != route.query?.id)"
                       :key="item.id">
-                  <router-link :to="{name: 'Tag', query: {...item}}">
+                  <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, query: {...item}}">
                   #{{ item?.name || '' }}
                   </router-link>
                 </span>

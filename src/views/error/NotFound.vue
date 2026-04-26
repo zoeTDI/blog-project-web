@@ -4,12 +4,13 @@ import {onMounted} from "vue";
 import {CaButton} from "@/components/ca/caButton";
 import {ArrowLeftIcon} from "@heroicons/vue/24/outline";
 import {useRouter} from "vue-router";
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 const loadingStore = useLoadingStore();
 const router = useRouter();
 
 const backToHome = () => {
-  router.push({name: 'Home'});
+  router.push({name: ROUTER_NAMES.HOME});
 }
 
 onMounted(() => {

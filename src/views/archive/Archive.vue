@@ -8,6 +8,7 @@ import {TagCloud} from "@/components/tagCloud";
 import {CaList, CaListItem} from "@/components/ca/caList";
 import {CaTimeline} from "@/components/ca/caTimeline";
 import {useRouter} from "vue-router";
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 // 标签云
 // Mock 标签数据
@@ -96,8 +97,7 @@ const height = 280;
 const loadingStore = useLoadingStore();
 const router = useRouter();
 const handleTagClick = (value) => {
-  console.log('value', value)
-  router.push({name: 'Tag', query: {...value}})
+  router.push({name: ROUTER_NAMES.TAG_DETAIL, query: {...value}})
 }
 
 onMounted(() => {
@@ -146,7 +146,7 @@ onMounted(() => {
                 <span class="post-date">{{ item.date }}</span>
                 <span class="post-title">{{ item.title }}</span>
                 <div class="post-tags">
-                <span v-for="tag in item.tags" :key="tag" class="post-tag">
+                <span v-for="tag in item.tags" :key="tag" class="post-tag" @click="handleTagClick(tag)">
                   #{{ tag }}
                 </span>
                 </div>

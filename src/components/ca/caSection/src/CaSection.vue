@@ -19,7 +19,7 @@
 import {computed} from "vue";
 
 const props = withDefaults(defineProps<{
-  hasContent: boolean;
+  hasContent?: boolean;
 }>(), {hasContent: true})
 
 const hasContent = computed(() => props.hasContent);

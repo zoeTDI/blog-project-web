@@ -1,4 +1,5 @@
 import type {RouteRecordRaw} from "vue-router";
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 /**
  * @description 路由配置说明
@@ -19,7 +20,7 @@ export const baseRouter: RouteRecordRaw[] = [
         children: [
             {
                 path: '', // 默认访问 / 时显示 Dashboard
-                name: 'Home',
+                name: ROUTER_NAMES.HOME,
                 component: () => import('@/views/home/Home.vue'),
                 meta: {
                     title: '首页'
@@ -33,7 +34,7 @@ export const baseRouter: RouteRecordRaw[] = [
         children: [
             {
                 path: '/notes',
-                name: 'Notes',
+                name: ROUTER_NAMES.NOTES,
                 component: () => import('@/views/notes/List.vue'),
                 meta: {
                     title: '博客文章'
@@ -47,7 +48,7 @@ export const baseRouter: RouteRecordRaw[] = [
         children: [
             {
                 path: '/archives',
-                name: 'Archives',
+                name: ROUTER_NAMES.ARCHIVES,
                 component: () => import('@/views/archive/Archive.vue'),
                 meta: {
                     title: '归档'
@@ -55,8 +56,13 @@ export const baseRouter: RouteRecordRaw[] = [
             },
             {
                 path: '/tag',
-                name: 'Tag',
-                component: () => import('@/views/byTag/ByTag.vue')
+                name: ROUTER_NAMES.TAG_DETAIL,
+                component: () => import('@/views/tagDetail/TagDetail.vue')
+            },
+            {
+                path: '/',
+                name: ROUTER_NAMES.CATEGORY_DETAIL,
+                component: () => import('@/views/categoryDetail/CategoryDetail.vue'),
             }
         ]
     },

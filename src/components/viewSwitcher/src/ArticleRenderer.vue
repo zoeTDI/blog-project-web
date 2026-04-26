@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import type {Article, MetaConfig} from "#/article.ts";
 import {useRouter} from "vue-router";
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 const router = useRouter();
 const props = defineProps<{
@@ -48,7 +49,7 @@ const activeMetaList = computed(() => {
 });
 
 const handleTagClick = (value) => {
-  router.push({name: 'Tag', query: {...value}});
+  router.push({name: ROUTER_NAMES.TAG_DETAIL, query: {...value}});
 }
 </script>
 
