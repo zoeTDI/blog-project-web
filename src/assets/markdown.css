@@ -2,6 +2,7 @@
 
 .markdown-body {
     color: var(--text);
+    font-family: var(--sans);
     line-height: 1.6;
 }
 
@@ -80,6 +81,10 @@
     color: var(--accent);
 }
 
+.markdown-body .custom-tabs input[type="radio"] {
+    display: none;
+}
+
 /* 选中状态适配 */
 .markdown-body .custom-tabs input[type="radio"]:checked + label {
     background: var(--bg);
@@ -100,4 +105,35 @@
 .markdown-body .custom-tabs input[id^="tabs-"][id$="-2"]:checked ~ .tab-content-wrapper .tab-panel:nth-child(3),
 .markdown-body .custom-tabs input[id^="tabs-"][id$="-3"]:checked ~ .tab-content-wrapper .tab-panel:nth-child(4) {
     display: block !important;
+}
+
+/* --- 粉色主题样式 (theme-pink) --- */
+.markdown-body.theme-pink h1,
+.markdown-body.theme-pink h2,
+.markdown-body.theme-pink h3 {
+    color: var(--md-pink-accent);
+    border-bottom: 2px dashed var(--md-pink-border);
+    font-family: var(--heading);
+}
+
+.markdown-body.theme-pink .custom-callout {
+    background: var(--md-pink-bg);
+    border-left: 4px solid var(--md-pink-accent);
+    color: var(--text-h);
+}
+
+.markdown-body.theme-pink .custom-tabs {
+    border: 1px solid var(--md-pink-border);
+}
+
+.markdown-body.theme-pink .custom-tabs label {
+    background: var(--md-pink-bg);
+    color: var(--text);
+}
+
+/* 选中标签时的粉色高亮 */
+.markdown-body.theme-pink .custom-tabs input[type="radio"]:checked + label {
+    background: var(--bg);
+    color: var(--md-pink-accent);
+    border-bottom: 2px solid var(--md-pink-accent);
 }

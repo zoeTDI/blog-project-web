@@ -33,6 +33,10 @@
 
   /*callout 颜色*/
   --callout-warning-bg: #FF7F50;
+  /* 粉色主题基础变量 (浅色) */
+  --md-pink-accent: #ff85a2;
+  --md-pink-bg: #fff0f3;
+  --md-pink-border: #ffc2d1;
 
   @media (max-width: 1024px) {
     font-size: 16px;
@@ -55,6 +59,10 @@
 
   /*callout 颜色*/
   --callout-warning-bg: #dd6236;
+  /* 粉色主题基础变量 (深色) */
+  --md-pink-accent: #ff4d6d;
+  --md-pink-bg: rgba(255, 77, 109, 0.1);
+  --md-pink-border: #800e13;
 }
 
 /* 基础重置 */
