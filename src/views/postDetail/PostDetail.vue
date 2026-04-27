@@ -56,7 +56,9 @@ onMounted(async () => {
         '::: details 标题 \n' +
         ' 内容 \n' +
         ':::\n' +
-        ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/2024-03-16%E5%82%8D%E6%99%9A%EF%BC%8C%E4%BD%A0%E5%92%8C%E5%A5%B9%E4%B8%80%E8%B5%B7%E9%80%83%E6%8E%89%E4%BA%86%E6%99%9A%E8%87%AA%E4%B9%A0%E6%9D%A5%E5%88%B0%E4%BA%86%E5%B2%B8%E8%BE%B9%E5%90%B9%E9%A3%8E.......jpg){width=80%}\n' +
+        ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/2024-03-16%E5%82%8D%E6%99%9A%EF%BC%8C%E4%BD%A0%E5%92%8C%E5%A5%B9%E4%B8%80%E8%B5%B7%E9%80%83%E6%8E%89%E4%BA%86%E6%99%9A%E8%87%AA%E4%B9%A0%E6%9D%A5%E5%88%B0%E4%BA%86%E5%B2%B8%E8%BE%B9%E5%90%B9%E9%A3%8E.......jpg){class=left width=60%}\n\n' +
+        ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/2024-03-16%E5%82%8D%E6%99%9A%EF%BC%8C%E4%BD%A0%E5%92%8C%E5%A5%B9%E4%B8%80%E8%B5%B7%E9%80%83%E6%8E%89%E4%BA%86%E6%99%9A%E8%87%AA%E4%B9%A0%E6%9D%A5%E5%88%B0%E4%BA%86%E5%B2%B8%E8%BE%B9%E5%90%B9%E9%A3%8E.......jpg){class=center width=60%}\n\n' +
+        ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/2024-03-16%E5%82%8D%E6%99%9A%EF%BC%8C%E4%BD%A0%E5%92%8C%E5%A5%B9%E4%B8%80%E8%B5%B7%E9%80%83%E6%8E%89%E4%BA%86%E6%99%9A%E8%87%AA%E4%B9%A0%E6%9D%A5%E5%88%B0%E4%BA%86%E5%B2%B8%E8%BE%B9%E5%90%B9%E9%A3%8E.......jpg){class=right width=60%}\n\n' +
         '::: tabs\n' +
         '@tab HTML\n' +
         '这是 HTML 的代码示例或说明\n' +
@@ -137,7 +139,7 @@ onMounted(async () => {
           </header>
 
           <article class="article-body">
-            <markdown-render :content="post.content"/>
+            <markdown-render :content="post.content" :caption-mode="'always'"/>
           </article>
 
           <footer class="article-footer">

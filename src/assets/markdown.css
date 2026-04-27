@@ -34,7 +34,44 @@
     border: 1px solid var(--border);
 }
 
-.markdown-body figure figcaption {
+/* 默认居中对齐 */
+.markdown-body figure {
+    margin: 1.5em auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 内部元素（图片和标题）居中 */
+    text-align: center;  /* 标题文本居中 */
+}
+
+/* 靠左对齐 */
+.markdown-body figure.left {
+    align-items: flex-start;
+    text-align: left;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+/* 靠右对齐 */
+.markdown-body figure.right {
+    align-items: flex-end;
+    text-align: right;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+/* 图片基础样式确保宽度响应 */
+.markdown-body figure img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/*默认情况下隐藏*/
+.markdown-body.caption-none figure figcaption {
+    display: none;
+}
+
+.markdown-body.caption-always figure figcaption {
     font-size: 14px;
     color: var(--text); /* 适配深浅模式文字 */
     margin-top: 8px;
