@@ -1,0 +1,103 @@
+/* markdown.css */
+
+.markdown-body {
+    color: var(--text);
+    line-height: 1.6;
+}
+
+/* 标题适配 */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border); /* 使用全局边框变量 */
+    color: var(--text-h); /* 使用全局标题颜色变量 */
+    font-family: var(--heading); /* 使用全局衬线字体 */
+}
+
+.markdown-body img {
+    max-width: 100%;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.markdown-body img.shadow {
+    box-shadow: var(--shadow); /* 使用全局阴影变量 */
+}
+
+.markdown-body img.border {
+    border: 1px solid var(--border);
+}
+
+.markdown-body figure figcaption {
+    font-size: 14px;
+    color: var(--text); /* 适配深浅模式文字 */
+    margin-top: 8px;
+    opacity: 0.8;
+}
+
+/* Callout 适配 */
+.markdown-body .custom-callout {
+    background: var(--social-bg); /* 使用半透明背景变量 */
+    border-left: 4px solid var(--accent); /* 使用主题强调色 */
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 16px 0;
+    color: var(--text-h);
+}
+
+.markdown-body .custom-callout summary {
+    font-weight: bold;
+    cursor: pointer;
+    list-style: none;
+}
+
+/* Tabs 适配 */
+.markdown-body .custom-tabs {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+    background: var(--bg);
+}
+
+.markdown-body .custom-tabs label {
+    display: inline-block;
+    padding: 10px 20px;
+    cursor: pointer;
+    background: var(--social-bg);
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+    color: var(--text);
+    transition: all 0.3s;
+}
+
+.markdown-body .custom-tabs label:hover {
+    color: var(--accent);
+}
+
+/* 选中状态适配 */
+.markdown-body .custom-tabs input[type="radio"]:checked + label {
+    background: var(--bg);
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+}
+
+.markdown-body .custom-tabs .tab-panel {
+    display: none;
+    padding: 20px;
+    background: var(--bg);
+    color: var(--text);
+    animation: fadeIn 0.3s;
+}
+
+.markdown-body .custom-tabs input[id^="tabs-"][id$="-0"]:checked ~ .tab-content-wrapper .tab-panel:nth-child(1),
+.markdown-body .custom-tabs input[id^="tabs-"][id$="-1"]:checked ~ .tab-content-wrapper .tab-panel:nth-child(2),
+.markdown-body .custom-tabs input[id^="tabs-"][id$="-2"]:checked ~ .tab-content-wrapper .tab-panel:nth-child(3),
+.markdown-body .custom-tabs input[id^="tabs-"][id$="-3"]:checked ~ .tab-content-wrapper .tab-panel:nth-child(4) {
+    display: block !important;
+}

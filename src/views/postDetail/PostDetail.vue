@@ -7,6 +7,7 @@ import {CaRow} from "@/components/ca/CaRow";
 import {CaCol} from "@/components/ca/caCol";
 import {ExclamationTriangleIcon, Squares2X2Icon, TagIcon} from '@heroicons/vue/24/outline'
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
+import {MarkdownRender} from "@/components/markdownRender";
 
 const route = useRoute();
 const loadingStore = useLoadingStore();
@@ -44,7 +45,28 @@ onMounted(async () => {
   const data = {
     id: route.query.id,
     title: '文章标题',
-    content: '文章内容',
+    content: '# 一级标题\n' +
+        '## 二级标题\n' +
+        '### 三级标题\n' +
+        '#### 四级标题\n' +
+        '##### 五级标题\n' +
+        '**加粗内容**\n' +
+        '*斜体内容*\n' +
+        '> 引用内容\n' +
+        '::: details 标题 \n' +
+        ' 内容 \n' +
+        ':::\n' +
+        ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/2024-03-16%E5%82%8D%E6%99%9A%EF%BC%8C%E4%BD%A0%E5%92%8C%E5%A5%B9%E4%B8%80%E8%B5%B7%E9%80%83%E6%8E%89%E4%BA%86%E6%99%9A%E8%87%AA%E4%B9%A0%E6%9D%A5%E5%88%B0%E4%BA%86%E5%B2%B8%E8%BE%B9%E5%90%B9%E9%A3%8E.......jpg){width=80%}\n' +
+        '::: tabs\n' +
+        '@tab HTML\n' +
+        '这是 HTML 的代码示例或说明\n' +
+        '\n' +
+        '@tab CSS\n' +
+        '这是CSS的样式定义\n' +
+        '\n' +
+        '@tab JavaScript\n' +
+        '这是JS的逻辑实现\n' +
+        ':::\n',
     views: 30,
     likes: 12,
     stars: 22,
@@ -115,7 +137,7 @@ onMounted(async () => {
           </header>
 
           <article class="article-body">
-            文章内容
+            <markdown-render :content="post.content"/>
           </article>
 
           <footer class="article-footer">
@@ -139,11 +161,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* 按照要求：使用 outline 显示结构框线 */
-* {
-  //outline: 1px solid #aaa;
-}
-
 .post-detail-container {
   max-width: var(--content-max-width);
   margin: 0 auto;

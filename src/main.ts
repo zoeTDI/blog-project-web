@@ -1,5 +1,6 @@
 import {createApp} from 'vue'
 import './style.css'
+import '@/assets/markdown.css'
 import App from './App.vue'
 import {setupStore} from "./plugins/pinia.ts";
 import {setupRouter} from "./plugins/vueRouter.ts";
