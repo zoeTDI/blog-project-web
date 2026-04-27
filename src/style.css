@@ -8,7 +8,7 @@
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-bg: rgba(164, 41, 255, 0.24);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
@@ -31,6 +31,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /*callout 颜色*/
+  --callout-warning-bg: #FF7F50;
+
   @media (max-width: 1024px) {
     font-size: 16px;
   }
@@ -45,10 +48,13 @@
   --border: #333235;
   --code-bg: #262522;
   --accent: #bd6dff;
-  --accent-bg: rgba(189, 109, 255, 0.1);
+  --accent-bg: rgba(171, 74, 255, 0.45);
   --accent-border: rgba(189, 109, 255, 0.5);
   --social-bg: rgba(38, 37, 34, 0.5);
   --shadow: rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+
+  /*callout 颜色*/
+  --callout-warning-bg: #dd6236;
 }
 
 /* 基础重置 */
