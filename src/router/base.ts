@@ -41,7 +41,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 }
             },
             {
-                path: '/postDetail',
+                path: '/postDetail/:id',
                 name: ROUTER_NAMES.POST_DETAIL,
                 component: () => import('@/views/postDetail/PostDetail.vue'),
             }

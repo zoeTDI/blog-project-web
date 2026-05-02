@@ -153,9 +153,9 @@ onMounted(async () => {
             <post-actions/>
             <post-actions :mode="'circle'"/>
             <div class="prev-next-nav">
-              <router-link :to="{name: ROUTER_NAMES.POST_DETAIL, query: {id: 3}}" class="prev">上一篇</router-link>
+              <router-link :to="{name: ROUTER_NAMES.POST_DETAIL, params: {id: 3}}" class="prev">上一篇</router-link>
               /
-              <router-link :to="{name: ROUTER_NAMES.POST_DETAIL, query: {id: 4}}" class="next">下一篇</router-link>
+              <router-link :to="{name: ROUTER_NAMES.POST_DETAIL, params: {id: 4}}" class="next">下一篇</router-link>
             </div>
             <div class="copyright-info">
               <div class="copyright-item">

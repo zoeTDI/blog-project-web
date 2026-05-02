@@ -53,7 +53,7 @@ const handleTagClick = (value) => {
 }
 const toPostDetail = () => {
   console.log(props.article)
-  router.push({name: ROUTER_NAMES.POST_DETAIL, query: {id: props.article.id}});
+  router.push({name: ROUTER_NAMES.POST_DETAIL, params: {id: props.article.id}});
 }
 </script>
 
