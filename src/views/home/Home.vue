@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {onMounted} from "vue";
 import {useLoadingStore} from "@/store/useLoadingStore.ts";
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 const loadingStore = useLoadingStore();
 onMounted(() => {
@@ -27,10 +28,15 @@ onMounted(() => {
           <span class="tag">COLLECTION</span>
         </div>
         <div class="item-body">
-          <h2><router-link :to="{name: 'Notes'}">NOTES</router-link></h2>
-          <p>心得 / 经验 /
-            <router-link :to="{name: 'Archives'}">归档</router-link>
-          </p>
+          <div class="main-links">
+            <router-link :to="{name: ROUTER_NAMES.NOTES}" class="nav-title">
+              <h2>NOTES <span class="arrow">↗</span></h2>
+            </router-link>
+            <router-link :to="{name: ROUTER_NAMES.ARCHIVES}" class="nav-title">
+              <h2>ARCHIVES <span class="arrow">↗</span></h2>
+            </router-link>
+          </div>
+          <p>文章列表 / 技术心得 / 经验归档</p>
         </div>
       </div>
 
@@ -40,7 +46,11 @@ onMounted(() => {
           <span class="tag">LIFE</span>
         </div>
         <div class="item-body">
-          <h2>SOCIAL</h2>
+          <div class="main-links">
+            <router-link :to="{name: ROUTER_NAMES.HOME}">
+              <h2>SOCIAL<span class="arrow">↗</span></h2>
+            </router-link>
+          </div>
           <p>行程 / 旅行 / 兴趣</p>
         </div>
       </div>
@@ -51,7 +61,9 @@ onMounted(() => {
           <span class="tag">DEMO</span>
         </div>
         <div class="item-body">
-          <h2>TECH</h2>
+          <router-link :to="{name: ROUTER_NAMES.HOME}">
+            <h2>TECH<span class="arrow">↗</span></h2>
+          </router-link>
           <p>Speed / Animation / Stack</p>
         </div>
       </div>
@@ -119,15 +131,6 @@ onMounted(() => {
   cursor: pointer;
 }
 
-/* 悬停效果：使用全局 accent 强调色 */
-.grid-item:hover {
-  background-color: var(--accent-bg);
-}
-
-.grid-item:hover h2 {
-  color: var(--accent);
-}
-
 .item-header {
   display: flex;
   justify-content: space-between;
@@ -147,6 +150,46 @@ onMounted(() => {
   padding: 2px 8px;
   border: 1px solid var(--border);
   border-radius: 4px;
+}
+
+.main-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.nav-title {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.nav-title h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 悬停效果：使用全局 accent 强调色 */
+.grid-item a:hover {
+  background-color: var(--accent-bg);
+}
+
+.grid-item a:hover {
+  color: var(--accent);
+}
+
+.arrow {
+  font-size: 18px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  transform: translateY(4px);
+}
+
+.nav-title:hover .arrow {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .item-body h2 {
