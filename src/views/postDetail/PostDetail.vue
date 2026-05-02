@@ -9,6 +9,7 @@ import {ExclamationTriangleIcon, Squares2X2Icon, TagIcon} from '@heroicons/vue/2
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
 import {MarkdownRender} from "@/components/markdownRender";
 import {PostActions} from "@/components/postActions";
+const blogName = import.meta.env.VITE_SITE_TITLE;
 
 const route = useRoute();
 const loadingStore = useLoadingStore();
@@ -38,6 +39,9 @@ const displaySuppleInfo = (): boolean => {
   const now = new Date();
   return now.getTime() - lastUpdate.getTime() > 2592000000; // 30*24*60*60*1000 30天未更新
 }
+
+// 版权说明文件
+const currentUrl = ref(window.location.href);
 
 // 模拟获取数据
 onMounted(async () => {
@@ -145,11 +149,31 @@ onMounted(async () => {
           </article>
 
           <footer class="article-footer">
-            <div class="tags-area">文章标签</div>
-<!--            <div class="interaction-area">点赞、收藏、分享按钮</div>-->
-            <post-actions />
-            <post-actions :mode="'circle'" />
-            <div class="prev-next-nav">上一篇 / 下一篇</div>
+            <post-actions/>
+            <post-actions :mode="'circle'"/>
+            <div class="prev-next-nav">
+              <router-link :to="{name: ROUTER_NAMES.POST_DETAIL, query: {id: 3}}" class="prev">上一篇</router-link>
+              /
+              <router-link :to="{name: ROUTER_NAMES.POST_DETAIL, query: {id: 4}}" class="next">下一篇</router-link>
+            </div>
+            <div class="copyright-info">
+              <div class="copyright-item">
+                <span class="label">文章作者：</span>
+                <span class="value">Gemini</span> <!-- 建议后续改为动态变量 -->
+              </div>
+              <div class="copyright-item">
+                <span class="label">文章链接：</span>
+                <a :href="currentUrl" class="value link">{{ currentUrl }}</a>
+              </div>
+              <div class="copyright-item">
+                <span class="label">版权声明：</span>
+                <span class="value">
+                  本博客所有文章除特别声明外，均采用
+                  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" target="_blank" class="link">CC BY-NC-ND 4.0</a>
+                  许可协议。转载请注明来自 <router-link to="/" class="link">{{blogName}}</router-link>！
+                </span>
+              </div>
+            </div>
           </footer>
         </div>
       </ca-col>
@@ -273,6 +297,57 @@ onMounted(async () => {
 .article-body {
   min-height: 600px; /* 模拟内容高度 */
   padding: 20px 0;
+}
+
+.prev-next-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.prev-next-nav a {
+  transition: all .3s ease;
+}
+
+.prev-next-nav a:hover {
+  color: var(--accent);
+}
+
+.copyright-info {
+  margin-top: 32px;
+  padding: 16px 20px;
+  border-left: 5px solid var(--accent);
+  background-color: var(--social-bg);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.8;
+}
+
+.copyright-item {
+  margin-bottom: 4px;
+}
+
+.copyright-item:last-child {
+  margin-bottom: 0;
+}
+
+.copyright-item .label {
+  font-weight: bold;
+  color: var(--text-h);
+}
+
+.copyright-item .link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+  word-break: break-all;
+}
+
+.copyright-item .link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 
 .sidebar > div {
