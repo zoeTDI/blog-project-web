@@ -42,6 +42,37 @@ const displaySuppleInfo = (): boolean => {
 
 // 版权说明文件
 const currentUrl = ref('');
+const authorName = ref("Caldm"); // 建议后续从文章数据中动态获取
+
+/**
+ * 拦截复制事件并追加版权信息
+ */
+const handleCopy = (event: ClipboardEvent) => {
+  // 1. 获取用户实际选中的文本
+  const selection = window.getSelection();
+  const selectedText = selection.toString();
+
+  // 2. 构建版权声明文本
+  const copyrightNotice =
+      `
+------------------------------------------------
+作者：${authorName.value}
+链接：${currentUrl.value}
+来源：MyBlog
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+------------------------------------------------
+`;
+
+  // 3. 将原文与版权信息拼接
+  const clipboardData = selectedText + copyrightNotice;
+
+  // 4. 写入剪贴板
+  if (event.clipboardData) {
+    event.clipboardData.setData('text/plain', clipboardData);
+    // 阻止默认的复制行为，使用我们自定义的内容
+    event.preventDefault();
+  }
+};
 
 // 模拟获取数据
 onMounted(async () => {
@@ -73,7 +104,10 @@ onMounted(async () => {
         '\n' +
         '@tab JavaScript\n' +
         '这是JS的逻辑实现\n' +
-        ':::\n',
+        ':::\n' +
+        '```Js\n' +
+        'console.log("<>Hello World")\n' +
+        '\n',
     views: 30,
     likes: 12,
     stars: 22,
@@ -144,7 +178,7 @@ onMounted(async () => {
             </ca-row>
           </header>
 
-          <article class="article-body">
+          <article class="article-body" @copy="handleCopy">
             <markdown-render :content="post.content" :caption-mode="'always'"/>
             <markdown-render :content="post.content" :caption-mode="'always'" theme="pink"/>
           </article>
