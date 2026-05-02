@@ -135,22 +135,22 @@ onMounted(async () => {
               <ca-col class="meta-categories">
                 <squares2-x2-icon class="icon"/>
                 分类：
-                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, query: {id: 124, name: '技术/框架/Vue'}}"
+                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, params: {id: 124, name: '技术/框架/Vue'}}"
                              class="category">技术/框架/Vue
                 </router-link>
-                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, query: {id: 123, name: '学习/编程'}}"
+                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, params: {id: 123, name: '学习/编程'}}"
                              class="category">学习/编程
                 </router-link>
               </ca-col>
               <ca-col class="meta-tags">
                 <tag-icon class="icon"/>
                 标签：
-                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, query: {id: 123, name: '前端'}}" class="tag">#前端
+                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, params: {id: 123, name: '前端'}}" class="tag">#前端
                 </router-link>
-                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, query: {id: 124, name: '设计模式'}}" class="tag">
+                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, params: {id: 124, name: '设计模式'}}" class="tag">
                   #设计模式
                 </router-link>
-                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, query: {id: 125, name: 'Vue3'}}" class="tag">#Vue3
+                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, params: {id: 125, name: 'Vue3'}}" class="tag">#Vue3
                 </router-link>
               </ca-col>
               <ca-col :span="18">

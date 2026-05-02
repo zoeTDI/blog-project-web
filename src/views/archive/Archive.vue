@@ -97,7 +97,7 @@ const height = 280;
 const loadingStore = useLoadingStore();
 const router = useRouter();
 const handleTagClick = (value) => {
-  router.push({name: ROUTER_NAMES.TAG_DETAIL, query: {...value}})
+  router.push({name: ROUTER_NAMES.TAG_DETAIL, params: {...value}})
 }
 
 onMounted(() => {
@@ -125,7 +125,7 @@ onMounted(() => {
           <div class="category-scroll-container" :style="{height: `${height}px`}">
             <ca-list mode="plain">
               <ca-list-item v-for="cat in categories" :key="cat.name">
-                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, query: {...cat}}"><span class="cat-name">{{ cat.name }}</span></router-link>
+                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, params: {...cat}}"><span class="cat-name">{{ cat.name }}</span></router-link>
                 <template #suffix>
                   <span class="cat-count">{{ cat.count }}</span>
                 </template>

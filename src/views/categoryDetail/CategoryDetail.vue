@@ -127,7 +127,7 @@ onMounted(async () => {
                 <span class="other-categories__item"
                       v-for="cat in categoryList.filter((cat) => cat?.id != route.query?.id)"
                       :key="cat.id">
-                  <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, query: {...cat}}">{{ cat?.name }}</router-link>
+                  <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, params: {...cat}}">{{ cat?.name }}</router-link>
                 </span>
               </div>
             </ca-section>

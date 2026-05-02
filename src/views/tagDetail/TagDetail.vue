@@ -131,7 +131,7 @@ onMounted(async () => {
               <div class="other-tags">
                 <span class="other-tags__item" v-for="item in tagList.filter((tag) => tag?.id != route.query?.id)"
                       :key="item.id">
-                  <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, query: {...item}}">
+                  <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, params: {...item}}">
                   #{{ item?.name || '' }}
                   </router-link>
                 </span>

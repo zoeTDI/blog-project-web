@@ -49,7 +49,7 @@ const activeMetaList = computed(() => {
 });
 
 const handleTagClick = (value) => {
-  router.push({name: ROUTER_NAMES.TAG_DETAIL, query: {...value}});
+  router.push({name: ROUTER_NAMES.TAG_DETAIL, params: {...value}});
 }
 const toPostDetail = () => {
   console.log(props.article)
