@@ -6,4 +6,5 @@ export const ROUTER_NAMES = {
     TAG_DETAIL: 'TagDetail',
     CATEGORY_DETAIL: 'CategoryDetail',
     NOT_FOUND: 'NotFound',
+    GAMES: 'Games',
 }

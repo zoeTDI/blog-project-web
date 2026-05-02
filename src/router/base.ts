@@ -16,10 +16,11 @@ import {ROUTER_NAMES} from "@/router/routerNames.ts";
 export const baseRouter: RouteRecordRaw[] = [
     {
         path: '/',
-        component: () => import('@/layouts/DefaultLayout.vue'), // 父组件是布局
+        component: () => import('@/layouts/DefaultLayout.vue'),
+        redirect: '/home',
         children: [
             {
-                path: '', // 默认访问 / 时显示 Dashboard
+                path: '/home', // 默认访问 / 时显示 Dashboard
                 name: ROUTER_NAMES.HOME,
                 component: () => import('@/views/home/Home.vue'),
                 meta: {
@@ -28,6 +29,7 @@ export const baseRouter: RouteRecordRaw[] = [
             }
         ]
     },
+    // 文章页面
     {
         path: '/',
         component: () => import('@/layouts/DefaultLayout.vue'),
@@ -47,6 +49,7 @@ export const baseRouter: RouteRecordRaw[] = [
             }
         ]
     },
+    // 归档页面
     {
         path: '/',
         component: () => import('@/layouts/DefaultLayout.vue'),
@@ -71,6 +74,22 @@ export const baseRouter: RouteRecordRaw[] = [
             }
         ]
     },
+    // 游戏&动漫&兴趣页面
+    {
+        path: '/',
+        component: () => import('@/layouts/DefaultLayout.vue'), // 父组件是布局
+        children: [
+            {
+                path: '/games', // 默认访问 / 时显示 Dashboard
+                name: ROUTER_NAMES.GAMES,
+                component: () => import('@/views/games/Games.vue'),
+                meta: {
+                    title: '游戏'
+                }
+            }
+        ]
+    },
+    // 特殊页面
     {
         path: '/',
         component: () => import('@/layouts/DefaultLayout.vue'),
