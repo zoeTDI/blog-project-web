@@ -8,6 +8,7 @@ import {CaCol} from "@/components/ca/caCol";
 import {ExclamationTriangleIcon, Squares2X2Icon, TagIcon} from '@heroicons/vue/24/outline'
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
 import {MarkdownRender} from "@/components/markdownRender";
+import {PostActions} from "@/components/postActions";
 
 const route = useRoute();
 const loadingStore = useLoadingStore();
@@ -145,7 +146,9 @@ onMounted(async () => {
 
           <footer class="article-footer">
             <div class="tags-area">文章标签</div>
-            <div class="interaction-area">点赞、收藏、分享按钮</div>
+<!--            <div class="interaction-area">点赞、收藏、分享按钮</div>-->
+            <post-actions />
+            <post-actions :mode="'circle'" />
             <div class="prev-next-nav">上一篇 / 下一篇</div>
           </footer>
         </div>
