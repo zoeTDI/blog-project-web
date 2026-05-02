@@ -26,18 +26,32 @@ const containerClasses = computed(() => {
 })
 
 /**
+ * 处理图片加载失败
+ */
+const handleContentError = (event: Event) => {
+  const target = event.target as HTMLImageElement;
+  if (target.tagName === 'IMG') {
+    // 打上错误标记类名
+    target.classList.add('img-error');
+  }
+}
+
+/**
  * 处理图片点击事件 (事件代理)
  */
 const handleContentClick = (event: MouseEvent) => {
   const target = event.target as HTMLElement;
 
-  // 检查点击的是否是图片
   if (target.tagName === 'IMG') {
-    const imgSrc = (target as HTMLImageElement).src;
-    const imgAlt = (target as HTMLImageElement).alt;
+    const img = target as HTMLImageElement;
 
-    // 触发全屏逻辑
-    openFullScreen(imgSrc, imgAlt);
+    // 关键：如果图片包含错误类名，直接拦截，不执行 openFullScreen
+    if (img.classList.contains('img-error')) {
+      console.log("图片加载失败，禁用点击预览");
+      return;
+    }
+
+    openFullScreen(img.src, img.alt);
   }
 }
 
@@ -56,6 +70,7 @@ const openFullScreen = (src: string, alt: string) => {
       :class="containerClasses"
       v-html="renderedHtml"
       @click="handleContentClick"
+      @error.capture="handleContentError"
   ></div>
 </template>
 
