@@ -41,7 +41,7 @@ const displaySuppleInfo = (): boolean => {
 }
 
 // 版权说明文件
-const currentUrl = ref(window.location.href);
+const currentUrl = ref('');
 
 // 模拟获取数据
 onMounted(async () => {
@@ -83,6 +83,7 @@ onMounted(async () => {
   };
   post.value = await mockApiFetch(data, 500);
   handleMetaOptions();
+  currentUrl.value = window.location.href;
   loadingStore.endLoading();
 });
 </script>
