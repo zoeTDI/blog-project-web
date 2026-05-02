@@ -37,31 +37,37 @@ const handleContentError = (event: Event) => {
 }
 
 /**
- * 处理图片点击事件 (事件代理)
+ * 统一处理点击事件（事件代理）
  */
 const handleContentClick = (event: MouseEvent) => {
   const target = event.target as HTMLElement;
 
+  // 1. 处理代码块复制逻辑
+  if (target.classList.contains('code-lang-tag')) {
+    const container = target.closest('.code-block-container');
+    const codeText = container?.querySelector('.copy-temp')?.textContent;
+
+    if (codeText) {
+      navigator.clipboard.writeText(codeText).then(() => {
+        const originalText = target.innerText;
+        target.innerText = 'COPIED!';
+        target.classList.add('copied');
+
+        setTimeout(() => {
+          target.innerText = originalText;
+          target.classList.remove('copied');
+        }, 2000);
+      });
+    }
+    return; // 处理完复制后返回，避免触发后续图片逻辑
+  }
+
+  // 2. 处理图片点击预览逻辑[cite: 13]
   if (target.tagName === 'IMG') {
     const img = target as HTMLImageElement;
-
-    // 关键：如果图片包含错误类名，直接拦截，不执行 openFullScreen
-    if (img.classList.contains('img-error')) {
-      console.log("图片加载失败，禁用点击预览");
-      return;
-    }
-
-    openFullScreen(img.src, img.alt);
+    if (img.classList.contains('img-error')) return;
+    window.open(img.src, '_blank');
   }
-}
-
-const openFullScreen = (src: string, alt: string) => {
-  // 这里你可以：
-  // 1. 发射一个事件给父组件（由父组件的全局 Modal 渲染）
-  // 2. 或者使用现成的图片预览插件（如 v-viewer, vue-easy-lightbox）
-  // 3. 这里展示一个最简单的原生逻辑：
-  console.log("正在查看全屏图片:", src, alt);
-  window.open(src, '_blank'); // 临时方案：在新标签页打开
 }
 </script>
 

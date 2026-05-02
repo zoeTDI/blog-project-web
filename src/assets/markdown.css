@@ -6,6 +6,62 @@
     line-height: 1.6;
 }
 
+/* --- 代码块容器基础样式 --- */
+.markdown-body .code-block-container {
+    position: relative;
+    margin: 1.5rem 0;
+    /*border-radius: 8px;*/
+    background: #282c34; /* 匹配 atom-one-dark 背景色 */
+    overflow: hidden;
+}
+
+/* 顶部 header 区域 */
+.markdown-body .code-block-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+}
+
+/* 语言/复制标签 */
+.markdown-body .code-lang-tag {
+    display: block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-family: var(--mono);
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    border-bottom-left-radius: 8px;
+    transition: all 0.2s ease;
+    user-select: none;
+    text-transform: uppercase;
+}
+
+.markdown-body .code-lang-tag:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* 复制成功的状态 */
+.markdown-body .code-lang-tag.copied {
+    color: #fff;
+    background: #4caf50; /* 成功绿 */
+}
+
+/* 调整代码块内部间距，防止内容被标签遮挡 */
+.markdown-body .code-block-container pre {
+    margin: 0 !important;
+    padding: 1.5rem 1rem 1rem !important;
+    background: transparent !important;
+}
+
+/* --- 粉色主题适配 --- */
+.markdown-body.theme-pink .code-lang-tag:hover {
+    background: var(--md-pink-accent);
+}
+
 /* 默认图片鼠标样式 */
 .markdown-body img {
     cursor: zoom-in;
@@ -60,7 +116,7 @@
 
 .markdown-body img {
     max-width: 100%;
-    border-radius: 8px;
+    /*border-radius: 8px;*/
     transition: transform 0.3s ease;
 }
 
@@ -121,7 +177,7 @@
     background: var(--social-bg); /* 使用半透明背景变量 */
     border-left: 4px solid var(--accent); /* 使用主题强调色 */
     padding: 12px 16px;
-    border-radius: 0 6px 6px 0;
+    /*border-radius: 0 6px 6px 0;*/
     margin: 16px 0;
     color: var(--text-h);
 }
@@ -135,7 +191,7 @@
 /* Tabs 适配 */
 .markdown-body .custom-tabs {
     border: 1px solid var(--border);
-    border-radius: 8px;
+    /*border-radius: 8px;*/
     overflow: hidden;
     margin: 1rem 0;
     background: var(--bg);
