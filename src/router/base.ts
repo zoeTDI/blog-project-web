@@ -37,7 +37,7 @@ export const baseRouter: RouteRecordRaw[] = [
             {
                 path: '/notes',
                 name: ROUTER_NAMES.NOTES,
-                component: () => import('@/views/notes/List.vue'),
+                component: () => import('@/views/notes/Notes.vue'),
                 meta: {
                     title: '博客文章'
                 }

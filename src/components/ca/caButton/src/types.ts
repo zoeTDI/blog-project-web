@@ -24,9 +24,8 @@ export interface ButtonProps {
 
     // 特殊的 Hover 动效逻辑
     // 'none': 默认效果
-    // 'expand': 宽度向两侧扩张（对应你 List.vue 的加载更多按钮）
-    // 'glitch': 轻微的文字跳动效果（符合 Mono 风格）
-    hoverEffect?: 'none' | 'expand' | 'glitch';
+    // 'expand': 宽度向两侧扩张
+    hoverEffect?: 'none' | 'expand';
 
     // 是否为块级元素（占据 100% 宽度）
     block?: boolean;

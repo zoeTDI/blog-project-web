@@ -114,7 +114,6 @@ const buttonClasses = computed(() => [
   padding-right: 4px;
 }
 
-/* --- 悬停动效：宽度扩张 (List.vue 专用) --- */
 .hover-expand:hover:not(:disabled) {
   padding-left: 60px;
   padding-right: 60px;
