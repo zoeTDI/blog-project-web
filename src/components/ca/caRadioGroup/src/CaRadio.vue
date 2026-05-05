@@ -51,7 +51,7 @@ const handleClick = () => {
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
-  font-family: var(--mono);
+  font-family: var(--font-text);
 }
 
 /* ==========================================================================
@@ -70,19 +70,19 @@ const handleClick = () => {
   /* 解决椭圆问题 3: 确定具体像素，不使用百分比或 1em */
   width: 14px;
   height: 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 50%; /* 完美圆形 */
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  background-color: var(--bg);
+  background-color: var(--color-container-bg);
 }
 
 .indicator-dot {
   width: 6px;
   height: 6px;
-  background-color: var(--accent);
+  background-color: var(--color-bg-accent);
   border-radius: 50%;
   transform: scale(0);
   transition: transform 0.2s ease;
@@ -108,7 +108,7 @@ const handleClick = () => {
 
 .ca-radio__label {
   letter-spacing: 0.5px;
-  color: var(--text);
+  color: var(--color-text-primary);
 }
 
 /* ==========================================================================
@@ -129,7 +129,7 @@ const handleClick = () => {
 .is-active.mode-list .ca-radio__indicator,
 .is-active.mode-flow .ca-radio__indicator,
 .is-active.mode-grid .ca-radio__indicator {
-  border-color: var(--accent);
+  border-color: var(--color-border-accent);
 }
 
 .is-active.mode-list .indicator-dot,
@@ -141,7 +141,7 @@ const handleClick = () => {
 .is-active.mode-list .ca-radio__label,
 .is-active.mode-flow .ca-radio__label,
 .is-active.mode-grid .ca-radio__label {
-  color: var(--accent);
+  color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -149,7 +149,7 @@ const handleClick = () => {
 .is-active .ca-radio__label,
 .is-active .ca-radio__icon {
   /* 当父级处于 is-active 时，文字和图标都变为主题色 */
-  color: var(--accent) !important;
+  color: var(--color-accent) !important;
   opacity: 1; /* 选中时取消透明度 */
 }
 
@@ -158,8 +158,8 @@ const handleClick = () => {
    ========================================================================== */
 .mode-button-group {
   justify-content: center;
-  background-color: var(--bg);
-  color: var(--text);
+  background-color: var(--color-container-bg);
+  color: var(--color-text-primary);
   opacity: 0.6;
   flex: 1;
 }
@@ -171,8 +171,8 @@ const handleClick = () => {
 
 /* 激活还原 */
 .mode-button-group.is-active {
-  background-color: var(--accent-bg);
-  color: var(--accent);
+  background-color: var(--color-bg-hover-accent);
+  color: var(--color-accent);
   opacity: 1;
 }
 

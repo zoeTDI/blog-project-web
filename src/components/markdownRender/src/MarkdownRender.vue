@@ -83,7 +83,7 @@ const handleContentClick = (event: MouseEvent) => {
 <style>
 .markdown-body {
   width: 100%;
-  font-family: var(--sans);
+  font-family: var(--font-text);
   word-wrap: break-word;
 }
 

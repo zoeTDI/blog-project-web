@@ -70,8 +70,8 @@ const handleClear = () => {
   height: 40px;
   flex-shrink: 0;
   --search-height: 38px;
-  --search-bg: var(--social-bg);
-  --search-border: var(--border);
+  --search-bg: var(--color-bg);
+  --search-border: var(--color-border);
 }
 
 /* 2. 主体盒子：设置背景和边框线 */
@@ -97,15 +97,15 @@ const handleClear = () => {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--text);
+  color: var(--color-text-primary);
   border-radius: 50%;
   transition: all 0.2s;
   flex-shrink: 0;
 }
 
 .action-btn:hover {
-  color: var(--accent);
-  background: var(--accent-bg);
+  color: var(--color-text-hover-accent);
+  background: var(--color-bg-hover-accent);
 }
 
 .icon-svg {
@@ -129,9 +129,9 @@ const handleClear = () => {
   outline: none;
   height: 100%;
   width: 208px; /* 默认宽度 */
-  font-family: var(--sans);
+  font-family: var(--font-text);
   font-size: 14px;
-  color: var(--text-h);
+  color: var(--color-text-h);
 }
 
 /* ---------------- 模式差异处理 ---------------- */
@@ -139,7 +139,7 @@ const handleClear = () => {
 /* 模式一：Static - 搜索框常驻 */
 .static .search-box {
   width: 240px; /* 固定总宽 */
-  background: var(--bg); /* 静态时通常希望背景更明显 */
+  background: var(--color-container-bg); /* 静态时通常希望背景更明显 */
 }
 
 .static .trigger {
@@ -154,8 +154,8 @@ const handleClear = () => {
 
 .expand.is-expanded .search-box {
   width: 260px; /* 展开后的总宽 */
-  background: var(--bg);
-  border-color: var(--border);
+  background: var(--color-container-bg);
+  border-color: var(--color-border);
 }
 
 /* ---------------- 动画效果 ---------------- */
@@ -172,7 +172,7 @@ const handleClear = () => {
 
 /* 当搜索框聚焦时增强边框色 */
 .search-box:focus-within {
-  border-color: var(--accent);
-  background: var(--bg);
+  border-color: var(--color-border-hover-accent);
+  background: var(--color-container-bg);
 }
 </style>

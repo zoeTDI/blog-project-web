@@ -36,8 +36,8 @@ const { isVisible, progress } = storeToRefs(store);
 
 .loading-progress {
   height: 100%;
-  background-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
+  background-color: var(--color-bg-accent);
+  box-shadow: 0 0 8px var(--color-bg-accent);
   width: 0; /* 初始宽度 */
   will-change: width;
 }

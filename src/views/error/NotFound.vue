@@ -35,9 +35,9 @@ onMounted(() => {
 
 <style scoped>
 .not-found {
-  width: var(--content-max-width);
+  width: var(--content-max-width-M);
   margin: auto;
-  padding: var(--content-padding);
+  padding: var(--content-padding-M);
 }
 
 .not-found-wrapper {
@@ -52,8 +52,8 @@ onMounted(() => {
   position: relative;
   line-height: 1;
   font-size: 270px;
-  font-family: var(--mono);
-  color: var(--text-h);
+  font-family: var(--font-text);
+  color: var(--color-text-h);
   z-index: 100;
   user-select: none;
   -moz-user-select: none;
@@ -71,7 +71,7 @@ onMounted(() => {
   border-radius: 10px;
   z-index: -1;
   transform: translate(-50%, -40%);
-  background-color: var(--accent);
+  background-color: var(--color-bg-accent);
   opacity: 0.4;
 }
 
@@ -83,8 +83,8 @@ onMounted(() => {
   line-height: 2;
   text-align: center;
   font-size: 32px;
-  font-family: var(--sans);
-  color: var(--text-h);
+  font-family: var(--font-text);
+  color: var(--color-text-h);
 }
 
 .description p:nth-child(2) {

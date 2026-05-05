@@ -146,9 +146,9 @@ onMounted(async () => {
 
 <style scoped>
 .tag-detail {
-  width: var(--content-max-width);
+  width: var(--content-max-width-M);
   margin: 0 auto;
-  padding: var(--content-padding);
+  padding: var(--content-padding-M);
 }
 
 .back-to-archives {
@@ -164,15 +164,15 @@ onMounted(async () => {
 
 .post-date {
   font-size: 0.85em;
-  font-family: var(--mono);
-  color: var(--text);
+  font-family: var(--font-text);
+  color: var(--color-text-primary);
   margin-right: 16px;
   opacity: 0.7;
 }
 
 .post-title {
   font-weight: 500;
-  color: var(--text-h);
+  color: var(--color-text-h);
 }
 
 .post-tags {
@@ -187,12 +187,12 @@ onMounted(async () => {
 }
 
 .post-tag:hover {
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
 }
 
 .current-tag {
   font-size: 1.4em;
-  background-color: var(--bg-gray);
+  background-color: var(--color-bg);
   padding: 4px 8px;
   border-radius: 4px;
 }
@@ -213,6 +213,6 @@ onMounted(async () => {
 }
 
 .other-tags__item:hover {
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
 }
 </style>

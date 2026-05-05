@@ -88,15 +88,15 @@ const toPostDetail = () => {
 
 <style scoped>
 .article-renderer-item {
-  background-color: var(--bg);
-  border: 1px solid var(--border);
+  background-color: var(--color-container-bg);
+  border: 1px solid var(--color-border);
   display: flex;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
 .article-renderer-item:hover {
-  border-color: var(--accent);
+  border-color: var(--color-border-hover-accent);
   transform: translateY(-2px);
 }
 
@@ -113,8 +113,8 @@ const toPostDetail = () => {
 
 /* 标题与摘要 */
 .article-title {
-  font-family: var(--heading);
-  color: var(--text-h);
+  font-family: var(--font-h);
+  color: var(--color-text-h);
   font-size: 1.25rem;
   margin-bottom: 12px;
   line-height: 1.4;
@@ -122,7 +122,7 @@ const toPostDetail = () => {
 
 .article-summary {
   font-size: 14px;
-  color: var(--text);
+  color: var(--color-text-primary);
   opacity: 0.7;
   line-height: 1.6;
   display: -webkit-box;
@@ -146,7 +146,7 @@ const toPostDetail = () => {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  font-family: var(--mono);
+  font-family: var(--font-text);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -174,14 +174,14 @@ const toPostDetail = () => {
 
 .tag-item {
   font-size: 11px;
-  color: var(--accent);
+  color: var(--color-accent);
   cursor: pointer;
   transition: all .3s ease;
   padding: 2px 4px;
 }
 
 .tag-item:hover {
-  background-color: var(--bg-gray);
+  background-color: var(--color-bg-hover);
 }
 
 /* --- 模式特定样式 --- */

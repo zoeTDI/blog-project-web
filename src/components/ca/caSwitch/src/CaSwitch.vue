@@ -58,7 +58,7 @@ const toggle = () => {
 .ca-switch {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -67,7 +67,7 @@ const toggle = () => {
 }
 
 .ca-switch:hover {
-  border-color: var(--accent);
+  border-color: var(--color-border-hover-accent);
 }
 
 /* --- 尺寸控制逻辑 --- */
@@ -94,7 +94,7 @@ const toggle = () => {
 
 /* --- 基础文本样式 --- */
 .ca-switch__text {
-  font-family: var(--mono);
+  font-family: var(--font-text);
   letter-spacing: 1px;
   display: flex;
   gap: 4px;
@@ -105,12 +105,12 @@ const toggle = () => {
 }
 
 .ca-switch__label {
-  color: var(--accent);
+  color: var(--color-accent);
   font-weight: 600;
 }
 
 .ca-icon {
-  color: var(--accent);
+  color: var(--color-accent);
   display: block;
 }
 </style>

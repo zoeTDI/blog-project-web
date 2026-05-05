@@ -1,8 +1,26 @@
 /* markdown.css */
+:root {
+    /* 粉色主题基础变量 (浅色) */
+    --md-pink-accent: #ff85a2;
+    --md-pink-bg: #fff0f3;
+    --md-pink-border: #ffc2d1;
+}
+
+.dark {
+    /* 粉色主题基础变量 (深色) */
+    --md-pink-accent: #ff4d6d;
+    --md-pink-bg: rgba(255, 77, 109, 0.1);
+    --md-pink-border: #800e13;
+}
 
 .markdown-body {
+    --text: var(--color-text-primary);
+    --text-h: var(--color-text-h);
+    --bg: var(--color-container-bg);
+    --border: var(--color-border);
+    --accent: var(--color-text-hover-accent);
     color: var(--text);
-    font-family: var(--sans);
+    font-family: var(--font-text);
     line-height: 1.6;
 }
 
@@ -28,7 +46,7 @@
     display: block;
     padding: 4px 12px;
     font-size: 12px;
-    font-family: var(--mono);
+    font-family: var(--font-text);
     font-weight: bold;
     color: rgba(255, 255, 255, 0.7);
     background: rgba(255, 255, 255, 0.1);
@@ -40,7 +58,7 @@
 }
 
 .markdown-body .code-lang-tag:hover {
-    background: var(--accent);
+    background: var(--color-bg-hover-accent);
     color: #fff;
 }
 
@@ -72,7 +90,7 @@
     position: relative;
     display: block;
     min-height: 250px;
-    background-color: var(--social-bg);
+    background-color: var(--color-bg);
     cursor: default !important;
     pointer-events: none;
 }
@@ -87,7 +105,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--social-bg);
+    background-color: var(--color-bg);
     color: var(--text);
     border: 1px dashed var(--border);
     font-size: 14px;
@@ -111,17 +129,13 @@
     padding-bottom: 0.3em;
     border-bottom: 1px solid var(--border); /* 使用全局边框变量 */
     color: var(--text-h); /* 使用全局标题颜色变量 */
-    font-family: var(--heading); /* 使用全局衬线字体 */
+    font-family: var(--font-h); /* 使用全局衬线字体 */
 }
 
 .markdown-body img {
     max-width: 100%;
     /*border-radius: 8px;*/
     transition: transform 0.3s ease;
-}
-
-.markdown-body img.shadow {
-    box-shadow: var(--shadow); /* 使用全局阴影变量 */
 }
 
 .markdown-body img.border {
@@ -174,8 +188,8 @@
 
 /* Callout 适配 */
 .markdown-body .custom-callout {
-    background: var(--social-bg); /* 使用半透明背景变量 */
-    border-left: 4px solid var(--accent); /* 使用主题强调色 */
+    background: var(--color-bg); /* 使用半透明背景变量 */
+    border-left: 4px solid var(--color-border-accent); /* 使用主题强调色 */
     padding: 12px 16px;
     /*border-radius: 0 6px 6px 0;*/
     margin: 16px 0;
@@ -201,7 +215,7 @@
     display: inline-block;
     padding: 10px 20px;
     cursor: pointer;
-    background: var(--social-bg);
+    background: var(--color-bg);
     border-bottom: 2px solid transparent;
     font-weight: 500;
     color: var(--text);
@@ -209,7 +223,7 @@
 }
 
 .markdown-body .custom-tabs label:hover {
-    color: var(--accent);
+    color: var(--color-text-hover-accent);
 }
 
 .markdown-body .custom-tabs input[type="radio"] {
@@ -219,8 +233,8 @@
 /* 选中状态适配 */
 .markdown-body .custom-tabs input[type="radio"]:checked + label {
     background: var(--bg);
-    border-bottom-color: var(--accent);
-    color: var(--accent);
+    border-bottom-color: var(--color-border-accent);
+    color: var(--color-accent);
 }
 
 .markdown-body .custom-tabs .tab-panel {
@@ -244,7 +258,7 @@
 .markdown-body.theme-pink h3 {
     color: var(--md-pink-accent);
     border-bottom: 2px dashed var(--md-pink-border);
-    font-family: var(--heading);
+    font-family: var(--font-h);
 }
 
 .markdown-body.theme-pink .custom-callout {

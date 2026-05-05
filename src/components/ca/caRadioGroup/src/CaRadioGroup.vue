@@ -51,8 +51,8 @@ const containerStyle = computed(() => {
 
 /* 现有风格：有背景和细线边框 */
 .layout-button-group {
-  background-color: var(--border); /* 作为子组件间隙的颜色 */
-  border: 1px solid var(--border); /* 外部边框 */
+  background-color: var(--color-border); /* 作为子组件间隙的颜色 */
+  border: 1px solid var(--color-border); /* 外部边框 */
   gap: 1px; /* 子组件之间的细线 */
   padding: 0; /* 确保内部没有额外内边距 */
 }

@@ -74,18 +74,14 @@ const buttonClasses = computed(() => [
 
 <style scoped>
 .ca-button {
-  --btn-accent: var(--accent);
-  --btn-text: var(--text);
-  --btn-border: var(--border);
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
   outline: none;
-  border: 1px solid var(--btn-border);
+  border: 1px solid var(--color-border);
   background: transparent;
-  color: var(--btn-text);
-  font-family: var(--mono);
+  color: var(--color-text-primary);
+  font-family: var(--font-text);
   cursor: pointer;
   user-select: none;
   position: relative;
@@ -105,7 +101,7 @@ const buttonClasses = computed(() => [
 
 /* --- 类型风格 --- */
 .is-primary {
-  border-color: var(--btn-text);
+  border-color: var(--color-border);
 }
 
 .is-text {
@@ -117,13 +113,13 @@ const buttonClasses = computed(() => [
 .hover-expand:hover:not(:disabled) {
   padding-left: 60px;
   padding-right: 60px;
-  border-color: var(--btn-accent);
-  color: var(--btn-accent);
+  border-color: var(--color-border-hover-accent);
+  color: var(--color-text-hover-accent);
 }
 
 .ca-button:hover:not(:disabled):not(.hover-expand) {
-  border-color: var(--btn-accent);
-  color: var(--btn-accent);
+  border-color: var(--color-border-hover-accent);
+  color: var(--color-text-hover-accent);
 }
 
 /* --- 点击反馈 --- */

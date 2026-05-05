@@ -75,7 +75,7 @@ const internalValue = computed({
   align-items: center;
   padding: 12px 0;
   margin-bottom: 32px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .view-switcher-grid {
@@ -110,15 +110,15 @@ const internalValue = computed({
 }
 
 .results-count {
-  font-family: var(--mono);
+  font-family: var(--font-text);
   font-size: 12px;
   letter-spacing: 1px;
-  color: var(--text);
+  color: var(--color-text-primary);
   opacity: 0.6;
 }
 
 .switch-btn.active .btn-text {
-  color: var(--accent);
+  color: var(--color-accent);
   opacity: 1;
   font-weight: 600;
 }

@@ -68,10 +68,10 @@ const isItemExpanded = (yIdx: number, iIdx: number) => {
 <style scoped>
 /* 保持原有布局样式，移除 .card-link 等具体业务样式 */
 .timeline-container {
-  font-family: var(--sans);
-  max-width: var(--content-max-width);
+  font-family: var(--font-text);
+  max-width: var(--content-max-width-M);
   margin: 0 auto;
-  border-left: 1px solid var(--border);
+  border-left: 1px solid var(--color-border);
   padding-left: 24px;
 }
 
@@ -80,8 +80,8 @@ const isItemExpanded = (yIdx: number, iIdx: number) => {
   display: flex;
   align-items: center;
   user-select: none;
-  font-family: var(--heading);
-  color: var(--text-h);
+  font-family: var(--font-h);
+  color: var(--color-text-h);
   margin-bottom: 16px;
 }
 
@@ -93,8 +93,8 @@ const isItemExpanded = (yIdx: number, iIdx: number) => {
 .item-title {
   cursor: pointer;
   padding-left: 12px;
-  font-family: var(--heading);
-  color: var(--text-h);
+  font-family: var(--font-h);
+  color: var(--color-text-h);
   font-size: 1.1rem;
   margin-bottom: 12px;
 }
@@ -105,16 +105,16 @@ const isItemExpanded = (yIdx: number, iIdx: number) => {
   top: 8px;
   width: 12px;
   height: 12px;
-  background: var(--accent);
-  border: 2px solid var(--accent);
+  background: var(--color-bg-accent);
+  border: 2px solid var(--color-border-accent);
   border-radius: 50%;
   transition: all 0.3s ease;
 }
 
 .dot.is-collapsed {
-  background: var(--bg);
+  background: var(--color-container-bg);
   transform: scale(0.8);
-  border-color: var(--text);
+  border-color: var(--color-text-primary);
   border-radius: 2px;
 }
 

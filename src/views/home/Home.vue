@@ -74,7 +74,7 @@ onMounted(() => {
 <style scoped>
 .home-map {
   padding: 80px 40px;
-  max-width: var(--content-max-width);
+  max-width: var(--content-max-width-M);
   margin: 0 auto;
 }
 
@@ -86,19 +86,19 @@ onMounted(() => {
 .owner-name {
   /* 使用全局 h1 样式，此处微调边距 */
   margin: 0 0 24px 0;
-  color: var(--text-h);
+  color: var(--color-text-h);
 }
 
 .contact-info {
   display: flex;
   gap: 32px;
-  font-family: var(--mono);
+  font-family: var(--font-text);
   font-size: 14px;
   text-transform: uppercase;
 }
 
 .info-item a:hover {
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
   text-decoration: underline;
 }
 
@@ -106,7 +106,7 @@ onMounted(() => {
 .divider {
   width: 100%;
   height: 1px;
-  background-color: var(--border);
+  background-color: var(--color-border);
   margin-bottom: 60px;
 }
 
@@ -115,13 +115,13 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   /* 网格线效果：利用背景色和 gap */
-  background-color: var(--border);
+  background-color: var(--color-border);
   gap: 1px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
 }
 
 .grid-item {
-  background-color: var(--bg-color);
+  background-color: var(--color-container-bg);
   padding: 40px;
   height: 300px;
   display: flex;
@@ -138,7 +138,7 @@ onMounted(() => {
 }
 
 .index {
-  font-family: var(--mono);
+  font-family: var(--font-text);
   font-size: 12px;
   opacity: 0.5;
 }
@@ -148,7 +148,7 @@ onMounted(() => {
   letter-spacing: 1px;
   text-transform: uppercase;
   padding: 2px 8px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 4px;
 }
 
@@ -173,11 +173,11 @@ onMounted(() => {
 
 /* 悬停效果：使用全局 accent 强调色 */
 .grid-item a:hover {
-  background-color: var(--accent-bg);
+  background-color: var(--color-bg-hover-accent);
 }
 
 .grid-item a:hover {
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
 }
 
 .arrow {
@@ -200,7 +200,7 @@ onMounted(() => {
 
 .item-body p {
   font-size: 14px;
-  color: var(--text);
+  color: var(--color-text-primary);
   line-height: 1.6;
 }
 

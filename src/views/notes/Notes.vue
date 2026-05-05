@@ -142,9 +142,9 @@ onMounted(async () => {
 
 <style scoped>
 .list {
-  max-width: var(--content-max-width);
+  max-width: var(--content-max-width-M);
   margin: 0 auto;
-  padding: var(--content-padding);
+  padding: var(--content-padding-M);
 }
 
 .announcement-section {
@@ -167,7 +167,7 @@ onMounted(async () => {
   left: 0;
   width: 30px;
   height: 1px;
-  background-color: var(--accent);
+  background-color: var(--color-bg-accent);
 }
 
 .announcement-text {
@@ -187,7 +187,7 @@ onMounted(async () => {
   left: 0;
   width: 100%;
   height: 120px; /* 稍微加高遮罩，让渐变更自然 */
-  background: linear-gradient(to bottom, transparent, var(--bg) 90%);
+  background: linear-gradient(to bottom, transparent, var(--color-container-bg) 90%);
   display: flex;
   justify-content: center;
   align-items: flex-end;

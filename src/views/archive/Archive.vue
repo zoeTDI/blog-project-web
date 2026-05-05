@@ -161,9 +161,9 @@ onMounted(() => {
 
 <style scoped>
 .archive {
-  max-width: var(--content-max-width);
+  max-width: var(--content-max-width-M);
   margin: 0 auto;
-  padding: var(--content-padding);
+  padding: var(--content-padding-M);
 }
 
 .page-title {
@@ -190,21 +190,21 @@ onMounted(() => {
 }
 
 .custom-card-link:hover {
-  border-color: var(--accent);
+  border-color: var(--color-border-hover-accent);
   transform: translateY(-2px);
 }
 
 .post-date {
   font-size: 0.85em;
-  font-family: var(--mono);
-  color: var(--text);
+  font-family: var(--font-text);
+  color: var(--color-text-primary);
   margin-right: 16px;
   opacity: 0.7;
 }
 
 .post-title {
   font-weight: 500;
-  color: var(--text-h);
+  color: var(--color-text-h);
 }
 
 .post-tags {
@@ -219,7 +219,7 @@ onMounted(() => {
 }
 
 .post-tag:hover {
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
 }
 
 /* 美化滚动条 (可选) */
@@ -228,12 +228,12 @@ onMounted(() => {
 }
 
 .category-scroll-container::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--color-border);
   border-radius: 2px;
 }
 
 .category-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: var(--color-bg-hover-accent);
 }
 
 .cat-name {

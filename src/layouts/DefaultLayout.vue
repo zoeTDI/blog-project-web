@@ -97,8 +97,8 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   /* 使用全局变量 */
-  background-color: var(--bg);
-  color: var(--text);
+  background-color: var(--color-container-bg);
+  color: var(--color-text-primary);
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
@@ -122,7 +122,7 @@ onMounted(() => {
   left: 12px;
   right: 12px;
   bottom: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   pointer-events: none;
   z-index: 9999;
   transition: border-color 0.4s ease;
@@ -185,18 +185,18 @@ onMounted(() => {
 
 /* 上部分：网站名称 */
 .site-title {
-  font-family: var(--heading); /* 全局衬线体 */
+  font-family: var(--font-h); /* 全局衬线体 */
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--color-text-h);
   letter-spacing: 1px;
 }
 
 /* 下部分：个性签名 */
 .site-slogan {
-  font-family: var(--sans); /* 签名可以使用无衬线体增加现代感 */
+  font-family: var(--font-text); /* 签名可以使用无衬线体增加现代感 */
   font-size: 11px;
-  color: var(--text);
+  color: var(--color-text-primary);
   opacity: 0.7;
   letter-spacing: 0.5px;
   margin-top: 2px;
@@ -227,7 +227,7 @@ onMounted(() => {
 /* Footer 样式 */
 .layout-footer {
   padding: 40px 60px;
-  font-family: var(--mono);
+  font-family: var(--font-text);
   font-size: 12px;
   letter-spacing: 1px;
 }
@@ -235,7 +235,7 @@ onMounted(() => {
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--color-border);
   padding-top: 20px;
   display: flex;
   justify-content: space-between;
@@ -264,7 +264,7 @@ onMounted(() => {
 }
 
 .beian-item:hover {
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
 }
 
 /* 公安图片大小与文字对齐的关键 */

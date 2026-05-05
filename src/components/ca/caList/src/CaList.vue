@@ -30,7 +30,7 @@ withDefaults(defineProps<Props>(), {
 /* 1. 有序列表模式 */
 .is-mode-ordered {
   list-style: decimal inside; /* 数字显示在内部以保持对齐 */
-  color: var(--text);
+  color: var(--color-text-primary);
 }
 /* 利用 deep 选择器微调 Item 表现 */
 :deep(.is-mode-ordered .ca-list-item) {
@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
 }
 :deep(.is-mode-bullet .ca-list-item-prefix::before) {
   content: "•";
-  color: var(--accent);
+  color: var(--color-accent);
   font-weight: bold;
 }
 

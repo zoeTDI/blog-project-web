@@ -15,9 +15,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--color-border);
   transition: all 0.3s ease;
-  font-family: var(--sans);
+  font-family: var(--font-text);
 }
 
 .ca-list-item:last-child {
@@ -27,7 +27,7 @@
 /* 悬停效果：轻微变色，与项目整体风格一致 */
 .ca-list-item:hover {
   padding-left: 8px;
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
 }
 
 .ca-list-item-prefix {
@@ -38,7 +38,7 @@
 }
 
 .ca-list-item-suffix {
-  font-family: var(--mono);
+  font-family: var(--font-text);
   font-size: 13px;
   opacity: 0.6;
 }

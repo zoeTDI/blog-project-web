@@ -51,7 +51,7 @@ const hasContent = computed(() => props.hasContent);
 .ca-section {
   width: 100%;
   height: 100%;
-  border: 1px solid var(--border); /* 使用全局细边框变量 */
+  border: 1px solid var(--color-border); /* 使用全局细边框变量 */
   background-color: transparent;
   display: flex;
   flex-direction: column;
@@ -64,23 +64,23 @@ const hasContent = computed(() => props.hasContent);
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  border-bottom: 1px solid var(--border); /* 标题与内容的分隔线 */
+  border-bottom: 1px solid var(--color-border); /* 标题与内容的分隔线 */
 }
 
 /* 标题样式：采用衬线体，保持与网页标题一致的优雅感 */
 .section-title {
   margin: 0;
-  font-family: var(--heading);
+  font-family: var(--font-h);
   font-size: 14px; /* 标题与副标题大小相同 */
-  color: var(--text-h);
+  color: var(--color-text-h);
   letter-spacing: 0.5px;
 }
 
 /* 副标题样式：采用无衬线体或等宽体，增加现代感 */
 .section-subtitle {
-  font-family: var(--sans);
+  font-family: var(--font-text);
   font-size: 14px; /* 标题与副标题大小相同 */
-  color: var(--text);
+  color: var(--color-text-primary);
   opacity: 0.5;
   letter-spacing: 1px;
 }

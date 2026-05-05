@@ -63,12 +63,12 @@ const handleAction = (key: string) => {
   align-items: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--text);
+  color: var(--color-text-primary);
   line-height: 1;
 }
 
 .action-item:hover {
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
 }
 
 /* 统一图标包装器的基础样式 */
@@ -99,7 +99,7 @@ const handleAction = (key: string) => {
 .mode-circle .icon-wrapper {
   width: 40px;
   height: 40px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-radius: 50%;
   transition: inherit;
 }
@@ -110,8 +110,8 @@ const handleAction = (key: string) => {
 }
 
 .mode-circle .action-item:hover .icon-wrapper {
-  border-color: var(--accent);
-  background: var(--social-bg);
+  border-color: var(--color-border-hover-accent);
+  background: var(--color-bg-hover);
 }
 
 </style>

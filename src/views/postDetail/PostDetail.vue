@@ -227,20 +227,20 @@ onMounted(async () => {
 
 <style scoped>
 .post-detail-container {
-  max-width: var(--content-max-width);
+  max-width: var(--content-max-width-M);
   margin: 0 auto;
-  padding: var(--content-padding);
+  padding: var(--content-padding-M);
 }
 
 .article-header {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .title-area {
-  font-family: var(--heading);
+  font-family: var(--font-h);
   line-height: 1;
   font-size: 64px;
-  color: var(--text-h);
+  color: var(--color-text-h);
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -251,8 +251,8 @@ onMounted(async () => {
   justify-content: flex-start;
   align-items: center;
   gap: 8px;
-  color: var(--text-h);
-  font-family: var(--mono);
+  color: var(--color-text-h);
+  font-family: var(--font-text);
   font-weight: bold;
 }
 
@@ -261,7 +261,7 @@ onMounted(async () => {
   width: 24px;
   height: 24px;
   aspect-ratio: 1 / 1;
-  color: var(--text-h);
+  color: var(--color-text-h);
 }
 
 .meta-tags .tag,
@@ -274,7 +274,7 @@ onMounted(async () => {
 
 .meta-tags .tag:hover,
 .meta-categories .category:hover {
-  background-color: var(--accent-bg);
+  background-color: var(--color-bg-hover-accent);
 }
 
 .meta-tags {
@@ -283,8 +283,8 @@ onMounted(async () => {
   justify-content: flex-start;
   align-items: center;
   gap: 8px;
-  color: var(--text-h);
-  font-family: var(--mono);
+  color: var(--color-text-h);
+  font-family: var(--font-text);
   font-weight: bold;
 }
 
@@ -308,14 +308,14 @@ onMounted(async () => {
   align-items: center;
   padding: 16px;
   background-color: var(--callout-warning-bg);
-  color: var(--text-h);
+  color: var(--color-callout-text);
 }
 
 .supple-info .icon {
   width: 24px;
   height: 24px;
   aspect-ratio: 1 / 1;
-  color: var(--text-h);
+  color: var(--color-callout-text);
   margin-right: 10px;
 }
 
@@ -346,17 +346,17 @@ onMounted(async () => {
 }
 
 .prev-next-nav a:hover {
-  color: var(--accent);
+  color: var(--color-text-hover-accent);
 }
 
 .copyright-info {
   margin-top: 32px;
   padding: 16px 20px;
-  border-left: 5px solid var(--accent);
-  background-color: var(--social-bg);
+  border-left: 5px solid var(--color-border-accent);
+  background-color: var(--color-bg);
   border-radius: 4px;
   font-size: 14px;
-  color: var(--text);
+  color: var(--color-text-primary);
   line-height: 1.8;
 }
 
@@ -370,11 +370,11 @@ onMounted(async () => {
 
 .copyright-item .label {
   font-weight: bold;
-  color: var(--text-h);
+  color: var(--color-text-h);
 }
 
 .copyright-item .link {
-  color: var(--accent);
+  color: var(--color-accent);
   text-decoration: none;
   transition: opacity 0.2s;
   word-break: break-all;

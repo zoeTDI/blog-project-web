@@ -1,42 +1,53 @@
 /* 默认变量（浅色模式） */
 :root {
-  /* 基础色值 */
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #ffffff;
-  --bg-color: #ffffff; /* 对应 Home/index.vue 中的变量 */
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(164, 41, 255, 0.24);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-  --content-max-width: 1200px;
-  --bg-gray: #E9E9E5;
-  --content-padding: 40px 20px;
+  --content-max-width-S: 800px;
+  --content-max-width-M: 1000px;
+  --content-max-width-L: 1200px;
+  --content-padding-S: 20px 10px;
+  --content-padding-M: 40px 20px;
+  --content-padding-L: 60px 40px;
 
-  /* 字体族 - 替换为衬线体(Serif)以符合你的设计要求 */
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: "Source Serif 4", "Noto Serif SC", "Georgia", serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --font-text: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-h: "Source Serif 4", "Noto Serif SC", "Georgia", serif;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  --color-text-primary: #6b6375;
+  /*
+  --color-text-success:
+  --color-text-warning:
+  --color-text-danger:
+  --color-text-info:
+  */
+  --color-text-h: #08060d;
+  --color-root-bg: #ffffff;
+  --color-container-bg: #ffffff;
+  --color-border: #e5e4e7;
+  --color-accent: #aa3bff;
+  --color-border-accent: #aa3bff;
+  --color-bg-accent: #aa3bff;
+  --color-bg: rgba(244, 243, 236, 0.5);
+  --color-text-hover-accent: #aa3bff;
+  --color-bg-hover-accent: rgba(164, 41, 255, 0.24);
+  --color-border-hover-accent: rgba(170, 59, 255, 0.5);
+  --color-bg-hover: rgba(244, 243, 236, 0.5);
+
   color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
+  color: var(--color-text-primary);
+  background: var(--color-root-bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   /*callout 颜色*/
-  --callout-warning-bg: #FF7F50;
-  /* 粉色主题基础变量 (浅色) */
-  --md-pink-accent: #ff85a2;
-  --md-pink-bg: #fff0f3;
-  --md-pink-border: #ffc2d1;
+  --callout-primary-bg: #60A5FA;
+  --callout-success-bg: #34D399;
+  --callout-warning-bg: #FBBF24;
+  --callout-danger-bg: #F87171;
+  --callout-info-bg: #9CA3AF;
+
+  --color-callout-text: #1F2937;
+
+
 
   @media (max-width: 1024px) {
     font-size: 16px;
@@ -45,24 +56,36 @@
 
 /* 深色模式变量 - 当包含 .dark 类时激活 */
 .dark {
-  --text: #a19ba8;
-  --text-h: #f5f5f5;
-  --bg: #1a1a1a;
-  --bg-color: #1a1a1a; /* 深色模式下的背景色 */
-  --border: #333235;
-  --code-bg: #262522;
-  --accent: #bd6dff;
-  --accent-bg: rgba(171, 74, 255, 0.45);
-  --accent-border: rgba(189, 109, 255, 0.5);
-  --social-bg: rgba(38, 37, 34, 0.5);
-  --shadow: rgba(0, 0, 0, 0.3) 0 10px 15px -3px;
+  --color-text-primary: #a19ba8;
+  /*
+  --color-text-success:
+  --color-text-warning:
+  --color-text-danger:
+  --color-text-info:
+  */
+  --color-text-h: #f5f5f5;
+  --color-root-bg: #1a1a1a;
+  --color-container-bg: #1a1a1a;
+  --color-border: #1a1a1a;
+  --color-accent: #bd6dff;
+  --color-border-accent: #bd6dff;
+  --color-bg-accent: #bd6dff;
+  --color-bg: rgba(38, 37, 34, 0.5);
+  --color-text-hover-accent: #bd6dff;
+  --color-bg-hover-accent: rgba(171, 74, 255, 0.45);
+  --color-border-hover-accent: rgba(189, 109, 255, 0.5);
+  --color-bg-hover: rgba(38, 37, 34, 0.5);
+
 
   /*callout 颜色*/
-  --callout-warning-bg: #dd6236;
-  /* 粉色主题基础变量 (深色) */
-  --md-pink-accent: #ff4d6d;
-  --md-pink-bg: rgba(255, 77, 109, 0.1);
-  --md-pink-border: #800e13;
+  --callout-primary-bg: #0066FF;
+  --callout-success-bg: #28A745;
+  --callout-warning-bg: #F59E0B;
+  --callout-danger-bg: #DC3545;
+  --callout-info-bg: #6B7280;
+
+  --color-callout-text: #F3F4F6;
+
 }
 
 /* 基础重置 */
@@ -91,15 +114,14 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  background: var(--bg); /* 使用变量 */
-  color: var(--text);   /* 使用变量 */
+  background: var(--color-root-bg);
+  color: var(--color-text-primary);
 }
 
-/* 标题样式 - 使用衬线体 */
-h1, h2, h3 {
-  font-family: var(--heading);
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-h);
   font-weight: 500;
-  color: var(--text-h);
+  color: var(--color-text-h);
 }
 
 h1 {
