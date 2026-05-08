@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import {reactive, watch} from 'vue'
 import type {TimelineGroup} from "@/components/ca/caTimeline";
 
 const props = defineProps<{
@@ -10,14 +10,22 @@ const props = defineProps<{
 const expandedYears = reactive<Record<number, boolean>>({})
 const expandedItems = reactive<Record<number, Record<number, boolean>>>({})
 
-// 初始化状态
-props.data.forEach((year, yIdx) => {
-  expandedYears[yIdx] = true
-  expandedItems[yIdx] = {}
-  year.items.forEach((_, iIdx) => {
-    expandedItems[yIdx][iIdx] = true
+watch(() => props.data, (newData) => {
+  if (!newData) return;
+  newData.forEach((year, yIdx) => {
+    if (expandedYears[yIdx] === undefined) {
+      expandedYears[yIdx] = true
+    }
+    if (!expandedItems[yIdx]) {
+      expandedItems[yIdx] = {}
+    }
+    year.items.forEach((_, iIdx) => {
+      if (expandedItems[yIdx][iIdx] === undefined) {
+        expandedItems[yIdx][iIdx] = true;
+      }
+    })
   })
-})
+}, {immediate: true, deep: true})
 
 const toggleYear = (index: number) => {
   expandedYears[index] = !expandedYears[index]
