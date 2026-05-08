@@ -63,7 +63,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 }
             },
             {
-                path: '/tag/:id',
+                path: '/tagDetail/:id',
                 name: ROUTER_NAMES.TAG_DETAIL,
                 component: () => import('@/views/tagDetail/TagDetail.vue')
             },
@@ -71,6 +71,11 @@ export const baseRouter: RouteRecordRaw[] = [
                 path: '/categoryDetail/:id',
                 name: ROUTER_NAMES.CATEGORY_DETAIL,
                 component: () => import('@/views/categoryDetail/CategoryDetail.vue'),
+            },
+            {
+                path: '/searchDetail',
+                name: ROUTER_NAMES.SEARCH_DETAIL,
+                component: () => import('@/views/searchDetail/SearchDetail.vue'),
             }
         ]
     },
