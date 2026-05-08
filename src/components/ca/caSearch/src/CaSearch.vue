@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { ref, nextTick } from "vue";
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
+import {useRouter} from "vue-router";
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 interface Props {
   type?: 'static' | 'expand';
   placeholder?: string;
+  src?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'static',
-  placeholder: '搜索文章 / SEARCH...'
+  placeholder: '搜索文章 / SEARCH...',
+  src: 'unknown'
 })
 
+const router = useRouter();
 const isExpanded = ref<boolean>(false);
 const searchQuery = ref<string>('');
 const inputRef = ref<HTMLInputElement | null>(null);
@@ -33,6 +38,11 @@ const handleClear = () => {
   searchQuery.value = '';
   inputRef.value?.focus();
 }
+
+const handleSearch = () => {
+  console.log(`正在搜索 ${searchQuery.value} ...`);
+  router.push({name: ROUTER_NAMES.SEARCH_DETAIL, query: {src: props.src, sort: 'created_at', timestamp: new Date().getTime(), q: searchQuery.value}});
+}
 </script>
 
 <template>
@@ -42,6 +52,7 @@ const handleClear = () => {
       <Transition name="search-slide">
         <div v-if="type === 'static' || isExpanded" class="input-wrapper">
           <input
+              @keydown.enter="handleSearch"
               ref="inputRef"
               v-model="searchQuery"
               type="text"
