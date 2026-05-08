@@ -10,6 +10,7 @@ import {ArrowLeftIcon} from '@heroicons/vue/24/outline'
 import CaTimeLine from "@/components/ca/caTimeline/src/CaTimeLine.vue";
 import type {TimelineGroup} from "@/components/ca/caTimeline";
 import {mockApiFetch} from "@/utils/mock.ts";
+import {escapeHtml} from "markdown-it/lib/common/utils";
 
 const route = useRoute();
 const loadingStore = useLoadingStore();
@@ -77,9 +78,13 @@ const fetchSearchResult = async (params: object) => {
 
 const highlightText = (text: string, keyword: string):string => {
   if (!keyword || !text) return text;
+
+  const safeText = escapeHtml(text);
+  if(!keyword) return safeText;
+
   const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const reg = new RegExp(escapedKeyword);
-  return text.replace(reg, `<span class="highlight">${keyword}</span>`);
+  const reg = new RegExp(`(${escapedKeyword})`, 'gi');
+  return text.replace(reg, '<span class="highlight">$1</span>');
 }
 
 const handleRouteQueryParams = async () => {
