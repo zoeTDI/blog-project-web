@@ -45,7 +45,7 @@ onMounted(() => {
           </div>
         </div>
         <div class="header-actions">
-          <ca-search type="expand"/>
+          <ca-search type="expand" src="topNav"/>
           <ca-switch v-model="themeMode" @update:model-value="handleThemeChange" :options="caSwitchOptions" mode="full"
                      class="icon"/>
         </div>
