@@ -8,4 +8,5 @@ export const ROUTER_NAMES = {
     SEARCH_DETAIL: 'SearchDetail',
     NOT_FOUND: 'NotFound',
     GAMES: 'Games',
+    GAME_DETAIL: 'GameDetail',
 }
