@@ -40,15 +40,15 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="grid-item" @click="$router.push('/social')">
+      <div class="grid-item">
         <div class="item-header">
           <span class="index">02</span>
           <span class="tag">LIFE</span>
         </div>
         <div class="item-body">
           <div class="main-links">
-            <router-link :to="{name: ROUTER_NAMES.HOME}">
-              <h2>SOCIAL<span class="arrow">↗</span></h2>
+            <router-link :to="{name: ROUTER_NAMES.GAMES}" class="nav-title">
+              <h2>GAMES<span class="arrow">↗</span></h2>
             </router-link>
           </div>
           <p>行程 / 旅行 / 兴趣</p>
