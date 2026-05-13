@@ -45,15 +45,24 @@ const containerHeight = ref(800); // 容器视口高度
 // 1. 计算总行数（给一个极大的值模拟无限滚动，或根据需求动态增长）
 const totalRows = 1000;
 
-// 2. 计算当前显示的行索引范围
-const startRow = computed(() => Math.max(0, Math.floor(scrollTop.value / props.itemHeight) - props.buffer));
-const endRow = computed(() => Math.min(totalRows, startRow.value + Math.ceil(containerHeight.value / props.itemHeight) + props.buffer * 2));
+const dynamicItemHeight = computed(() => {
+  const width = containerWidth.value / dynamicColumns.value;
+  return width * (9 / 16);
+});
+
+const startRow = computed(() =>
+    Math.max(0, Math.floor(scrollTop.value / dynamicItemHeight.value) - props.buffer)
+);
+
+const endRow = computed(() =>
+    Math.min(totalRows, startRow.value + Math.ceil(containerHeight.value / dynamicItemHeight.value) + props.buffer * 2)
+);
 
 const visibleItems = computed(() => {
   const items = [];
-  // 使用动态列数
   const cols = dynamicColumns.value;
   const itemWidthPercent = 100 / cols;
+  const rowHeight = dynamicItemHeight.value; // 使用动态计算的行高
 
   for (let i = startRow.value; i < endRow.value; i++) {
     for (let j = 0; j < cols; j++) {
@@ -63,9 +72,11 @@ const visibleItems = computed(() => {
       items.push({
         virtualId: `${i}-${j}`,
         ...originalItem,
-        top: i * props.itemHeight - scrollTop.value,
+        // 关键：位置计算使用动态行高
+        top: i * rowHeight - scrollTop.value,
         width: itemWidthPercent,
-        left: j * itemWidthPercent
+        left: j * itemWidthPercent,
+        height: rowHeight // 传递给模板使用
       });
     }
   }
@@ -77,16 +88,14 @@ const onScroll = (e: Event) => {
   let currentScroll = target.scrollTop;
   const cols = dynamicColumns.value;
   const rowsPerGroup = Math.ceil(imageCount / cols);
-  const groupHeight = rowsPerGroup * props.itemHeight;
 
-  // 1. 实现向上滚动的无限循环
+  const groupHeight = rowsPerGroup * dynamicItemHeight.value;
+
   if (currentScroll <= 0) {
     target.scrollTop = groupHeight;
     currentScroll = groupHeight;
   }
 
-  // 2. 实现向下滚动的无限循环
-  // 当滚动超过 5 组图片高度时，神不知鬼不觉地跳回第 2 组
   const limit = groupHeight * 5;
   if (currentScroll > limit) {
     target.scrollTop = currentScroll % groupHeight + groupHeight;
@@ -108,7 +117,10 @@ onUnmounted(() => {
 
 <template>
   <div class="virtual-scroll-container" ref="containerRef" @scroll="onScroll">
-    <div class="phantom-spacer" :style="{ height: totalRows * props.itemHeight + 'px' }"></div>
+    <div
+        class="phantom-spacer"
+        :style="{ height: totalRows * dynamicItemHeight + 'px' }"
+    ></div>
 
     <div class="render-area">
       <router-link
@@ -117,7 +129,7 @@ onUnmounted(() => {
           :key="item.virtualId"
           class="img-wrapper"
           :style="{
-            height: props.itemHeight + 'px',
+            height: item.height + 'px', // 使用动态高度
             width: item.width + '%',
             left: item.left + '%',
             transform: `translate3d(0, ${item.top}px, 0)`
@@ -176,10 +188,38 @@ onUnmounted(() => {
   backface-visibility: hidden;
   pointer-events: auto;
   display: block;
+  transition: opacity 0.3s ease;
 }
+
+.img-wrapper:hover {
+  opacity: 1 !important;
+}
+
+.img-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 黑色半透明 */
+  opacity: 0; /* 默认不可见 */
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.img-wrapper:hover::after {
+  opacity: 1;
+}
+
 img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.img-wrapper:hover img {
+  transform: scale(1.05);
 }
 </style>
