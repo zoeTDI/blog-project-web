@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import {ref, computed, onMounted, onUnmounted} from 'vue';
 import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
@@ -16,6 +16,20 @@ const props = defineProps({
   columns: { default: 4 },      // 每行列数
   buffer: { default: 2 }        // 上下预留行数
 });
+
+const containerWidth = ref(window.innerWidth);
+
+const dynamicColumns = computed(() => {
+  const minWidth = 250;
+  const cols = Math.floor(containerWidth.value / minWidth);
+  return cols > 0 ? cols : 1;
+})
+
+const updateWidth = () => {
+  if (containerRef.value) {
+    containerWidth.value = containerRef.value.offsetWidth;
+  }
+}
 
 const imageCount = 10;
 const rawImages: imageItem[] = Array.from({ length: imageCount }, (_, i) => ({
@@ -35,21 +49,20 @@ const totalRows = 1000;
 const startRow = computed(() => Math.max(0, Math.floor(scrollTop.value / props.itemHeight) - props.buffer));
 const endRow = computed(() => Math.min(totalRows, startRow.value + Math.ceil(containerHeight.value / props.itemHeight) + props.buffer * 2));
 
-// 3. 切片数据：只获取当前视口需要的图片
 const visibleItems = computed(() => {
   const items = [];
-  const itemWidthPercent = 100 / props.columns;
+  // 使用动态列数
+  const cols = dynamicColumns.value;
+  const itemWidthPercent = 100 / cols;
 
   for (let i = startRow.value; i < endRow.value; i++) {
-    for (let j = 0; j < props.columns; j++) {
-      const index = (i * props.columns + j) % imageCount;
+    for (let j = 0; j < cols; j++) {
+      const index = (i * cols + j) % imageCount;
       const originalItem = rawImages[index];
 
       items.push({
         virtualId: `${i}-${j}`,
         ...originalItem,
-        // 关键修改：i * props.itemHeight 是绝对位置
-        // 减去 scrollTop.value，图片就会相对于 .render-area 视口定位
         top: i * props.itemHeight - scrollTop.value,
         width: itemWidthPercent,
         left: j * itemWidthPercent
@@ -62,8 +75,8 @@ const visibleItems = computed(() => {
 const onScroll = (e: Event) => {
   const target = e.target as HTMLElement;
   let currentScroll = target.scrollTop;
-
-  const rowsPerGroup = Math.ceil(imageCount / props.columns);
+  const cols = dynamicColumns.value;
+  const rowsPerGroup = Math.ceil(imageCount / cols);
   const groupHeight = rowsPerGroup * props.itemHeight;
 
   // 1. 实现向上滚动的无限循环
@@ -84,7 +97,12 @@ const onScroll = (e: Event) => {
 };
 
 onMounted(() => {
+  updateWidth();
+  window.addEventListener('resize', updateWidth);
   loadingStore.endLoading()
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth);
 })
 </script>
 
