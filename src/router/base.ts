@@ -91,6 +91,11 @@ export const baseRouter: RouteRecordRaw[] = [
                 meta: {
                     title: '游戏'
                 }
+            },
+            {
+                path: '/games/:id',
+                name: ROUTER_NAMES.GAME_DETAIL,
+                component: () => import('@/views/gameDetail/GameDetail.vue')
             }
         ]
     },
