@@ -12,8 +12,6 @@ interface imageItem {
 const loadingStore = useLoadingStore();
 
 const props = defineProps({
-  itemHeight: { default: 200 }, // 单行高度
-  columns: { default: 4 },      // 每行列数
   buffer: { default: 2 }        // 上下预留行数
 });
 
