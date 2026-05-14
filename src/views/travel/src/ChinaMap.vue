@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, onMounted } from "vue";
+import { computed, reactive, ref, onMounted, onUnmounted } from "vue";
 import ChinaCityGeoJSON from '@/assets/data/China.json'
 
 const props = withDefaults(defineProps<{
@@ -13,18 +13,84 @@ const props = withDefaults(defineProps<{
 const width = computed(() => props.width);
 const height = computed(() => props.height);
 
-// --- 优化点 1: 预处理数据 ---
-// 存储处理后的路径数据，避免在模板中实时调用 generatePath
 const processedFeatures = ref<any[]>([]);
 const activeCity = ref('');
-const tooltip = reactive({
-  show: false,
-  name: '',
-  province: '',
+const tooltip = reactive({ show: false, name: '', province: '', x: 0, y: 0 });
+
+// 地图容器引用，用于精确获取鼠标相对容器的坐标
+const mapContainerRef = ref<HTMLElement | null>(null);
+
+const mapTransform = reactive({
+  scale: 1,
   x: 0,
   y: 0,
-})
+  isDragging: false,
+  lastMouseX: 0,
+  lastMouseY: 0
+});
 
+const innerTransform = computed(() => {
+  return `translate(${mapTransform.x}, ${mapTransform.y}) scale(${mapTransform.scale})`;
+});
+
+// --- 核心优化：以鼠标为中心缩放 ---
+const handleWheel = (event: WheelEvent) => {
+  event.preventDefault();
+  if (!mapContainerRef.value) return;
+
+  const zoomSpeed = 0.1;
+  const delta = event.deltaY > 0 ? -zoomSpeed : zoomSpeed;
+  const oldScale = mapTransform.scale;
+  const newScale = Math.min(Math.max(oldScale + delta, 0.5), 15);
+
+  if (oldScale === newScale) return;
+
+  // 1. 获取鼠标相对于地图容器的坐标 (px)
+  const rect = mapContainerRef.value.getBoundingClientRect();
+  const mouseX = event.clientX - rect.left;
+  const mouseY = event.clientY - rect.top;
+
+  // 2. 计算鼠标在当前“缩放平移坐标系”下的位置
+  // 公式：(鼠标坐标 - 当前平移) / 当前缩放
+  const svgMouseX = (mouseX - mapTransform.x) / oldScale;
+  const svgMouseY = (mouseY - mapTransform.y) / oldScale;
+
+  // 3. 更新缩放倍数
+  mapTransform.scale = newScale;
+
+  // 4. 计算新的平移量，使得刚才记录的 svgMouseX/Y 在新坐标系下位置不变
+  // 公式：鼠标坐标 - (内部坐标 * 新缩放)
+  mapTransform.x = mouseX - svgMouseX * newScale;
+  mapTransform.y = mouseY - svgMouseY * newScale;
+};
+
+// --- 平移逻辑 (保持 Client 坐标系计算) ---
+const startDrag = (event: MouseEvent) => {
+  if (event.button !== 0) return;
+  mapTransform.isDragging = true;
+  mapTransform.lastMouseX = event.clientX;
+  mapTransform.lastMouseY = event.clientY;
+  document.body.style.cursor = 'grabbing';
+};
+
+const onDrag = (event: MouseEvent) => {
+  if (!mapTransform.isDragging) return;
+  const dx = event.clientX - mapTransform.lastMouseX;
+  const dy = event.clientY - mapTransform.lastMouseY;
+
+  mapTransform.x += dx;
+  mapTransform.y += dy;
+
+  mapTransform.lastMouseX = event.clientX;
+  mapTransform.lastMouseY = event.clientY;
+};
+
+const stopDrag = () => {
+  mapTransform.isDragging = false;
+  document.body.style.cursor = 'default';
+};
+
+// 投影转换
 const projection = (coords: any) => {
   const x = (coords[0] - 73) * (width.value / (135 - 73));
   const y = height.value - (coords[1] - 18) * (height.value / (54 - 18));
@@ -35,7 +101,6 @@ const getPathData = (feature: any) => {
   const { geometry } = feature;
   if (!geometry) return "";
   const polygons = geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates;
-
   return polygons.map((polygon: any) => {
     return polygon.map((ring: any, index: number) => {
       const points = ring.map((p: any) => projection(p));
@@ -44,8 +109,9 @@ const getPathData = (feature: any) => {
   }).join(" ");
 };
 
-// 在组件挂载时一次性计算好所有路径
 onMounted(() => {
+  window.addEventListener('mousemove', onDrag);
+  window.addEventListener('mouseup', stopDrag);
   processedFeatures.value = ChinaCityGeoJSON.features.map(feature => ({
     id: feature.properties.adcode || Math.random(),
     pathData: getPathData(feature),
@@ -53,13 +119,16 @@ onMounted(() => {
   }));
 });
 
-// --- 优化点 2: 提高交互响应速度 ---
+onUnmounted(() => {
+  window.removeEventListener('mousemove', onDrag);
+  window.removeEventListener('mouseup', stopDrag);
+});
+
 const handleMouseEnter = (event: MouseEvent, props: any) => {
   activeCity.value = props.name;
   tooltip.show = true;
   tooltip.name = props.name;
   tooltip.province = props.province || '';
-
   tooltip.x = event.clientX;
   tooltip.y = event.clientY;
 };
@@ -71,22 +140,28 @@ const handleMouseLeave = () => {
 </script>
 
 <template>
-  <div class="china-map">
+  <div
+      class="china-map"
+      ref="mapContainerRef"
+      @wheel="handleWheel"
+      @mousedown="startDrag"
+  >
     <svg
         v-if="processedFeatures.length"
         :viewBox="`0 0 ${width} ${height}`"
         xmlns="http://www.w3.org/2000/svg"
         class="china-map-svg"
-        shape-rendering="geometricPrecision"
     >
-      <path
-          v-for="item in processedFeatures"
-          :key="item.id"
-          :d="item.pathData"
-          :class="{ 'active-city': activeCity === item.properties.name }"
-          @mouseenter="handleMouseEnter($event, item.properties)"
-          @mouseleave="handleMouseLeave"
-      />
+      <g :transform="innerTransform">
+        <path
+            v-for="item in processedFeatures"
+            :key="item.id"
+            :d="item.pathData"
+            :class="{ 'active-city': activeCity === item.properties.name }"
+            @mouseenter="handleMouseEnter($event, item.properties)"
+            @mouseleave="handleMouseLeave"
+        />
+      </g>
     </svg>
 
     <Teleport to="body">
@@ -103,48 +178,33 @@ const handleMouseLeave = () => {
 </template>
 
 <style scoped>
+/* 样式保持不变，确保容器 overflow: hidden 以切除超出部分 */
 .china-map {
   position: relative;
   width: 100%;
   max-width: var(--content-max-width-M);
   margin: 0 auto;
-  /* 优化鼠标移动时的重绘区域 */
-  contain: layout paint;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
 }
-
-.china-map-svg {
-  width: 100%;
-  height: auto;
-  /* 只有在非移动端或高性能设备开启滤镜，滤镜非常吃性能 */
-  /* filter: drop-shadow(0 4px 12px var(--color-border)); */
-}
+.china-map:active { cursor: grabbing; }
+.china-map-svg { width: 100%; height: auto; display: block; }
 
 path {
   fill: var(--color-bg);
   stroke: var(--color-border);
-  stroke-width: 0.3;
-  /* 优化渲染性能的关键 CSS */
-  vector-effect: non-scaling-stroke; /* 缩放时保持线宽 */
-  pointer-events: all;
-  transition: fill 0.15s ease; /* 缩短动画时间，减少重绘帧数 */
+  stroke-width: 0.3px;
+  vector-effect: non-scaling-stroke;
+  transition: fill 0.1s ease;
 }
-
-path:hover {
-  fill: var(--color-bg-hover-accent);
-  stroke: var(--color-accent);
-  stroke-width: 1px;
-  /* 移除 hover 时的 drop-shadow 滤镜，改用 fill 变化 */
-}
-
-.active-city {
-  fill: var(--color-bg-hover-accent);
-}
+path:hover { fill: var(--color-bg-hover-accent); stroke: var(--color-accent); stroke-width: 0.8; }
+.active-city { fill: var(--color-bg-hover-accent); }
 
 .map-tooltip {
-  position: fixed; /* 相对于窗口定位 */
+  position: fixed;
   left: 0;
   top: 0;
-  /* 基础样式保持不变 */
   background: var(--color-container-bg);
   color: var(--color-text-h);
   border: 1px solid var(--color-border);
@@ -157,13 +217,5 @@ path:hover {
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(8px);
-
-  /* 核心修复：使用 transform 移动，并增加 15px 的偏移避免遮挡鼠标 */
-  will-change: transform;
-  /* 这里的 15px 是为了让小框出现在鼠标右下方，不被鼠标箭头挡住 */
-  transition: transform 0.1s ease-out;
 }
-
-.city-name { font-weight: 600; }
-.province-tag { font-size: 11px; color: var(--color-text-primary); opacity: 0.8; }
 </style>
