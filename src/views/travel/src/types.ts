@@ -2,10 +2,11 @@
  * 城市足迹信息
  */
 export interface Footprint {
-    adcode: number;       // 行政区划代码（用于匹配 China.json 中的 properties.adcode）
-    name: string;         // 城市名称
-    articleCount: number; // 关联文章数量
-    visited: boolean;     // 是否已去过（业务标识）
+    adcode: number;
+    name: string;
+    articleCount: number;
+    visited: boolean;
+    articles?: string[];
 }
 
 /**
