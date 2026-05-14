@@ -237,7 +237,7 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
             @mouseleave="activeCity = ''; tooltip.show = false;"
         />
 
-        <g class="string-layer">
+        <g class="routes-layer">
           <path
               v-for="line in routesPaths"
               :key="line.id"
@@ -362,6 +362,14 @@ path {
   /* 统一合并到 .map-path 类中，避免全局 path 选择器冲突 */
   stroke-linejoin: round;
   stroke-linecap: round;
+}
+
+.routes-layer {
+  pointer-events: none;
+}
+
+.pins-layer {
+  pointer-events: none;
 }
 
 /* 缠绕线：使用全局强调色变量 */
