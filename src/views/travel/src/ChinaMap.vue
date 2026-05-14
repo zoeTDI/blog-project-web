@@ -59,9 +59,9 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
   tooltip.show = true;
   tooltip.name = props.name;
   tooltip.province = props.province || '';
-  // 使用 clientX/Y 配合 fixed 定位
-  tooltip.x = event.clientX + 15;
-  tooltip.y = event.clientY + 15;
+
+  tooltip.x = event.clientX;
+  tooltip.y = event.clientY;
 };
 
 const handleMouseLeave = () => {
@@ -89,14 +89,16 @@ const handleMouseLeave = () => {
       />
     </svg>
 
-    <div
-        v-show="tooltip.show"
-        class="map-tooltip"
-        :style="{ transform: `translate(${tooltip.x}px, ${tooltip.y}px)` }"
-    >
-      <span class="city-name">{{ tooltip.name }}</span>
-      <span v-if="tooltip.province" class="province-tag">{{ tooltip.province }}</span>
-    </div>
+    <Teleport to="body">
+      <div
+          v-show="tooltip.show"
+          class="map-tooltip"
+          :style="{ transform: `translate(${tooltip.x + 15}px, ${tooltip.y + 15}px)` }"
+      >
+        <span class="city-name">{{ tooltip.name }}</span>
+        <span v-if="tooltip.province" class="province-tag">{{ tooltip.province }}</span>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -139,9 +141,10 @@ path:hover {
 }
 
 .map-tooltip {
-  position: fixed;
+  position: fixed; /* 相对于窗口定位 */
   left: 0;
   top: 0;
+  /* 基础样式保持不变 */
   background: var(--color-container-bg);
   color: var(--color-text-h);
   border: 1px solid var(--color-border);
@@ -154,8 +157,11 @@ path:hover {
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(8px);
-  /* 使用 transform 性能优于 left/top */
+
+  /* 核心修复：使用 transform 移动，并增加 15px 的偏移避免遮挡鼠标 */
   will-change: transform;
+  /* 这里的 15px 是为了让小框出现在鼠标右下方，不被鼠标箭头挡住 */
+  transition: transform 0.1s ease-out;
 }
 
 .city-name { font-weight: 600; }
