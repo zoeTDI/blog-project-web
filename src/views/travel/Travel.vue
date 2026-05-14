@@ -7,16 +7,22 @@ import type {TravelDataResponse} from "@/views/travel/src/types.ts";
 const loadingStore = useLoadingStore();
 const rawMockData: TravelDataResponse = {
   footprints: [
-    { adcode: 110000, name: '北京市', articleCount: 15, visited: true },  // 权重高：深度访问
-    { adcode: 310000, name: '上海市', articleCount: 8, visited: true },   // 权重中：多次访问
-    { adcode: 440100, name: '广州市', articleCount: 2, visited: true },   // 权重低：初次尝试
+    // 北京：修改为具体的区或使用 110100 (市辖区)
+    { adcode: 110105, name: '朝阳区', articleCount: 15, visited: true, articles: ['demo1', 'demo2'] },
+    // 上海：修改为具体的区
+    { adcode: 310115, name: '浦东新区', articleCount: 8, visited: true },
+    // 杭州：330100 是杭州市本级
     { adcode: 330100, name: '杭州市', articleCount: 12, visited: true },
-    { adcode: 510100, name: '成都市', articleCount: 4, visited: true },
-    { adcode: 320100, name: '南京市', articleCount: 0, visited: false }, // 未去过：保持底色
+    // 成都：510100 是成都市本级
+    { adcode: 510100, name: '成都市', articleCount: 5, visited: true },
+    // 广州：440100 是广州市本级
+    { adcode: 440100, name: '广州市', articleCount: 2, visited: true },
+    // 南京：320100 是南京市本级
+    { adcode: 320100, name: '南京市', articleCount: 0, visited: false },
   ],
   routes: [
-    { id: 'r1', fromAdcode: 110000, toAdcode: 310000 }, // 北京 -> 上海
-    { id: 'r2', fromAdcode: 310000, toAdcode: 440100 }, // 上海 -> 广州
+    { id: 'r1', fromAdcode: 110105, toAdcode: 310115 }, // 朝阳 -> 浦东
+    { id: 'r2', fromAdcode: 310115, toAdcode: 440100 }, // 浦东 -> 广州
     { id: 'r3', fromAdcode: 330100, toAdcode: 510100 }, // 杭州 -> 成都
   ]
 };
