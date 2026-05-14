@@ -14,7 +14,9 @@ const props = withDefaults(defineProps<{
 const data = computed(() => props.data || {});
 const width = computed(() => props.width);
 const height = computed(() => props.height);
-
+const pinScale = computed(() => {
+  return 1 / mapTransform.scale;
+});
 const processedFeatures = ref<any[]>([]);
 const activeCity = ref('');
 const tooltip = reactive({ show: false, name: '', province: '', x: 0, y: 0 });
@@ -41,40 +43,22 @@ const footprintMap = computed(() => {
 });
 
 // --- 业务逻辑 2: 颜色阶梯函数 ---
-const getFillColor = (adcode: number) => {
+const getVisitedStyle = (adcode: number) => {
   const info = footprintMap.value[adcode];
-  if (!info || !info.visited) return 'var(--color-bg)';
+  if (!info || !info.visited) return null;
 
   const count = info.articleCount;
-  // 根据文章数量返回不同透明度的强调色
-  if (count >= 10) return 'var(--color-accent)'; // 核心地带
-  if (count >= 5)  return 'var(--color-bg-hover-accent)'; // 常去
-  return 'rgba(170, 59, 255, 0.2)'; // 初访
+  // 计算透明度权重：文章越多，颜色越实
+  // 基础透明度 0.15，最高 0.6
+  const opacity = Math.min(0.15 + (count / 20) * 0.45, 0.6);
+
+  return {
+    fill: 'var(--color-accent)',
+    fillOpacity: opacity,
+    stroke: 'var(--color-accent)',
+    strokeWidth: '1px'
+  };
 };
-
-// --- 业务逻辑 3: 计算连线路径 ---
-const routesPaths = computed(() => {
-  return props.data.routes.map(route => {
-    // 找到起点和终点的 Feature
-    const fromFeature = ChinaCityGeoJSON.features.find(f => f.properties.adcode === route.fromAdcode);
-    const toFeature = ChinaCityGeoJSON.features.find(f => f.properties.adcode === route.toAdcode);
-
-    if (!fromFeature || !toFeature) return null;
-
-    // 获取中心点 (使用 GeoJSON 中的 centroid 或计算中心)
-    const start = projection(fromFeature.properties.centroid || fromFeature.properties.center);
-    const end = projection(toFeature.properties.centroid || toFeature.properties.center);
-
-    // 计算二次贝塞尔曲线控制点：取中点并向上（y轴减小）偏移
-    const cx = (start[0] + end[0]) / 2;
-    const cy = (start[1] + end[1]) / 2 - 30; // 30 是弧度高度
-
-    return {
-      id: route.id,
-      d: `M ${start[0]} ${start[1]} Q ${cx} ${cy} ${end[0]} ${end[1]}`
-    };
-  }).filter(r => r !== null);
-});
 
 const innerTransform = computed(() => {
   return `translate(${mapTransform.x}, ${mapTransform.y}) scale(${mapTransform.scale})`;
@@ -144,6 +128,36 @@ const projection = (coords: any) => {
   return [x, y];
 };
 
+// 1. 获取城市的中心坐标（用于钉图钉）
+const getCityCenter = (adcode: number) => {
+  const feat = ChinaCityGeoJSON.features.find(f => f.properties.adcode === adcode);
+  if (!feat) return null;
+  const coords = feat.properties.centroid || feat.properties.center;
+  return projection(coords);
+};
+
+// 2. 计算直线连接
+const routesPaths = computed(() => {
+  return props.data.routes.map(route => {
+    const start = getCityCenter(route.fromAdcode);
+    const end = getCityCenter(route.toAdcode);
+    if (!start || !end) return null;
+    // 使用直线 L 替代 曲线 Q
+    return { id: route.id, d: `M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}` };
+  }).filter(r => r);
+});
+
+// 3. 已去过城市的图钉数据
+const cityPins = computed(() => {
+  return props.data.footprints
+      .filter(fp => fp.visited)
+      .map(fp => ({
+        ...fp,
+        pos: getCityCenter(fp.adcode)
+      }))
+      .filter(p => p.pos);
+});
+
 const getPathData = (feature: any) => {
   const { geometry } = feature;
   if (!geometry) return "";
@@ -189,26 +203,44 @@ const handleMouseLeave = () => {
 </script>
 
 <template>
-  <div class="china-map" ref="mapContainerRef" @wheel="handleWheel" @mousedown="startDrag">
+  <div class="map-board" ref="mapContainerRef" @wheel="handleWheel" @mousedown="startDrag">
     <svg v-if="processedFeatures.length" :viewBox="`0 0 ${width} ${height}`" class="china-map-svg">
       <g :transform="innerTransform">
         <path
             v-for="item in processedFeatures"
             :key="item.id"
             :d="item.pathData"
-            :fill="getFillColor(item.properties.adcode)"
-            :class="{ 'active-city': activeCity === item.properties.name }"
+            :style="getVisitedStyle(item.properties.adcode)"
+            :class="[
+              'map-path',
+              {
+                'is-active': activeCity === item.properties.name,
+                'is-visited': footprintMap[item.properties.adcode]?.visited
+              }
+            ]"
             @mouseenter="handleMouseEnter($event, item.properties)"
             @mouseleave="activeCity = ''; tooltip.show = false;"
         />
 
-        <g class="routes-layer">
+        <g class="string-layer">
           <path
-              v-for="route in routesPaths"
-              :key="route.id"
-              :d="route.d"
-              class="travel-line"
+              v-for="line in routesPaths"
+              :key="line.id"
+              :d="line.d"
+              class="thread-line"
           />
+        </g>
+
+        <g class="pins-layer">
+          <g
+              v-for="pin in cityPins"
+              :key="pin.adcode"
+              :transform="`translate(${pin.pos[0]}, ${pin.pos[1]}) scale(${pinScale})`"
+          >
+            <circle r="4" class="pin-shadow" cy="2" cx="1" />
+            <circle r="3.5" class="pin-head" />
+            <circle r="1" fill="white" opacity="0.4" cy="-1" cx="-1" />
+          </g>
         </g>
       </g>
     </svg>
@@ -224,61 +256,118 @@ const handleMouseLeave = () => {
 </template>
 
 <style scoped>
-/* 样式保持不变，确保容器 overflow: hidden 以切除超出部分 */
-.china-map {
+/* 适配主题的“板子”容器 */
+.map-board {
   position: relative;
   width: 100%;
-  max-width: var(--content-max-width-M);
-  margin: 0 auto;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   cursor: grab;
-  touch-action: none;
+  /* 使用全局变量：卡片背景色 */
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  /* 增加软木/毛毡颗粒感纹理 */
+  background-image: radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0);
+  background-size: 8px 8px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-.china-map:active { cursor: grabbing; }
-.china-map-svg { width: 100%; height: auto; display: block; }
 
-path {
+.map-board:active { cursor: grabbing; }
+
+/* 地图路径：使用全局文字颜色做极淡的填充 */
+.map-path {
+  fill: var(--color-text-primary);
+  fill-opacity: 0.05;
+
   stroke: var(--color-border);
-  stroke-width: 0.3px;
+  stroke-width: 0.8px;
   vector-effect: non-scaling-stroke;
-  transition: fill 0.3s ease;
+  paint-order: fill stroke;
+
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
-/* 路线样式 */
-.travel-line {
+
+.is-visited {
+  filter: drop-shadow(0 0 1px var(--color-border-hover-accent));
+}
+
+.map-path:hover,
+.is-active {
+  fill: var(--color-bg-hover-accent) !important;
+  fill-opacity: 0.7 !important;
+  stroke: var(--color-accent) !important;
+  stroke-width: 1.5px !important;
+  filter: drop-shadow(0 0 5px var(--color-border-hover-accent)) !important;
+  z-index: 10;
+}
+
+:deep(.dark) .map-path {
+  filter: drop-shadow(0 0 2px var(--color-accent));
+}
+
+:deep(.dark) .map-path:hover {
+  fill: var(--color-accent);
+  fill-opacity: 0.3;
+  stroke: var(--color-accent);
+  filter: drop-shadow(0 0 5px var(--color-accent));
+}
+
+/* 适配样式表中未合并的冗余 path 定义 */
+path {
+  /* 统一合并到 .map-path 类中，避免全局 path 选择器冲突 */
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* 缠绕线：使用全局强调色变量 */
+.thread-line {
   fill: none;
   stroke: var(--color-accent);
-  stroke-width: 1.5px;
+  stroke-width: 1px; /* 无论缩放多少，视觉上永远是 1px */
   stroke-linecap: round;
-  stroke-dasharray: 5, 5; /* 虚线效果 */
-  opacity: 0.6;
-  pointer-events: none; /* 连线不响应鼠标，防止干扰城市选择 */
+  stroke-dasharray: 0.5 1.5;
+  opacity: 0.8;
+  /* 关键属性：防止缩放导致线条变粗 */
   vector-effect: non-scaling-stroke;
+  filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.2));
 }
 
-.article-count {
-  font-size: 11px;
-  margin-top: 4px;
-  color: var(--color-accent);
-  font-weight: bold;
+/* 图钉：针头使用强调色 */
+.pin-head {
+  fill: var(--color-accent);
+  stroke: var(--color-border-accent);
+  stroke-width: 0.5;
 }
-path:hover { fill: var(--color-bg-hover-accent); stroke: var(--color-accent); stroke-width: 0.8; }
-.active-city { fill: var(--color-bg-hover-accent); }
 
+.pin-shadow {
+  fill: rgba(0, 0, 0, 0.3);
+}
+
+/* 深色模式下的特殊微调 */
+:deep(.dark) .pin-shadow {
+  fill: rgba(0, 0, 0, 0.6);
+}
+
+:deep(.dark) .map-board {
+  /* 深色模式下颗粒感减弱，更像黑板 */
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+}
+
+/* Tooltip 样式已经完美适配全局变量，无需大改 */
 .map-tooltip {
   position: fixed;
-  left: 0;
-  top: 0;
+  left: 0; top: 0;
   background: var(--color-container-bg);
   color: var(--color-text-h);
   border: 1px solid var(--color-border);
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: var(--font-text);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   pointer-events: none;
   z-index: 9999;
-  display: flex;
-  flex-direction: column;
   backdrop-filter: blur(8px);
 }
 </style>
