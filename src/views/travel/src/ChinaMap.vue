@@ -21,6 +21,25 @@ const processedFeatures = ref<any[]>([]);
 const activeCity = ref('');
 const tooltip = reactive({ show: false, name: '', province: '', x: 0, y: 0 });
 
+// 找到当前选中的城市完整数据
+const activeCityData = computed(() => {
+  if (!activeCity.value) return null;
+  // 通过名称在 GeoJSON 中找到 adcode，再在 map 中找数据
+  const feature = ChinaCityGeoJSON.features.find(f => f.properties.name === activeCity.value);
+  if (!feature) return null;
+
+  const adcode = feature.properties.adcode;
+  const info = footprintMap.value[adcode];
+
+  return {
+    name: activeCity.value,
+    province: feature.properties.province || '',
+    visited: info?.visited || false,
+    articleCount: info?.articleCount || 0,
+    articles: info?.articles || [] // 假设数据中包含文章列表
+  };
+});
+
 // 地图容器引用，用于精确获取鼠标相对容器的坐标
 const mapContainerRef = ref<HTMLElement | null>(null);
 
@@ -196,10 +215,6 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
   tooltip.y = event.clientY;
 };
 
-const handleMouseLeave = () => {
-  activeCity.value = '';
-  tooltip.show = false;
-};
 </script>
 
 <template>
@@ -245,6 +260,34 @@ const handleMouseLeave = () => {
       </g>
     </svg>
 
+    <div class="info-card" :class="{ 'is-empty': !activeCityData }">
+      <template v-if="activeCityData">
+        <div class="card-header">
+          <span class="city-title">{{ activeCityData.name }}</span>
+          <span :class="['status-tag', activeCityData.visited ? 'is-visited' : 'is-unknown']">
+            {{ activeCityData.visited ? '已点亮' : '未知' }}
+            <span v-if="activeCityData.visited" class="count-badge">{{ activeCityData.articleCount }}</span>
+          </span>
+        </div>
+
+        <div class="card-body">
+          <div class="province-label">{{ activeCityData.province }}</div>
+
+          <div v-if="activeCityData.visited && activeCityData.articles.length > 0" class="article-section">
+            <div class="section-title">相关文章</div>
+            <ul class="article-list">
+              <li v-for="(title, index) in activeCityData.articles.slice(0, 3)" :key="index">
+                • {{ title }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </template>
+
+      <div v-else class="empty-state">
+        <p>鼠标悬停以查看详情</p>
+      </div>
+    </div>
     <Teleport to="body">
       <div v-show="tooltip.show" class="map-tooltip" :style="{ transform: `translate(${tooltip.x + 15}px, ${tooltip.y + 15}px)` }">
         <span class="city-name">{{ tooltip.name }}</span>
@@ -369,5 +412,108 @@ path {
   pointer-events: none;
   z-index: 9999;
   backdrop-filter: blur(8px);
+}
+
+/* 信息卡片基础样式 */
+.info-card {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  width: 240px;
+  min-height: 100px;
+  background: var(--color-container-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  pointer-events: none;
+  /* 确保切换内容时也没有位移感 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--color-text-primary);
+  opacity: 0.5;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.city-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-h);
+}
+
+/* 状态标签 */
+.status-tag {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.count-badge {
+  font-weight: bold;
+  background: var(--color-accent);
+  color: white;
+  border-radius: 10px;
+  padding: 0 5px;
+  font-size: 10px;
+}
+
+.province-label {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+/* 文章列表 */
+.article-section {
+  border-top: 1px dashed var(--color-border);
+  padding-top: 10px;
+}
+
+.section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.article-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.article-list li {
+  font-size: 12px;
+  color: var(--color-text-primary);
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 深色模式微调 */
+:deep(.dark) .info-card {
+  background: rgba(26, 26, 26, 0.85);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 </style>
