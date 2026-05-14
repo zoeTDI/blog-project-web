@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { computed, reactive, ref, onMounted, onUnmounted } from "vue";
 import ChinaCityGeoJSON from '@/assets/data/China.json'
+import type {TravelDataResponse} from "@/views/travel/src/types.ts";
 
 const props = withDefaults(defineProps<{
+  data: TravelDataResponse,
   width?: number,
   height?: number
 }>(), {
   width: 800,
   height: 600
 })
-
+const data = computed(() => props.data || {});
 const width = computed(() => props.width);
 const height = computed(() => props.height);
 
@@ -27,6 +29,51 @@ const mapTransform = reactive({
   isDragging: false,
   lastMouseX: 0,
   lastMouseY: 0
+});
+
+// --- 业务逻辑 1: 建立 adcode 到数据的映射表 ---
+const footprintMap = computed(() => {
+  const map: Record<number, any> = {};
+  props.data.footprints.forEach(fp => {
+    map[fp.adcode] = fp;
+  });
+  return map;
+});
+
+// --- 业务逻辑 2: 颜色阶梯函数 ---
+const getFillColor = (adcode: number) => {
+  const info = footprintMap.value[adcode];
+  if (!info || !info.visited) return 'var(--color-bg)';
+
+  const count = info.articleCount;
+  // 根据文章数量返回不同透明度的强调色
+  if (count >= 10) return 'var(--color-accent)'; // 核心地带
+  if (count >= 5)  return 'var(--color-bg-hover-accent)'; // 常去
+  return 'rgba(170, 59, 255, 0.2)'; // 初访
+};
+
+// --- 业务逻辑 3: 计算连线路径 ---
+const routesPaths = computed(() => {
+  return props.data.routes.map(route => {
+    // 找到起点和终点的 Feature
+    const fromFeature = ChinaCityGeoJSON.features.find(f => f.properties.adcode === route.fromAdcode);
+    const toFeature = ChinaCityGeoJSON.features.find(f => f.properties.adcode === route.toAdcode);
+
+    if (!fromFeature || !toFeature) return null;
+
+    // 获取中心点 (使用 GeoJSON 中的 centroid 或计算中心)
+    const start = projection(fromFeature.properties.centroid || fromFeature.properties.center);
+    const end = projection(toFeature.properties.centroid || toFeature.properties.center);
+
+    // 计算二次贝塞尔曲线控制点：取中点并向上（y轴减小）偏移
+    const cx = (start[0] + end[0]) / 2;
+    const cy = (start[1] + end[1]) / 2 - 30; // 30 是弧度高度
+
+    return {
+      id: route.id,
+      d: `M ${start[0]} ${start[1]} Q ${cx} ${cy} ${end[0]} ${end[1]}`
+    };
+  }).filter(r => r !== null);
 });
 
 const innerTransform = computed(() => {
@@ -109,7 +156,7 @@ const getPathData = (feature: any) => {
   }).join(" ");
 };
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('mousemove', onDrag);
   window.addEventListener('mouseup', stopDrag);
   processedFeatures.value = ChinaCityGeoJSON.features.map(feature => ({
@@ -125,10 +172,12 @@ onUnmounted(() => {
 });
 
 const handleMouseEnter = (event: MouseEvent, props: any) => {
+  const info = footprintMap.value[props.adcode];
   activeCity.value = props.name;
   tooltip.show = true;
   tooltip.name = props.name;
   tooltip.province = props.province || '';
+  tooltip.articleCount = info ? info.articleCount : 0;
   tooltip.x = event.clientX;
   tooltip.y = event.clientY;
 };
@@ -140,38 +189,35 @@ const handleMouseLeave = () => {
 </script>
 
 <template>
-  <div
-      class="china-map"
-      ref="mapContainerRef"
-      @wheel="handleWheel"
-      @mousedown="startDrag"
-  >
-    <svg
-        v-if="processedFeatures.length"
-        :viewBox="`0 0 ${width} ${height}`"
-        xmlns="http://www.w3.org/2000/svg"
-        class="china-map-svg"
-    >
+  <div class="china-map" ref="mapContainerRef" @wheel="handleWheel" @mousedown="startDrag">
+    <svg v-if="processedFeatures.length" :viewBox="`0 0 ${width} ${height}`" class="china-map-svg">
       <g :transform="innerTransform">
         <path
             v-for="item in processedFeatures"
             :key="item.id"
             :d="item.pathData"
+            :fill="getFillColor(item.properties.adcode)"
             :class="{ 'active-city': activeCity === item.properties.name }"
             @mouseenter="handleMouseEnter($event, item.properties)"
-            @mouseleave="handleMouseLeave"
+            @mouseleave="activeCity = ''; tooltip.show = false;"
         />
+
+        <g class="routes-layer">
+          <path
+              v-for="route in routesPaths"
+              :key="route.id"
+              :d="route.d"
+              class="travel-line"
+          />
+        </g>
       </g>
     </svg>
 
     <Teleport to="body">
-      <div
-          v-show="tooltip.show"
-          class="map-tooltip"
-          :style="{ transform: `translate(${tooltip.x + 15}px, ${tooltip.y + 15}px)` }"
-      >
+      <div v-show="tooltip.show" class="map-tooltip" :style="{ transform: `translate(${tooltip.x + 15}px, ${tooltip.y + 15}px)` }">
         <span class="city-name">{{ tooltip.name }}</span>
-        <span v-if="tooltip.province" class="province-tag">{{ tooltip.province }}</span>
+        <span class="province-tag">{{ tooltip.province }}</span>
+        <span class="article-count" v-if="tooltip.articleCount">足迹文章: {{ tooltip.articleCount }} 篇</span>
       </div>
     </Teleport>
   </div>
@@ -192,11 +238,28 @@ const handleMouseLeave = () => {
 .china-map-svg { width: 100%; height: auto; display: block; }
 
 path {
-  fill: var(--color-bg);
   stroke: var(--color-border);
   stroke-width: 0.3px;
   vector-effect: non-scaling-stroke;
-  transition: fill 0.1s ease;
+  transition: fill 0.3s ease;
+}
+/* 路线样式 */
+.travel-line {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-dasharray: 5, 5; /* 虚线效果 */
+  opacity: 0.6;
+  pointer-events: none; /* 连线不响应鼠标，防止干扰城市选择 */
+  vector-effect: non-scaling-stroke;
+}
+
+.article-count {
+  font-size: 11px;
+  margin-top: 4px;
+  color: var(--color-accent);
+  font-weight: bold;
 }
 path:hover { fill: var(--color-bg-hover-accent); stroke: var(--color-accent); stroke-width: 0.8; }
 .active-city { fill: var(--color-bg-hover-accent); }

@@ -1,10 +1,29 @@
 <script setup lang="ts">
 import ChinaMap from "@/views/travel/src/ChinaMap.vue";
 import { useLoadingStore } from "@/store/useLoadingStore.ts";
-import { onMounted } from "vue";
+import {onMounted, ref} from "vue";
+import {mockApiFetch} from "@/utils/mock.ts";
+import type {TravelDataResponse} from "@/views/travel/src/types.ts";
 const loadingStore = useLoadingStore();
+const rawMockData: TravelDataResponse = {
+  footprints: [
+    { adcode: 110000, name: '北京市', articleCount: 15, visited: true },  // 权重高：深度访问
+    { adcode: 310000, name: '上海市', articleCount: 8, visited: true },   // 权重中：多次访问
+    { adcode: 440100, name: '广州市', articleCount: 2, visited: true },   // 权重低：初次尝试
+    { adcode: 330100, name: '杭州市', articleCount: 12, visited: true },
+    { adcode: 510100, name: '成都市', articleCount: 4, visited: true },
+    { adcode: 320100, name: '南京市', articleCount: 0, visited: false }, // 未去过：保持底色
+  ],
+  routes: [
+    { id: 'r1', fromAdcode: 110000, toAdcode: 310000 }, // 北京 -> 上海
+    { id: 'r2', fromAdcode: 310000, toAdcode: 440100 }, // 上海 -> 广州
+    { id: 'r3', fromAdcode: 330100, toAdcode: 510100 }, // 杭州 -> 成都
+  ]
+};
+const travelData = ref<TravelDataResponse | null>(null);
 
-onMounted(() => {
+onMounted(async () => {
+  travelData.value = await mockApiFetch(rawMockData, 800)
   loadingStore.endLoading()
 })
 </script>
@@ -17,7 +36,7 @@ onMounted(() => {
     </div>
 
     <div class="map-paper-container">
-      <china-map />
+      <china-map :data="travelData" />
     </div>
   </div>
 </template>
