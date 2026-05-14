@@ -75,10 +75,6 @@ onMounted(async () => {
 
   /* 2. 边框与圆角 */
   border: 1px solid var(--color-border);
-  border-radius: 24px;
-
-  /* 3. 内边距：给地图留出呼吸空间 */
-  padding: 40px;
 
   /* 4. 阴影：让容器产生悬浮感 */
   box-shadow:
@@ -95,16 +91,5 @@ onMounted(async () => {
 :deep(.dark) .map-paper-container {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   background: rgba(30, 30, 30, 0.6); /* 更加深邃的半透明感 */
-}
-
-/* 响应式适配 */
-@media (max-width: 768px) {
-  .map-paper-container {
-    padding: 15px;
-    border-radius: 16px;
-  }
-  .travel {
-    padding: var(--content-padding-S);
-  }
 }
 </style>

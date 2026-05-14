@@ -309,7 +309,6 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
   /* 使用全局变量：卡片背景色 */
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: 24px;
   /* 增加软木/毛毡颗粒感纹理 */
   background-image: radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0);
   background-size: 8px 8px;
@@ -414,7 +413,6 @@ path {
   color: var(--color-text-h);
   border: 1px solid var(--color-border);
   padding: 8px 16px;
-  border-radius: 8px;
   font-family: var(--font-text);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   pointer-events: none;
@@ -431,7 +429,6 @@ path {
   min-height: 100px;
   background: var(--color-container-bg);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
   padding: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(12px);
@@ -468,7 +465,6 @@ path {
 .status-tag {
   font-size: 12px;
   padding: 2px 8px;
-  border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -478,7 +474,6 @@ path {
   font-weight: bold;
   background: var(--color-accent);
   color: white;
-  border-radius: 10px;
   padding: 0 5px;
   font-size: 10px;
 }
