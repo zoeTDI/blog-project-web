@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, onMounted, onUnmounted } from "vue";
+import {computed, reactive, ref, onMounted, onUnmounted} from "vue";
 import ChinaCityGeoJSON from '@/assets/data/China.json'
 import type {TravelDataResponse} from "@/views/travel/src/types.ts";
 
@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<{
   width: 800,
   height: 600
 })
+const emits = defineEmits(['click-city']);
 const data = computed(() => props.data || {});
 const width = computed(() => props.width);
 const height = computed(() => props.height);
@@ -19,7 +20,7 @@ const pinScale = computed(() => {
 });
 const processedFeatures = ref<any[]>([]);
 const activeCity = ref('');
-const tooltip = reactive({ show: false, name: '', province: '', x: 0, y: 0 });
+const tooltip = reactive({show: false, name: '', province: '', x: 0, y: 0});
 
 // 找到当前选中的城市完整数据
 const activeCityData = computed(() => {
@@ -55,9 +56,11 @@ const mapTransform = reactive({
 // --- 业务逻辑 1: 建立 adcode 到数据的映射表 ---
 const footprintMap = computed(() => {
   const map: Record<number, any> = {};
-  props.data.footprints.forEach(fp => {
-    map[fp.adcode] = fp;
-  });
+  if (Array.isArray(props.data?.footprints)) {
+    props.data.footprints.forEach(fp => {
+      map[fp.adcode] = fp;
+    });
+  }
   return map;
 });
 
@@ -157,28 +160,37 @@ const getCityCenter = (adcode: number) => {
 
 // 2. 计算直线连接
 const routesPaths = computed(() => {
-  return props.data.routes.map(route => {
-    const start = getCityCenter(route.fromAdcode);
-    const end = getCityCenter(route.toAdcode);
-    if (!start || !end) return null;
-    // 使用直线 L 替代 曲线 Q
-    return { id: route.id, d: `M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}` };
-  }).filter(r => r);
+  if (!!props.data?.routes && Array.isArray(props.data.routes)) {
+    return props.data.routes.map(route => {
+      const start = getCityCenter(route.fromAdcode);
+      const end = getCityCenter(route.toAdcode);
+      if (!start || !end) return null;
+      // 使用直线 L 替代 曲线 Q
+      return {id: route.id, d: `M ${start[0]} ${start[1]} L ${end[0]} ${end[1]}`};
+    }).filter(r => r);
+  } else {
+    return []
+  }
 });
 
 // 3. 已去过城市的图钉数据
 const cityPins = computed(() => {
-  return props.data.footprints
-      .filter(fp => fp.visited)
-      .map(fp => ({
-        ...fp,
-        pos: getCityCenter(fp.adcode)
-      }))
-      .filter(p => p.pos);
+  if (!!props.data?.footprints && Array.isArray(props.data.footprints)) {
+    return props.data.footprints
+        .filter(fp => fp.visited)
+        .map(fp => ({
+          ...fp,
+          pos: getCityCenter(fp.adcode)
+        }))
+        .filter(p => p.pos);
+  } else {
+    return []
+  }
+
 });
 
 const getPathData = (feature: any) => {
-  const { geometry } = feature;
+  const {geometry} = feature;
   if (!geometry) return "";
   const polygons = geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates;
   return polygons.map((polygon: any) => {
@@ -214,7 +226,9 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
   tooltip.x = event.clientX;
   tooltip.y = event.clientY;
 };
-
+const handleClick = (value: any) => {
+  emits('click-city', value);
+}
 </script>
 
 <template>
@@ -235,6 +249,7 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
             ]"
             @mouseenter="handleMouseEnter($event, item.properties)"
             @mouseleave="activeCity = ''; tooltip.show = false;"
+            @click="handleClick(item.properties)"
         />
 
         <g class="routes-layer">
@@ -252,9 +267,9 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
               :key="pin.adcode"
               :transform="`translate(${pin.pos[0]}, ${pin.pos[1]}) scale(${pinScale})`"
           >
-            <circle r="4" class="pin-shadow" cy="2" cx="1" />
-            <circle r="3.5" class="pin-head" />
-            <circle r="1" fill="white" opacity="0.4" cy="-1" cx="-1" />
+            <circle r="4" class="pin-shadow" cy="2" cx="1"/>
+            <circle r="3.5" class="pin-head"/>
+            <circle r="1" fill="white" opacity="0.4" cy="-1" cx="-1"/>
           </g>
         </g>
       </g>
@@ -289,7 +304,8 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
       </div>
     </div>
     <Teleport to="body">
-      <div v-show="tooltip.show" class="map-tooltip" :style="{ transform: `translate(${tooltip.x + 15}px, ${tooltip.y + 15}px)` }">
+      <div v-show="tooltip.show" class="map-tooltip"
+           :style="{ transform: `translate(${tooltip.x + 15}px, ${tooltip.y + 15}px)` }">
         <span class="city-name">{{ tooltip.name }}</span>
         <span class="province-tag">{{ tooltip.province }}</span>
         <span class="article-count" v-if="tooltip.articleCount">足迹文章: {{ tooltip.articleCount }} 篇</span>
@@ -315,7 +331,9 @@ const handleMouseEnter = (event: MouseEvent, props: any) => {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.map-board:active { cursor: grabbing; }
+.map-board:active {
+  cursor: grabbing;
+}
 
 /* 地图路径：使用全局文字颜色做极淡的填充 */
 .map-path {
@@ -381,7 +399,7 @@ path {
   opacity: 0.8;
   /* 关键属性：防止缩放导致线条变粗 */
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.2));
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
 }
 
 /* 图钉：针头使用强调色 */
@@ -402,13 +420,14 @@ path {
 
 :deep(.dark) .map-board {
   /* 深色模式下颗粒感减弱，更像黑板 */
-  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
 }
 
 /* Tooltip 样式已经完美适配全局变量，无需大改 */
 .map-tooltip {
   position: fixed;
-  left: 0; top: 0;
+  left: 0;
+  top: 0;
   background: var(--color-container-bg);
   color: var(--color-text-h);
   border: 1px solid var(--color-border);
