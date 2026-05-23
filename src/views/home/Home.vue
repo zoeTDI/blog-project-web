@@ -50,6 +50,12 @@ onMounted(() => {
             <router-link :to="{name: ROUTER_NAMES.GAMES}" class="nav-title">
               <h2>GAMES<span class="arrow">↗</span></h2>
             </router-link>
+            <router-link :to="{name: ROUTER_NAMES.MOVIES}" class="nav-title">
+              <h2>MOVIES<span class="arrow">↗</span></h2>
+            </router-link>
+            <router-link :to="{name: ROUTER_NAMES.BOOKS}" class="nav-title">
+              <h2>BOOKS<span class="arrow">↗</span></h2>
+            </router-link>
           </div>
           <p>游戏 / 动漫 / 小说</p>
         </div>

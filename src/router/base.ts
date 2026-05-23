@@ -98,6 +98,32 @@ export const baseRouter: RouteRecordRaw[] = [
                 component: () => import('@/views/gameDetail/GameDetail.vue')
             },
             {
+                path: '/movies',
+                name: ROUTER_NAMES.MOVIES,
+                component: () => import('@/views/movies/Movies.vue'),
+                meta: {
+                    title: '影视'
+                }
+            },
+            {
+                path: '/movies/:id',
+                name: ROUTER_NAMES.MOVIE_DETAIL,
+                component: () => import('@/views/movieDetail/MovieDetail.vue')
+            },
+            {
+                path: '/books',
+                name: ROUTER_NAMES.BOOKS,
+                component: () => import('@/views/books/Books.vue'),
+                meta: {
+                    title: '书架'
+                }
+            },
+            {
+                path: '/books/:id',
+                name: ROUTER_NAMES.BOOKS_DETAIL,
+                component: () => import('@/views/bookDetail/BookDetail.vue')
+            },
+            {
                 path: '/travel',
                 name: ROUTER_NAMES.TRAVEL,
                 component: () => import('@/views/travel/Travel.vue'),
