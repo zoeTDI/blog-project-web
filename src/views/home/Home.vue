@@ -43,7 +43,7 @@ onMounted(() => {
       <div class="grid-item">
         <div class="item-header">
           <span class="index">02</span>
-          <span class="tag">LIFE</span>
+          <span class="tag">PLAY</span>
         </div>
         <div class="item-body">
           <div class="main-links">
@@ -51,20 +51,22 @@ onMounted(() => {
               <h2>GAMES<span class="arrow">↗</span></h2>
             </router-link>
           </div>
-          <p>行程 / 旅行 / 兴趣</p>
+          <p>游戏 / 动漫 / 小说</p>
         </div>
       </div>
 
-      <div class="grid-item tech-showcase">
+      <div class="grid-item">
         <div class="item-header">
           <span class="index">03</span>
-          <span class="tag">DEMO</span>
+          <span class="tag">WORLD</span>
         </div>
         <div class="item-body">
-          <router-link :to="{name: ROUTER_NAMES.HOME}">
-            <h2>TECH<span class="arrow">↗</span></h2>
-          </router-link>
-          <p>Speed / Animation / Stack</p>
+          <div class="main-link">
+            <router-link :to="{name: ROUTER_NAMES.TRAVEL}" class="nav-title">
+              <h2>TRAVEL<span class="arrow">↗</span></h2>
+            </router-link>
+          </div>
+          <p>行程 / 旅行 / 兴趣</p>
         </div>
       </div>
     </div>
