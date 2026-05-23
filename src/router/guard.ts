@@ -23,16 +23,15 @@ const handleDocumentTitle = (to: RouteLocationNormalized) => {
  */
 export function setupRouterGuard(router: Router) {
     // 前置守卫
-    router.beforeEach(async (to, from, next) => {
+    router.beforeEach(async (to, from) => {
         // 设置加载进度条
         const loadingStore = useLoadingStore();
         if (to.name === ROUTER_NAMES.TAG_DETAIL && !to.query?.id) {
-            next({name: ROUTER_NAMES.NOT_FOUND});
-            return;
+            return {name: ROUTER_NAMES.NOT_FOUND};
         }
         loadingStore.startLoading();
         handleDocumentTitle(to);
-        next();
+        return true;
     });
 
     // 后置守卫
