@@ -319,7 +319,7 @@ const handleClick = (value: any) => {
 .map-board {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 100%;
   overflow: hidden;
   cursor: grab;
   /* 使用全局变量：卡片背景色 */
