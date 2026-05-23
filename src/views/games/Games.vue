@@ -7,11 +7,28 @@ import {onMounted} from "vue";
 
 const loadingStore = useLoadingStore();
 
-const rawImages: ImageItem[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  url: `https://picsum.photos/200?random=${i}`,
-  alt: `Game Image ${i + 1}`
-}));
+const baseData = [
+  {id: 1, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514121222230.webp', alt: 'Factorio'},
+  {id: 2, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514122455480.webp', alt: '戴森球计划'},
+  {id: 3, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514122043047.webp', alt: '鬼谷八荒'},
+  {id: 4, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514122811723.webp', alt: '只狼'},
+  {id: 5, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514122811726.webp', alt: '赛博朋克：2077'},
+  {id: 6, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514122811724.webp', alt: '巫师三'},
+  {id: 7, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514122811725.webp', alt: '放松时光'},
+  {id: 8, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514122811722.webp', alt: 'warframe'},
+  {id: 9, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641006.webp', alt: '黑神话：悟空'},
+  {id: 10, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641013.webp', alt: '空洞骑士'},
+  {id: 12, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641008.webp', alt: '暖雪'},
+  {id: 13, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641004.webp', alt: '了不起的修仙模拟器'},
+  {id: 14, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641005.webp', alt: '龙崖'},
+  {id: 11, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641009.webp', alt: 'Noita'},
+  {id: 15, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641010.webp', alt: '古墓丽影'},
+  {id: 16, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641011.webp', alt: '刺客信条：大革命'},
+  {id: 17, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641007.webp', alt: '命运石之门'},
+  {id: 18, url: 'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/blog/20260514123641012.webp', alt: 'OPUS MAGNUM'},
+]
+
+const rawImages: ImageItem[] = [...baseData];
 
 onMounted(() => {
   loadingStore.endLoading();
