@@ -168,7 +168,6 @@ const handleCityClick = (cityProperties: any) => {
     if (cityInfo && cityInfo.articles) {
       // 模拟加载对应城市的笔记
       noteData.value = toRaw(cityInfo.articles);
-      console.log(noteData.value)
     } else {
       noteData.value = [];
     }
