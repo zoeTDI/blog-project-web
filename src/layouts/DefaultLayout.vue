@@ -30,7 +30,6 @@ onMounted(() => {
 <template>
   <div :class="['app-wrapper', themeMode]">
     <CaInkTree/>
-    <div class="layout-border"></div>
 
     <header class="layout-header">
       <div class="header-content">
@@ -109,23 +108,9 @@ onMounted(() => {
 /* 关键：给所有实际内容组件提升层级 */
 .layout-header,
 .layout-main,
-.layout-footer,
-.layout-border {
+.layout-footer {
   position: relative;
   z-index: 1; /* 必须大于 CaInkTree 的 0 */
-}
-
-/* 极简细线条外框 */
-.layout-border {
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  border: 1px solid var(--color-border);
-  pointer-events: none;
-  z-index: 9999;
-  transition: border-color 0.4s ease;
 }
 
 /* Header 样式 */
