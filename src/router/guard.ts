@@ -1,6 +1,7 @@
 import type {RouteLocationNormalized, Router} from 'vue-router';
 import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
+import {useUserStore} from "@/store/useUserStore.ts";
 
 const handleDocumentTitle = (to: RouteLocationNormalized) => {
     // 修改标题
@@ -31,6 +32,32 @@ export function setupRouterGuard(router: Router) {
 
         if (to.name === ROUTER_NAMES.TAG_DETAIL && !to.query?.id) {
             return {name: ROUTER_NAMES.NOT_FOUND};
+        }
+
+        if (to.meta?.requireLogin) {
+            // 需要登录
+            const userStore = useUserStore()
+            const authToken = userStore.getAuthToken()
+            if (authToken && authToken !== '') {
+                // 用户在已登录情况下手动访问登录页
+                if (to.name == ROUTER_NAMES.LOGIN) {
+                    return {name: ROUTER_NAMES.NOT_FOUND};
+                }
+                // 用户成功登录并且url中包含目的地址
+                if (to.query?.to && to.query.to !== '') {
+                    return {path: to.query.to};
+                }
+                // 放行
+                return true;
+            } else {
+                // 没有token，跳转登录页
+                return {
+                    name: ROUTER_NAMES.LOGIN,
+                    query: {
+                        to: to.path
+                    }
+                }
+            }
         }
 
         handleDocumentTitle(to);
