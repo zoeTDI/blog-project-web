@@ -133,13 +133,28 @@ export const baseRouter: RouteRecordRaw[] = [
             }
         ]
     },
+    // 登录页面
+    {
+        path: '/',
+        component: () => import('@/layouts/FullLayout.vue'),
+        children: [
+            {
+                path: '/login',
+                name: ROUTER_NAMES.LOGIN,
+                component: () => import("@/views/login/Login.vue"),
+                meta: {
+                    title: '登录'
+                }
+            }
+        ]
+    },
     // 特殊页面
     {
         path: '/',
         component: () => import('@/layouts/DefaultLayout.vue'),
         children: [
             {
-                path: '/:pathMatch(.*)*',
+                path: '/404',
                 name: 'NotFound',
                 component: () => import('@/views/error/NotFound.vue'),
                 meta: {
