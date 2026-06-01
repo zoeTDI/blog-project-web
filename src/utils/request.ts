@@ -1,5 +1,6 @@
 import axios, {type AxiosRequestConfig} from 'axios';
 import type {InternalAxiosRequestConfig, AxiosResponse} from 'axios';
+import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 interface Request<T = any> {
     code: number;
@@ -25,12 +26,10 @@ service.interceptors.request.use(
 
 // 3. 响应拦截器
 service.interceptors.response.use(
-    (response: AxiosResponse) => {
+    async (response: AxiosResponse) => {
         if(response.status === 401) {
             const router = (await import('@/router')).default;
-            // todo 这里是回到了根目录，实际应回到登录页（登录页暂未实现）
-            // router.push('/login');
-            router.push('/');
+            router.push({name: ROUTER_NAMES.LOGIN});
         }
         const res = response.data;
         if (res.code == 200) {
