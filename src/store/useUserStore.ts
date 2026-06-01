@@ -2,33 +2,45 @@ import {defineStore} from "pinia";
 import {ref} from "vue";
 
 export const useUserStore = defineStore(
-    'auth',
+    'user',
     () => {
-        const auth_token = ref<string>('');
+        const authToken = ref<string>('')
+        const role = ref<string>('');
+        const menus = ref<string[]>([])
 
-        const get_auth_token = () => {
-            return auth_token.value;
+        const getAuthToken = () => {
+            return authToken.value;
         }
-        const set_auth_token = (token: string) => {
-            auth_token.value = token;
+        const setAuthToken = (value: string) => {
+            authToken.value = value;
         }
-
-        /**
-         * 登出方法
-         */
-        const logout = () => {
-            set_auth_token('');
+        const getRole = () => {
+            return role.value;
+        }
+        const setRole = (value: string) => {
+            role.value = value;
+        }
+        const getMenus = () => {
+            return menus.value;
+        }
+        const setMenus = (value: string[]) => {
+            menus.value = value
         }
         return {
-            auth_token,
-            get_auth_token,
-            set_auth_token,
-            logout,
+            authToken,
+            role,
+            menus,
+            getAuthToken,
+            setAuthToken,
+            getRole,
+            setRole,
+            getMenus,
+            setMenus
         }
     },
     {
         persist: {
-            pick: ['auth_token'],
+            pick: ['authToken', 'role', 'menus']
         }
     }
 )
