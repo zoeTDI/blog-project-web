@@ -5,11 +5,11 @@ import {useRouter} from "vue-router";
 import {mockApiFetch} from "@/utils/mock.ts";
 import {LockClosedIcon, EnvelopeIcon, ArrowRightIcon} from '@heroicons/vue/24/outline'
 import {BACKEND_ROUTER_NAME} from "@/router/modules/backend.ts";
-import {useAuthStore} from "@/store/useAuthStore.ts";
+import {useUser} from "@/store/useUser.ts";
 
 const router = useRouter();
 const loadingStore = useLoadingStore();
-const authStore = useAuthStore();
+const authStore = useUser();
 
 const email = ref('');
 const password = ref('');
