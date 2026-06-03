@@ -3,7 +3,7 @@ import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
 import {useUserStore} from "@/store/useUserStore.ts";
 
-const userStore = useUserStore()
+
 
 const handleDocumentTitle = (to: RouteLocationNormalized) => {
     // 修改标题
@@ -21,6 +21,7 @@ const handleDocumentTitle = (to: RouteLocationNormalized) => {
 }
 
 const handleLogin = (to: RouteLocationNormalized) => {
+    const userStore = useUserStore()
     const authToken = userStore.getAuthToken()
     if (authToken && authToken !== '') {
         // 用户成功登录并且url中包含目的地址
