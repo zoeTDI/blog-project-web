@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {CaRow} from "@/components/ca/CaRow";
 import {CaCol} from "@/components/ca/caCol";
 import {CaSection} from "@/components/ca/caSection";
@@ -12,7 +11,6 @@ import {mockApiFetch} from "@/utils/mock.ts";
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 const route = useRoute();
-const loadingStore = useLoadingStore();
 
 
 const getTagName = () => {
@@ -85,7 +83,6 @@ const mockData = [
 
 onMounted(async () => {
   tagList.value = await mockApiFetch(mockData, 800);
-  loadingStore.endLoading();
 })
 
 </script>

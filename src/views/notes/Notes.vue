@@ -2,7 +2,6 @@
 import {nextTick, onMounted, ref} from "vue";
 import {ArticleRenderer, ViewSwitcher} from "@/components/viewSwitcher";
 import type {Article} from "#/article.ts";
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {CaButton} from "@/components/ca/caButton";
 
 // 1. 网页公告数据
@@ -69,7 +68,6 @@ const fetchArticlesApi = async (page: number) => {
   })
 }
 
-const loadingStore = useLoadingStore();
 
 const loadMore = async () => {
   if (isLoading.value || noMore.value) return;
@@ -90,7 +88,6 @@ onMounted(async () => {
     checkHeight()
   });
   await loadMore();
-  await loadingStore.endLoading();
 })
 </script>
 

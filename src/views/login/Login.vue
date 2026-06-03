@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
+import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {mockApiFetch} from "@/utils/mock.ts";
 import {LockClosedIcon, EnvelopeIcon, ArrowRightIcon} from '@heroicons/vue/24/outline'
@@ -8,7 +7,6 @@ import {BACKEND_ROUTER_NAME} from "@/router/modules/backend.ts";
 import {useUserStore} from "@/store/useUserStore.ts";
 
 const router = useRouter();
-const loadingStore = useLoadingStore();
 const authStore = useUserStore();
 
 const email = ref('');
@@ -38,9 +36,6 @@ const handleLogin = async () => {
   }
 };
 
-onMounted(() => {
-  loadingStore.endLoading()
-})
 </script>
 
 <template>

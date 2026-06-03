@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import ChinaMap from "@/views/travel/src/ChinaMap.vue";
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {computed, onMounted, ref, toRaw} from "vue";
 import {mockApiFetch} from "@/utils/mock.ts";
 import type {Footprint, TravelDataResponse} from "@/views/travel/src/types.ts";
 import {MarkdownRender} from "@/components/markdownRender";
 
-const loadingStore = useLoadingStore();
 const rawMockData: TravelDataResponse = {
   footprints: [
     // 北京：修改为具体的区或使用 110100 (市辖区)
@@ -176,7 +174,6 @@ const handleCityClick = (cityProperties: any) => {
 
 onMounted(async () => {
   travelData.value = await mockApiFetch(rawMockData, 800)
-  loadingStore.endLoading()
 })
 </script>
 

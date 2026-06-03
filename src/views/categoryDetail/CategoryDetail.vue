@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {onMounted, ref} from "vue";
 import {CaRow} from "@/components/ca/CaRow";
 import {CaCol} from "@/components/ca/caCol";
@@ -12,7 +11,6 @@ import type {TimelineGroup} from "@/components/ca/caTimeline";
 import {mockApiFetch} from "@/utils/mock.ts";
 
 const route = useRoute();
-const loadingStore = useLoadingStore();
 
 const categoryList = ref([]);
 
@@ -81,7 +79,6 @@ const timeLineData = ref<TimelineGroup[]>([
 
 onMounted(async () => {
   categoryList.value = await mockApiFetch(mockData, 800);
-  loadingStore.endLoading();
 })
 </script>
 

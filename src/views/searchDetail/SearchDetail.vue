@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {CaRow} from "@/components/ca/CaRow";
@@ -13,7 +12,6 @@ import {mockApiFetch} from "@/utils/mock.ts";
 import {escapeHtml} from "markdown-it/lib/common/utils";
 
 const route = useRoute();
-const loadingStore = useLoadingStore();
 const queryValue = ref<string>('');
 
 const fetchSearchResult = async (params: object) => {
@@ -102,7 +100,6 @@ const timeLineData = ref<TimelineGroup[]>([])
 
 onMounted(async () => {
   await handleRouteQueryParams();
-  loadingStore.endLoading();
 })
 </script>
 

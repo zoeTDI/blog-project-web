@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
-import {onMounted} from "vue";
 
-const loadingStore = useLoadingStore();
-
-onMounted(() => {
-  loadingStore.endLoading()
-})
 </script>
 
 <template>

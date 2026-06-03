@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import {CaRow} from "@/components/ca/CaRow";
 import {CaCol} from "@/components/ca/caCol";
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {CaSection} from "@/components/ca/caSection";
 import {TagCloud} from "@/components/tagCloud";
 import {CaList, CaListItem} from "@/components/ca/caList";
@@ -94,15 +93,10 @@ const year2024Data = ref([
 
 const height = 280;
 
-const loadingStore = useLoadingStore();
 const router = useRouter();
 const handleTagClick = (value) => {
   router.push({name: ROUTER_NAMES.TAG_DETAIL, params: {...value}})
 }
-
-onMounted(() => {
-  loadingStore.endLoading();
-})
 </script>
 
 <template>

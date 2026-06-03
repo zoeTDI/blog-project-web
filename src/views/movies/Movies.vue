@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {onMounted, ref} from "vue";
 import {mockApiFetch} from "@/utils/mock.ts";
 import {CaRow} from "@/components/ca/CaRow";
@@ -7,13 +6,11 @@ import {CaCol} from "@/components/ca/caCol";
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
 
-const loadingStore = useLoadingStore();
 const mockData = [];
 const baseData = ref([])
 
 onMounted(async () => {
   baseData.value = await mockApiFetch(mockData, 800)
-  loadingStore.endLoading();
 })
 </script>
 

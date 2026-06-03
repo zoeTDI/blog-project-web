@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue';
 import {useRoute} from 'vue-router';
-import {useLoadingStore} from "@/store/useLoadingStore";
 import {mockApiFetch} from "@/utils/mock";
 import {CaRow} from "@/components/ca/CaRow";
 import {CaCol} from "@/components/ca/caCol";
@@ -12,7 +11,6 @@ import {PostActions} from "@/components/postActions";
 const blogName = import.meta.env.VITE_SITE_TITLE;
 
 const route = useRoute();
-const loadingStore = useLoadingStore();
 const post = ref<any>(null);
 
 const metaOptions = ref([
@@ -76,7 +74,6 @@ const handleCopy = (event: ClipboardEvent) => {
 
 // 模拟获取数据
 onMounted(async () => {
-  loadingStore.startLoading();
   // 模拟后端返回的数据结构
   const data = {
     id: route.query.id,
@@ -118,7 +115,6 @@ onMounted(async () => {
   post.value = await mockApiFetch(data, 500);
   handleMetaOptions();
   currentUrl.value = window.location.href;
-  loadingStore.endLoading();
 });
 </script>
 

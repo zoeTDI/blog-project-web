@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import {onMounted} from "vue";
-import {useLoadingStore} from "@/store/useLoadingStore.ts";
+
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
 
-const loadingStore = useLoadingStore();
-onMounted(() => {
-  loadingStore.endLoading();
-})
 </script>
 
 <template>
