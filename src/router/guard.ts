@@ -74,3 +74,14 @@ export function setupRouterGuard(router: Router) {
         // 暂不处理逻辑
     });
 }
+
+const setupCommonGuard = (router: Router) => {}
+
+const setupAccessGuard = (router: Router) => {}
+
+const createRouterGuard = (router: Router) => {
+    setupCommonGuard(router)
+    setupAccessGuard(router)
+}
+
+export {createRouterGuard};

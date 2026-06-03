@@ -1,7 +1,7 @@
 import type {App} from "vue";
 import {createRouter, createWebHashHistory, createWebHistory} from "vue-router";
 import routes from '../router/index.ts'
-import {setupRouterGuard} from "../router/guard.ts";
+import {createRouterGuard, setupRouterGuard} from "../router/guard.ts";
 
 const router = createRouter({
     history:
@@ -16,6 +16,8 @@ const router = createRouter({
         return to.hash ? {behavior : 'smooth', el: to.hash} : {left: 0, right: 0}
     }
 })
+
+createRouterGuard(router)
 
 export function setupRouter(app: App<Element>) {
     app.use(router);
