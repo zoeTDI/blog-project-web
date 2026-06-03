@@ -2,6 +2,7 @@ import type {RouteLocationNormalized, Router} from 'vue-router';
 import {useLoadingStore} from "@/store/useLoadingStore.ts";
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
 import {useUserStore} from "@/store/useUserStore.ts";
+import {st} from "vue-router/dist/index-D_VEAp3P";
 
 
 
@@ -75,7 +76,30 @@ export function setupRouterGuard(router: Router) {
     });
 }
 
-const setupCommonGuard = (router: Router) => {}
+/**
+ * 通用守卫配置
+ * @param router
+ */
+const setupCommonGuard = (router: Router) => {
+    const loadedPaths = new Set<string>()
+    const loadingStore = useLoadingStore()
+    router.beforeEach((to) => {
+        // 获取页面是否已经加载
+        to.meta.loaded = loadedPaths.has(to.path);
+        // TODO 此处应当通过配置获取是否启用进度条加载动画
+        if (!to.meta.loaded && true) {
+            loadingStore.startLoading()
+        }
+        return true
+    })
+    router.afterEach((to) => {
+        loadedPaths.add(to.path)
+        // TODO 此处应当通过配置获取是否启用进度条加载动画
+        if(true) {
+            loadingStore.endLoading()
+        }
+    })
+}
 
 const setupAccessGuard = (router: Router) => {}
 
