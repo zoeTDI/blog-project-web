@@ -1,10 +1,5 @@
-import type {IStorageDriver} from "@/cache/type.ts";
+import type {IStorageDriver, LocalStorageDriverOptions} from "@/cache";
 
-type storageType = 'localStorage' | 'sessionStorage'
-
-interface LocalStorageDriverOptions {
-  storageType: storageType;
-}
 
 class LocalStorageDriver implements IStorageDriver {
   storage: Storage
@@ -99,4 +94,3 @@ class LocalStorageDriver implements IStorageDriver {
 }
 
 export {LocalStorageDriver}
-export type {LocalStorageDriverOptions, storageType}

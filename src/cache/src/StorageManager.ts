@@ -1,7 +1,4 @@
-import { MemoryStorageDriver } from "@/cache/MemoryStorageDriver.ts";
-import type {IStorageDriver, IStorageItem} from "@/cache/type.ts";
-import { LocalStorageDriver } from "@/cache/LocalStorageDriver.ts";
-
+import type {IStorageDriver, IStorageItem, StorageManagerOptions} from "@/cache";
 
 
 /**
@@ -22,7 +19,7 @@ class StorageManager {
    * @param options.namespace 命名空间，用于隔离不同的业务缓存，防止键名冲突
    * @param options.ttl 默认过期时间（毫秒），不传或传 undefined 则默认永久存储
    */
-  constructor(options: { namespace: string; ttl?: number }) {
+  constructor(options: StorageManagerOptions) {
     if (!options.namespace || options.namespace === '') {
       console.warn('StorageManager: Namespace is empty. It is recommended to set a namespace to avoid key conflicts.');
     }

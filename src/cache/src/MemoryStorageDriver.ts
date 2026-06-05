@@ -1,4 +1,5 @@
-import type {IStorageDriver} from "@/cache/type.ts";
+import type {IStorageDriver} from "@/cache";
+
 
 class MemoryStorageDriver implements IStorageDriver {
   private storage: Map<string, string>

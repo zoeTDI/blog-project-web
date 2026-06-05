@@ -1,3 +1,14 @@
+export interface StorageManagerOptions {
+  namespace: string;
+  ttl?: number;
+}
+
+export type StorageType = 'localStorage' | 'sessionStorage'
+
+export interface LocalStorageDriverOptions {
+  storageType: StorageType;
+}
+
 export interface IStorageDriver {
   /**
    * 更新指定键的值
