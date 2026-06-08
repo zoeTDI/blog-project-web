@@ -3,7 +3,7 @@ import {type Preferences, TimezoneOptions} from "@/core/preferences";
 const defaultPreferences: Preferences = {
   app: {
     defaultAvatar: "",
-    defaultHomePath: "/home",
+    defaultHomePath: "/dashboard",
     locale: 'zh-CN',
     timezone: TimezoneOptions.UTC,
     watermark: true,
