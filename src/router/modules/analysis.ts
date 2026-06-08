@@ -12,6 +12,7 @@ const analysisRouter: RouteRecordRaw = [
         },
         path: '/analysis',
         component: () => import('@/layouts/BackendLayout.vue'),
+        redirect: '/analysis/dashboard',
         children: [
             {
                 path: '/analysis/dashboard',
