@@ -24,6 +24,8 @@ const menuTree = computed<MenuItem[]>(() => {
     const firstLevelMenu: MenuItem = {
       title: rootRoute.meta?.title || '未命名分类',
       path: rootRoute.path,
+      fullPath: rootRoute.fullPath,
+      icon: rootRoute.meta?.icon,
       children: []
     }
 
@@ -34,7 +36,10 @@ const menuTree = computed<MenuItem[]>(() => {
         if (child.meta?.hidden !== true && child.meta?.title) {
           firstLevelMenu.children?.push({
             title: child.meta.title,
-            path: child.path
+            path: child.path,
+            fullPath: child.fullPath,
+            icon: child.meta?.icon,
+            hidden: child.meta?.hidden
           })
         }
       })
@@ -48,14 +53,21 @@ const menuTree = computed<MenuItem[]>(() => {
 
   return menus
 })
-
 const activeSubMenuIndex = ref<number | null>(null)
 
-const toggleSubMenu = (index: number) => {
-  activeSubMenuIndex.value = activeSubMenuIndex.value === index ? null : index;
+const handleMenuClick = (menu: MenuItem, index: number) => {
+  if (menu.children && menu.children.length > 0) {
+    // 如果有子菜单，则切换展开/折叠状态
+    activeSubMenuIndex.value = activeSubMenuIndex.value === index ? null : index
+  } else {
+    // 如果没有子菜单，直接跳转
+    router.push(menu.fullPath)
+  }
 }
-const handleMenuClick = (path: string) => {
-  router.push(path)
+
+// 点击二级菜单跳转
+const handleChildClick = (childPath: string) => {
+  router.push(childPath)
 }
 
 watch(
@@ -79,37 +91,46 @@ watch(
   <div class="ca-side-menu">
     <div
         v-for="(menu, index) in menuTree"
-        :key="menu.path"
+        :key="menu.fullPath"
         class="menu-group"
     >
       <div
-          class="menu-item first-level"
-          :class="{ 'has-children': menu.children && menu.children.length > 0 }"
-          @click="menu.children && menu.children.length > 0 ? toggleSubMenu(index) : handleMenuClick(menu.path)"
+          :class="['menu-item', 'first-level', { active: route.path === menu.fullPath || activeSubMenuIndex === index }]"
+          @click="handleMenuClick(menu, index)"
       >
-        <span class="menu-title">{{ menu.title }}</span>
-        <span
-            v-if="menu.children && menu.children.length > 0 && activeSubMenuIndex !== index"
-            class="arrow-icon"
-        >
-          <chevron-down-icon/>
-        </span>
-        <span v-else class="arrow-icon">
-          <chevron-up-icon />
-        </span>
+        <div class="menu-item-left">
+          <component
+              :is="menu.icon"
+              v-if="menu.icon"
+              class="menu-icon"
+          />
+          <span class="menu-title">{{ menu.title }}</span>
+        </div>
+
+        <div v-if="menu.children && menu.children.length > 0" class="menu-item-right">
+          <ChevronUpIcon v-if="activeSubMenuIndex === index" class="arrow-icon" />
+          <ChevronDownIcon v-else class="arrow-icon" />
+        </div>
       </div>
 
       <div
-          class="sub-menu-wrapper"
+          class="sub-menu"
           :style="{ height: activeSubMenuIndex === index ? `${(menu.children?.length || 0) * 40}px` : '0px' }"
       >
         <div
             v-for="child in menu.children"
-            :key="child.path"
-            :class="['menu-item', 'second-level', { active: route.path === child.path }]"
-            @click="handleMenuClick(child.path)"
+            :key="child.fullPath"
+            :class="['menu-item', 'second-level', { active: route.path === child.fullPath }]"
+            @click="handleChildClick(child.path)"
         >
-          <span class="menu-title">{{ child.title }}</span>
+          <div class="menu-item-left">
+            <component
+                :is="child.icon"
+                v-if="child.icon"
+                class="menu-icon sub-menu-icon"
+            />
+            <span class="menu-title">{{ child.title }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -123,6 +144,11 @@ watch(
   flex-direction: column;
   gap: 4px;
   padding: 8px 0;
+}
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-item {
@@ -143,36 +169,64 @@ watch(
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.first-level {
-  font-weight: 500;
-}
-
-.sub-menu-wrapper {
-  overflow: hidden;
-  transition: height 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-  background-color: #000c17; /* 更深一度的黑色用于区分层级 */
-}
-
-.second-level {
-  height: 40px;
-  padding-left: 32px;
-  font-size: 13px;
-}
-
-.second-level.active {
+.menu-item.active {
   color: #fff;
-  background-color: #1890ff; /* 经典高亮蓝 */
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.menu-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.menu-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: color 0.25s;
+}
+
+.menu-item:hover .menu-icon,
+.menu-item.active .menu-icon {
+  color: #fff;
+}
+
+.menu-item-right {
+  display: flex;
+  align-items: center;
 }
 
 .arrow-icon {
-  font-size: 10px;
-  transform: scale(0.8);
-  transition: transform 0.25s ease;
-  opacity: 0.5;
+  width: 14px;
+  height: 14px;
+  color: rgba(255, 255, 255, 0.45);
 }
 
-.arrow-icon svg {
+/* 二级菜单容器 */
+.sub-menu {
+  overflow: hidden;
+  transition: height 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  background-color: #000c17;
+}
+
+.menu-item.second-level {
+  height: 40px;
+  padding-left: 32px;
+}
+
+.sub-menu-icon {
   width: 16px;
-  aspect-ratio: 1/ 1;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.menu-item.second-level.active {
+  background-color: #1890ff !important;
+  color: #fff;
+}
+.menu-item.second-level.active .sub-menu-icon {
+  color: #fff;
 }
 </style>
