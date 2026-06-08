@@ -94,6 +94,13 @@ class PreferenceManager {
   }
   
   /**
+   * 恢复默认偏好设置
+   */
+  public resetPreferences(): void {
+    this.updatePreferences(defaultPreferences)
+  }
+  
+  /**
    * 内部方法：处理偏好设置更新带来的副作用
    * 例如：当检测到主题或字体大小改变时，动态更新页面 CSS 变量
    * @param {Partial<Preferences>} updates - 增量更新的偏好设置对象
@@ -197,11 +204,7 @@ class PreferenceManager {
   }
 }
 
-// 异步初始化单例（避免在不支持顶级 await 的旧环境报错，通过工厂方法包裹处理）
-let preferenceManager!: PreferenceManager;
-PreferenceManager.create().then(instance => {
-  preferenceManager = instance
-})
+let preferenceManager = await PreferenceManager.create()
 
 /**
  * 导出快捷获取只读偏好设置的函数
