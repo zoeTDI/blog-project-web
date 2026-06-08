@@ -317,6 +317,7 @@ onUnmounted(() => {
   align-items: flex-end;
   border-bottom: 2px solid v-bind(colorPrimary);
   padding: 0 4px;
+  background: #fff;
 }
 
 .tab-item-icon {
