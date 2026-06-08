@@ -1,7 +1,7 @@
 export interface MenuDataItem {
     path: string
     name: string
-    component: string // 后端返回字符串，如 'managementPage/UserManage'
+    component: string
     meta?: {
         title?: string
         requireLogin: boolean
