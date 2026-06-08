@@ -1,6 +1,34 @@
 <script setup lang="ts">
-// 骨架布局，暂无需引入复杂逻辑
 import {CaTabsBar} from "@/components/ca/caTabsBar";
+import {CaSideMenu} from "@/components/ca/caSideMenu";
+import {watch} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {useTabStore} from "@/store/useTabStore.ts";
+import {preferences} from "@/core/preferences";
+
+const route = useRoute()
+const router = useRouter()
+const tabStore = useTabStore()
+
+const defaultHomePath = preferences.app.defaultHomePath
+
+watch(
+    () => route.path,
+    (newPath) => {
+      // 逻辑 A：如果进入了 Layout 却没指定具体子路由，或者来到了根路径，自动跳转到配置的默认页
+      if (newPath === '/backend' || newPath === '/') {
+        router.replace(defaultHomePath)
+        return
+      }
+
+      // 逻辑 B：正常添加标签页，并把首页路径传给 store 内部做持久化和查重
+      tabStore.addTab({
+        path: route.path,
+        meta: route.meta
+      }, defaultHomePath)
+    },
+    { immediate: true } // 页面首次加载时就触发一次
+)
 </script>
 
 <template>
@@ -8,7 +36,9 @@ import {CaTabsBar} from "@/components/ca/caTabsBar";
     <div class="wrapper">
       <aside class="side">
         <div class="logo">Logo</div>
-        <div class="menu-placeholder">Menu Placeholder</div>
+        <div class="menu-container">
+          <ca-side-menu/>
+        </div>
       </aside>
 
       <div class="container">
@@ -16,7 +46,7 @@ import {CaTabsBar} from "@/components/ca/caTabsBar";
           <span>Breadcrumb / User Info</span>
         </header>
 
-        <ca-tabs-bar />
+        <ca-tabs-bar/>
         <main class="main-content">
           <router-view/>
         </main>
@@ -61,10 +91,14 @@ import {CaTabsBar} from "@/components/ca/caTabsBar";
   border-bottom: 1px solid #002140;
 }
 
-.menu-placeholder {
+.menu-container {
   flex: 1;
-  padding: 20px;
-  color: rgba(255, 255, 255, 0.65);
+  overflow-y: auto;
+}
+
+/* 隐藏菜单滚动条 */
+.menu-container::-webkit-scrollbar {
+  display: none;
 }
 
 /* 右侧容器：占据剩余的所有宽度，自适应 */
@@ -95,13 +129,4 @@ import {CaTabsBar} from "@/components/ca/caTabsBar";
   overflow-y: auto; /* 内容过多时自动出现滚动条 */
 }
 
-.content-placeholder {
-  background-color: #fff;
-  border-radius: 4px;
-  padding: 24px;
-  min-height: 100%; /* 撑满内容区 */
-  box-sizing: border-box;
-  border: 1px dashed #cbd5e1; /* 虚线框暗示这里是内容槽 */
-  color: #94a3b8;
-}
 </style>

@@ -4,42 +4,27 @@ import {computed} from "vue";
 import type {TabItem} from "@/components/ca/caTabsBar";
 import {XMarkIcon} from "@heroicons/vue/24/outline";
 import backendRouter from "@/router/modules/backend.ts";
+import {useTabStore} from "@/store/useTabStore.ts";
 
 const router = useRouter()
 const route = useRoute()
-
-function fn(routes: RouteRecordRaw[]): TabItem[] {
-  const result: TabItem[] = []
-
-  routes.forEach((route: RouteRecordRaw) => {
-    if (route?.children && route.children.length > 0) {
-      result.push(...fn(route.children))
-    } else {
-      result.push({
-        title: (route.meta?.title as string) || '未命名页面',
-        path: route.path,
-        closeable: route.meta?.closable !== false
-      })
-    }
-  })
-
-  return result
-}
+const tabStore = useTabStore()
 
 const activeTabPath = computed(() => route.path)
 
-const tabList = computed<TabItem[]>(() => {
-  const routesArray = Array.isArray(backendRouter) ? backendRouter : [backendRouter]
-  return fn(routesArray)
-})
+const tabList = computed<TabItem[]>(() => tabStore.tabs)
 
 const handleClickTab = (path: string) => {
   router.push(path)
 }
 
 const handleTabClose = (e: Event, path: string) => {
-  e.stopPropagation()
   console.log("=>(type.ts:30) ", path);
+  e.stopPropagation()
+  const nextPath = tabStore.closeTab(path, route.path)
+  if (nextPath && nextPath !== route.path) {
+    router.push(nextPath)
+  }
 }
 </script>
 
