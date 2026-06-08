@@ -43,6 +43,7 @@ export const useTabStore = defineStore('tab', () => {
         title: (route.meta?.title as string) || '未命名页面',
         path: route.path,
         pinned: false,
+        icon: route.meta?.icon,
       })
     }
   }
