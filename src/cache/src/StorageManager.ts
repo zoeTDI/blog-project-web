@@ -1,4 +1,10 @@
-import type {IStorageDriver, IStorageItem, StorageManagerOptions} from "@/cache";
+import {
+  type IStorageDriver,
+  type IStorageItem,
+  LocalStorageDriver,
+  MemoryStorageDriver,
+  type StorageManagerOptions
+} from "@/cache";
 
 
 /**
@@ -19,12 +25,12 @@ class StorageManager {
    * @param options.namespace 命名空间，用于隔离不同的业务缓存，防止键名冲突
    * @param options.ttl 默认过期时间（毫秒），不传或传 undefined 则默认永久存储
    */
-  constructor(options: StorageManagerOptions) {
+  constructor(options: StorageManagerOptions = {}) {
     if (!options.namespace || options.namespace === '') {
-      console.warn('StorageManager: Namespace is empty. It is recommended to set a namespace to avoid key conflicts.');
+      console.warn('存储管理没有设置命名空间，改动将会影响所有存储中心。');
     }
     this.driver = this.createDefaultStorage();
-    this.prefix = options.namespace;
+    this.prefix = options?.namespace || '';
     this.ttl = options.ttl ?? null;
   }
   
@@ -148,4 +154,4 @@ class StorageManager {
   }
 }
 
-export { StorageManager };
+export {StorageManager};
