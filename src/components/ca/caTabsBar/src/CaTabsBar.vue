@@ -2,7 +2,16 @@
 import {useRoute, useRouter} from "vue-router";
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import type {ContextMenuItem, TabItem} from "@/components/ca/caTabsBar";
-import {XMarkIcon, LockClosedIcon} from "@heroicons/vue/24/outline";
+import {
+  XMarkIcon,
+  LockClosedIcon,
+  LockOpenIcon,
+  ArrowPathIcon,
+  ArrowTopRightOnSquareIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  MinusCircleIcon
+} from "@heroicons/vue/24/outline";
 import {useTabStore} from "@/store/useTabStore.ts";
 import {preferences} from "@/core/preferences";
 
@@ -149,57 +158,83 @@ const handleCloseAll = () => {
 /**
  * 右键菜单配置项
  */
-const menuItems = computed((): ContextMenuItem[] => [
-  {
-    key: 'close',
-    label: '关闭',
-    disabled: !dropdownTab.value || dropdownTab.value.closeable === false || dropdownTab.value.pinned,
-    action: () => handleClose(dropdownTab.value!.path)
-  },
-  {
-    key: 'pin',
-    label: '固定',
-    disabled: !dropdownTab.value || dropdownTab.value.pinned,
-    action: () => handlePin(dropdownTab.value!.path)
-  },
-  {
-    key: 'reload',
-    label: '重新加载',
-    disabled: false,
-    action: () => handleReload(dropdownTab.value!.path)
-  },
-  {
-    key: 'openWindow',
-    label: '在新窗口打开',
-    disabled: false,
-    divider: true, // 标记在此项后渲染分隔线
-    action: () => handleOpenWindow(dropdownTab.value!.path)
-  },
-  {
-    key: 'closeLeft',
-    label: '关闭左侧标签页',
-    disabled: !hasCloseableLeft(dropdownTab.value?.path),
-    action: () => handleCloseLeft(dropdownTab.value!.path)
-  },
-  {
-    key: 'closeRight',
-    label: '关闭右侧标签页',
-    disabled: !hasCloseableRight(dropdownTab.value?.path),
-    action: () => handleCloseRight(dropdownTab.value!.path)
-  },
-  {
-    key: 'closeOthers',
-    label: '关闭其他标签页',
-    disabled: !hasCloseableOthers(dropdownTab.value?.path),
-    action: () => handleCloseOthers(dropdownTab.value!.path)
-  },
-  {
-    key: 'closeAll',
-    label: '关闭全部标签页',
-    disabled: !hasCloseableAll(),
-    action: () => handleCloseAll()
-  }
-])
+const menuItems = computed((): ContextMenuItem[] => {
+  if (!dropdownTab.value) return []
+  const tab = dropdownTab.value;
+  return [
+    {
+      key: 'close',
+      label: '关闭',
+      icon: XMarkIcon,
+      disabled: tab.pinned,
+      action: () => {
+        const nextPath = tabStore.closeTab(tab.path, route.path);
+        if (nextPath && nextPath !== route.path) router.push(nextPath);
+      }
+    },
+    {
+      key: 'pin',
+      label: tab.pinned ? '取消固定' : '固定',
+      // 根据状态动态切换“固定锁”或“开锁”图标
+      icon: tab.pinned ? LockOpenIcon : LockClosedIcon,
+      disabled: false,
+      action: () => {
+        if (tab.pinned) {
+          tabStore.unpinTab(tab.path);
+        } else {
+          tabStore.pinTab(tab.path);
+        }
+      }
+    },
+    {
+      key: 'reload',
+      label: '重新加载',
+      icon: ArrowPathIcon,
+      disabled: false,
+      action: () => {
+        // 您的重新加载逻辑...
+        window.location.reload();
+      }
+    },
+    {
+      key: 'openWindow',
+      label: '在新窗口打开',
+      icon: ArrowTopRightOnSquareIcon,
+      disabled: false,
+      action: () => {
+        window.open(tab.path, '_blank');
+      }
+    },
+    {
+      key: 'closeLeft',
+      label: '关闭左侧标签页',
+      icon: ArrowLeftIcon,
+      disabled: !hasCloseableLeft(tab.path),
+      action: () => tabStore.closeLeftTabs(tab.path)
+    },
+    {
+      key: 'closeRight',
+      label: '关闭右侧标签页',
+      icon: ArrowRightIcon,
+      disabled: !hasCloseableRight(tab.path),
+      action: () => tabStore.closeRightTabs(tab.path)
+    },
+    {
+      key: 'closeOthers',
+      label: '关闭其他标签页',
+      icon: MinusCircleIcon,
+      disabled: false,
+      action: () => tabStore.closeOtherTabs(tab.path)
+    },
+    {
+      key: 'closeAll',
+      label: '关闭全部标签页',
+      icon: XMarkIcon,
+      disabled: false,
+      action: () => tabStore.closeAllTabs()
+    }
+  ]
+})
 
 const handleClickTab = (path: string) => {
   router.push(path)
@@ -235,7 +270,7 @@ onUnmounted(() => {
          @click="handleClickTab(tab.path)"
          @contextmenu.prevent="openContextMenu($event, tab)"
     >
-      <component v-if="tab.icon" :is="tab.icon" class="tab-item-icon" />
+      <component v-if="tab.icon" :is="tab.icon" class="tab-item-icon"/>
       <span class="tab-title">{{ tab.title }}</span>
       <!--      固定图标-->
       <span v-if="tab.pinned" class="pin-icon" @click="handleTabUnpin($event, tab.path)">
@@ -247,13 +282,19 @@ onUnmounted(() => {
          class="context-menu"
          @click.stop
     >
-      <template v-for="item in menuItems" :key="item.key">
-        <div :class="['menu-item-option', {disabled: item.disabled}]"
+      <div v-for="item in menuItems" :key="item.key">
+        <div :class="['context-menu-item', { disabled: item.disabled }]"
              @click="!item.disabled && handleMenuClick(item)">
-          {{ item.label }}
+          <component
+              v-if="item.icon"
+              :is="item.icon"
+              class="menu-item-icon"
+          />
+
+          <span class="menu-item-label">{{ item.label }}</span>
         </div>
         <div v-if="item.divider" class="menu-divider"></div>
-      </template>
+      </div>
     </div>
   </nav>
 </template>
@@ -342,29 +383,34 @@ onUnmounted(() => {
   min-width: 150px;
 }
 
-.menu-item-option {
-  padding: 7px 16px;
-  font-size: 13px;
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 14px;
   color: #333;
   cursor: pointer;
-  transition: all 0.2s;
-  text-align: left;
+  font-size: 13px;
+  transition: background-color 0.2s;
 }
 
-.menu-item-option:hover:not(.disabled) {
+.context-menu-item:hover:not(.disabled) {
   background-color: #f5f5f5;
   color: #1890ff;
 }
 
-.menu-item-option.disabled {
+.context-menu-item.disabled {
   color: #bfbfbf;
   cursor: not-allowed;
-  background-color: transparent;
+}
+
+.menu-item-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  flex-shrink: 0;
 }
 
 .menu-divider {
-  height: 1px;
-  background-color: #f0f0f0;
-  margin: 4px 0;
+  white-space: nowrap;
 }
 </style>

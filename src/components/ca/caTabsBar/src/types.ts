@@ -13,6 +13,7 @@ interface ContextMenuItem {
   disabled: boolean;
   action: () => void;
   divider?: boolean;
+  icon?: Component;
 }
 
 export {
