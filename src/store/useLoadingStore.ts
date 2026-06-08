@@ -11,7 +11,6 @@ export const useLoadingStore = defineStore('loading', () => {
 
     const startLoading = () => {
         isVisible.value = true;
-        isSwitching.value = true;
         progress.value = 10; // 初始进度，给用户即时反馈
     };
 
@@ -21,10 +20,6 @@ export const useLoadingStore = defineStore('loading', () => {
 
         // 核心：延迟 100ms 确保用户肉眼能捕捉到“加载完成”的状态
         await new Promise(r => setTimeout(r, 100));
-
-        // 允许页面组件显示出来（切断拦截）
-        isSwitching.value = false;
-
         // 进度条本身淡出
         isVisible.value = false;
 
@@ -36,7 +31,6 @@ export const useLoadingStore = defineStore('loading', () => {
 
     return {
         isVisible,
-        isSwitching,
         progress,
         startLoading,
         endLoading
