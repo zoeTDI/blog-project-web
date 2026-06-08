@@ -1,14 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
-// 假设 preferences 可以从你的配置中心或另一个 store 中引入
-// import { preferences } from '@/config'
-
-export interface TabItem {
-  title: string;
-  path: string;
-  closeable?: boolean;
-}
+import type {TabItem} from "@/components/ca/caTabsBar";
 
 export const useTabStore = defineStore('tab', () => {
   const tabs = ref<TabItem[]>([])
@@ -25,7 +17,7 @@ export const useTabStore = defineStore('tab', () => {
       tabs.value.unshift({
         title: homeTitle,
         path: homePath,
-        closeable: false
+        pinned: true,
       })
     }
   }
@@ -36,20 +28,19 @@ export const useTabStore = defineStore('tab', () => {
   const addTab = (route: { path: string; meta: any }, homePath: string) => {
     if (route.meta?.hidden === true) return
     
-    // 1. 确保首页始终存在
-    initHomeTab(homePath, '首页') // 标题可以根据你的实际路由 meta 动态传，这里先默认为 '首页'
+    // 确保首页始终存在
+    initHomeTab(homePath, '首页')
     
-    // 2. 如果当前要添加的就是首页，直接返回（因为 initHomeTab 已经处理过了）
+    // 如果当前要添加的就是首页，直接返回（因为 initHomeTab 已经处理过了）
     if (route.path === homePath) return
     
-    // 3. 添加其他普通标签页
+    // 添加其他普通标签页
     const isExist = tabs.value.some(tab => tab.path === route.path)
     if (!isExist) {
       tabs.value.push({
         title: (route.meta?.title as string) || '未命名页面',
         path: route.path,
-        // 如果刚好是首页则不可关闭（双重保障），其他页面根据 meta 决定
-        closeable: route.path === homePath ? false : route.meta?.closable !== false
+        pinned: false,
       })
     }
   }
@@ -61,23 +52,103 @@ export const useTabStore = defineStore('tab', () => {
     const index = tabs.value.findIndex(tab => tab.path === path)
     if (index === -1) return
     
-    // 如果该标签被设置成了不可关闭，直接拦截
-    if (tabs.value[index].closeable === false) return currentPath
+    
+    if (tabs.value[index].pinned === false) return currentPath
     
     let nextActivePath = currentPath
     if (path === currentPath) {
       const nextTab = tabs.value[index + 1] || tabs.value[index - 1]
-      nextActivePath = nextTab ? nextTab.path : homePath
+      nextActivePath = nextTab ? nextTab.path : (tabs.value[0]?.path || '/')
     }
     
     tabs.value.splice(index, 1)
     return nextActivePath
   }
   
+  /**
+   * 功能：固定标签页
+   * 逻辑：改变固定状态，并移动到列表左侧最后一个固定标签页的后方
+   */
+  const pinTab = (path: string) => {
+    const index = tabs.value.findIndex(tab => tab.path === path)
+    if (index === -1) return
+    
+    const targetTab = tabs.value[index]
+    targetTab.pinned = true
+    targetTab.closeable = false // 固定后强制转为不可关闭
+    
+    // 从原位置切出
+    tabs.value.splice(index, 1)
+    
+    // 寻找左侧最后一个固定标签页的后方插入位置
+    let lastPinnedIndex = 0
+    while (lastPinnedIndex < tabs.value.length && tabs.value[lastPinnedIndex].pinned) {
+      lastPinnedIndex++
+    }
+    
+    // 紧随最后一个已固定标签后方插入
+    tabs.value.splice(lastPinnedIndex, 0, targetTab)
+  }
+  
+  /**
+   * 功能：关闭左侧标签页
+   * 逻辑：过滤掉当前标签左侧且未被固定的普通标签页
+   */
+  const closeLeftTabs = (path: string) => {
+    const targetIndex = tabs.value.findIndex(tab => tab.path === path)
+    if (targetIndex === -1) return
+    
+    tabs.value = tabs.value.filter((tab, index) => {
+      if (index < targetIndex) {
+        // 只有被固定或声明不可关闭的才能留下
+        return tab.pinned || tab.closeable === false
+      }
+      return true
+    })
+  }
+  
+  /**
+   * 功能：关闭右侧标签页
+   * 逻辑：过滤掉当前标签右侧且未被固定的普通标签页
+   */
+  const closeRightTabs = (path: string) => {
+    const targetIndex = tabs.value.findIndex(tab => tab.path === path)
+    if (targetIndex === -1) return
+    
+    tabs.value = tabs.value.filter((tab, index) => {
+      if (index > targetIndex) {
+        // 只有被固定或声明不可关闭的才能留下
+        return tab.pinned || tab.closeable === false
+      }
+      return true
+    })
+  }
+  
+  /**
+   * 功能：关闭其他标签页
+   * 逻辑：保留当前页、固定页以及不可关闭页，其余全部清空
+   */
+  const closeOtherTabs = (path: string) => {
+    tabs.value = tabs.value.filter(tab => tab.path === path || tab.pinned || tab.closeable === false)
+  }
+  
+  /**
+   * 功能：关闭全部标签页
+   * 逻辑：仅保留固定页以及不可关闭页
+   */
+  const closeAllTabs = () => {
+    tabs.value = tabs.value.filter(tab => tab.pinned || tab.closeable === false)
+  }
+  
   return {
     tabs,
     addTab,
     closeTab,
-    initHomeTab
+    initHomeTab,
+    pinTab,
+    closeLeftTabs,
+    closeRightTabs,
+    closeOtherTabs,
+    closeAllTabs
   }
 })
