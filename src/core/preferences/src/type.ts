@@ -178,6 +178,10 @@ export interface ThemePreferences {
    * 主题类型
    */
   mode: ThemeModeOptions;
+  /**
+   * 主题色
+   */
+  colorPrimary: string;
 }
 
 export interface TransitionPreferences {

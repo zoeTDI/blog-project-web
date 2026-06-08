@@ -48,7 +48,8 @@ const defaultPreferences: Preferences = {
   },
   navigation: {},
   theme: {
-    mode: 'light'
+    mode: 'light',
+    colorPrimary: "#1890ff"
   },
   transition: {
     enable: false, loading: false, name: undefined, progress: true
