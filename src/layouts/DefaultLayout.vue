@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
+import {ref, computed} from 'vue';
 import CaSwitch, {type SwitchOption} from "@/components/ca/caSwitch";
 import {MoonIcon, SunIcon} from "@heroicons/vue/24/outline";
 import {CaInkTree} from "@/components/background/caInkTree";
 import {CaSearch} from "@/components/ca/caSearch";
+import {preferenceManager, preferences} from "@/core/preferences";
 
 // 主题状态：light 或 dark
-const themeMode = ref<'light' | 'dark'>('light');
+const themeMode = computed(() => {
+  return preferences.theme.mode || 'light';
+})
 const logoSrc = ref('');
 
 const caSwitchOptions: SwitchOption[] = [
@@ -14,21 +17,17 @@ const caSwitchOptions: SwitchOption[] = [
   {value: 'dark', label: 'DARK', icon: MoonIcon}
 ]
 
-const handleThemeChange = (newTheme: 'light' | 'dark') => {
-  themeMode.value = newTheme;
-  localStorage.setItem('theme', newTheme);
+const handleThemeChange = () => {
+  const newTheme = preferences.theme.mode === 'light' ? 'dark' : 'light';
+  preferenceManager.updatePreferences({
+    theme: {mode: newTheme}
+  })
 };
 
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
-  if (savedTheme) {
-    themeMode.value = savedTheme;
-  }
-});
 </script>
 
 <template>
-  <div :class="['app-wrapper', themeMode]">
+  <div class="app-wrapper">
     <CaInkTree/>
 
     <header class="layout-header">
