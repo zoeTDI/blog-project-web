@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import {type RouteRecordRaw, useRoute, useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {computed} from "vue";
 import type {TabItem} from "@/components/ca/caTabsBar";
 import {XMarkIcon} from "@heroicons/vue/24/outline";
-import backendRouter from "@/router/modules/backend.ts";
 import {useTabStore} from "@/store/useTabStore.ts";
 
 const router = useRouter()
@@ -19,7 +18,6 @@ const handleClickTab = (path: string) => {
 }
 
 const handleTabClose = (e: Event, path: string) => {
-  console.log("=>(type.ts:30) ", path);
   e.stopPropagation()
   const nextPath = tabStore.closeTab(path, route.path)
   if (nextPath && nextPath !== route.path) {
