@@ -13,7 +13,9 @@ import {
   MinusCircleIcon
 } from "@heroicons/vue/24/outline";
 import {useTabStore} from "@/store/useTabStore.ts";
-import {preferences} from "@/core/preferences";
+import {defaultPreferences, preferences} from "@/core/preferences";
+
+const colorPrimary = computed(() => (preferences.theme.colorPrimary || defaultPreferences.theme.colorPrimary));
 
 const router = useRouter()
 const route = useRoute()
@@ -21,6 +23,15 @@ const tabStore = useTabStore()
 
 const activeTabPath = computed(() => route.path)
 const tabList = computed<TabItem[]>(() => tabStore.tabs)
+
+const isActiveFirst = computed(() => {
+  if (tabList.value.length === 0) return false
+  return tabList.value[0].path === activeTabPath.value
+})
+const isActiveLast = computed(() => {
+  if (tabList.value.length === 0) return false
+  return tabList.value[tabList.value.length - 1].path === activeTabPath.value
+})
 
 const visible = ref<boolean>(false);
 const menuPosition = ref({x: 0, y: 0})
@@ -263,7 +274,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <nav class="tabs-bar">
+  <nav :class="['tabs-bar', { 'is-first-active': isActiveFirst, 'is-last-active': isActiveLast }]">
     <div v-for="tab in tabList"
          :key="tab.path"
          :class="['tab-item', {active: activeTabPath === tab.path}]"
@@ -304,6 +315,8 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
+  border-bottom: 2px solid v-bind(colorPrimary);
+  padding: 0 4px;
 }
 
 .tab-item-icon {
@@ -320,8 +333,6 @@ onUnmounted(() => {
   height: 32px;
   padding: 0 12px;
   background-color: #fafafa;
-  border: 1px solid #e8e8e8;
-  border-bottom: 1px solid transparent;
   border-radius: 4px 4px 0 0;
   cursor: pointer;
   font-size: 14px;
@@ -329,15 +340,20 @@ onUnmounted(() => {
   user-select: none;
 }
 
+.tab-item:not(:has(.pin-icon)) {
+  /*添加额外右边距，使文字在视觉上居中对齐*/
+  padding-right: 18px;
+}
+
+
 .tab-item:hover {
-  color: #1890ff;
+  color: v-bind(colorPrimary);
   background-color: #f5f5f5;
 }
 
 .tab-item.active {
   color: #fff;
-  background-color: #1890ff;
-  border-color: #e8e8e8;
+  background-color: v-bind(colorPrimary);
   height: 33px;
   border-radius: 4px 4px 0 0;
   margin-bottom: -1px;
@@ -346,25 +362,35 @@ onUnmounted(() => {
 }
 
 .tab-item.active::before {
+  --s: 10px;
   content: '';
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: var(--s);
+  height: var(--s);
   bottom: 0;
   left: 0;
-  transform: translateX(-100%);
-  background: radial-gradient(circle at 0% 0%, transparent 0px, transparent 8px, #1890ff 8px, #1890ff 100%);
+  transform: translateX(-98%);
+  background: radial-gradient(circle at 0% 0%, transparent 0px, transparent var(--s), v-bind(colorPrimary) var(--s), v-bind(colorPrimary) 100%);
+}
+
+.tabs-bar.is-first-active .tab-item.active::before {
+  display: none;
 }
 
 .tab-item.active::after {
+  --s: 10px;
   content: '';
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: var(--s);
+  height: var(--s);
   bottom: 0;
   right: 0;
-  transform: translateX(100%);
-  background: radial-gradient(circle at 100% 0%, transparent 0px, transparent 8px, #1890ff 8px, #1890ff 100%);
+  transform: translateX(98%);
+  background: radial-gradient(circle at 100% 0%, transparent 0px, transparent var(--s), v-bind(colorPrimary) var(--s), v-bind(colorPrimary) 100%);
+}
+
+.tabs-bar.is-last-active .tab-item.active::after {
+  display: none;
 }
 
 .tab-title {
@@ -375,7 +401,11 @@ onUnmounted(() => {
   margin-left: 6px;
   display: flex;
   align-items: center;
-  color: #1890ff;
+  color: v-bind(colorPrimary);
+}
+
+.tab-item.active .pin-icon {
+  color: #fff;
 }
 
 .pin-icon svg {
@@ -407,7 +437,7 @@ onUnmounted(() => {
 
 .context-menu-item:hover:not(.disabled) {
   background-color: #f5f5f5;
-  color: #1890ff;
+  color: v-bind(colorPrimary);
 }
 
 .context-menu-item.disabled {
