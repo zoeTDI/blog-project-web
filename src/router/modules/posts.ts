@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from "vue-router";
+import {DocumentIcon, DocumentDuplicateIcon} from '@heroicons/vue/24/outline'
 
 export const POST_ROUTER_NAME: Record<string, string> = {
   POST_MANAGE: 'PostManage',
@@ -21,6 +22,7 @@ const postRouter: RouteRecordRaw[] = [
         meta: {
           title: '文章管理',
           requireLogin: true,
+          icon: DocumentIcon,
         }
       },
       {
@@ -30,6 +32,7 @@ const postRouter: RouteRecordRaw[] = [
         meta: {
           title: '编辑文章',
           requireLogin: true,
+          icon: DocumentDuplicateIcon,
         }
       }
     ]

@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from "vue-router";
+import {TagIcon, InboxStackIcon} from '@heroicons/vue/24/outline'
 
 export const CATEGORY_ROUTER_NAME: Record<string, string> = {
   CATEGORY_MANAGE: 'CategoryManage',
@@ -21,6 +22,7 @@ const categoriesRouter: RouteRecordRaw[] = [
         meta: {
           title: '分类管理',
           requireLogin: true,
+          icon: InboxStackIcon,
         }
       },
       {
@@ -30,6 +32,7 @@ const categoriesRouter: RouteRecordRaw[] = [
         meta: {
           title: '标签管理',
           requireLogin: true,
+          icon: TagIcon
         }
       }
     ]

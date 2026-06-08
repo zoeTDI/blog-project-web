@@ -1,4 +1,5 @@
-import type { RouteRecordRaw } from "vue-router";
+import type {RouteRecordRaw} from "vue-router";
+import {AdjustmentsHorizontalIcon, Cog6ToothIcon, WrenchIcon} from '@heroicons/vue/24/outline'
 
 export const SYSTEM_ROUTER_NAME: Record<string, string> = {
   SYSTEM_SETTING: 'SystemSetting',
@@ -8,7 +9,8 @@ export const SYSTEM_ROUTER_NAME: Record<string, string> = {
 const settingsRouter: RouteRecordRaw[] = [
   {
     meta: {
-      title: '系统配置'
+      title: '系统配置',
+      icon: AdjustmentsHorizontalIcon,
     },
     path: '/settings', // 独立的前缀路径
     component: () => import('@/layouts/BackendLayout.vue'),
@@ -21,6 +23,7 @@ const settingsRouter: RouteRecordRaw[] = [
         meta: {
           title: '系统设置',
           requireLogin: true,
+          icon: Cog6ToothIcon,
         }
       },
       {
@@ -30,6 +33,7 @@ const settingsRouter: RouteRecordRaw[] = [
         meta: {
           title: '个人设置',
           requireLogin: true,
+          icon: WrenchIcon,
         }
       }
     ]

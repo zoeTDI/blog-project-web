@@ -1,4 +1,5 @@
 import type {RouteRecordRaw} from "vue-router";
+import {ChartBarSquareIcon, Squares2X2Icon} from '@heroicons/vue/24/outline'
 
 
 export const BACKEND_ROUTER_NAME = {
@@ -9,6 +10,7 @@ const analysisRouter: RouteRecordRaw = [
     {
         meta: {
             title: `分析`,
+            icon: Squares2X2Icon
         },
         path: '/analysis',
         component: () => import('@/layouts/BackendLayout.vue'),
@@ -21,6 +23,7 @@ const analysisRouter: RouteRecordRaw = [
                 meta: {
                     title: '仪表盘',
                     requireLogin: true,
+                    icon: ChartBarSquareIcon
                 }
             }
         ]
