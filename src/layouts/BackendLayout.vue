@@ -5,6 +5,7 @@ import {watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useTabStore} from "@/store/useTabStore.ts";
 import {preferences} from "@/core/preferences";
+import {CaBreadcrumb} from "@/components/ca/caBreadcrumb";
 
 const route = useRoute()
 const router = useRouter()
@@ -43,7 +44,8 @@ watch(
 
       <div class="container">
         <header class="header">
-          <span>Breadcrumb / User Info</span>
+<!--          <span>Breadcrumb / User Info</span>-->
+          <ca-breadcrumb />
         </header>
 
         <ca-tabs-bar/>
