@@ -1,6 +1,6 @@
 import type {RouteRecordRaw} from "vue-router";
 import {ROUTER_NAMES} from "@/router/routerNames.ts";
-
+const webTitle = import.meta.env.VITE_SITE_TITLE || '';
 /**
  * @description 路由配置说明
  * * 1. 结构嵌套 (children):
@@ -20,11 +20,11 @@ export const baseRouter: RouteRecordRaw[] = [
         redirect: '/home',
         children: [
             {
-                path: '/home', // 默认访问 / 时显示 Dashboard
+                path: '/home',
                 name: ROUTER_NAMES.HOME,
                 component: () => import('@/views/home/Home.vue'),
                 meta: {
-                    title: '首页'
+                    title: `${webTitle} - 首页`
                 }
             }
         ]
@@ -39,7 +39,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 name: ROUTER_NAMES.NOTES,
                 component: () => import('@/views/notes/Notes.vue'),
                 meta: {
-                    title: '博客文章'
+                    title: `${webTitle} - 博客文章`
                 }
             },
             {
@@ -59,7 +59,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 name: ROUTER_NAMES.ARCHIVES,
                 component: () => import('@/views/archive/Archive.vue'),
                 meta: {
-                    title: '归档'
+                    title: `${webTitle} - 归档`
                 }
             },
             {
@@ -89,7 +89,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 name: ROUTER_NAMES.GAMES,
                 component: () => import('@/views/games/Games.vue'),
                 meta: {
-                    title: '游戏'
+                    title: `${webTitle} - 游戏`
                 }
             },
             {
@@ -102,7 +102,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 name: ROUTER_NAMES.MOVIES,
                 component: () => import('@/views/movies/Movies.vue'),
                 meta: {
-                    title: '影视'
+                    title: `${webTitle} - 影视`
                 }
             },
             {
@@ -115,7 +115,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 name: ROUTER_NAMES.BOOKS,
                 component: () => import('@/views/books/Books.vue'),
                 meta: {
-                    title: '书架'
+                    title: `${webTitle} - 书架`
                 }
             },
             {
@@ -128,7 +128,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 name: ROUTER_NAMES.TRAVEL,
                 component: () => import('@/views/travel/Travel.vue'),
                 meta: {
-                    title: '旅行'
+                    title: `${webTitle} - 旅行`
                 }
             }
         ]
@@ -143,7 +143,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 name: ROUTER_NAMES.LOGIN,
                 component: () => import("@/views/login/Login.vue"),
                 meta: {
-                    title: '登录'
+                    title: `${webTitle} - 登录`
                 }
             }
         ]
@@ -158,7 +158,7 @@ export const baseRouter: RouteRecordRaw[] = [
                 name: 'NotFound',
                 component: () => import('@/views/error/NotFound.vue'),
                 meta: {
-                    title: '404 Not Found',
+                    title: `${webTitle} - 404 Not Found`,
                 }
             }
         ]
