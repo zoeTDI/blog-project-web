@@ -4,6 +4,7 @@ import {computed, onMounted, onUnmounted, ref} from "vue";
 import type {ContextMenuItem, TabItem} from "@/components/ca/caTabsBar";
 import {XMarkIcon, LockClosedIcon} from "@heroicons/vue/24/outline";
 import {useTabStore} from "@/store/useTabStore.ts";
+import {preferences} from "@/core/preferences";
 
 const router = useRouter()
 const route = useRoute()
@@ -28,7 +29,7 @@ const openContextMenu = (e: MouseEvent, tab: TabItem) => {
 /**
  * 关闭右键菜单
  */
-const closeContextMenu = (e: MouseEvent, tab: TabItem) => {
+const closeContextMenu = () => {
   visible.value = false
 }
 
@@ -80,6 +81,18 @@ const handleClose = (path: string) => {
  */
 const handlePin = (path: string) => {
   tabStore.pinTab(path)
+}
+
+/**
+ * 解除标签页固定
+ */
+const handleTabUnpin = (e: Event, path: string) => {
+  e.stopPropagation()
+  // 不可关闭默认固定的标签页
+  if (path === preferences.app.defaultHomePath) {
+    return
+  }
+  tabStore.unpinTab(path)
 }
 
 /**
@@ -224,27 +237,22 @@ onUnmounted(() => {
     >
       <span class="tab-title">{{ tab.title }}</span>
       <!--      固定图标-->
-      <span v-if="tab.pinned" class="pin-icon">
+      <span v-if="tab.pinned" class="pin-icon" @click="handleTabUnpin($event, tab.path)">
         <lock-closed-icon/>
       </span>
-      <!--      关闭图标-->
-      <!--      已移除，改在右键菜单中关闭标签页-->
-      <!--      <span v-if="tab.closeable !== false" class="close-icon" @click="handleTabClose($event, tab.path)">-->
-      <!--        <x-mark-icon/>-->
-      <!--      </span>-->
-      <div v-if="visible"
-           :style="{left: menuPosition.x + 'px', top: menuPosition.y + 'px'}"
-           class="context-menu"
-           @click.stop
-      >
-        <template v-for="item in menuItems" :key="item.key">
-          <div :class="['menu-item-option', {disabled: item.disabled}]"
-               @click="!item.disabled && handleMenuClick(item)">
-            {{item.label}}
-          </div>
-          <div v-if="item.divider" class="menu-divider"></div>
-        </template>
-      </div>
+    </div>
+    <div v-if="visible"
+         :style="{left: menuPosition.x + 'px', top: menuPosition.y + 'px'}"
+         class="context-menu"
+         @click.stop
+    >
+      <template v-for="item in menuItems" :key="item.key">
+        <div :class="['menu-item-option', {disabled: item.disabled}]"
+             @click="!item.disabled && handleMenuClick(item)">
+          {{ item.label }}
+        </div>
+        <div v-if="item.divider" class="menu-divider"></div>
+      </template>
     </div>
   </nav>
 </template>

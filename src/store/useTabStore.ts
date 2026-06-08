@@ -53,7 +53,7 @@ export const useTabStore = defineStore('tab', () => {
     if (index === -1) return
     
     
-    if (tabs.value[index].pinned === false) return currentPath
+    if (tabs.value[index].pinned) return currentPath
     
     let nextActivePath = currentPath
     if (path === currentPath) {
@@ -87,6 +87,26 @@ export const useTabStore = defineStore('tab', () => {
     }
     
     // 紧随最后一个已固定标签后方插入
+    tabs.value.splice(lastPinnedIndex, 0, targetTab)
+  }
+  
+  /**
+   * 新增功能：取消固定标签页
+   * 逻辑：改变固定状态，并移动到所有剩余固定标签页的后方（即普通标签页的最前排）
+   */
+  const unpinTab = (path: string) => {
+    const index = tabs.value.findIndex((tab) => tab.path === path)
+    if (index === -1) {
+      return
+    }
+    const targetTab = tabs.value[index]
+    targetTab.pinned = false
+    tabs.value.splice(index, 1)
+    let lastPinnedIndex = 0
+    while (lastPinnedIndex < tabs.value.length
+      && tabs.value[lastPinnedIndex].pinned) {
+      lastPinnedIndex++
+    }
     tabs.value.splice(lastPinnedIndex, 0, targetTab)
   }
   
@@ -129,7 +149,7 @@ export const useTabStore = defineStore('tab', () => {
    * 逻辑：保留当前页、固定页以及不可关闭页，其余全部清空
    */
   const closeOtherTabs = (path: string) => {
-    tabs.value = tabs.value.filter(tab => tab.path === path || tab.pinned || tab.closeable === false)
+    tabs.value = tabs.value.filter(tab => tab.path === path || tab.pinned)
   }
   
   /**
@@ -137,7 +157,7 @@ export const useTabStore = defineStore('tab', () => {
    * 逻辑：仅保留固定页以及不可关闭页
    */
   const closeAllTabs = () => {
-    tabs.value = tabs.value.filter(tab => tab.pinned || tab.closeable === false)
+    tabs.value = tabs.value.filter(tab => tab.pinned)
   }
   
   return {
@@ -146,6 +166,7 @@ export const useTabStore = defineStore('tab', () => {
     closeTab,
     initHomeTab,
     pinTab,
+    unpinTab,
     closeLeftTabs,
     closeRightTabs,
     closeOtherTabs,
