@@ -1,8 +1,10 @@
+import type {Component} from "vue";
+
 interface TabItem {
   title: string;
   path: string;
   pinned: boolean;
-  icon?: Comment
+  icon?: Component
 }
 
 interface ContextMenuItem {
