@@ -56,7 +56,7 @@ const closeContextMenu = () => {
 /**
  * 状态置灰状态的辅助校验逻辑
  */
-const hasCloseableLeft = (path?: string) => {
+const hasCloseableLeft = (path?: string): boolean => {
   if (!path) {
     return false
   }
@@ -67,7 +67,7 @@ const hasCloseableLeft = (path?: string) => {
   return tabList.value.slice(0, index).some(t => !t.pinned)
 }
 
-const hasCloseableRight = (path?: string) => {
+const hasCloseableRight = (path?: string): boolean => {
   if (!path) {
     return false
   }
@@ -76,20 +76,19 @@ const hasCloseableRight = (path?: string) => {
   return tabList.value.slice(index + 1).some(t => !t.pinned)
 }
 
-const hasCloseableOthers = (path?: string) => {
+const hasCloseableOthers = (path?: string): boolean => {
   if (!path) return false
-  return tabList.value.some(t => !t.pinned)
+  return tabList.value.some(t => !(t.pinned || t.path === path))
 }
 
-const hasCloseableAll = () => {
+const hasCloseableAll = (): boolean => {
   return tabList.value.some(t => !t.pinned)
 }
 
 /**
- * 各核心交互指令分发
- * @param path
+ * 关闭标签页
  */
-const handleClose = (path: string) => {
+const handleTabClose = (path: string) => {
   const nextPath = tabStore.closeTab(path, route.path)
   if (nextPath && nextPath !== route.path) {
     router.push(nextPath)
@@ -106,8 +105,7 @@ const handlePin = (path: string) => {
 /**
  * 解除标签页固定
  */
-const handleTabUnpin = (e: Event, path: string) => {
-  e.stopPropagation()
+const handleTabUnpin = (path: string) => {
   // 不可关闭默认固定的标签页
   if (path === preferences.app.defaultHomePath) {
     return
@@ -136,6 +134,9 @@ const handleOpenWindow = (path: string) => {
   window.open(url, '_blank')
 }
 
+/**
+ * 关闭左侧标签页
+ */
 const handleCloseLeft = (path: string) => {
   tabStore.closeLeftTabs(path)
   // 如果激活项被批量删除了，强制聚焦到当前点选的 tab 上
@@ -144,6 +145,9 @@ const handleCloseLeft = (path: string) => {
   }
 }
 
+/**
+ * 关闭友侧标签页
+ */
 const handleCloseRight = (path: string) => {
   tabStore.closeRightTabs(path)
   if (!tabList.value.some(t => t.path === route.path)) {
@@ -151,13 +155,21 @@ const handleCloseRight = (path: string) => {
   }
 }
 
+/**
+ * 关闭其他标签页
+ */
 const handleCloseOthers = (path: string) => {
+  console.log("=>(CaTabsBar.vue:155) tabList.value", tabList.value);
   tabStore.closeOtherTabs(path)
-  if (route.path !== path && !tabList.value.some(t => t.path === route.path)) {
+  console.log("=>(CaTabsBar.vue:158) tabList.value", tabList.value);
+  if (route.path !== path) {
     router.push(path)
   }
 }
 
+/**
+ * 关闭全部标签页
+ */
 const handleCloseAll = () => {
   tabStore.closeAllTabs()
   // 保留默认固定首页后，高亮切回留存的第一项
@@ -171,17 +183,14 @@ const handleCloseAll = () => {
  */
 const menuItems = computed((): ContextMenuItem[] => {
   if (!dropdownTab.value) return []
-  const tab = dropdownTab.value;
+  const tab: TabItem = dropdownTab.value;
   return [
     {
       key: 'close',
       label: '关闭',
       icon: XMarkIcon,
       disabled: tab.pinned,
-      action: () => {
-        const nextPath = tabStore.closeTab(tab.path, route.path);
-        if (nextPath && nextPath !== route.path) router.push(nextPath);
-      }
+      action: () => handleTabClose(tab.path)
     },
     {
       key: 'pin',
@@ -189,77 +198,71 @@ const menuItems = computed((): ContextMenuItem[] => {
       // 根据状态动态切换“固定锁”或“开锁”图标
       icon: tab.pinned ? LockOpenIcon : LockClosedIcon,
       disabled: false,
-      action: () => {
-        if (tab.pinned) {
-          tabStore.unpinTab(tab.path);
-        } else {
-          tabStore.pinTab(tab.path);
-        }
-      }
+      action: tab.pinned
+          ? () => handleTabUnpin(tab.path)
+          : () => handlePin(tab.path)
     },
     {
       key: 'reload',
       label: '重新加载',
       icon: ArrowPathIcon,
       disabled: false,
-      action: () => {
-        // 您的重新加载逻辑...
-        window.location.reload();
-      }
+      action: () => handleReload(tab.path)
     },
     {
       key: 'openWindow',
       label: '在新窗口打开',
       icon: ArrowTopRightOnSquareIcon,
       disabled: false,
-      action: () => {
-        window.open(tab.path, '_blank');
-      }
+      action: () => handleOpenWindow(tab.path)
     },
     {
       key: 'closeLeft',
       label: '关闭左侧标签页',
       icon: ArrowLeftIcon,
       disabled: !hasCloseableLeft(tab.path),
-      action: () => tabStore.closeLeftTabs(tab.path)
+      action: () => handleCloseLeft(tab.path)
     },
     {
       key: 'closeRight',
       label: '关闭右侧标签页',
       icon: ArrowRightIcon,
       disabled: !hasCloseableRight(tab.path),
-      action: () => tabStore.closeRightTabs(tab.path)
+      action: () => handleCloseRight(tab.path)
     },
     {
       key: 'closeOthers',
       label: '关闭其他标签页',
       icon: MinusCircleIcon,
-      disabled: false,
-      action: () => tabStore.closeOtherTabs(tab.path)
+      disabled: !hasCloseableOthers(tab.path),
+      action: () => handleCloseOthers(tab.path)
     },
     {
       key: 'closeAll',
       label: '关闭全部标签页',
       icon: XMarkIcon,
-      disabled: false,
-      action: () => tabStore.closeAllTabs()
+      disabled: !hasCloseableAll(),
+      action: handleCloseAll
     }
   ]
 })
 
+/**
+ * 标签页跳转
+ * @param path
+ */
 const handleClickTab = (path: string) => {
+  if (route.path === path) {
+    return
+  }
   router.push(path)
 }
 
-const handleTabClose = (e: Event, path: string) => {
+/**
+ * 菜单项点击
+ */
+const handleMenuClick = (e: Event, item: ContextMenuItem) => {
   e.stopPropagation()
-  const nextPath = tabStore.closeTab(path, route.path)
-  if (nextPath && nextPath !== route.path) {
-    router.push(nextPath)
-  }
-}
-
-const handleMenuClick = (item: any) => {
   item.action()
   closeContextMenu()
 }
@@ -295,7 +298,7 @@ onUnmounted(() => {
     >
       <div v-for="item in menuItems" :key="item.key">
         <div :class="['context-menu-item', { disabled: item.disabled }]"
-             @click="!item.disabled && handleMenuClick(item)">
+             @click="!item.disabled && handleMenuClick($event, item)">
           <component
               v-if="item.icon"
               :is="item.icon"
