@@ -46,7 +46,7 @@ const setupAccessGuard = (router: Router) => {
           return {path: to.path}
         } else {
           // 前往默认首页
-          return {name: ROUTER_NAMES.HOME};
+          return {path: (preferences.app.defaultHomePath && preferences.app.defaultHomePath !== '') ? preferences.app.defaultHomePath : '/home'};
         }
       }
     }
