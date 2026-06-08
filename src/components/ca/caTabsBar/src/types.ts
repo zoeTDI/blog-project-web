@@ -1,5 +1,11 @@
 import type {Component} from "vue";
 
+interface HomeTabParam {
+  path: string;
+  title: string;
+  icon?: any;
+}
+
 interface TabItem {
   title: string;
   path: string;
@@ -17,6 +23,7 @@ interface ContextMenuItem {
 }
 
 export {
+  HomeTabParam,
   TabItem,
   ContextMenuItem,
 }

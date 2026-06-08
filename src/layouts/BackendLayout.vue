@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {CaTabsBar} from "@/components/ca/caTabsBar";
+import {CaTabsBar, type HomeTabParam} from "@/components/ca/caTabsBar";
 import {CaSideMenu} from "@/components/ca/caSideMenu";
 import {watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
@@ -12,6 +12,12 @@ const router = useRouter()
 const tabStore = useTabStore()
 
 const defaultHomePath = preferences.app.defaultHomePath
+const homeRouteResolved = router.resolve(defaultHomePath)
+const homeTabConfig: HomeTabParam = {
+  path: defaultHomePath,
+  title: (homeRouteResolved.meta?.title as string) || '首页',
+  icon: homeRouteResolved.meta?.icon
+}
 
 watch(
     () => route.path,
@@ -26,7 +32,7 @@ watch(
       tabStore.addTab({
         path: route.path,
         meta: route.meta
-      }, defaultHomePath)
+      }, homeTabConfig)
     },
     { immediate: true } // 页面首次加载时就触发一次
 )

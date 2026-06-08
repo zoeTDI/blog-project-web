@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {ref} from 'vue'
-import type {TabItem} from "@/components/ca/caTabsBar";
+import type {HomeTabParam, TabItem} from "@/components/ca/caTabsBar";
 import {HomeIcon} from '@heroicons/vue/24/outline'
 
 export const useTabStore = defineStore('tab', () => {
@@ -8,18 +8,17 @@ export const useTabStore = defineStore('tab', () => {
   
   /**
    * 初始化默认首页
-   * @param homePath 默认首页路径，如 preferences.app.defaultHomePath
-   * @param homeTitle 默认首页的标题，比如 '首页' 或 'Dashboard'
+   * @param homeTab
    */
-  const initHomeTab = (homePath: string, homeTitle: string = '首页') => {
-    const hasHome = tabs.value.some(tab => tab.path === homePath)
+  const initHomeTab = (homeTab: HomeTabParam) => {
+    const hasHome = tabs.value.some(tab => tab.path === homeTab.path)
     if (!hasHome) {
-      // 插入到数组最前面，且 closeable 设为 false
+      // 插入到数组最前面，且 pinned 设为 true 保持固定
       tabs.value.unshift({
-        title: homeTitle,
-        path: homePath,
+        title: homeTab.title,
+        path: homeTab.path,
         pinned: true,
-        icon: HomeIcon,
+        icon: homeTab.icon || HomeIcon, // 防御性设计：若路由未配置 icon，降级使用默认的 HomeIcon，保证不崩溃
       })
     }
   }
@@ -27,14 +26,14 @@ export const useTabStore = defineStore('tab', () => {
   /**
    * 添加标签页
    */
-  const addTab = (route: { path: string; meta: any }, homePath: string) => {
+  const addTab = (route: { path: string; meta: any }, homeTab: HomeTabParam) => {
     if (route.meta?.hidden === true) return
     
     // 确保首页始终存在
-    initHomeTab(homePath, '首页')
+    initHomeTab(homeTab)
     
     // 如果当前要添加的就是首页，直接返回（因为 initHomeTab 已经处理过了）
-    if (route.path === homePath) return
+    if (route.path === homeTab.path) return
     
     // 添加其他普通标签页
     const isExist = tabs.value.some(tab => tab.path === route.path)
