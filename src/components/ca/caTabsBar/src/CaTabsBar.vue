@@ -335,10 +335,11 @@ onUnmounted(() => {
 }
 
 .tab-item.active {
-  color: #1890ff;
-  background-color: #fff;
+  color: #fff;
+  background-color: #1890ff;
   border-color: #e8e8e8;
-  height: 33px; /* 微微提高 1px，盖住 nav 的下边框，形成连贯视觉 */
+  height: 33px;
+  border-radius: 4px 4px 0 0;
   margin-bottom: -1px;
   position: relative;
   z-index: 2;
@@ -347,12 +348,23 @@ onUnmounted(() => {
 .tab-item.active::before {
   content: '';
   position: absolute;
-  top: 0;
+  width: 8px;
+  height: 8px;
+  bottom: 0;
   left: 0;
+  transform: translateX(-100%);
+  background: radial-gradient(circle at 0% 0%, transparent 0px, transparent 8px, #1890ff 8px, #1890ff 100%);
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  bottom: 0;
   right: 0;
-  height: 2px;
-  background-color: #1890ff;
-  border-radius: 4px 4px 0 0;
+  transform: translateX(100%);
+  background: radial-gradient(circle at 100% 0%, transparent 0px, transparent 8px, #1890ff 8px, #1890ff 100%);
 }
 
 .tab-title {
