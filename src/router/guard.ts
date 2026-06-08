@@ -39,11 +39,11 @@ const setupAccessGuard = (router: Router) => {
     // 无需检查权限
     if (Object.values(ROUTER_NAMES).includes(to.name)) {
       // 用户已登录，手动输入url前往登录页面
-      if (to.name === ROUTER_NAMES.LOGIN && userStore.getAuthToken()) {
+      if (to.name === ROUTER_NAMES.LOGIN && userStore.getAuthToken() && userStore.getAuthToken() !== '') {
         // 存在重定向页面
         if (to.query?.to && to.query.to !== '') {
           // 前往重定向页面
-          return {path: to.path}
+          return {path: to.query.to}
         } else {
           // 前往默认首页
           return {path: (preferences.app.defaultHomePath && preferences.app.defaultHomePath !== '') ? preferences.app.defaultHomePath : '/home'};
@@ -51,7 +51,7 @@ const setupAccessGuard = (router: Router) => {
       }
     }
     // 访问权限检查
-    if (!userStore.getAuthToken()) {
+    if (!userStore.getAuthToken() || userStore.getAuthToken() === '') {
       // 明确忽略权限检查，直接放行
       if (to.meta?.ignoreAccess) {
         return true;
