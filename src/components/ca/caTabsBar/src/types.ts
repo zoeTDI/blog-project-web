@@ -2,6 +2,7 @@ interface TabItem {
   title: string;
   path: string;
   pinned: boolean;
+  icon?: Comment
 }
 
 interface ContextMenuItem {

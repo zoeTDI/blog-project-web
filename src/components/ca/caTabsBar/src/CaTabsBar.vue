@@ -235,6 +235,7 @@ onUnmounted(() => {
          @click="handleClickTab(tab.path)"
          @contextmenu.prevent="openContextMenu($event, tab)"
     >
+      <component v-if="tab.icon" :is="tab.icon" class="tab-item-icon" />
       <span class="tab-title">{{ tab.title }}</span>
       <!--      固定图标-->
       <span v-if="tab.pinned" class="pin-icon" @click="handleTabUnpin($event, tab.path)">
@@ -262,6 +263,14 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
+}
+
+.tab-item-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .tab-item {

@@ -1,6 +1,7 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import {defineStore} from 'pinia'
+import {ref} from 'vue'
 import type {TabItem} from "@/components/ca/caTabsBar";
+import {HomeIcon} from '@heroicons/vue/24/outline'
 
 export const useTabStore = defineStore('tab', () => {
   const tabs = ref<TabItem[]>([])
@@ -18,6 +19,7 @@ export const useTabStore = defineStore('tab', () => {
         title: homeTitle,
         path: homePath,
         pinned: true,
+        icon: HomeIcon,
       })
     }
   }
@@ -104,7 +106,7 @@ export const useTabStore = defineStore('tab', () => {
     tabs.value.splice(index, 1)
     let lastPinnedIndex = 0
     while (lastPinnedIndex < tabs.value.length
-      && tabs.value[lastPinnedIndex].pinned) {
+    && tabs.value[lastPinnedIndex].pinned) {
       lastPinnedIndex++
     }
     tabs.value.splice(lastPinnedIndex, 0, targetTab)
