@@ -4,6 +4,15 @@ interface TabItem {
   pinned: boolean;
 }
 
+interface ContextMenuItem {
+  key: string;
+  label: string;
+  disabled: boolean;
+  action: () => void;
+  divider?: boolean;
+}
+
 export {
-  TabItem
+  TabItem,
+  ContextMenuItem,
 }
