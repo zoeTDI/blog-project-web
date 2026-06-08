@@ -3,12 +3,13 @@ import {useRoute, useRouter} from "vue-router";
 import {computed, ref, watch} from "vue";
 import type {MenuItem} from "@/components/ca/caSideMenu";
 import {isArray} from "@/utils/isFu.ts";
+import {ChevronDownIcon, ChevronUpIcon} from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const router = useRouter()
 
 const menuTree = computed<MenuItem[]>(() => {
-  const modules = import.meta.glob('@/router/modules/*.ts', { eager: true })
+  const modules = import.meta.glob('@/router/modules/*.ts', {eager: true})
   const menus: MenuItem[] = []
 
   Object.keys(modules).forEach((key) => {
@@ -88,10 +89,13 @@ watch(
       >
         <span class="menu-title">{{ menu.title }}</span>
         <span
-            v-if="menu.children && menu.children.length > 0"
-            :class="['arrow-icon', { rotated: activeSubMenuIndex === index }]"
+            v-if="menu.children && menu.children.length > 0 && activeSubMenuIndex !== index"
+            class="arrow-icon"
         >
-          ▼
+          <chevron-down-icon/>
+        </span>
+        <span v-else class="arrow-icon">
+          <chevron-up-icon />
         </span>
       </div>
 
@@ -166,7 +170,9 @@ watch(
   transition: transform 0.25s ease;
   opacity: 0.5;
 }
-.arrow-icon.rotated {
-  transform: scale(0.8) rotate(180deg);
+
+.arrow-icon svg {
+  width: 16px;
+  aspect-ratio: 1/ 1;
 }
 </style>
