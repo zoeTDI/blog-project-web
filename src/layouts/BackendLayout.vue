@@ -70,6 +70,8 @@ watch(
 .backend-layout {
   width: 100vw;
   height: 100vh;
+  min-width: 1024px; 
+  overflow: auto;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
