@@ -7,6 +7,7 @@ import {useTabStore} from "@/store/useTabStore.ts";
 import {preferences} from "@/core/preferences";
 import {CaBreadcrumb} from "@/components/ca/caBreadcrumb";
 import { GlobalTools } from "@/components/globalTools";
+import { UserBox } from "@/components/userBox";
 
 const route = useRoute()
 const router = useRouter()
@@ -52,10 +53,8 @@ watch(
       <div class="container">
         <header class="header">
           <ca-breadcrumb style="margin-right: auto;" />
-          <global-tools />
-          <div class="user-info">
-            <span>[用户头像/菜单占位]</span>
-          </div>
+          <global-tools class="global-tools-container" />
+          <user-box />
         </header>
 
         <ca-tabs-bar/>
@@ -135,6 +134,25 @@ watch(
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+}
+
+.global-tools-container {
+  position: relative;
+  margin-right: 20px;
+  padding-right: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.global-tools-container::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 20px;
+  background-color: #dcdfe6;
 }
 
 </style>
