@@ -4,6 +4,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 const props = defineProps<{
   options: { label: string, value: string | number }[];
   modelValue: boolean;
+  selectedValue?: string | number;
 }>();
 
 const emit = defineEmits(['update:modelValue', 'select']);
@@ -29,7 +30,7 @@ onUnmounted(() => {
     <div 
       v-for="opt in options" 
       :key="opt.value" 
-      class="menu-item"
+      :class="['menu-item', { 'active': opt.value === selectedValue }]"
       @click="emit('select', opt.value)"
     >
       {{ opt.label }}
@@ -50,6 +51,31 @@ onUnmounted(() => {
   min-width: 120px;
   padding: 4px 0;
 }
-.menu-item { padding: 8px 16px; cursor: pointer; color: #333; font-size: 14px; }
+
+.menu-item { 
+  position: relative;
+  padding: 8px 16px 8px 32px;
+  cursor: pointer; 
+  color: #333; 
+  font-size: 14px; 
+}
+
 .menu-item:hover { background: #f5f5f5; }
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 14px; /* 圆点距离左侧的距离 */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+
+.menu-item.active::before {
+  background-color: black;
+}
 </style>

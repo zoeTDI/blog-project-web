@@ -5,7 +5,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import type { ToolType, ToolShape } from './types';
-import { preferenceManager, preferences, SUPPORT_LANGUAGE_OPTIONS, TIMEZONE_OPTIONS } from '@/core/preferences';
+import { preferenceManager, preferences, SUPPORT_LANGUAGE_OPTIONS, TIMEZONE_OPTIONS, type SupportLanguageType, type TimezoneOptions } from '@/core/preferences';
 import {MenuPopover} from '@/components/globalTools';
 
 
@@ -42,9 +42,32 @@ const toggleMenu = (menu: string, event: MouseEvent) => {
   activeMenu.value = (activeMenu.value === menu) ? null : menu;
 };
 
-const handleSelect = (type: 'timezone' | 'language', value: any) => {
+/**
+ * 当前的网站语言
+ */
+const curLanguage = computed(() => preferences.app.locale)
+
+/**
+ * 更新网站语言
+ */
+const updateLanguage = (value: SupportLanguageType) => {
+  preferenceManager.updatePreferences({app: {locale: value}})
   activeMenu.value = null;
-};
+}
+
+/**
+ * 当前的网站时区
+ */
+const curTimezone = computed(() => preferences.app.timezone)
+
+/**
+ * 更新时区
+ */
+const updateTimezone = (value: TimezoneOptions) => {
+  preferenceManager.updatePreferences({app: {timezone: value}})
+  activeMenu.value = null;
+}
+
 </script>
 
 <template>
@@ -66,8 +89,9 @@ const handleSelect = (type: 'timezone' | 'language', value: any) => {
       <MenuPopover 
         :modelValue="activeMenu === 'timezone'" 
         @update:modelValue="activeMenu = null"
-        :options="timezones" 
-        @select="(val) => handleSelect('timezone', val)" 
+        :options="timezones"
+        :selected-value="curTimezone"
+        @select="(val) => updateTimezone(val)" 
       />
     </div>
 
@@ -79,7 +103,8 @@ const handleSelect = (type: 'timezone' | 'language', value: any) => {
         :modelValue="activeMenu === 'language'" 
         @update:modelValue="activeMenu = null"
         :options="languages" 
-        @select="(val) => handleSelect('language', val)" 
+        :selected-value="curLanguage"
+        @select="(val) => updateLanguage(val)" 
       />    
     </div>
   </div>
