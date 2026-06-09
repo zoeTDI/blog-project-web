@@ -49,13 +49,17 @@ const defaultPreferences: Preferences = {
   navigation: {},
   theme: {
     mode: 'light',
-    colorPrimary: "#1890ff"
+    colorPrimary: "#aa3bff"
   },
   transition: {
     enable: false, loading: false, name: undefined, progress: true
     
   },
-  widgetPreferences: {}
+  widgetPreferences: {
+    themeToggle: true,
+    languageToggle: false,
+    timezoneToggle: false
+  }
 }
 
 export {defaultPreferences}
