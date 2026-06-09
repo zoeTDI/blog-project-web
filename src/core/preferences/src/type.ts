@@ -1,9 +1,9 @@
-export type SupportLanguageType = 'zh-CN' | 'en-US'
-
-export const SUPPORT_LANGUAGE_OPTIONS: Record<string, SupportLanguageType> = {
+export const SUPPORT_LANGUAGE_OPTIONS = {
   zh_CN: 'zh-CN',
   en_US: 'en-US'
-}
+} as const;
+
+export type SupportLanguageOption = typeof SUPPORT_LANGUAGE_OPTIONS[keyof typeof SUPPORT_LANGUAGE_OPTIONS]
 
 export type ThemeModeOptions = 'light' | 'dark'
 
@@ -29,7 +29,7 @@ export const TIMEZONE_OPTIONS = {
   Pacific_Auckland: 'Pacific/Auckland',
 } as const;
 
-export type TimezoneOptions = typeof TIMEZONE_OPTIONS[keyof typeof TIMEZONE_OPTIONS];
+export type TimezoneOption = typeof TIMEZONE_OPTIONS[keyof typeof TIMEZONE_OPTIONS];
 
 export interface AppPreferences {
   /**
@@ -43,7 +43,7 @@ export interface AppPreferences {
   /**
    * 支持的语言
    */
-  locale: SupportLanguageType;
+  locale: SupportLanguageOption;
   /**
    * 是否开启水印
    */
@@ -59,7 +59,7 @@ export interface AppPreferences {
   /**
    * 网站时区
    */
-  timezone: TimezoneOptions;
+  timezone: TimezoneOption;
 }
 
 export type BreadcrumbStyleType = 'normal' | 'background'
