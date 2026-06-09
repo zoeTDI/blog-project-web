@@ -59,6 +59,13 @@ const handleClickTab = (path: string) => {
   background: #fff;
   padding: 12px 4px 6px 4px;
   position: relative;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.tabs-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .tab-item-icon {
@@ -80,6 +87,7 @@ const handleClickTab = (path: string) => {
   font-size: 14px;
   user-select: none;
   transition: transform 300ms cubic-bezier(0.2, 0, 0, 1), border-color 300ms;
+  flex-shrink: 0;
 }
 
 .tab-item:hover:not(.active) {
