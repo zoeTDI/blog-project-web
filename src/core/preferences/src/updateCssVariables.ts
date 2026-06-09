@@ -1,6 +1,7 @@
 import { type ThemeModeOptions, type ThemePreferences } from "@/core/preferences";
+import type { DeepPartial } from "@/types/deepType";
 
-const updateThemeMode = (themePreferences: ThemePreferences) => {
+const updateThemeMode = (themePreferences: DeepPartial<ThemePreferences>) => {
   if (Object.keys(themePreferences).includes('mode')) {
     const themeModeOption: ThemeModeOptions = themePreferences.mode;
     const app = document.getElementById('app');

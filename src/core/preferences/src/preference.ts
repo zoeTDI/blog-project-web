@@ -10,6 +10,7 @@ import { useDebounceFn } from "@/hooks/useDebounceFn.ts";
 import { markRaw, reactive, readonly } from "vue";
 import { deepMerge } from "@/utils/deepFu.ts";
 import { isObject } from "@/utils/isFu.ts";
+import type { DeepPartial } from "@/types/deepType";
 
 const STORAGE_KEYS = {
   CUSTOM: 'preferences-custom',
@@ -84,10 +85,10 @@ class PreferenceManager {
   /**
    * 更新偏好设置
    * 深度合并新配置到当前状态，触发相应副作用（如动态修改 CSS 变量），并防抖保存到缓存
-   * @param {Partial<Preferences>} updates - 需要增量更新的偏好设置对象
+   * @param {DeepPartial<Preferences>} updates - 需要增量更新的偏好设置对象
    * @returns {void}
    */
-  public updatePreferences(updates: Partial<Preferences>) {
+  public updatePreferences(updates: DeepPartial<Preferences>) {
     const mergeState = deepMerge({}, markRaw(this.state), updates)
     Object.assign(this.state, mergeState);
     this.handleUpdates(updates);
@@ -104,10 +105,10 @@ class PreferenceManager {
   /**
    * 内部方法：处理偏好设置更新带来的副作用
    * 例如：当检测到主题或字体大小改变时，动态更新页面 CSS 变量
-   * @param {Partial<Preferences>} updates - 增量更新的偏好设置对象
+   * @param {DeepPartial<Preferences>} updates - 增量更新的偏好设置对象
    * @returns {void}
    */
-  private handleUpdates(updates: Partial<Preferences>) {
+  private handleUpdates(updates: DeepPartial<Preferences>) {
     const { theme, app } = updates;
     if (theme) {
       if (theme.mode) {
