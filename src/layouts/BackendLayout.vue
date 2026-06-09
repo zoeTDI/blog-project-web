@@ -6,6 +6,7 @@ import {useRoute, useRouter} from "vue-router";
 import {useTabStore} from "@/store/useTabStore.ts";
 import {preferences} from "@/core/preferences";
 import {CaBreadcrumb} from "@/components/ca/caBreadcrumb";
+import { GlobalTools } from "@/components/globalTools";
 
 const route = useRoute()
 const router = useRouter()
@@ -50,7 +51,11 @@ watch(
 
       <div class="container">
         <header class="header">
-          <ca-breadcrumb />
+          <ca-breadcrumb style="margin-right: auto;" />
+          <global-tools />
+          <div class="user-info">
+            <span>[用户头像/菜单占位]</span>
+          </div>
         </header>
 
         <ca-tabs-bar/>
@@ -76,16 +81,15 @@ watch(
   height: 100%;
 }
 
-/* 侧边栏：固定宽度，满高 */
 .side {
   width: 240px;
   height: 100%;
-  background-color: #001529; /* 经典的深色后台主题色 */
+  background-color: #001529;
   color: #fff;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0; /* 防止被右侧挤压变形 */
-  transition: width 0.3s; /* 预留后期折叠动画 */
+  flex-shrink: 0;
+  transition: width 0.3s;
 }
 
 .logo {
@@ -103,18 +107,16 @@ watch(
   overflow-y: auto;
 }
 
-/* 隐藏菜单滚动条 */
 .menu-container::-webkit-scrollbar {
   display: none;
 }
 
-/* 右侧容器：占据剩余的所有宽度，自适应 */
 .container {
   flex: 1;
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #f5f7fa; /* 浅灰色背景衬托内容区 */
+  background-color: #f5f7fa;
   overflow: hidden;
 }
 
@@ -126,14 +128,13 @@ watch(
   display: flex;
   align-items: center;
   padding: 0 24px;
-  z-index: 10; /* 保证阴影在标签页之上 */
+  z-index: 10;
 }
 
-/* 主要内容区：独立滚动，不影响全局 */
 .main-content {
   flex: 1;
   padding: 20px;
-  overflow-y: auto; /* 内容过多时自动出现滚动条 */
+  overflow-y: auto;
 }
 
 </style>
