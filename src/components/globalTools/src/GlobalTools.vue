@@ -5,7 +5,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import type { ToolType, ToolShape } from './types';
-import { preferenceManager, preferences, SUPPORT_LANGUAGE_OPTIONS, TIMEZONE_OPTIONS, type SupportLanguageType, type TimezoneOptions } from '@/core/preferences';
+import { preferenceManager, preferences, SUPPORT_LANGUAGE_OPTIONS, TIMEZONE_OPTIONS, type SupportLanguageOption, type TimezoneOption } from '@/core/preferences';
 import {MenuPopover} from '@/components/globalTools';
 
 
@@ -50,7 +50,7 @@ const curLanguage = computed(() => preferences.app.locale)
 /**
  * 更新网站语言
  */
-const updateLanguage = (value: SupportLanguageType) => {
+const updateLanguage = (value: SupportLanguageOption) => {
   preferenceManager.updatePreferences({app: {locale: value}})
   activeMenu.value = null;
 }
@@ -63,7 +63,7 @@ const curTimezone = computed(() => preferences.app.timezone)
 /**
  * 更新时区
  */
-const updateTimezone = (value: TimezoneOptions) => {
+const updateTimezone = (value: TimezoneOption) => {
   preferenceManager.updatePreferences({app: {timezone: value}})
   activeMenu.value = null;
 }
