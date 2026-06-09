@@ -17,6 +17,11 @@ const jumpTo = (route: RouteRecordRaw) => {
       <li class="item" v-for="(route, index) in matched" :key="route.path">
         <span :class="['text', { 'is-last': index === matched.length - 1 }]"
           @click="jumpTo(route)">
+          <component 
+            v-if="route.meta?.icon" 
+            :is="route.meta.icon" 
+            class="breadcrumb-icon"
+          />
           {{ route.meta.title }}
         </span>
         <div class="suffix" v-if="index !== matched.length - 1">
@@ -41,12 +46,20 @@ const jumpTo = (route: RouteRecordRaw) => {
 }
 
 .text {
+  display: flex;
+  align-items: center;
   position: relative;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   cursor: pointer;
   transition: all ease 150ms;
+}
+
+.breadcrumb-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
 }
 
 .suffix {
