@@ -1,4 +1,4 @@
-import {type Preferences, TimezoneOptions} from "@/core/preferences";
+import { type Preferences, TimezoneOptions } from "@/core/preferences";
 
 const defaultPreferences: Preferences = {
   app: {
@@ -52,8 +52,11 @@ const defaultPreferences: Preferences = {
     colorPrimary: "#aa3bff"
   },
   transition: {
-    enable: false, loading: false, name: undefined, progress: true
-    
+    enable: false,
+    loading: false, 
+    name: 'fade',
+    progress: true
+
   },
   widgetPreferences: {
     themeToggle: true,
@@ -62,4 +65,4 @@ const defaultPreferences: Preferences = {
   }
 }
 
-export {defaultPreferences}
+export { defaultPreferences }
