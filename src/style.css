@@ -21,11 +21,11 @@
   --color-root-bg: #ffffff;
   --color-container-bg: #ffffff;
   --color-border: #e5e4e7;
-  --color-accent: #aa3bff;
-  --color-border-accent: #aa3bff;
-  --color-bg-accent: #aa3bff;
+  --color-accent: var(--app-accent-color);
+  --color-border-accent: var(--app-accent-color);
+  --color-bg-accent: var(--app-accent-color);
   --color-bg: rgba(244, 243, 236, 0.5);
-  --color-text-hover-accent: #aa3bff;
+  --color-text-hover-accent: var(--app-accent-color);
   --color-bg-hover-accent: rgba(164, 41, 255, 0.24);
   --color-border-hover-accent: rgba(170, 59, 255, 0.5);
   --color-bg-hover: rgba(244, 243, 236, 0.5);
