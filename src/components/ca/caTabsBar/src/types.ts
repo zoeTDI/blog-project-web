@@ -1,4 +1,4 @@
-import type {Component} from "vue";
+import type { Component } from "vue";
 
 interface HomeTabParam {
   path: string;
@@ -22,7 +22,7 @@ interface ContextMenuItem {
   icon?: Component;
 }
 
-export {
+export type {
   HomeTabParam,
   TabItem,
   ContextMenuItem,
