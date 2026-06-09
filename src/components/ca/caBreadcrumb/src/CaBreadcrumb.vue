@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {useRoute, useRouter} from "vue-router";
+import {useRoute, useRouter, type RouteRecordRaw} from "vue-router";
 import {computed} from "vue";
 import {ChevronDoubleRightIcon} from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const router = useRouter()
 const matched = computed(() => route.matched)
-const jumpTo = (route) => {
+const jumpTo = (route: RouteRecordRaw) => {
   router.push(route)
 }
 </script>
@@ -63,12 +63,13 @@ const jumpTo = (route) => {
   height: 2px;
   border-radius: 1px;
   transition: width ease 150ms;
-  background-color: #1890ff;
+  background-color: var(--color-accent);
   bottom: -2px;
   left: 0;
 }
 
 .text:not(.is-last):hover {
+  color: var(--color-accent);
   transform: translateY(-4px);
 }
 

@@ -3,11 +3,8 @@ import { useRoute, useRouter } from "vue-router";
 import { computed, ref } from "vue";
 import type { TabItem } from "@/components/ca/caTabsBar";
 import { useTabStore } from "@/store/useTabStore.ts";
-import { defaultPreferences, preferences } from "@/core/preferences";
 import { ContextMenu } from "@/components/ca/caTabsBar";
 import { LockClosedIcon } from '@heroicons/vue/24/outline'
-
-const colorPrimary = computed(() => (preferences.theme.colorPrimary || defaultPreferences.theme.colorPrimary));
 
 const router = useRouter()
 const route = useRoute()
@@ -101,12 +98,12 @@ const handleClickTab = (path: string) => {
 
 
 .tab-item:hover {
-  color: v-bind(colorPrimary);
+  color: var(--color-accent);
   background-color: #f5f5f5;
 }
 
 .tab-item.active {
-  border-color: v-bind(colorPrimary);
+  border-color: var(--color-accent);
   transform: translateY(-4px);
   z-index: 2;
 }
@@ -122,7 +119,7 @@ const handleClickTab = (path: string) => {
 }
 
 .tab-item.active .pin-icon {
-  color: v-bind(colorPrimary);
+  color: var(--color-accent);
 }
 
 .pin-icon svg {

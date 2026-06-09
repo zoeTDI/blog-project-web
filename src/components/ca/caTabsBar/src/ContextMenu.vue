@@ -13,9 +13,7 @@ import {
 } from "@heroicons/vue/24/outline";
 import { useTabStore } from "@/store/useTabStore.ts";
 import { useRoute, useRouter } from 'vue-router';
-import { defaultPreferences, preferences } from '@/core/preferences';
-
-const colorPrimary = computed(() => (preferences.theme.colorPrimary || defaultPreferences.theme.colorPrimary))
+import { preferences } from '@/core/preferences';
 
 const router = useRouter()
 const route = useRoute()
@@ -289,7 +287,7 @@ onUnmounted(() => {
 
 .context-menu-item:hover:not(.disabled) {
   background-color: #f5f5f5;
-  color: v-bind(colorPrimary);
+  color: var(--color-accent);
 }
 
 .context-menu-item.disabled {
