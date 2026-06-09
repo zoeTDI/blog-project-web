@@ -1,11 +1,11 @@
-import { type Preferences, TimezoneOptions } from "@/core/preferences";
+import { type Preferences, TIMEZONE_OPTIONS } from "@/core/preferences";
 
 const defaultPreferences: Preferences = {
   app: {
     defaultAvatar: "",
     defaultHomePath: "/analysis/dashboard",
     locale: 'zh-CN',
-    timezone: TimezoneOptions.UTC,
+    timezone: TIMEZONE_OPTIONS.UTC,
     watermark: true,
     watermarkContent: "caldm.cn",
     websiteName: "电子灭虫录"
@@ -53,7 +53,7 @@ const defaultPreferences: Preferences = {
   },
   transition: {
     enable: false,
-    loading: false, 
+    loading: false,
     name: 'fade',
     progress: true
 

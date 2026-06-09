@@ -1,5 +1,10 @@
 export type SupportLanguageType = 'zh-CN' | 'en-US'
 
+export const SUPPORT_LANGUAGE_OPTIONS: Record<string, SupportLanguageType> = {
+  zh_CN: 'zh-CN',
+  en_US: 'en-US'
+}
+
 export type ThemeModeOptions = 'light' | 'dark'
 
 /**
@@ -7,7 +12,7 @@ export type ThemeModeOptions = 'light' | 'dark'
  */
 export type PageTransitionType = 'fade' | 'fade-down' | 'fade-slide' | 'fade-up';
 
-export const TimezoneOptions = {
+export const TIMEZONE_OPTIONS = {
   UTC: 'UTC',
   America_New_York: 'America/New_York',
   America_Los_Angeles: 'America/Los_Angeles',
@@ -24,7 +29,7 @@ export const TimezoneOptions = {
   Pacific_Auckland: 'Pacific/Auckland',
 } as const;
 
-export type TimezoneOptions = typeof TimezoneOptions[keyof typeof TimezoneOptions];
+export type TimezoneOptions = typeof TIMEZONE_OPTIONS[keyof typeof TIMEZONE_OPTIONS];
 
 export interface AppPreferences {
   /**
@@ -178,7 +183,7 @@ export interface LogoPreferences {
   sourceDark?: string;
 }
 
-export interface NavigationPreferences {}
+export interface NavigationPreferences { }
 
 export interface ThemePreferences {
   /**
@@ -321,16 +326,16 @@ type CustomPreferencesField<
   TCustomPreferences extends object = CustomPreferencesRecord
 > =
   string extends Extract<keyof TCustomPreferences, string>
-    ? AnyCustomPreferencesField
-    : {
-      [K in Extract<keyof TCustomPreferences, string>]: TCustomPreferences[K] extends boolean
-        ? CustomPreferencesSwitchField<K>
-        : TCustomPreferences[K] extends number
-          ? CustomPreferencesNumberField<K>
-          : TCustomPreferences[K] extends string
-            ? CustomPreferencesInputField<K> | CustomPreferencesSelectField<K>
-            : never;
-    }[Extract<keyof TCustomPreferences, string>];
+  ? AnyCustomPreferencesField
+  : {
+    [K in Extract<keyof TCustomPreferences, string>]: TCustomPreferences[K] extends boolean
+    ? CustomPreferencesSwitchField<K>
+    : TCustomPreferences[K] extends number
+    ? CustomPreferencesNumberField<K>
+    : TCustomPreferences[K] extends string
+    ? CustomPreferencesInputField<K> | CustomPreferencesSelectField<K>
+    : never;
+  }[Extract<keyof TCustomPreferences, string>];
 
 export interface PreferencesExtension<
   TCustomPreference extends object = CustomPreferencesRecord,
