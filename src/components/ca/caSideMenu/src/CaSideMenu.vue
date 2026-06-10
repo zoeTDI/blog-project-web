@@ -108,7 +108,7 @@ const foldMenu = (index: number | null = null) => {
   }
 }
 
-defineExpose({foldMenu})
+defineExpose({foldMenu, isFold})
 
 </script>
 
