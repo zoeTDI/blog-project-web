@@ -1,12 +1,12 @@
-import type {Component} from "vue";
+import type { Component } from "vue";
 
 interface MenuItem {
   title: string;
-  fullPath: string;
+  name: string;
   path: string;
   icon?: Component;
   hidden?: boolean;
   children?: MenuItem[];
 }
 
-export {MenuItem}
+export type { MenuItem }

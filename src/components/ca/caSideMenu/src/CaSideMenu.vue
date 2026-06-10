@@ -24,20 +24,22 @@ const menuTree = computed<MenuItem[]>(() => {
     const firstLevelMenu: MenuItem = {
       title: rootRoute.meta?.title || '未命名分类',
       path: rootRoute.path,
-      fullPath: rootRoute.fullPath,
+      name: rootRoute.name,
       icon: rootRoute.meta?.icon || Bars3BottomLeftIcon,
       children: []
     }
 
     // 组装二级菜单
     if (rootRoute.children && rootRoute.children.length > 0) {
+      console.log(`rootRoute.children: `, rootRoute.children);
+      
       rootRoute.children.forEach((child: any) => {
         // 除非显式配置 hidden: true，否则默认展示
         if (child.meta?.hidden !== true && child.meta?.title) {
           firstLevelMenu.children?.push({
             title: child.meta.title,
             path: child.path,
-            fullPath: child.fullPath,
+            name: child.name,
             icon: child.meta?.icon || Bars3BottomLeftIcon,
             hidden: child.meta?.hidden
           })
@@ -53,15 +55,17 @@ const menuTree = computed<MenuItem[]>(() => {
 
   return menus
 })
+
 const activeSubMenuIndex = ref<number | null>(null)
 
 const handleMenuClick = (menu: MenuItem, index: number) => {
+  if (isFold.value) { foldMenu(index) }
   if (menu.children && menu.children.length > 0) {
     // 如果有子菜单，则切换展开/折叠状态
     activeSubMenuIndex.value = activeSubMenuIndex.value === index ? null : index
   } else {
     // 如果没有子菜单，直接跳转
-    router.push(menu.fullPath)
+    router.push({name: menu.name})
   }
 }
 
@@ -84,61 +88,101 @@ watch(
       immediate: true
     }
 )
+let indexBeforeFold: number | null = null
+const isFold = ref<boolean>(false);
+const foldMenu = (index: number | null = null) => {
+  // 展开
+  if (isFold.value) {
+    isFold.value = false;
+    // 用户在折叠状态下直接点击一级菜单
+    if (typeof index === 'number') {
+      // 置空indexBeforeFold的值
+      indexBeforeFold = null;
+      // 由handleMenuClick方法处理激活子菜单
+      return;
+    }
+    if (typeof indexBeforeFold === 'number' && activeSubMenuIndex.value === null) {
+       activeSubMenuIndex.value = indexBeforeFold
+    }
+  } else {
+    // 折叠
+    isFold.value = true;
+    // 记录折叠前打开的子菜单
+    indexBeforeFold = activeSubMenuIndex.value;
+    activeSubMenuIndex.value = null;    
+  }
+}
+
+defineExpose({foldMenu})
 
 </script>
 
 <template>
-  <div class="ca-side-menu">
-    <div
-        v-for="(menu, index) in menuTree"
-        :key="menu.fullPath"
-        class="menu-group"
-    >
+  <aside :class="['ca-side-menu', {fold: isFold}]">
+    <div class="menu-container">
       <div
-          :class="['menu-item', 'first-level', { active: route.path === menu.fullPath || activeSubMenuIndex === index }]"
-          @click="handleMenuClick(menu, index)"
+          v-for="(menu, index) in menuTree"
+          :key="menu.path"
+          class="menu-group"
       >
-        <div class="menu-item-left">
-          <component
-              :is="menu.icon"
-              v-if="menu.icon"
-              class="menu-icon"
-          />
-          <span class="menu-title">{{ menu.title }}</span>
-        </div>
-
-        <div v-if="menu.children && menu.children.length > 0" class="menu-item-right">
-          <ChevronUpIcon v-if="activeSubMenuIndex === index" class="arrow-icon" />
-          <ChevronDownIcon v-else class="arrow-icon" />
-        </div>
-      </div>
-
-      <div
-          class="sub-menu"
-          :style="{ height: activeSubMenuIndex === index ? `${(menu.children?.length || 0) * 40}px` : '0px' }"
-      >
+        <!-- 一级菜单 -->
         <div
-            v-for="child in menu.children"
-            :key="child.fullPath"
-            :class="['menu-item', 'second-level', { active: route.path === child.fullPath }]"
-            @click="handleChildClick(child.path)"
+            :class="['menu-item', 'first-level', { active: route.path === menu.path || route.name === menu.name || activeSubMenuIndex === index }]"
+            @click="handleMenuClick(menu, index)"
         >
           <div class="menu-item-left">
             <component
-                :is="child.icon"
-                v-if="child.icon"
-                class="menu-icon sub-menu-icon"
+                :is="menu.icon"
+                v-if="menu.icon"
+                class="menu-icon"
             />
-            <span class="menu-title">{{ child.title }}</span>
+            <span class="menu-title">{{ menu.title }}</span>
+          </div>
+
+          <div v-if="menu.children && menu.children.length > 0" class="menu-item-right">
+            <ChevronUpIcon v-if="activeSubMenuIndex === index" class="arrow-icon" />
+            <ChevronDownIcon v-else class="arrow-icon" />
+          </div>
+        </div>
+
+        <div
+            class="sub-menu"
+            :style="{ height: activeSubMenuIndex === index ? `${(menu.children?.length || 0) * 40}px` : '0px' }"
+        >
+          <div
+              v-for="child in menu.children"
+              :key="child.path"
+              :class="['menu-item', 'second-level', { active: route.path === child.path || route.name === child.name }]"
+              @click="handleChildClick(child.path)"
+          >
+            <div class="menu-item-left">
+              <component
+                  :is="child.icon"
+                  v-if="child.icon"
+                  class="menu-icon sub-menu-icon"
+              />
+              <span class="menu-title">{{ child.title }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </aside>
 </template>
 
 <style scoped>
 .ca-side-menu {
+  width: 240px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  transition: all 300ms ease;
+}
+
+.ca-side-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.menu-container {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -152,6 +196,7 @@ watch(
 }
 
 .menu-item {
+  width: 240px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -193,6 +238,11 @@ watch(
   color: #fff;
 }
 
+.menu-title {
+  opacity: 1;
+  transition: opacity 300ms ease;
+}
+
 .menu-item-right {
   display: flex;
   align-items: center;
@@ -223,10 +273,22 @@ watch(
 }
 
 .menu-item.second-level.active {
-  background-color: #1890ff !important;
+  background-color: var(--color-bg) !important;
   color: #fff;
 }
 .menu-item.second-level.active .sub-menu-icon {
   color: #fff;
+}
+
+/**
+ * 折叠
+ */
+.fold {
+  width: 50px;
+  overflow: hidden;
+}
+
+.fold .menu-title {
+  opacity: 0;
 }
 </style>

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import {CaTabsBar, type HomeTabParam} from "@/components/ca/caTabsBar";
 import {CaSideMenu} from "@/components/ca/caSideMenu";
-import {watch} from "vue";
+import {ref, watch, type VNodeRef} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useTabStore} from "@/store/useTabStore.ts";
 import {preferences} from "@/core/preferences";
 import {CaBreadcrumb} from "@/components/ca/caBreadcrumb";
 import { GlobalTools } from "@/components/globalTools";
 import { UserBox } from "@/components/userBox";
+import { CaButton } from "@/components/ca/caButton";
 
 const route = useRoute()
 const router = useRouter()
@@ -19,6 +20,14 @@ const homeTabConfig: HomeTabParam = {
   path: defaultHomePath,
   title: (homeRouteResolved.meta?.title as string) || '首页',
   icon: homeRouteResolved.meta?.icon
+}
+
+const sideMenuRef = ref<VNodeRef | null>(null)
+const handleMenu = () => {
+  if (!sideMenuRef.value) {
+    return;
+  }
+  sideMenuRef.value.foldMenu()
 }
 
 watch(
@@ -43,15 +52,12 @@ watch(
 <template>
   <div class="backend-layout">
     <div class="wrapper">
-      <aside class="side">
-        <div class="logo">Logo</div>
-        <div class="menu-container">
-          <ca-side-menu/>
-        </div>
-      </aside>
-
+      <div class="side">
+        <ca-side-menu ref="sideMenuRef" />
+      </div>
       <div class="container">
         <header class="header">
+          <ca-button @click="handleMenu">展开/折叠</ca-button>
           <ca-breadcrumb style="margin-right: auto;" />
           <global-tools class="global-tools-container" />
           <user-box />
@@ -83,7 +89,6 @@ watch(
 }
 
 .side {
-  width: 240px;
   height: 100%;
   background-color: #001529;
   color: #fff;
@@ -91,25 +96,6 @@ watch(
   flex-direction: column;
   flex-shrink: 0;
   transition: width 0.3s;
-}
-
-.logo {
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: bold;
-  border-bottom: 1px solid #002140;
-}
-
-.menu-container {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.menu-container::-webkit-scrollbar {
-  display: none;
 }
 
 .container {
