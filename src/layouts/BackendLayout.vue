@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {CaTabsBar, type HomeTabParam} from "@/components/ca/caTabsBar";
 import {CaSideMenu} from "@/components/ca/caSideMenu";
-import {ref, watch, type VNodeRef} from "vue";
+import {computed, ref, watch, type VNodeRef} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useTabStore} from "@/store/useTabStore.ts";
 import {preferences} from "@/core/preferences";
 import {CaBreadcrumb} from "@/components/ca/caBreadcrumb";
 import { GlobalTools } from "@/components/globalTools";
 import { UserBox } from "@/components/userBox";
-import { CaButton } from "@/components/ca/caButton";
+import { ChevronDoubleRightIcon, ChevronDoubleLeftIcon} from "@heroicons/vue/24/outline"
 
 const route = useRoute()
 const router = useRouter()
@@ -23,6 +23,7 @@ const homeTabConfig: HomeTabParam = {
 }
 
 const sideMenuRef = ref<VNodeRef | null>(null)
+const isMenuFold = computed(() => sideMenuRef.value?.isFold ?? false);
 const handleMenu = () => {
   if (!sideMenuRef.value) {
     return;
@@ -57,7 +58,10 @@ watch(
       </div>
       <div class="container">
         <header class="header">
-          <ca-button @click="handleMenu">展开/折叠</ca-button>
+          <button class="side-menu-control-btn" @click="handleMenu">
+            <ChevronDoubleRightIcon v-show="isMenuFold" />
+            <ChevronDoubleLeftIcon v-show="!isMenuFold" />
+          </button>
           <ca-breadcrumb style="margin-right: auto;" />
           <global-tools class="global-tools-container" />
           <user-box />
@@ -116,6 +120,26 @@ watch(
   align-items: center;
   padding: 0 24px;
   z-index: 10;
+}
+
+.header .side-menu-control-btn {
+  background-color: transparent;
+  width: 28px;
+  padding: 4px 6px;
+  aspect-ratio: 1/1;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 50ms ease;
+}
+
+.header .side-menu-control-btn:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.header .side-menu-control-btn svg {
+  color: var(--color-accent);
+  transform: translateY(2px);
 }
 
 .main-content {
