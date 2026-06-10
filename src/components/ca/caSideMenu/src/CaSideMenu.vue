@@ -3,7 +3,7 @@ import {useRoute, useRouter} from "vue-router";
 import {computed, ref, watch} from "vue";
 import type {MenuItem} from "@/components/ca/caSideMenu";
 import {isArray} from "@/utils/isFu.ts";
-import {ChevronDownIcon, ChevronUpIcon} from '@heroicons/vue/24/outline'
+import {ChevronDownIcon, ChevronUpIcon, Bars3BottomLeftIcon} from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const router = useRouter()
@@ -25,7 +25,7 @@ const menuTree = computed<MenuItem[]>(() => {
       title: rootRoute.meta?.title || '未命名分类',
       path: rootRoute.path,
       fullPath: rootRoute.fullPath,
-      icon: rootRoute.meta?.icon,
+      icon: rootRoute.meta?.icon || Bars3BottomLeftIcon,
       children: []
     }
 
@@ -38,7 +38,7 @@ const menuTree = computed<MenuItem[]>(() => {
             title: child.meta.title,
             path: child.path,
             fullPath: child.fullPath,
-            icon: child.meta?.icon,
+            icon: child.meta?.icon || Bars3BottomLeftIcon,
             hidden: child.meta?.hidden
           })
         }
