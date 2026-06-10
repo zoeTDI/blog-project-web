@@ -5,5 +5,9 @@
   "tabWidth": 2,
   "useTabs": false,
   "arrowParens": "always",
-  "printWidth": 80
+  "printWidth": 80,
+  "htmlWhitespaceSensitivity": "css",
+  "bracketSameLine": true,
+  "singleAttributePerLine": true,
+  "vueIndentScriptAndStyle": true
 }
