@@ -31,8 +31,6 @@ const menuTree = computed<MenuItem[]>(() => {
 
     // 组装二级菜单
     if (rootRoute.children && rootRoute.children.length > 0) {
-      console.log(`rootRoute.children: `, rootRoute.children);
-      
       rootRoute.children.forEach((child: any) => {
         // 除非显式配置 hidden: true，否则默认展示
         if (child.meta?.hidden !== true && child.meta?.title) {
@@ -59,13 +57,16 @@ const menuTree = computed<MenuItem[]>(() => {
 const activeSubMenuIndex = ref<number | null>(null)
 
 const handleMenuClick = (menu: MenuItem, index: number) => {
-  if (isFold.value) { foldMenu(index) }
-  if (menu.children && menu.children.length > 0) {
-    // 如果有子菜单，则切换展开/折叠状态
-    activeSubMenuIndex.value = activeSubMenuIndex.value === index ? null : index
+  const hasChildren = menu.children && menu.children.length > 0;
+
+  if (isFold.value) {
+    isFold.value = false;
+  }
+
+  if (hasChildren) {
+    activeSubMenuIndex.value = (typeof activeSubMenuIndex.value === 'number') ? null : index;
   } else {
-    // 如果没有子菜单，直接跳转
-    router.push({name: menu.name})
+    router.push({ name: menu.name })
   }
 }
 
@@ -88,28 +89,22 @@ watch(
       immediate: true
     }
 )
-let indexBeforeFold: number | null = null
+let memorizedIndex: number | null = null
 const isFold = ref<boolean>(false);
 const foldMenu = (index: number | null = null) => {
-  // 展开
   if (isFold.value) {
+    // 展开
     isFold.value = false;
-    // 用户在折叠状态下直接点击一级菜单
-    if (typeof index === 'number') {
-      // 置空indexBeforeFold的值
-      indexBeforeFold = null;
-      // 由handleMenuClick方法处理激活子菜单
-      return;
-    }
-    if (typeof indexBeforeFold === 'number' && activeSubMenuIndex.value === null) {
-       activeSubMenuIndex.value = indexBeforeFold
+    if (typeof memorizedIndex === 'number') {
+      activeSubMenuIndex.value = memorizedIndex;
     }
   } else {
     // 折叠
+    if (typeof activeSubMenuIndex.value === 'number') {
+      memorizedIndex = activeSubMenuIndex.value
+      activeSubMenuIndex.value = null
+    }
     isFold.value = true;
-    // 记录折叠前打开的子菜单
-    indexBeforeFold = activeSubMenuIndex.value;
-    activeSubMenuIndex.value = null;    
   }
 }
 
