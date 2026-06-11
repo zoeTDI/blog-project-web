@@ -69,7 +69,7 @@
   }));
 
   onUnmounted(() => {
-    enenhancedActions.value.forEach((action) => {
+    enhancedActions.value.forEach((action) => {
       if (action.run && 'cancel' in action.run) {
         (action.run as any).cancel();
       }
