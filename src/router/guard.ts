@@ -2,7 +2,9 @@ import type { RouteLocationNormalized, Router } from 'vue-router';
 import { useLoadingStore } from '@/store/useLoadingStore.ts';
 import { ROUTER_NAMES } from '@/router/routerNames.ts';
 import { useUserStore } from '@/store/useUserStore.ts';
-import { defaultPreferences, preferences } from '@/core/preferences';
+import { preferenceManager, preferences } from '@/core/preferences';
+
+const defaultPreferences = preferenceManager.getInitialPreferences();
 
 const getWebsiteName = () => {
   return preferences.app.websiteName || defaultPreferences.app.websiteName;
