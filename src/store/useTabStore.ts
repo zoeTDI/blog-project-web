@@ -35,7 +35,7 @@ export const useTabStore = defineStore('tab', () => {
     routes.forEach((route) => {
       if (route.path === defaultHomeTab?.path) {
         tabs.value.unshift(routeToTabItem(route, { pinned: true }));
-      } else {
+      } else if (route.meta?.affixTab === true) {
         tabs.value.push(routeToTabItem(route));
       }
     });
