@@ -4,6 +4,18 @@ import { ROUTER_NAMES } from '@/router/routerNames.ts';
 import { useUserStore } from '@/store/useUserStore.ts';
 import { defaultPreferences, preferences } from '@/core/preferences';
 
+const getWebsiteName = () => {
+  return preferences.app.websiteName || defaultPreferences.app.websiteName;
+};
+
+const processDocumentTitle = (pageName: string) => {
+  if (typeof pageName === 'string' && pageName !== '') {
+    document.title = `${getWebsiteName()} - ${pageName}`;
+  } else {
+    document.title = getWebsiteName();
+  }
+};
+
 /**
  * 通用守卫配置
  * @param router
@@ -29,7 +41,7 @@ const setupCommonGuard = (router: Router) => {
       await loadingStore.endLoading();
     }
 
-    document.title = to.meta?.title || '';
+    processDocumentTitle(to.meta.title);
   });
 };
 
@@ -51,6 +63,10 @@ const setupAccessGuard = (router: Router) => {
           } else {
             // 如果直接放行，就前往登录页了，这是不行的。
             // 前往默认首页
+            console.log(
+              "🚀 ~ setupAccessGuard ~ '前往默认首页': ",
+              '前往默认首页'
+            );
             return {
               path:
                 preferences.app.defaultHomePath &&
@@ -67,7 +83,9 @@ const setupAccessGuard = (router: Router) => {
         // 在白名单内，且去的不是登录页，放行
         return true;
       }
-    } else if (!userStore.getAuthToken() || userStore.getAuthToken() === '') {
+    }
+
+    if (!userStore.getAuthToken() || userStore.getAuthToken() === '') {
       // 访问权限检查
       // 明确忽略权限检查，直接放行
       if (to.meta?.ignoreAccess) {
@@ -87,7 +105,7 @@ const setupAccessGuard = (router: Router) => {
       // 没有登录，不是去往登录页，阻止
       return { name: ROUTER_NAMES.HOME };
     }
-    return false;
+    return true;
   });
 };
 

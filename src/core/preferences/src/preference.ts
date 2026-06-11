@@ -1,16 +1,19 @@
 import {
   type CustomPreferencesRecord,
   type Preferences,
-  type PreferencesExtension
-} from "@/core/preferences";
-import { updateThemeColor, updateThemeMode } from '@/core/preferences/src/updateCssVariables.ts'
-import { defaultPreferences } from '@/core/preferences/src/config.ts'
-import { StorageManager } from "@/cache";
-import { useDebounceFn } from "@/hooks/useDebounceFn.ts";
-import { markRaw, reactive, readonly } from "vue";
-import { deepMerge } from "@/utils/deepFu.ts";
-import { isObject } from "@/utils/isFu.ts";
-import type { DeepPartial } from "@/types/deepType";
+  type PreferencesExtension,
+} from '@/core/preferences';
+import {
+  updateThemeColor,
+  updateThemeMode,
+} from '@/core/preferences/src/updateCssVariables.ts';
+import { defaultPreferences } from '@/core/preferences/src/config.ts';
+import { StorageManager } from '@/cache';
+import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
+import { markRaw, reactive, readonly } from 'vue';
+import { deepMerge } from '@/utils/deepFu.ts';
+import { isObject } from '@/utils/isFu.ts';
+import type { DeepPartial } from '@/types/deepType';
 
 const STORAGE_KEYS = {
   CUSTOM: 'preferences-custom',
@@ -48,7 +51,7 @@ class PreferenceManager {
   private constructor() {
     this.cache = new StorageManager();
     this.state = reactive<Preferences>({ ...defaultPreferences });
-    this.debouncedSave = useDebounceFn(this.saveToCache.bind(this), 150)
+    this.debouncedSave = useDebounceFn(this.saveToCache.bind(this), 150);
     this.initialPreferences = defaultPreferences;
   }
 
@@ -60,8 +63,8 @@ class PreferenceManager {
   public static async create(): Promise<PreferenceManager> {
     const instance = new PreferenceManager();
     const cache = await instance.readFromCache();
-    instance.updatePreferences(cache)
-    instance.applyAllStyles()
+    instance.updatePreferences(cache);
+    instance.applyAllStyles();
     return instance;
   }
 
@@ -70,7 +73,7 @@ class PreferenceManager {
    * @returns {Promise<Preferences | Partial<Preferences>>} 缓存中的偏好配置，若无则返回空对象
    */
   private async readFromCache(): Promise<Preferences> {
-    const main = await this.cache.getItem<Preferences>(STORAGE_KEYS.MAIN)
+    const main = await this.cache.getItem<Preferences>(STORAGE_KEYS.MAIN);
     return main == null ? {} : main;
   }
 
@@ -79,7 +82,7 @@ class PreferenceManager {
    * @returns {Readonly<Preferences>} 只读的偏好设置对象
    */
   public getStats() {
-    return readonly<Preferences>(this.state)
+    return readonly<Preferences>(this.state);
   }
 
   /**
@@ -89,17 +92,17 @@ class PreferenceManager {
    * @returns {void}
    */
   public updatePreferences(updates: DeepPartial<Preferences>) {
-    const mergeState = deepMerge({}, markRaw(this.state), updates)
+    const mergeState = deepMerge({}, markRaw(this.state), updates);
     Object.assign(this.state, mergeState);
     this.handleUpdates(updates);
-    this.debouncedSave()
+    this.debouncedSave();
   }
 
   /**
    * 恢复默认偏好设置
    */
   public resetPreferences(): void {
-    this.updatePreferences(defaultPreferences)
+    this.updatePreferences(defaultPreferences);
   }
 
   /**
@@ -112,26 +115,31 @@ class PreferenceManager {
     const { theme, app } = updates;
     if (theme) {
       if (theme.mode) {
-        updateThemeMode(theme)
+        updateThemeMode(theme);
       }
       if (theme.colorPrimary) {
-        updateThemeColor(theme.colorPrimary)
+        updateThemeColor(theme.colorPrimary);
       }
     }
-    // if (theme && (Object.keys(theme).length > 0 || Reflect.has(theme, 'fontSize'))) {
-    //   updateThemeMode(theme)
-    // }
-    // if (app && (Object.keys(app).length > 0 || Reflect.has(app, 'colorWeakMode'))) {
-
-    // }
+    if (app) {
+      if (app?.websiteName && app.websiteName.trim() !== '') {
+        const curWebsiteName = document.title;
+        let a = curWebsiteName.split(' - ');
+        if (a.length > 1) {
+          a[0] = app.websiteName;
+          document.title = a.join(' - ');
+        }
+        // 如果长度小于2，说明当前页面不需要使用网站名称作为前缀
+      }
+    }
   }
 
   /**
    * 应用CSS样式
    */
   private applyAllStyles() {
-    updateThemeMode(this.state.theme)
-    updateThemeColor(this.state.theme.colorPrimary)
+    updateThemeMode(this.state.theme);
+    updateThemeColor(this.state.theme.colorPrimary);
   }
 
   /**
@@ -148,8 +156,8 @@ class PreferenceManager {
     if (isObject(value)) {
       return Object.fromEntries(
         Object.entries(value as Record<string, unknown>).map(
-          ([key, nestedValue]) => [key, this.cloneValue(nestedValue)],
-        ),
+          ([key, nestedValue]) => [key, this.cloneValue(nestedValue)]
+        )
       ) as T;
     }
     return value;
@@ -162,11 +170,11 @@ class PreferenceManager {
    */
   async saveToCache() {
     try {
-      await this.cache.setItem(STORAGE_KEYS.MAIN, this.state)
-      await this.cache.setItem(STORAGE_KEYS.LOCALE, this.state.app.locale)
-      await this.cache.setItem(STORAGE_KEYS.THEME, this.state.theme.mode)
+      await this.cache.setItem(STORAGE_KEYS.MAIN, this.state);
+      await this.cache.setItem(STORAGE_KEYS.LOCALE, this.state.app.locale);
+      await this.cache.setItem(STORAGE_KEYS.THEME, this.state.theme.mode);
     } catch (error) {
-      console.error('Failed to save preference to cache: ', error)
+      console.error('Failed to save preference to cache: ', error);
     }
   }
 
@@ -183,7 +191,9 @@ class PreferenceManager {
    * @template TCustomPreferences 预留的自定义配置类型断言，默认为 CustomPreferencesRecord
    * @returns {Readonly<TCustomPreferences>} 只读的自定义偏好设置状态
    */
-  getCustomPreferences<TCustomPreferences extends object = CustomPreferencesRecord>() {
+  getCustomPreferences<
+    TCustomPreferences extends object = CustomPreferencesRecord,
+  >() {
     return readonly(this.customState) as Readonly<TCustomPreferences>;
   }
 
@@ -201,9 +211,11 @@ class PreferenceManager {
    * @returns {Readonly<TCustomPreferences>} 深度克隆后的初始自定义配置
    */
   getInitialCustomPreferences<
-    TCustomPreferences extends object = CustomPreferencesRecord
+    TCustomPreferences extends object = CustomPreferencesRecord,
   >() {
-    return this.cloneValue(this.initialCustomPreferences) as Readonly<TCustomPreferences>;
+    return this.cloneValue(
+      this.initialCustomPreferences
+    ) as Readonly<TCustomPreferences>;
   }
 
   /**
@@ -212,26 +224,26 @@ class PreferenceManager {
    * @returns {Readonly<PreferencesExtension<TCustomPreferences>> | null} 扩展定义对象或空
    */
   getPreferencesExtension<
-    TCustomPreferences extends object = CustomPreferencesRecord
+    TCustomPreferences extends object = CustomPreferencesRecord,
   >() {
     return this.customPreferencesExtension
       ? (this.cloneValue(this.customPreferencesExtension) as Readonly<
-        PreferencesExtension<TCustomPreferences>
-      >)
+          PreferencesExtension<TCustomPreferences>
+        >)
       : null;
   }
 }
 
-let preferenceManager = await PreferenceManager.create()
+let preferenceManager = await PreferenceManager.create();
 
 /**
  * 导出快捷获取只读偏好设置的函数
  */
-const getPreferences = () => preferenceManager.getStats()
+const getPreferences = () => preferenceManager.getStats();
 
 /**
  * 导出当前偏好的只读引用
  */
 const preferences = getPreferences();
 
-export { preferences, preferenceManager }
+export { preferences, preferenceManager };
