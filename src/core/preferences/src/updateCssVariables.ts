@@ -1,12 +1,16 @@
-import { type ThemeModeOptions, type ThemePreferences } from "@/core/preferences";
-import type { DeepPartial } from "@/types/deepType";
+import {
+  type ThemeModeOptions,
+  type ThemePreferences,
+} from '@/core/preferences';
+import type { DeepPartial } from '@/types/deepType';
 
 const updateThemeMode = (themePreferences: DeepPartial<ThemePreferences>) => {
   if (Object.keys(themePreferences).includes('mode')) {
-    const themeModeOption: ThemeModeOptions = themePreferences.mode;
+    const themeModeOption: ThemeModeOptions | undefined = themePreferences.mode;
+    if (themeModeOption === undefined) return;
     const app = document.getElementById('app');
     if (!app) {
-      console.error(`无法获取到#app元素`)
+      console.error(`无法获取到#app元素`);
       return;
     }
     if (app.classList.contains(themeModeOption)) {
@@ -18,10 +22,10 @@ const updateThemeMode = (themePreferences: DeepPartial<ThemePreferences>) => {
       updateThemeColor(themePreferences.colorPrimary);
     }
   }
-}
+};
 
 export const updateThemeColor = (color: string) => {
   document.documentElement.style.setProperty('--app-accent-color', color);
 };
 
-export { updateThemeMode }
+export { updateThemeMode };
