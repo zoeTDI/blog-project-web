@@ -18,6 +18,7 @@
     type TimezoneOption,
   } from '@/core/preferences';
   import { MenuPopover } from '@/components/globalTools';
+  import { useI18n } from 'vue-i18n';
 
   interface Props {
     include?: ToolType[];
@@ -68,6 +69,8 @@
     activeMenu.value = activeMenu.value === menu ? null : menu;
   };
 
+  const { locale } = useI18n();
+
   /**
    * 当前的网站语言
    */
@@ -77,7 +80,11 @@
    * 更新网站语言
    */
   const updateLanguage = (value: SupportLanguageOption) => {
+    // 更新用户偏好
     preferenceManager.updatePreferences({ app: { locale: value } });
+    // 更改网站语言
+    locale.value = value;
+    // 关闭展开菜单
     activeMenu.value = null;
   };
 
