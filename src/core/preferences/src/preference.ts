@@ -1,18 +1,17 @@
 import {
   type CustomPreferencesRecord,
   type Preferences,
-  type PreferencesExtension,
 } from '@/core/preferences';
 import {
   updateThemeColor,
   updateThemeMode,
 } from '@/core/preferences/src/updateCssVariables.ts';
 import { defaultPreferences } from '@/core/preferences/src/config.ts';
+import { defaultCustomPreference } from '@/core/preferences/src/curtomConfig.ts';
 import { StorageManager } from '@/cache';
 import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
 import { markRaw, reactive, readonly } from 'vue';
 import { deepMerge } from '@/utils/deepFu.ts';
-import { isObject } from '@/utils/isFu.ts';
 import type { DeepPartial } from '@/types/deepType';
 
 const STORAGE_KEYS = {
@@ -29,20 +28,17 @@ const STORAGE_KEYS = {
 class PreferenceManager {
   // 缓存实例
   private cache: StorageManager;
-  // 自定义偏好设置扩展配置
-  private customPreferencesExtension: null | PreferencesExtension<any> = null;
-  // 自定义偏好设置状态
-  private customState: CustomPreferencesRecord;
   // 防抖保存函数
-  private debouncedSave: () => void;
+  private readonly debouncedSave: () => void;
   // 初始自定义偏好设置
-  private initialCustomPreferences: CustomPreferencesRecord = {};
+  private readonly initialCustomPreferences: CustomPreferencesRecord =
+    defaultCustomPreference;
   // 初始用户偏好设置
-  private initialPreferences: Preferences = defaultPreferences;
-  // 是否已完成初始化
-  private isInitialized: boolean = false;
+  private readonly initialPreferences: Preferences = defaultPreferences;
   // 核心响应式状态
   private state: Preferences;
+  // 自定义偏好设置状态
+  private customState: CustomPreferencesRecord;
 
   /**
    * 私有构造函数，防止外部直接通过 new 实例化
@@ -50,9 +46,13 @@ class PreferenceManager {
    */
   private constructor() {
     this.cache = new StorageManager();
-    this.state = reactive<Preferences>({ ...defaultPreferences });
-    this.debouncedSave = useDebounceFn(this.saveToCache.bind(this), 150);
     this.initialPreferences = defaultPreferences;
+    this.state = reactive<Preferences>({ ...this.initialPreferences });
+    this.initialCustomPreferences = defaultCustomPreference;
+    this.customState = reactive<CustomPreferencesRecord>({
+      ...this.initialCustomPreferences,
+    });
+    this.debouncedSave = useDebounceFn(this.saveToCache.bind(this), 150);
   }
 
   /**
@@ -63,19 +63,14 @@ class PreferenceManager {
   public static async create(): Promise<PreferenceManager> {
     const instance = new PreferenceManager();
     const cache = await instance.readFromCache();
+    const customCache = await instance.readCustomFromCache();
     instance.updatePreferences(cache);
+    instance.updateCustomPreferences(customCache);
     instance.applyAllStyles();
     return instance;
   }
 
-  /**
-   * 从本地缓存中读取主偏好设置
-   * @returns {Promise<Preferences | Partial<Preferences>>} 缓存中的偏好配置，若无则返回空对象
-   */
-  private async readFromCache(): Promise<Preferences> {
-    const main = await this.cache.getItem<Preferences>(STORAGE_KEYS.MAIN);
-    return main == null ? {} : main;
-  }
+  // 用户偏好设置 _____________________________________________
 
   /**
    * 获取当前偏好设置的只读(readonly)响应式状态
@@ -91,11 +86,20 @@ class PreferenceManager {
    * @param {DeepPartial<Preferences>} updates - 需要增量更新的偏好设置对象
    * @returns {void}
    */
-  public updatePreferences(updates: DeepPartial<Preferences>) {
+  public updatePreferences(updates: DeepPartial<Preferences>): void {
     const mergeState = deepMerge({}, markRaw(this.state), updates);
     Object.assign(this.state, mergeState);
-    this.handleUpdates(updates);
+    this.update(updates);
     this.debouncedSave();
+  }
+
+  /**
+   * 从本地缓存中读取主偏好设置
+   * @returns {Promise<Preferences | Partial<Preferences>>} 缓存中的偏好配置，若无则返回空对象
+   */
+  private async readFromCache(): Promise<DeepPartial<Preferences>> {
+    const main = await this.cache.getItem<Preferences>(STORAGE_KEYS.MAIN);
+    return main == null ? {} : main;
   }
 
   /**
@@ -106,12 +110,70 @@ class PreferenceManager {
   }
 
   /**
+   * 获取默认用户扩展偏好设置的只读数据
+   */
+  public getInitialPreferences() {
+    return readonly<Preferences>(this.initialPreferences);
+  }
+
+  // 自定义偏好设置 _____________________________________________
+
+  /**
+   * 获取当前自定义偏好设置的只读（readonly）响应式状态
+   */
+  public getCustomState() {
+    return readonly<CustomPreferencesRecord>(this.customState);
+  }
+
+  /**
+   * 更新自定义偏好设置
+   * @param updates
+   */
+  public updateCustomPreferences(
+    updates: DeepPartial<CustomPreferencesRecord>
+  ) {
+    const mergeState = deepMerge({}, markRaw(this.customState), updates);
+    Object.assign(this.customState, mergeState);
+    this.debouncedSave();
+  }
+
+  /**
+   * 从本地缓存中读取自定义偏好设置
+   * @private
+   */
+  private async readCustomFromCache(): Promise<
+    DeepPartial<CustomPreferencesRecord>
+  > {
+    const customMain = await this.cache.getItem<CustomPreferencesRecord>(
+      STORAGE_KEYS.CUSTOM
+    );
+    console.log('🚀 ~ readCustomFromCache ~ customMain: ', customMain);
+    return customMain == null ? {} : customMain;
+  }
+
+  /**
+   * 恢复自定义偏好设置
+   */
+  public resetCustomPreferences(): void {
+    this.updateCustomPreferences(defaultCustomPreference);
+  }
+
+  /**
+   * 获取默认自定义扩展偏好设置的只读数据
+   */
+  public getInitialCustomPreferences() {
+    return readonly<CustomPreferencesRecord>(this.initialCustomPreferences);
+  }
+
+  // 公共内部方法 _____________________________________________
+
+  /**
    * 内部方法：处理偏好设置更新带来的副作用
    * 例如：当检测到主题或字体大小改变时，动态更新页面 CSS 变量
    * @param {DeepPartial<Preferences>} updates - 增量更新的偏好设置对象
    * @returns {void}
    */
-  private handleUpdates(updates: DeepPartial<Preferences>) {
+  private update(updates: DeepPartial<Preferences>): void {
     const { theme, app } = updates;
     if (theme) {
       if (theme.mode) {
@@ -143,107 +205,42 @@ class PreferenceManager {
   }
 
   /**
-   * 内部工具方法：深度克隆一个值
-   * 用于隔离对初始配置对象的引用，防止外部意外修改原有默认值
-   * @template T
-   * @param {T} value - 需要克隆的目标对象或值
-   * @returns {T} 克隆后的全新对象或值
-   */
-  private cloneValue<T>(value: T): T {
-    if (Array.isArray(value)) {
-      return value.map((item) => this.cloneValue(item)) as T;
-    }
-    if (isObject(value)) {
-      return Object.fromEntries(
-        Object.entries(value as Record<string, unknown>).map(
-          ([key, nestedValue]) => [key, this.cloneValue(nestedValue)]
-        )
-      ) as T;
-    }
-    return value;
-  }
-
-  /**
    * 将当前的最新偏好设置持久化同步到本地缓存中
    * 分别保存主配置、语言配置以及主题模式配置
    * @returns {Promise<void>}
    */
-  async saveToCache() {
+  async saveToCache(): Promise<void> {
     try {
       await this.cache.setItem(STORAGE_KEYS.MAIN, this.state);
       await this.cache.setItem(STORAGE_KEYS.LOCALE, this.state.app.locale);
       await this.cache.setItem(STORAGE_KEYS.THEME, this.state.theme.mode);
+      await this.cache.setItem(STORAGE_KEYS.CUSTOM, this.customState);
     } catch (error) {
       console.error('Failed to save preference to cache: ', error);
     }
-  }
-
-  /**
-   * 获取当前偏好设置的只读状态（功能与 getStats 类似）
-   * @returns {Readonly<Preferences>} 只读的偏好设置对象
-   */
-  getPreferences() {
-    return readonly(this.state);
-  }
-
-  /**
-   * 获取用户自定义扩展的偏好设置只读状态
-   * @template TCustomPreferences 预留的自定义配置类型断言，默认为 CustomPreferencesRecord
-   * @returns {Readonly<TCustomPreferences>} 只读的自定义偏好设置状态
-   */
-  getCustomPreferences<
-    TCustomPreferences extends object = CustomPreferencesRecord,
-  >() {
-    return readonly(this.customState) as Readonly<TCustomPreferences>;
-  }
-
-  /**
-   * 获取系统最开始的默认偏好设置（未被用户修改和缓存覆盖的初始值）
-   * @returns {Preferences} 默认偏好配置
-   */
-  getInitialPreferences() {
-    return this.initialPreferences;
-  }
-
-  /**
-   * 获取系统最开始的自定义扩展偏好设置的深度克隆副本
-   * @template TCustomPreferences 预留的自定义配置类型断言
-   * @returns {Readonly<TCustomPreferences>} 深度克隆后的初始自定义配置
-   */
-  getInitialCustomPreferences<
-    TCustomPreferences extends object = CustomPreferencesRecord,
-  >() {
-    return this.cloneValue(
-      this.initialCustomPreferences
-    ) as Readonly<TCustomPreferences>;
-  }
-
-  /**
-   * 获取自定义配置的扩展描述定义对象（如 schema 或 元数据定义）的克隆副本
-   * @template TCustomPreferences 预留的自定义配置类型断言
-   * @returns {Readonly<PreferencesExtension<TCustomPreferences>> | null} 扩展定义对象或空
-   */
-  getPreferencesExtension<
-    TCustomPreferences extends object = CustomPreferencesRecord,
-  >() {
-    return this.customPreferencesExtension
-      ? (this.cloneValue(this.customPreferencesExtension) as Readonly<
-          PreferencesExtension<TCustomPreferences>
-        >)
-      : null;
   }
 }
 
 let preferenceManager = await PreferenceManager.create();
 
 /**
- * 导出快捷获取只读偏好设置的函数
+ * 导出快捷获取只读用户偏好设置的函数
  */
 const getPreferences = () => preferenceManager.getStats();
 
 /**
- * 导出当前偏好的只读引用
+ * 导出快捷获取只读自定义偏好设置的函数
+ */
+const getCustomPreferences = () => preferenceManager.getCustomState();
+
+/**
+ * 导出当前用户偏好的只读引用
  */
 const preferences = getPreferences();
 
-export { preferences, preferenceManager };
+/**
+ * 导出当前自定义偏好的只读引用
+ */
+const customPreferences = getCustomPreferences();
+
+export { preferences, customPreferences, preferenceManager };
