@@ -10,7 +10,6 @@ const analysisRouter: RouteRecordRaw[] = [
     meta: {
       title: `分析`,
       icon: Squares2X2Icon,
-      allowDefaultHome: true,
     },
     path: '/analysis',
     component: () => import('@/layouts/BackendLayout.vue'),
@@ -24,6 +23,7 @@ const analysisRouter: RouteRecordRaw[] = [
           title: '仪表盘',
           requireLogin: true,
           icon: ChartBarSquareIcon,
+          allowDefaultHome: true,
         },
       },
     ],
