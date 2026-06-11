@@ -1,11 +1,15 @@
 <script setup lang="ts">
-  import { computed, useSlots } from 'vue';
+  import { computed, onUnmounted, useSlots } from 'vue';
+  import type { CaCardFooterAction } from '@/components/ca/caCard';
+  import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
+  import { CaButton } from '@/components/ca/caButton';
 
   interface Props {
     showHeader?: boolean;
     showFooter?: boolean;
     headerMaxHeight?: 'S' | 'M' | 'L' | string;
     footerMaxHeight?: 'S' | 'M' | 'L' | string;
+    footerActions?: CaCardFooterAction[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -13,12 +17,38 @@
     showFooter: false,
     headerMaxHeight: 'S',
     footerMaxHeight: 'S',
+    footerActions: () => [],
   });
 
   const slots = useSlots();
 
   const shouldShowHeader = computed(() => props.showHeader || !!slots.header);
-  const shouldShowFooter = computed(() => props.showFooter || !!slots.footer);
+  const shouldShowFooter = computed(
+    () =>
+      props.showFooter ||
+      !!slots.footer ||
+      (props.footerActions && props.footerActions.length > 0)
+  );
+
+  const enhancedActions = computed(() => {
+    return props.footerActions.map((action) => {
+      if (
+        action.timeout &&
+        action.timeout > 0 &&
+        typeof action.onClick === 'function'
+      ) {
+        return {
+          ...action,
+          // 预先创建防抖函数，确保每次点击调用的是同一个实例
+          run: useDebounceFn(action.onClick, action.timeout),
+        };
+      }
+      return {
+        ...action,
+        run: action.onClick, // 没有防抖时直接使用原函数
+      };
+    });
+  });
 
   const sizeMap: Record<'S' | 'M' | 'L', string> = {
     S: '60px',
@@ -37,6 +67,14 @@
       sizeMap[props.footerMaxHeight as keyof typeof sizeMap] ||
       props.footerMaxHeight,
   }));
+
+  onUnmounted(() => {
+    enenhancedActions.value.forEach((action) => {
+      if (action.run && 'cancel' in action.run) {
+        (action.run as any).cancel();
+      }
+    });
+  });
 </script>
 
 <template>
@@ -58,8 +96,21 @@
       v-if="shouldShowFooter"
       class="layout-footer"
       :style="footerStyle">
-      <div class="inner-scroll">
+      <div
+        v-if="!!slots.footer"
+        class="inner-scroll">
         <slot name="footer" />
+      </div>
+      <div
+        v-else
+        class="action-container">
+        <ca-button
+          v-for="action in enhancedActions"
+          :key="action.key"
+          :type="action.type || 'primary'"
+          @click="action.run?.()">
+          {{ action.label }}
+        </ca-button>
       </div>
     </footer>
   </div>
@@ -93,10 +144,19 @@
     max-height: var(--header-max-height);
     border-bottom: 1px dashed var(--color-border);
   }
+
   .layout-footer {
     --footer-max-height: 60px;
     max-height: var(--footer-max-height);
     border-top: 1px solid var(--color-border);
+  }
+
+  .action-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 8px 0;
   }
 
   .layout-body {
