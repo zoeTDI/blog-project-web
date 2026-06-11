@@ -1,6 +1,5 @@
 import { createI18n } from 'vue-i18n';
 import { messages } from '@/locales';
-console.log('🚀 ~  ~ messages: ', messages);
 import type { App } from 'vue';
 import { SUPPORT_LANGUAGE_OPTIONS } from '@/core/preferences';
 

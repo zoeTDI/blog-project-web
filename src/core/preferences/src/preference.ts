@@ -147,7 +147,6 @@ class PreferenceManager {
     const customMain = await this.cache.getItem<CustomPreferencesRecord>(
       STORAGE_KEYS.CUSTOM
     );
-    console.log('🚀 ~ readCustomFromCache ~ customMain: ', customMain);
     return customMain == null ? {} : customMain;
   }
 
