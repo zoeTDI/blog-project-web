@@ -15,5 +15,7 @@ declare module 'vue-router' {
     ignoreAccess?: boolean;
     // 是否固定标签页
     affixTab?: boolean;
+    // 能否被设置为默认首页
+    allowDefaultHome?: boolean;
   }
 }
