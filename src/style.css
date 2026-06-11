@@ -1,6 +1,6 @@
 /* 默认变量（浅色模式） */
 #app {
-  --app-accent-color: "#aa3bff";
+  --app-accent-color: #aa3bff;
   --content-max-width-S: 800px;
   --content-max-width-M: 1000px;
   --content-max-width-L: 1200px;
