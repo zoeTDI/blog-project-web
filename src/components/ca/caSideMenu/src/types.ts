@@ -1,6 +1,7 @@
-import type { Component } from "vue";
+import type { Component } from 'vue';
 
 interface MenuItem {
+  no?: number;
   title: string;
   name: string;
   path: string;
@@ -9,4 +10,4 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
-export type { MenuItem }
+export type { MenuItem };

@@ -8,13 +8,40 @@
     ChevronUpIcon,
     Bars3BottomLeftIcon,
   } from '@heroicons/vue/24/outline';
+  import { preferences } from '@/core/preferences';
 
   const route = useRoute();
   const router = useRouter();
 
+  const handleMenuSort = (menuItems: MenuItem[]): MenuItem[] => {
+    const obj = {
+      positiveItems: [] as MenuItem[],
+      negativeItems: [] as MenuItem[],
+      otherItems: [] as MenuItem[],
+    };
+    menuItems.reduce((acc, cur: MenuItem) => {
+      if (typeof cur?.no !== 'number') {
+        acc.otherItems.push(cur);
+      } else if (cur.no < 0) {
+        acc.negativeItems.push(cur);
+      } else {
+        acc.positiveItems.push(cur);
+      }
+      return acc;
+    }, obj);
+    // 正数：从小到大
+    obj.positiveItems.sort((a, b) => a.no! - b.no!);
+
+    // 负数：从大到小 (例如 -1 靠近 0，排在 -2 前面)
+    obj.negativeItems.sort((a, b) => a.no! - b.no!);
+
+    // 3. 返回合并结果：正数 -> 其他 -> 负数
+    return [...obj.positiveItems, ...obj.otherItems, ...obj.negativeItems];
+  };
+
   const menuTree = computed<MenuItem[]>(() => {
     const modules = import.meta.glob('@/router/modules/*.ts', { eager: true });
-    const menus: MenuItem[] = [];
+    const rawMenus: MenuItem[] = [];
 
     Object.keys(modules).forEach((key) => {
       const module = modules[key] as any;
@@ -26,6 +53,9 @@
 
       // 组装一级菜单
       const firstLevelMenu: MenuItem = {
+        no: preferences.app.defaultHomePath.startsWith(rootRoute.path)
+          ? 1
+          : rootRoute.meta?.no,
         title: rootRoute.meta?.title || '未命名分类',
         path: rootRoute.path,
         name: rootRoute.name,
@@ -39,6 +69,7 @@
           // 除非显式配置 hidden: true，否则默认展示
           if (child.meta?.hidden !== true && child.meta?.title) {
             firstLevelMenu.children?.push({
+              no: child.meta?.no,
               title: child.meta.title,
               path: child.path,
               name: child.name,
@@ -51,11 +82,17 @@
 
       // 如果一级菜单有子项，或者自身就是一个可点击的独立页面，则推入菜单栏
       if (firstLevelMenu.children!.length > 0 || rootRoute.meta?.title) {
-        menus.push(firstLevelMenu);
+        rawMenus.push(firstLevelMenu);
       }
     });
 
-    return menus;
+    rawMenus.forEach((menu) => {
+      if (menu.children && menu.children.length > 0) {
+        menu.children = handleMenuSort(menu.children);
+      }
+    });
+
+    return handleMenuSort(rawMenus);
   });
 
   const activeSubMenuIndex = ref<number | null>(null);
@@ -83,6 +120,7 @@
   watch(
     () => route.path,
     (newPath) => {
+      console.log(menuTree.value);
       menuTree.value.forEach((menu, index) => {
         const hasActiveChild = menu.children?.some(
           (child) => child.path === newPath
