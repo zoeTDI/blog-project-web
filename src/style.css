@@ -1,5 +1,6 @@
 /* 默认变量（浅色模式） */
-:root {
+#app {
+  --app-accent-color: "#aa3bff";
   --content-max-width-S: 800px;
   --content-max-width-M: 1000px;
   --content-max-width-L: 1200px;
@@ -20,6 +21,7 @@
   --color-text-h: #08060d;
   --color-root-bg: #ffffff;
   --color-container-bg: #ffffff;
+  --color-context-bg: #eaeaea;
   --color-border: #e5e4e7;
   --color-accent: var(--app-accent-color);
   --color-border-accent: var(--app-accent-color);
@@ -47,15 +49,13 @@
 
   --color-callout-text: #1F2937;
 
-
-
   @media (max-width: 1024px) {
     font-size: 16px;
   }
 }
 
 /* 深色模式变量 - 当包含 .dark 类时激活 */
-.dark {
+#app.dark {
   --color-text-primary: #a19ba8;
   /*
   --color-text-success:
@@ -66,7 +66,8 @@
   --color-text-h: #f5f5f5;
   --color-root-bg: #1a1a1a;
   --color-container-bg: #1a1a1a;
-  --color-border: #2e2e2e;
+  --color-context-bg: #2f2f2f;
+  --color-border: #a19ba8;
   --color-accent: #bd6dff;
   --color-border-accent: #bd6dff;
   --color-bg-accent: #bd6dff;
