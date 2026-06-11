@@ -106,7 +106,7 @@
 
     if (hasChildren) {
       activeSubMenuIndex.value =
-        typeof activeSubMenuIndex.value === 'number' ? null : index;
+        index === activeSubMenuIndex.value ? null : index;
     } else {
       router.push({ name: menu.name });
     }
