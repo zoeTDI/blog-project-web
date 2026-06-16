@@ -28,11 +28,9 @@
     if (!Array.isArray(metaOptions.value)) {
       metaOptions.value = [];
     }
-    console.log(metaOptions.value);
     metaOptions.value = metaOptions.value.filter((item) => {
       return !!post.value[item.key];
     });
-    console.log(metaOptions.value);
   };
 
   const displaySuppleInfo = (): boolean => {
@@ -56,13 +54,13 @@
 
     // 2. 构建版权声明文本
     const copyrightNotice = `
-------------------------------------------------
-作者：${authorName.value}
-链接：${currentUrl.value}
-来源：MyBlog
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-------------------------------------------------
-`;
+  ------------------------------------------------
+  作者：${authorName.value}
+  链接：${currentUrl.value}
+  来源：MyBlog
+  著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+  ------------------------------------------------
+  `;
 
     // 3. 将原文与版权信息拼接
     const clipboardData = selectedText + copyrightNotice;
@@ -89,23 +87,38 @@
         '##### 五级标题\n' +
         '**加粗内容**\n' +
         '*斜体内容*\n' +
-        '> 引用内容\n' +
-        '::: details 标题 \n' +
-        ' 内容 \n' +
+        '> 引用内容\n\n' +
+        '::: note -\n' +
+        ' 内容 \n\n' +
+        ' 内容 \n\n' +
+        ':::\n' +
+        '::: tip Tip \n' +
+        ' 内容 \n\n' +
+        ':::\n' +
+        '::: important 标题 \n' +
+        ' 内容 \n\n' +
+        ':::\n' +
+        '::: warning 标题 \n' +
+        ' 内容 \n\n' +
+        ':::\n' +
+        '::: caution 标题 \n' +
+        ' 内容 \n\n' +
+        ':::\n' +
+        '::: abstract 标题 \n' +
+        ' 内容 \n\n' +
+        ':::\n' +
+        '::: todo 标题 \n' +
+        ' 内容 \n\n' +
+        ':::\n' +
+        '::: success 标题 \n' +
+        ' 内容 \n\n' +
+        ':::\n' +
+        '::: question 标题 \n' +
+        ' 内容 \n\n' +
         ':::\n' +
         ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://picsum.photos/seed/0.5412681759709166/800/450){class=left width=60%}\n\n' +
         ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/2024-03-16%E5%82%8D%E6%99%9A%EF%BC%8C%E4%BD%A0%E5%92%8C%E5%A5%B9%E4%B8%80%E8%B5%B7%E9%80%83%E6%8E%89%E4%BA%86%E6%99%9A%E8%87%AA%E4%B9%A0%E6%9D%A5%E5%88%B0%E4%BA%86%E5%B2%B8%E8%BE%B9%E5%90%B9%E9%A3%8E.......jpg){class=center width=60%}\n\n' +
         ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://picsum.photos/seed/0.5412681759709166/800/450){class=right width=60%}\n\n' +
-        '::: tabs\n' +
-        '@tab HTML\n' +
-        '这是 HTML 的代码示例或说明\n' +
-        '\n' +
-        '@tab CSS\n' +
-        '这是CSS的样式定义\n' +
-        '\n' +
-        '@tab JavaScript\n' +
-        '这是JS的逻辑实现\n' +
-        ':::\n' +
         '```Js\n' +
         'console.log("<>Hello World")\n' +
         '\n',
