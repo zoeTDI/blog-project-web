@@ -41,11 +41,77 @@
   -moz-osx-font-smoothing: grayscale;
 
   /*callout 颜色*/
-  --callout-primary-bg: #60A5FA;
-  --callout-success-bg: #34D399;
-  --callout-warning-bg: #FBBF24;
-  --callout-danger-bg: #F87171;
-  --callout-info-bg: #9CA3AF;
+  /* ===== Note ===== */
+  --color-base-note: rgb(8, 109, 221);
+  --color-icon-note: var(--color-base-note);
+  --color-left-border-note: var(--color-base-note);
+  --color-summary-note: var(--color-base-note);
+  --color-bg-note: color-mix(in srgb, var(--color-base-note) 10%, transparent);
+  --color-summary-bg-note: color-mix(in srgb, var(--color-base-note) 40%, transparent);
+
+  /* ===== To——do ===== */
+  --color-base-todo: rgb(8, 109, 221);
+  --color-icon-todo: var(--color-base-todo);
+  --color-left-border-todo: var(--color-base-todo);
+  --color-summary-todo: var(--color-base-todo);
+  --color-bg-todo: color-mix(in srgb, var(--color-base-todo) 10%, transparent);
+  --color-summary-bg-todo: color-mix(in srgb, var(--color-base-todo) 40%, transparent);
+
+  /* ===== Tip ===== */
+  --color-base-tip: rgb(0, 191, 188);
+  --color-icon-tip: var(--color-base-tip);
+  --color-left-border-tip: var(--color-base-tip);
+  --color-summary-tip: var(--color-base-tip);
+  --color-bg-tip: color-mix(in srgb, var(--color-base-tip) 10%, transparent);
+  --color-summary-bg-tip: color-mix(in srgb, var(--color-base-tip) 40%, transparent);
+
+  /* ===== Important ===== */
+  --color-base-important: rgb(0, 191, 188);
+  --color-icon-important: var(--color-base-important);
+  --color-left-border-important: var(--color-base-important);
+  --color-summary-important: var(--color-base-important);
+  --color-bg-important: color-mix(in srgb, var(--color-base-important) 10%, transparent);
+  --color-summary-bg-important: color-mix(in srgb, var(--color-base-important) 40%, transparent);
+
+  /* ===== Abstract ===== */
+  --color-base-abstract: rgb(0, 191, 188);
+  --color-icon-abstract: var(--color-base-abstract);
+  --color-left-border-abstract: var(--color-base-abstract);
+  --color-summary-abstract: var(--color-base-abstract);
+  --color-bg-abstract: color-mix(in srgb, var(--color-base-abstract) 10%, transparent);
+  --color-summary-bg-abstract: color-mix(in srgb, var(--color-base-abstract) 40%, transparent);
+
+  /* ===== Warning ===== */
+  --color-base-warning: rgb(236, 117, 0);
+  --color-icon-warning: var(--color-base-warning);
+  --color-left-border-warning: var(--color-base-warning);
+  --color-summary-warning: var(--color-base-warning);
+  --color-bg-warning: color-mix(in srgb, var(--color-base-warning) 10%, transparent);
+  --color-summary-bg-warning: color-mix(in srgb, var(--color-base-warning) 40%, transparent);
+
+  /* ===== Caution ===== */
+  --color-base-caution: rgb(236, 117, 0);
+  --color-icon-caution: var(--color-base-caution);
+  --color-left-border-caution: var(--color-base-caution);
+  --color-summary-caution: var(--color-base-caution);
+  --color-bg-caution: color-mix(in srgb, var(--color-base-caution) 10%, transparent);
+  --color-summary-bg-caution: color-mix(in srgb, var(--color-base-caution) 40%, transparent);
+
+  /* ===== Question ===== */
+  --color-base-question: rgb(236, 117, 0);
+  --color-icon-question: var(--color-base-question);
+  --color-left-border-question: var(--color-base-question);
+  --color-summary-question: var(--color-base-question);
+  --color-bg-question: color-mix(in srgb, var(--color-base-question) 10%, transparent);
+  --color-summary-bg-question: color-mix(in srgb, var(--color-base-question) 40%, transparent);
+
+  /* ===== Success ===== */
+  --color-base-success: rgb(8, 185, 78);
+  --color-icon-success: var(--color-base-success);
+  --color-left-border-success: var(--color-base-success);
+  --color-summary-success: var(--color-base-success);
+  --color-bg-success: color-mix(in srgb, var(--color-base-success) 10%, transparent);
+  --color-summary-bg-success: color-mix(in srgb, var(--color-base-success) 40%, transparent);
 
   --color-callout-text: #1F2937;
 
@@ -79,11 +145,6 @@
 
 
   /*callout 颜色*/
-  --callout-primary-bg: #0066FF;
-  --callout-success-bg: #28A745;
-  --callout-warning-bg: #F59E0B;
-  --callout-danger-bg: #DC3545;
-  --callout-info-bg: #6B7280;
 
   --color-callout-text: #F3F4F6;
 
@@ -140,6 +201,12 @@ h2 {
 }
 
 @media (max-width: 1024px) {
-  h1 { font-size: 36px; margin: 20px 0; }
-  h2 { font-size: 20px; }
+  h1 {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
 }
