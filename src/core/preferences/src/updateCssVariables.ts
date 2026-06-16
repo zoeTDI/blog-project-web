@@ -25,7 +25,10 @@ const updateThemeMode = (themePreferences: DeepPartial<ThemePreferences>) => {
 };
 
 export const updateThemeColor = (color: string) => {
-  document.documentElement.style.setProperty('--app-accent-color', color);
+  const appEl = document.getElementById('app');
+  if (appEl) {
+    appEl.style.setProperty('--app-accent-color', color);
+  }
 };
 
 export { updateThemeMode };
