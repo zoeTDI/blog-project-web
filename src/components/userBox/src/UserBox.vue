@@ -1,23 +1,155 @@
 <script setup lang="ts">
-  import { BellIcon } from '@heroicons/vue/24/outline';
+  import { BellIcon, EnvelopeIcon } from '@heroicons/vue/24/outline';
   import MessageList from './MessageList.vue';
   import UserMenu from './UserMenu.vue';
   import { preferences } from '@/core/preferences/index.ts';
   import defaultAvatar from '@/assets/avatar.svg';
+  import { onMounted, ref } from 'vue';
+  import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
+  import { type MessageItem, MessageSource } from '@/components/userBox';
+  import { mockApiFetch } from '@/utils/mock.ts';
+
+  const mockMessages: MessageItem[] = [
+    {
+      id: 1,
+      type: MessageSource.SYSTEM,
+      isRead: false,
+      content: '您的个人资料已成功更新，点击查看详情。',
+      title: '系统通知',
+      timestamp: new Date(),
+      icon: BellIcon,
+    },
+    {
+      id: 2,
+      type: MessageSource.USER,
+      isRead: true,
+      content: '项目进展如何？我们需要在明天前确认需求。',
+      senderName: '张三',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+      timestamp: new Date(),
+    },
+    {
+      id: 3,
+      type: MessageSource.SYSTEM,
+      isRead: false,
+      content: '检测到一次新的登录尝试，如果不是本人，请尽快修改密码。',
+      title: '安全警报',
+      timestamp: new Date(),
+      icon: EnvelopeIcon,
+    },
+    {
+      id: 4,
+      type: MessageSource.SYSTEM,
+      isRead: false,
+      content: '检测到一次新的登录尝试，如果不是本人，请尽快修改密码。',
+      title: '安全警报',
+      timestamp: new Date(),
+      icon: EnvelopeIcon,
+    },
+    {
+      id: 5,
+      type: MessageSource.SYSTEM,
+      isRead: false,
+      content: '检测到一次新的登录尝试，如果不是本人，请尽快修改密码。',
+      title: '安全警报',
+      timestamp: new Date(),
+      icon: EnvelopeIcon,
+    },
+    {
+      id: 6,
+      type: MessageSource.SYSTEM,
+      isRead: false,
+      content: '检测到一次新的登录尝试，如果不是本人，请尽快修改密码。',
+      title: '安全警报',
+      timestamp: new Date(),
+      icon: EnvelopeIcon,
+    },
+  ];
 
   const avatarUrl = preferences.app.defaultAvatar;
+  let hoverTimer: ReturnType<typeof setTimeout> | null = null;
+  const isMessageVisible = ref<boolean>(true);
+  const messages = ref<MessageItem[]>([]);
+  const pendingReadIds = new Set<string | number>();
 
+  /**
+   * 向后端更新消息状态
+   */
+  const syncToBackend = useDebounceFn(async () => {
+    const ids = Array.from(pendingReadIds);
+    if (ids.length === 0) return;
+    console.log('向后端提交已读 ID:', ids);
+    // await mockApiFetch(..., 0);
+    pendingReadIds.clear();
+  }, 1000);
+  /**
+   * 处理子组件传来的消息已读事件
+   * @param id
+   */
+  const handleMarkRead = (id: string | number) => {
+    const msg = messages.value.find((m) => m.id === id);
+    if (msg) msg.isRead = true;
+    pendingReadIds.add(id);
+    syncToBackend();
+  };
+  /**
+   * 显示消息列表
+   */
+  const showMessage = () => {
+    // 鼠标进入时，立刻清除正在倒计时的隐藏操作
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
+    isMessageVisible.value = true;
+    console.log('show');
+  };
+  /**
+   * 隐藏消息列表
+   */
+  const hideMessage = () => {
+    // 鼠标离开时，不要立刻隐藏，而是等 300ms
+    // 如果这 300ms 内鼠标又进来了，showMessage 会把这个定时器干掉
+    hoverTimer = setTimeout(() => {
+      isMessageVisible.value = false;
+      console.log('hide');
+    }, 300);
+  };
+  /**
+   * 处理用户头像加载失败。失败时改为使用默认头像
+   * @param event
+   */
   const handleImageError = (event: Event) => {
     const imgElement = event.target as HTMLImageElement;
     imgElement.src = defaultAvatar;
   };
+  /**
+   * 加载用户消息队列
+   */
+  const loadMessages = async () => {
+    try {
+      const data = await mockApiFetch<MessageItem[]>(mockMessages, 1000);
+      messages.value = data;
+    } catch (error) {
+      console.error('加载消息失败', error);
+    }
+  };
+  onMounted(async () => {
+    await loadMessages();
+  });
 </script>
 
 <template>
   <div class="user-box">
-    <div class="action-item">
+    <div
+      class="action-item message-list"
+      @mouseenter="showMessage"
+      @mouseleave="hideMessage">
       <BellIcon class="icon" />
-      <MessageList />
+      <MessageList
+        v-show="isMessageVisible"
+        @mark-read="handleMarkRead"
+        :messages="messages" />
     </div>
 
     <div class="action-item user-avatar">
