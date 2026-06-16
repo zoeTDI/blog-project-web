@@ -82,7 +82,7 @@
 </template>
 
 <style>
-  @import '@/assets/markdownCss/base.css';
-  @import '@/assets/markdownCss/defaultTheme.css';
-  @import '@/assets/markdownCss/pinkTheme.css';
+  @import '@/assets/markdown/css/base.css';
+  @import '@/assets/markdown/css/defaultTheme.css';
+  @import '@/assets/markdown/css/pinkTheme.css';
 </style>
