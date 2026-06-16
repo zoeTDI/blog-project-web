@@ -1,58 +1,61 @@
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
-import {useRoute} from 'vue-router';
-import {mockApiFetch} from "@/utils/mock";
-import {CaRow} from "@/components/ca/CaRow";
-import {CaCol} from "@/components/ca/caCol";
-import {ExclamationTriangleIcon, Squares2X2Icon, TagIcon} from '@heroicons/vue/24/outline'
-import {ROUTER_NAMES} from "@/router/routerNames.ts";
-import {MarkdownRender} from "@/components/markdownRender";
-import {PostActions} from "@/components/postActions";
-const blogName = import.meta.env.VITE_SITE_TITLE;
+  import { ref, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { mockApiFetch } from '@/utils/mock';
+  import { CaRow } from '@/components/ca/CaRow';
+  import { CaCol } from '@/components/ca/caCol';
+  import {
+    ExclamationTriangleIcon,
+    Squares2X2Icon,
+    TagIcon,
+  } from '@heroicons/vue/24/outline';
+  import { ROUTER_NAMES } from '@/router/routerNames.ts';
+  import { MarkdownRender } from '@/components/markdownRender';
+  import { PostActions } from '@/components/postActions';
+  const blogName = import.meta.env.VITE_WEB_SITE_NAME;
 
-const route = useRoute();
-const post = ref<any>(null);
+  const route = useRoute();
+  const post = ref<any>(null);
 
-const metaOptions = ref([
-  {key: 'views', suffix: 'VIEWS', icon: '👁'},
-  {key: 'likes', suffix: 'LIKES', icon: '♥'},
-  {key: 'saved', suffix: 'SAVED', icon: '⭐'},
-  {key: 'comments', suffix: 'COMMENTS', icon: '💬'},
-])
+  const metaOptions = ref([
+    { key: 'views', suffix: 'VIEWS', icon: '👁' },
+    { key: 'likes', suffix: 'LIKES', icon: '♥' },
+    { key: 'saved', suffix: 'SAVED', icon: '⭐' },
+    { key: 'comments', suffix: 'COMMENTS', icon: '💬' },
+  ]);
 
-const handleMetaOptions = () => {
-  if (!Array.isArray(metaOptions.value)) {
-    metaOptions.value = [];
-  }
-  console.log(metaOptions.value);
-  metaOptions.value = metaOptions.value.filter((item) => {
-    return !!post.value[item.key];
-  })
-  console.log(metaOptions.value)
-}
+  const handleMetaOptions = () => {
+    if (!Array.isArray(metaOptions.value)) {
+      metaOptions.value = [];
+    }
+    console.log(metaOptions.value);
+    metaOptions.value = metaOptions.value.filter((item) => {
+      return !!post.value[item.key];
+    });
+    console.log(metaOptions.value);
+  };
 
-const displaySuppleInfo = (): boolean => {
-  if (!post.value?.lastUpdate) return false;
-  const lastUpdate = new Date(post.value?.lastUpdate);
-  const now = new Date();
-  return now.getTime() - lastUpdate.getTime() > 2592000000; // 30*24*60*60*1000 30天未更新
-}
+  const displaySuppleInfo = (): boolean => {
+    if (!post.value?.lastUpdate) return false;
+    const lastUpdate = new Date(post.value?.lastUpdate);
+    const now = new Date();
+    return now.getTime() - lastUpdate.getTime() > 2592000000; // 30*24*60*60*1000 30天未更新
+  };
 
-// 版权说明文件
-const currentUrl = ref('');
-const authorName = ref("Caldm"); // 建议后续从文章数据中动态获取
+  // 版权说明文件
+  const currentUrl = ref('');
+  const authorName = ref('Caldm'); // 建议后续从文章数据中动态获取
 
-/**
- * 拦截复制事件并追加版权信息
- */
-const handleCopy = (event: ClipboardEvent) => {
-  // 1. 获取用户实际选中的文本
-  const selection = window.getSelection();
-  const selectedText = selection.toString();
+  /**
+   * 拦截复制事件并追加版权信息
+   */
+  const handleCopy = (event: ClipboardEvent) => {
+    // 1. 获取用户实际选中的文本
+    const selection = window.getSelection();
+    const selectedText = selection.toString();
 
-  // 2. 构建版权声明文本
-  const copyrightNotice =
-      `
+    // 2. 构建版权声明文本
+    const copyrightNotice = `
 ------------------------------------------------
 作者：${authorName.value}
 链接：${currentUrl.value}
@@ -61,24 +64,25 @@ const handleCopy = (event: ClipboardEvent) => {
 ------------------------------------------------
 `;
 
-  // 3. 将原文与版权信息拼接
-  const clipboardData = selectedText + copyrightNotice;
+    // 3. 将原文与版权信息拼接
+    const clipboardData = selectedText + copyrightNotice;
 
-  // 4. 写入剪贴板
-  if (event.clipboardData) {
-    event.clipboardData.setData('text/plain', clipboardData);
-    // 阻止默认的复制行为，使用我们自定义的内容
-    event.preventDefault();
-  }
-};
+    // 4. 写入剪贴板
+    if (event.clipboardData) {
+      event.clipboardData.setData('text/plain', clipboardData);
+      // 阻止默认的复制行为，使用我们自定义的内容
+      event.preventDefault();
+    }
+  };
 
-// 模拟获取数据
-onMounted(async () => {
-  // 模拟后端返回的数据结构
-  const data = {
-    id: route.query.id,
-    title: '文章标题',
-    content: '# 一级标题\n' +
+  // 模拟获取数据
+  onMounted(async () => {
+    // 模拟后端返回的数据结构
+    const data = {
+      id: route.query.id,
+      title: '文章标题',
+      content:
+        '# 一级标题\n' +
         '## 二级标题\n' +
         '### 三级标题\n' +
         '#### 四级标题\n' +
@@ -105,21 +109,23 @@ onMounted(async () => {
         '```Js\n' +
         'console.log("<>Hello World")\n' +
         '\n',
-    views: 30,
-    likes: 12,
-    stars: 22,
-    comments: 23,
-    releaseDate: '2023-04-12',
-    lastUpdate: '2023-04-13',
-  };
-  post.value = await mockApiFetch(data, 500);
-  handleMetaOptions();
-  currentUrl.value = window.location.href;
-});
+      views: 30,
+      likes: 12,
+      stars: 22,
+      comments: 23,
+      releaseDate: '2023-04-12',
+      lastUpdate: '2023-04-13',
+    };
+    post.value = await mockApiFetch(data, 500);
+    handleMetaOptions();
+    currentUrl.value = window.location.href;
+  });
 </script>
 
 <template>
-  <div class="post-detail-container" v-if="post">
+  <div
+    class="post-detail-container"
+    v-if="post">
     <ca-row :gap="40">
       <ca-col :span="17">
         <div class="main-content">
@@ -129,30 +135,60 @@ onMounted(async () => {
             </ca-row>
             <ca-row class="meta-info">
               <ca-col class="meta-categories">
-                <squares2-x2-icon class="icon"/>
+                <squares2-x2-icon class="icon" />
                 分类：
-                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, params: {id: 124, name: '技术/框架/Vue'}}"
-                             class="category">技术/框架/Vue
+                <router-link
+                  :to="{
+                    name: ROUTER_NAMES.CATEGORY_DETAIL,
+                    params: { id: 124, name: '技术/框架/Vue' },
+                  }"
+                  class="category"
+                  >技术/框架/Vue
                 </router-link>
-                <router-link :to="{name: ROUTER_NAMES.CATEGORY_DETAIL, params: {id: 123, name: '学习/编程'}}"
-                             class="category">学习/编程
+                <router-link
+                  :to="{
+                    name: ROUTER_NAMES.CATEGORY_DETAIL,
+                    params: { id: 123, name: '学习/编程' },
+                  }"
+                  class="category"
+                  >学习/编程
                 </router-link>
               </ca-col>
               <ca-col class="meta-tags">
-                <tag-icon class="icon"/>
+                <tag-icon class="icon" />
                 标签：
-                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, params: {id: 123, name: '前端'}}" class="tag">#前端
+                <router-link
+                  :to="{
+                    name: ROUTER_NAMES.TAG_DETAIL,
+                    params: { id: 123, name: '前端' },
+                  }"
+                  class="tag"
+                  >#前端
                 </router-link>
-                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, params: {id: 124, name: '设计模式'}}" class="tag">
+                <router-link
+                  :to="{
+                    name: ROUTER_NAMES.TAG_DETAIL,
+                    params: { id: 124, name: '设计模式' },
+                  }"
+                  class="tag">
                   #设计模式
                 </router-link>
-                <router-link :to="{name: ROUTER_NAMES.TAG_DETAIL, params: {id: 125, name: 'Vue3'}}" class="tag">#Vue3
+                <router-link
+                  :to="{
+                    name: ROUTER_NAMES.TAG_DETAIL,
+                    params: { id: 125, name: 'Vue3' },
+                  }"
+                  class="tag"
+                  >#Vue3
                 </router-link>
               </ca-col>
               <ca-col :span="18">
                 <ca-row class="meta-items">
-                  <ca-col class="meta-item" v-for="item in metaOptions" :key="item.key"
-                          :span="24/metaOptions.length">
+                  <ca-col
+                    class="meta-item"
+                    v-for="item in metaOptions"
+                    :key="item.key"
+                    :span="24 / metaOptions.length">
                     {{ item.icon }}
                     {{ post[item.key] || '暂无数据' }}
                     {{ item.suffix }}
@@ -161,47 +197,83 @@ onMounted(async () => {
               </ca-col>
               <ca-col :span="6">
                 <ca-row class="meta-date">
-                  <ca-col class="release-date">发布：{{ post.releaseDate }}</ca-col>
-                  <ca-col class="last-update">最后更新：{{ post.lastUpdate }}</ca-col>
+                  <ca-col class="release-date"
+                    >发布：{{ post.releaseDate }}</ca-col
+                  >
+                  <ca-col class="last-update"
+                    >最后更新：{{ post.lastUpdate }}</ca-col
+                  >
                 </ca-row>
               </ca-col>
             </ca-row>
             <ca-row>
-              <ca-col class="supple-info" v-if="displaySuppleInfo">
-                <exclamation-triangle-icon class="icon"/>
+              <ca-col
+                class="supple-info"
+                v-if="displaySuppleInfo">
+                <exclamation-triangle-icon class="icon" />
                 补充说明 / WARNING：文章上次更新时间过于久远，信息可能失效。
               </ca-col>
             </ca-row>
           </header>
 
-          <article class="article-body" @copy="handleCopy">
-            <markdown-render :content="post.content" :caption-mode="'always'"/>
-            <markdown-render :content="post.content" :caption-mode="'always'" theme="pink"/>
+          <article
+            class="article-body"
+            @copy="handleCopy">
+            <markdown-render
+              :content="post.content"
+              :caption-mode="'always'" />
+            <markdown-render
+              :content="post.content"
+              :caption-mode="'always'"
+              theme="pink" />
           </article>
 
           <footer class="article-footer">
-            <post-actions/>
-            <post-actions :mode="'circle'"/>
+            <post-actions />
+            <post-actions :mode="'circle'" />
             <div class="prev-next-nav">
-              <router-link :to="{name: ROUTER_NAMES.POST_DETAIL, params: {id: 3}}" class="prev">上一篇</router-link>
+              <router-link
+                :to="{ name: ROUTER_NAMES.POST_DETAIL, params: { id: 3 } }"
+                class="prev"
+                >上一篇</router-link
+              >
               /
-              <router-link :to="{name: ROUTER_NAMES.POST_DETAIL, params: {id: 4}}" class="next">下一篇</router-link>
+              <router-link
+                :to="{ name: ROUTER_NAMES.POST_DETAIL, params: { id: 4 } }"
+                class="next"
+                >下一篇</router-link
+              >
             </div>
             <div class="copyright-info">
               <div class="copyright-item">
                 <span class="label">文章作者：</span>
-                <span class="value">Gemini</span> <!-- 建议后续改为动态变量 -->
+                <span class="value">Gemini</span>
+                <!-- 建议后续改为动态变量 -->
               </div>
               <div class="copyright-item">
                 <span class="label">文章链接：</span>
-                <a :href="currentUrl" class="value link">{{ currentUrl }}</a>
+                <a
+                  :href="currentUrl"
+                  class="value link"
+                  >{{ currentUrl }}</a
+                >
               </div>
               <div class="copyright-item">
                 <span class="label">版权声明：</span>
                 <span class="value">
                   本博客所有文章除特别声明外，均采用
-                  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" target="_blank" class="link">CC BY-NC-ND 4.0</a>
-                  许可协议。转载请注明来自 <router-link to="/" class="link">{{blogName}}</router-link>！
+                  <a
+                    href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh"
+                    target="_blank"
+                    class="link"
+                    >CC BY-NC-ND 4.0</a
+                  >
+                  许可协议。转载请注明来自
+                  <router-link
+                    to="/"
+                    class="link"
+                    >{{ blogName }}</router-link
+                  >！
                 </span>
               </div>
             </div>
@@ -222,173 +294,174 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.post-detail-container {
-  max-width: var(--content-max-width-M);
-  margin: 0 auto;
-  padding: var(--content-padding-M);
-}
+  .post-detail-container {
+    max-width: var(--content-max-width-M);
+    margin: 0 auto;
+    padding: var(--content-padding-M);
+  }
 
-.article-header {
-  border-bottom: 1px solid var(--color-border);
-}
+  .article-header {
+    border-bottom: 1px solid var(--color-border);
+  }
 
-.title-area {
-  font-family: var(--font-h);
-  line-height: 1;
-  font-size: 64px;
-  color: var(--color-text-h);
-  font-weight: bold;
-  margin-bottom: 20px;
-}
+  .title-area {
+    font-family: var(--font-h);
+    line-height: 1;
+    font-size: 64px;
+    color: var(--color-text-h);
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
 
-.meta-categories {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-text-h);
-  font-family: var(--font-text);
-  font-weight: bold;
-}
+  .meta-categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-h);
+    font-family: var(--font-text);
+    font-weight: bold;
+  }
 
-.meta-tags .icon,
-.meta-categories .icon {
-  width: 24px;
-  height: 24px;
-  aspect-ratio: 1 / 1;
-  color: var(--color-text-h);
-}
+  .meta-tags .icon,
+  .meta-categories .icon {
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1 / 1;
+    color: var(--color-text-h);
+  }
 
-.meta-tags .tag,
-.meta-categories .category {
-  letter-spacing: 2px;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all .3s ease;
-}
+  .meta-tags .tag,
+  .meta-categories .category {
+    letter-spacing: 2px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
 
-.meta-tags .tag:hover,
-.meta-categories .category:hover {
-  background-color: var(--color-bg-hover-accent);
-}
+  .meta-tags .tag:hover,
+  .meta-categories .category:hover {
+    background-color: var(--color-bg-hover-accent);
+  }
 
-.meta-tags {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-text-h);
-  font-family: var(--font-text);
-  font-weight: bold;
-}
+  .meta-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-h);
+    font-family: var(--font-text);
+    font-weight: bold;
+  }
 
-.meta-items {
-  height: 100%;
-}
+  .meta-items {
+    height: 100%;
+  }
 
-.meta-item {
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-}
+  .meta-item {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
 
-.meta-date {
-  font-size: 14px;
-}
+  .meta-date {
+    font-size: 14px;
+  }
 
-.supple-info {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 16px;
-  background-color: var(--callout-warning-bg);
-  color: var(--color-callout-text);
-}
+  .supple-info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 16px;
+    background-color: var(--callout-warning-bg);
+    color: var(--color-callout-text);
+  }
 
-.supple-info .icon {
-  width: 24px;
-  height: 24px;
-  aspect-ratio: 1 / 1;
-  color: var(--color-callout-text);
-  margin-right: 10px;
-}
+  .supple-info .icon {
+    width: 24px;
+    height: 24px;
+    aspect-ratio: 1 / 1;
+    color: var(--color-callout-text);
+    margin-right: 10px;
+  }
 
-.main-content, .sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+  .main-content,
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 
-.article-header {
-  padding-bottom: 20px;
-}
+  .article-header {
+    padding-bottom: 20px;
+  }
 
-.article-body {
-  min-height: 600px; /* 模拟内容高度 */
-  padding: 20px 0;
-}
+  .article-body {
+    min-height: 600px; /* 模拟内容高度 */
+    padding: 20px 0;
+  }
 
-.prev-next-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 16px;
-}
+  .prev-next-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+  }
 
-.prev-next-nav a {
-  transition: all .3s ease;
-}
+  .prev-next-nav a {
+    transition: all 0.3s ease;
+  }
 
-.prev-next-nav a:hover {
-  color: var(--color-text-hover-accent);
-}
+  .prev-next-nav a:hover {
+    color: var(--color-text-hover-accent);
+  }
 
-.copyright-info {
-  margin-top: 32px;
-  padding: 16px 20px;
-  border-left: 5px solid var(--color-border-accent);
-  background-color: var(--color-bg);
-  border-radius: 4px;
-  font-size: 14px;
-  color: var(--color-text-primary);
-  line-height: 1.8;
-}
+  .copyright-info {
+    margin-top: 32px;
+    padding: 16px 20px;
+    border-left: 5px solid var(--color-border-accent);
+    background-color: var(--color-bg);
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    line-height: 1.8;
+  }
 
-.copyright-item {
-  margin-bottom: 4px;
-}
+  .copyright-item {
+    margin-bottom: 4px;
+  }
 
-.copyright-item:last-child {
-  margin-bottom: 0;
-}
+  .copyright-item:last-child {
+    margin-bottom: 0;
+  }
 
-.copyright-item .label {
-  font-weight: bold;
-  color: var(--color-text-h);
-}
+  .copyright-item .label {
+    font-weight: bold;
+    color: var(--color-text-h);
+  }
 
-.copyright-item .link {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: opacity 0.2s;
-  word-break: break-all;
-}
+  .copyright-item .link {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: opacity 0.2s;
+    word-break: break-all;
+  }
 
-.copyright-item .link:hover {
-  opacity: 0.8;
-  text-decoration: underline;
-}
+  .copyright-item .link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
 
-.sidebar > div {
-  padding: 20px;
-  min-height: 100px; /* 模拟侧边栏组件高度 */
-}
+  .sidebar > div {
+    padding: 20px;
+    min-height: 100px; /* 模拟侧边栏组件高度 */
+  }
 
-/* 确保侧边栏在滚动时能部分固定（符合现代博客设计） */
-.toc-wrapper {
-  position: sticky;
-  top: 100px;
-}
+  /* 确保侧边栏在滚动时能部分固定（符合现代博客设计） */
+  .toc-wrapper {
+    position: sticky;
+    top: 100px;
+  }
 </style>
