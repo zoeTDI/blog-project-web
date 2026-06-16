@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { CaTabsBar, type HomeTabParam } from '@/components/ca/caTabsBar';
+  import { CaTabsBar } from '@/components/ca/caTabsBar';
   import { CaSideMenu } from '@/components/ca/caSideMenu';
   import { computed, ref, watch, type VNodeRef } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
@@ -18,12 +18,6 @@
   const tabStore = useTabStore();
 
   const defaultHomePath = preferences.app.defaultHomePath;
-  const homeRouteResolved = router.resolve(defaultHomePath);
-  const homeTabConfig: HomeTabParam = {
-    path: defaultHomePath,
-    title: (homeRouteResolved.meta?.title as string) || '首页',
-    icon: homeRouteResolved.meta?.icon,
-  };
 
   const sideMenuRef = ref<VNodeRef | null>(null);
   const isMenuFold = computed(() => sideMenuRef.value?.isFold ?? false);
@@ -44,13 +38,10 @@
       }
 
       // 逻辑 B：正常添加标签页，并把首页路径传给 store 内部做持久化和查重
-      tabStore.addTab(
-        {
-          path: route.path,
-          meta: route.meta,
-        },
-        homeTabConfig
-      );
+      tabStore.addTab({
+        path: route.path,
+        meta: route.meta,
+      });
     },
     { immediate: true } // 页面首次加载时就触发一次
   );
