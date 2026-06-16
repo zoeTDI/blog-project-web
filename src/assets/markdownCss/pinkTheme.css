@@ -1,0 +1,36 @@
+:root {
+  /* 粉色主题基础变量 (浅色) */
+  --md-pink-accent: #ff85a2;
+  --md-pink-bg: #fff0f3;
+  --md-pink-border: #ffc2d1;
+}
+
+.dark {
+  /* 粉色主题基础变量 (深色) */
+  --md-pink-accent: #ff4d6d;
+  --md-pink-bg: rgba(255, 77, 109, 0.1);
+  --md-pink-border: #800e13;
+}
+
+.markdown-body.theme-pink .code-lang-tag:hover {
+  background: var(--md-pink-accent);
+}
+
+.markdown-body.theme-pink img.img-error:after {
+  background-color: var(--md-pink-bg);
+  border-color: var(--md-pink-border);
+  color: var(--md-pink-accent);
+}
+
+.markdown-body.theme-pink h1,
+.markdown-body.theme-pink h2,
+.markdown-body.theme-pink h3 {
+  border-bottom-color: var(--md-pink-border);
+  color: var(--md-pink-accent);
+}
+
+.markdown-body.theme-pink .custom-callout {
+  background: var(--md-pink-bg);
+  border-left-color: var(--md-pink-accent);
+  color: var(--color-text-primary);
+}

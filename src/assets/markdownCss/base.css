@@ -1,0 +1,148 @@
+.markdown-body {
+  color: var(--color-text-primary);
+  font-family: var(--font-text);
+  line-height: 1.6;
+}
+
+/* code block css */
+.markdown-body .code-block-container {
+  position: relative;
+  margin: 1.5rem 0;
+  background: #282c34;
+  overflow: hidden;
+}
+
+.markdown-body .code-block-header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 5;
+}
+
+.markdown-body .code-lang-tag {
+  display: block;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-family: var(--font-text);
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  border-bottom-left-radius: 8px;
+  transition: all 0.2s ease;
+  user-select: none;
+  text-transform: uppercase;
+}
+
+.markdown-body .code-lang-tag:hover {
+  color: var(--color-accent);
+}
+
+.markdown-body .code-lang-tag.copied {
+  color: #fff;
+  background: #4caf50;
+}
+
+.markdown-body .code-block-container pre {
+  margin: 0 !important;
+  padding: 1.5rem 1rem 1rem !important;
+  background: transparent !important;
+}
+
+.markdown-body img {
+  cursor: zoom-in;
+  max-width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.markdown-body img.border {
+  border: 1px solid var(--color-border);
+}
+
+.markdown-body img.img-error {
+  position: relative;
+  display: block;
+  min-height: 250px;
+  background-color: var(--color-bg);
+  cursor: default !important;
+  pointer-events: none;
+}
+
+.markdown-body img.img-error:after {
+  content: "图片加载失败: " attr(alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  opacity: .8;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  padding-bottom: 0.3em;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  font-family: var(--font-h);
+}
+
+.markdown-body figure {
+  margin: 1.5em auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.markdown-body figure.left {
+  align-items: flex-start;
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.markdown-body figure.right {
+  align-items: flex-end;
+  text-align: right;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.markdown-body figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-body.caption-none figure figcaption {
+  display: none;
+}
+
+.markdown-body.caption-always figure figcaption {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  margin-top: 8px;
+  opacity: 0.8;
+}
+
+.markdown-body .custom-callout {
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+.markdown-body .custom-callout summary {
+  font-weight: bold;
+  cursor: pointer;
+  list-style: none;
+}

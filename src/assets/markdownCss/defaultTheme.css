@@ -1,0 +1,23 @@
+
+.markdown-body .code-lang-tag:hover {
+  background: var(--color-bg-hover-accent);
+}
+
+.markdown-body img.img-error:after {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  border: 1px dashed var(--color-border);
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  border-bottom-color: var(--color-border);
+  color: var(--color-text-h);
+}
+
+.markdown-body .custom-callout {
+  background: var(--color-bg);
+  border-left-color: var(--color-border-accent);
+  color: var(--color-text-h);
+}
