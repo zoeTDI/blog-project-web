@@ -29,7 +29,7 @@
   color: var(--md-pink-accent);
 }
 
-.markdown-body.theme-pink .custom-callout {
+.markdown-body.theme-pink .note-callout {
   background: var(--md-pink-bg);
   border-left-color: var(--md-pink-accent);
   color: var(--color-text-primary);

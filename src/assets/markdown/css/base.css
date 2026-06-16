@@ -134,15 +134,47 @@
   opacity: 0.8;
 }
 
-.markdown-body .custom-callout {
-  padding: 12px 16px;
+.markdown-body details[class*="-callout"] {
   margin: 16px 0;
   border-left-width: 4px;
   border-left-style: solid;
 }
 
-.markdown-body .custom-callout summary {
+.markdown-body details[class*="-callout"] summary {
   font-weight: bold;
   cursor: pointer;
   list-style: none;
+  position: relative;
+  padding: 12px 16px 12px 38px;
+}
+
+.markdown-body details[class*="-callout"] summary::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ==== 折叠/展开 ==== */
+.markdown-body details[class*="-callout"] summary::after {
+  content: "";
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  display: inline-block;
+  transition: transform 0.2s;
+  position: absolute;
+}
+
+.markdown-body details[class*="-callout"] p {
+  padding: 4px 16px;
 }

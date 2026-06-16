@@ -1,0 +1,230 @@
+
+.markdown-body .code-lang-tag:hover {
+  background: var(--color-bg-hover-accent);
+}
+
+.markdown-body img.img-error:after {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  border: 1px dashed var(--color-border);
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  border-bottom-color: var(--color-border);
+  color: var(--color-text-h);
+}
+/* ==== 折叠/展开 ==== */
+.markdown-body details[class*="-callout"] summary::after {
+  --s: 16px;
+  width: var(--s);
+  height: var(--s);
+  margin-left: 0.5em;
+  top: 50%;
+  transform-origin: center;
+  transform: translateY(-50%);
+  mask-image: url("@/assets/markdown/icon/statusIcon.svg");
+}
+
+.markdown-body details[class*="-callout"][open] summary::after {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+/* ===== Note ===== */
+.markdown-body .note-callout {
+  color: var(--color-callout-text);
+  background-color: var(--color-bg-note);
+  border-left-color: var(--color-left-border-note);
+}
+
+.markdown-body .note-callout summary {
+  color: var(--color-summary-note);
+  background-color: var(--color-summary-bg-note);
+}
+
+.markdown-body .note-callout summary::before {
+  background-color: var(--color-icon-note);
+  mask-image: url("@/assets/markdown/icon/noteIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/noteIcon.svg");
+}
+
+.markdown-body .note-callout summary::after {
+  background-color: var(--color-base-note);
+}
+
+/* ===== To——do ===== */
+.markdown-body .todo-callout {
+  color: var(--color-callout-text);
+  background-color: var(--color-bg-todo);
+  border-left-color: var(--color-left-border-todo);
+}
+
+.markdown-body .todo-callout summary {
+  color: var(--color-summary-note);
+  background-color: var(--color-summary-bg-note);
+}
+
+.markdown-body .todo-callout summary::before {
+  background-color: var(--color-icon-todo);
+  mask-image: url("@/assets/markdown/icon/todoIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/todoIcon.svg");
+}
+
+.markdown-body .todo-callout summary::after {
+  background-color: var(--color-base-todo);
+}
+
+/* ===== Tip ===== */
+.markdown-body .tip-callout {
+  color: var(--color-summary-tip);
+  background-color: var(--color-bg-tip);
+  border-left-color: var(--color-left-border-tip);
+}
+
+.markdown-body .tip-callout summary {
+  color: var(--color-summary-tip);
+  background-color: var(--color-summary-bg-tip);
+}
+
+.markdown-body .tip-callout summary::before {
+  background-color: var(--color-icon-tip);
+  mask-image: url("@/assets/markdown/icon/tipIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/tipIcon.svg");
+}
+
+.markdown-body .tip-callout summary::after {
+  background-color: var(--color-base-tip);
+}
+
+/* ===== Important ===== */
+.markdown-body .important-callout {
+  color: var(--color-summary-important);
+  background-color: var(--color-bg-important);
+  border-left-color: var(--color-left-border-important);
+}
+
+.markdown-body .important-callout summary {
+  color: var(--color-summary-important);
+  background-color: var(--color-summary-bg-important);
+}
+
+.markdown-body .important-callout summary::before {
+  background-color: var(--color-icon-important);
+  mask-image: url("@/assets/markdown/icon/importantIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/importantIcon.svg");
+}
+
+.markdown-body .important-callout summary::after {
+  background-color: var(--color-base-important);
+}
+
+/* ===== Abstract ===== */
+.markdown-body .abstract-callout {
+  color: var(--color-summary-abstract);
+  background-color: var(--color-bg-abstract);
+  border-left-color: var(--color-left-border-abstract);
+}
+
+.markdown-body .abstract-callout summary {
+  color: var(--color-summary-abstract);
+  background-color: var(--color-summary-bg-abstract);
+}
+
+.markdown-body .abstract-callout summary::before {
+  background-color: var(--color-icon-abstract);
+  mask-image: url("@/assets/markdown/icon/abstractIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/abstractIcon.svg");
+}
+
+.markdown-body .abstract-callout summary::after {
+  background-color: var(--color-base-abstract);
+}
+
+/* ===== Warning ===== */
+.markdown-body .warning-callout{
+  color: var(--color-summary-warning);
+  background-color: var(--color-bg-warning);
+  border-left-color: var(--color-left-border-warning);
+}
+
+.markdown-body .warning-callout summary {
+  color: var(--color-summary-warning);
+  background-color: var(--color-summary-bg-warning);
+}
+
+.markdown-body .warning-callout summary::before {
+  background-color: var(--color-icon-warning);
+  mask-image: url("@/assets/markdown/icon/warningIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/warningIcon.svg");
+}
+
+.markdown-body .warning-callout summary::after {
+  background-color: var(--color-base-warning);
+}
+
+/* ===== Caution ===== */
+.markdown-body .caution-callout{
+  color: var(--color-summary-caution);
+  background-color: var(--color-bg-caution);
+  border-left-color: var(--color-left-border-caution);
+}
+
+.markdown-body .caution-callout summary {
+  color: var(--color-summary-caution);
+  background-color: var(--color-summary-bg-caution);
+}
+
+.markdown-body .caution-callout summary::before {
+  background-color: var(--color-icon-caution);
+  mask-image: url("@/assets/markdown/icon/cautionIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/cautionIcon.svg");
+}
+
+.markdown-body .caution-callout summary::after {
+  background-color: var(--color-base-caution);
+}
+
+/* ===== Question ===== */
+.markdown-body .question-callout {
+  color: var(--color-summary-question);
+  background-color: var(--color-bg-question);
+  border-left-color: var(--color-left-border-question);
+}
+
+.markdown-body .question-callout summary {
+  color: var(--color-summary-question);
+  background-color: var(--color-summary-bg-question);
+}
+
+.markdown-body .question-callout summary::before {
+  background-color: var(--color-icon-question);
+  mask-image: url("@/assets/markdown/icon/questionIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/questionIcon.svg");
+}
+
+.markdown-body .question-callout summary::after {
+  background-color: var(--color-base-question);
+}
+
+/* ===== Success ===== */
+.markdown-body .success-callout {
+  color: var(--color-summary-success);
+  background-color: var(--color-bg-success);
+  border-left-color: var(--color-left-border-success);
+}
+
+.markdown-body .success-callout summary {
+  color: var(--color-summary-success);
+  background-color: var(--color-summary-bg-success);
+}
+
+.markdown-body .success-callout summary::before {
+  background-color: var(--color-icon-success);
+  mask-image: url("@/assets/markdown/icon/successIcon.svg");
+  -webkit-mask-image: url("@/assets/markdown/icon/successIcon.svg");
+}
+
+.markdown-body .success-callout summary::after {
+  background-color: var(--color-base-success);
+}
