@@ -24,17 +24,13 @@ export function initDebuggerBomb(): void {
         if (endTime - startTime > 100) {
           const now = Date.now();
 
-          // 4. 限制弹窗频率（5秒内只弹一次），给彼此留一丝温柔
+          // 4. 限制弹窗频率（5秒内只弹一次）
           if (now - lastAlertTime > 5000) {
             lastAlertTime = now;
 
             // 稍微延迟一下弹窗，让用户先看断点，再看弹窗
             setTimeout(() => {
-              alert(
-                '呜哇！被发现了喵~ (*/ω＼*)\n\n' +
-                  '代码酱很害羞的，请不要偷偷看人家的身体（源码）嘛... QAQ\n' +
-                  '快把控制台关掉啦，给你捏捏肩~ (っ´ω`c)'
-              );
+              alert('呜哇！被发现了喵~ (*/ω＼*)');
             }, 100);
           }
         }
