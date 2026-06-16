@@ -62,16 +62,46 @@ md.use(implicitFigures, {
   copyAttrs: true,
 });
 
-md.use(container, 'details', {
-  validate: (params: string) => params.trim().match(/^details\s+(.*)$/),
-  render: (tokens: any[], idx: number) => {
-    const m = tokens[idx].info.trim().match(/^details\s+(.*)$/);
-    if (tokens[idx].nesting === 1) {
-      return `<details class="custom-callout"><summary>${md.utils.escapeHtml(m[1])}</summary>\n`;
-    } else {
-      return `</details>\n`;
-    }
-  },
+const CALLOUT_TYPES = {
+  NOTE: 'note',
+  TIP: 'tip',
+  IMPORTANT: 'important',
+  WARNING: 'warning',
+  CAUTION: 'caution',
+  ABSTRACT: 'abstract',
+  TODO: 'todo',
+  SUCCESS: 'success',
+  QUESTION: 'question',
+};
+
+Object.values(CALLOUT_TYPES).forEach((typeName: string): void => {
+  const pattern = new RegExp(`^${typeName}(?:\\s+(.*))?$`);
+  md.use(container, typeName, {
+    validate: (params: string) => params.trim().match(pattern),
+    render: (tokens: any[], idx: number) => {
+      const match = tokens[idx].info.trim().match(pattern);
+      if (tokens[idx].nesting === 1) {
+        // 是否存在标题
+        let title: string = '';
+        let openAttr: '' | ' open' = ' open';
+        if (match[1]) {
+          title = match[1];
+          // 判断是否存在默认状态
+          const firstChar = title.charAt(0);
+          if (['-', '+'].includes(firstChar)) {
+            title = title.slice(1).trim();
+            openAttr = firstChar === '-' ? '' : ' open';
+          }
+        }
+        if (!title || title === '') {
+          title = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+        }
+        return `<details data-callout="${md.utils.escapeHtml(typeName)}" class="${md.utils.escapeHtml(typeName)}-callout"${md.utils.escapeHtml(openAttr)}><summary>${md.utils.escapeHtml(title)}</summary>\n`;
+      } else {
+        return `</details>\n`;
+      }
+    },
+  });
 });
 
 export default md;
