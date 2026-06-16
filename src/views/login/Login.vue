@@ -8,7 +8,8 @@
     ArrowRightIcon,
   } from '@heroicons/vue/24/outline';
   import { BACKEND_ROUTER_NAME } from '@/router/modules/analysis.ts';
-  import { useUserStore } from '@/store/useUserStore.ts';
+  import { type UserInfo, useUserStore } from '@/store/useUserStore.ts';
+  import { preferences } from '@/core/preferences';
 
   const router = useRouter();
   const userStore = useUserStore();
@@ -36,6 +37,12 @@
 
       if (res.success) {
         userStore.setAuthToken(res.token);
+        const userInfo: UserInfo = {
+          email: email.value,
+          avatar: preferences.app.defaultAvatar,
+          nickname: 'admin',
+        };
+        userStore.setUserInfo(userInfo);
         router.push({ name: BACKEND_ROUTER_NAME.DASHBOARD });
       }
     } catch (error) {

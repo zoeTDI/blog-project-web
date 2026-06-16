@@ -6,8 +6,15 @@
   import defaultAvatar from '@/assets/avatar.svg';
   import { onMounted, ref } from 'vue';
   import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
-  import { type MessageItem, MessageSource } from '@/components/userBox';
+  import {
+    type MessageItem,
+    MessageSource,
+    type UserMenuOption,
+  } from '@/components/userBox';
   import { mockApiFetch } from '@/utils/mock.ts';
+  import { useUserStore } from '@/store/useUserStore.ts';
+  import { useRoute, useRouter } from 'vue-router';
+  import { ROUTER_NAMES } from '@/router/routerNames.ts';
 
   const mockMessages: MessageItem[] = [
     {
@@ -66,11 +73,41 @@
     },
   ];
 
+  const router = useRouter();
+  const route = useRoute();
+  const userStore = useUserStore();
   const avatarUrl = preferences.app.defaultAvatar;
   let hoverTimer: ReturnType<typeof setTimeout> | null = null;
-  const isMessageVisible = ref<boolean>(true);
+  // 消息队列的显示状态
+  const isMessageVisible = ref<boolean>(false);
   const messages = ref<MessageItem[]>([]);
+  // 用户菜单的显示状态
+  const isUserMenuVisible = ref<boolean>(false);
+  let userMenuTimer: ReturnType<typeof setTimeout> | null = null;
   const pendingReadIds = new Set<string | number>();
+  // 用户菜单配置
+  const userMenuGroups = ref<UserMenuOption[][]>([
+    [
+      {
+        label: '个人中心',
+      },
+      {
+        label: '文档',
+      },
+      { label: 'Github' },
+      { label: '问题 & 帮助' },
+    ],
+    [
+      {
+        label: '退出登录',
+        shortcut: 'Alt + Q',
+        onClick: () => {
+          userStore.logout();
+          router.push({ name: ROUTER_NAMES.LOGIN, query: { to: route.path } });
+        },
+      },
+    ],
+  ]);
 
   /**
    * 向后端更新消息状态
@@ -116,6 +153,25 @@
     }, 300);
   };
   /**
+   * 显示用户菜单
+   */
+  const showUserMenu = () => {
+    if (userMenuTimer) {
+      clearTimeout(userMenuTimer);
+      userMenuTimer = null;
+    }
+    isUserMenuVisible.value = true;
+  };
+
+  /**
+   * 隐藏用户菜单
+   */
+  const hideUserMenu = () => {
+    userMenuTimer = setTimeout(() => {
+      isUserMenuVisible.value = false;
+    }, 300);
+  };
+  /**
    * 处理用户头像加载失败。失败时改为使用默认头像
    * @param event
    */
@@ -152,13 +208,18 @@
         :messages="messages" />
     </div>
 
-    <div class="action-item user-avatar">
+    <div
+      class="action-item user-avatar"
+      @mouseenter="showUserMenu"
+      @mouseleave="hideUserMenu">
       <img
         :src="avatarUrl"
         alt="User Avatar"
         class="avatar-img"
         @error="handleImageError" />
-      <UserMenu />
+      <UserMenu
+        v-show="isUserMenuVisible"
+        :groups="userMenuGroups" />
     </div>
   </div>
 </template>
@@ -184,14 +245,13 @@
   .user-avatar {
     width: 32px;
     height: 32px;
-    overflow: hidden;
-    border-radius: 50%;
-    border: 1px solid var(--color-border);
   }
 
   .avatar-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
   }
 </style>

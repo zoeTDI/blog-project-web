@@ -29,11 +29,19 @@ interface UserMessage extends BaseMessage {
 
 type MessageItem = SystemMessage | UserMessage;
 
+interface UserMenuOption {
+  label: string;
+  icon?: Component;
+  shortcut?: string;
+  onClick?: () => void;
+}
+
 export type {
   MessageSourceType,
   BaseMessage,
   SystemMessage,
   UserMessage,
   MessageItem,
+  UserMenuOption,
 };
 export { MessageSource };
