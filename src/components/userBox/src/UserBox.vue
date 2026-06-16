@@ -115,7 +115,6 @@
   const syncToBackend = useDebounceFn(async () => {
     const ids = Array.from(pendingReadIds);
     if (ids.length === 0) return;
-    console.log('向后端提交已读 ID:', ids);
     // await mockApiFetch(..., 0);
     pendingReadIds.clear();
   }, 1000);
@@ -139,7 +138,6 @@
       hoverTimer = null;
     }
     isMessageVisible.value = true;
-    console.log('show');
   };
   /**
    * 隐藏消息列表
@@ -149,7 +147,6 @@
     // 如果这 300ms 内鼠标又进来了，showMessage 会把这个定时器干掉
     hoverTimer = setTimeout(() => {
       isMessageVisible.value = false;
-      console.log('hide');
     }, 300);
   };
   /**
