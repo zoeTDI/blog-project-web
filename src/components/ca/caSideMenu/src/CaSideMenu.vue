@@ -120,7 +120,6 @@
   watch(
     () => route.path,
     (newPath) => {
-      console.log(menuTree.value);
       menuTree.value.forEach((menu, index) => {
         const hasActiveChild = menu.children?.some(
           (child) => child.path === newPath
