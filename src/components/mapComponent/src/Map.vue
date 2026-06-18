@@ -84,9 +84,16 @@
         }
       }
 
-      const rawCenter = feature.properties?.center as [number, number] | undefined;
+      const rawCenter = feature.properties?.center as
+        | [number, number]
+        | undefined;
 
-      const cityInfo: CityInfo = { id, name, center: rawCenter, properties: feature.properties };
+      const cityInfo: CityInfo = {
+        id,
+        name,
+        center: rawCenter,
+        properties: feature.properties,
+      };
 
       return {
         info: cityInfo,
@@ -210,22 +217,13 @@
           <title>{{ item.info.name }}</title>
         </path>
       </g>
-
       <g
-        class="map-highlight-layer"
-        pointer-events="none">
-        <path
-          v-if="currentHoveredFeature"
-          :d="currentHoveredFeature.pathData"
-          class="province-stroke-highlight" />
-      </g>
-      <!--固定高亮地区-->
-      <g
-        class="map-hightlight-layer"
+        class="map-pinned-layer"
         pointer-events="none"
         v-for="(item, index) in pinnedCityFeature"
         :key="index">
         <path
+          class="province-stroke-highlight"
           v-for="feature in item.features"
           :key="feature.info.id"
           :d="feature.pathData"
@@ -236,14 +234,20 @@
                   fill: `color-mix(in srgb, ${item.color} 10%, transparent)`,
                 }
               : {}
-          "
-          class="province-stroke-highlight"></path>
+          " />
       </g>
-
+      <g
+        class="map-first-highlight-layer"
+        pointer-events="none">
+        <path
+          class="province-stroke-highlight"
+          v-if="currentHoveredFeature"
+          :d="currentHoveredFeature.pathData" />
+      </g>
       <g class="map-overlay-svg-layer">
         <slot
           name="svg-overlay"
-          :projection="projection" />
+          :projection="projection"></slot>
       </g>
     </g>
   </svg>
@@ -263,7 +267,7 @@
   }
 
   .map-transform-g.is-dragging {
-    transition: none; /* 拖拽时立即响应，杜绝手感延迟 */
+    transition: none;
   }
 
   .province-path {
