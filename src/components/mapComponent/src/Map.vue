@@ -84,7 +84,9 @@
         }
       }
 
-      const cityInfo: CityInfo = { id, name, properties: feature.properties };
+      const rawCenter = feature.properties?.center as [number, number] | undefined;
+
+      const cityInfo: CityInfo = { id, name, center: rawCenter, properties: feature.properties };
 
       return {
         info: cityInfo,

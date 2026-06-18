@@ -206,7 +206,7 @@
     class="map-container"
     :class="{ 'is-grabbing': isDragging }"
     @mousedown="handleMouseDown">
-    <div class="map-wrapper">
+    <div class="map-layer-background">
       <Map
         ref="mapRef"
         :geo-json-data="geoJsonData"
@@ -221,30 +221,28 @@
         @contextmenu="handleContextMenu">
         <template #svg-overlay="{ projection }">
           <slot
-            name="svg-overlay"
+            name="map-overlay-layer"
             :projection="projection" />
         </template>
       </Map>
     </div>
 
-    <div class="info-panel-box">
-      <slot
-        name="info-panel"
-        :hoveredCity="hoveredCity">
-      </slot>
+    <div class="map-layer-ui">
+      <div class="info-panel-box">
+        <slot
+          name="info-panel"
+          :hoveredCity="hoveredCity" />
+      </div>
     </div>
-
-    <slot />
-
     <Teleport to="body">
       <div
-        v-if="hoveredCity"
         class="mouse-tooltip-box"
+        v-if="hoveredCity"
         :style="{
           left: `${mousePosition.x + 15}px`,
           top: `${mousePosition.y + 15}px`,
         }">
-        <span class="tooltip-name">{{ hoveredCity.name }}</span>
+        <div class="tooltip-name">{{ hoveredCity.name }}</div>
       </div>
     </Teleport>
   </div>
@@ -276,9 +274,23 @@
     cursor: grabbing;
   }
 
-  .map-wrapper {
+  .map-layer-background {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    z-index: 1;
+  }
+
+  .map-layer-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    pointer-events: none;
   }
 
   .info-panel-box {

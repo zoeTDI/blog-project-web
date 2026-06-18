@@ -4,6 +4,7 @@ import type { Position } from 'geojson';
 export interface CityInfo {
   id: number;
   name: string;
+  center?: [number, number];
   properties?: any;
 }
 
