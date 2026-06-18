@@ -2,7 +2,7 @@ import type { Position } from 'geojson';
 
 // 基础城市信息接口
 export interface CityInfo {
-  id: string | number;
+  id: number;
   name: string;
   properties?: any;
 }

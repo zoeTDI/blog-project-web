@@ -9,6 +9,7 @@
     scale?: number; // 💡 新增：同步控制内部缩放
     offset?: { x: number; y: number }; // 💡 新增：同步控制内部平移
     isDragging?: boolean; // 💡 新增：同步拖拽状态以控制动画
+    adcodes?: number[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -16,12 +17,13 @@
     scale: 1,
     offset: () => ({ x: 0, y: 0 }),
     isDragging: false,
+    adcodes: () => [],
   });
 
   const emit = defineEmits<{
     (e: 'hover-city', cityInfo: CityInfo | null): void;
     (e: 'click-city', cityInfo: CityInfo): void;
-    (e: 'contextmenu-city', cityInfo: CityInfo, event: MouseEvent): void;
+    (e: 'contextmenu-city', event: MouseEvent, cityInfo: CityInfo): void;
     (e: 'dblclick-city', cityInfo: CityInfo): void;
   }>();
 
@@ -93,15 +95,54 @@
     );
   });
 
+  /**
+   * 鼠标hover事件，添加hover高亮
+   * @param item
+   */
   const handleMouseOver = (item: CityInfo) => {
     hoveredProvince.value = item.name;
     emit('hover-city', item);
   };
 
+  /**
+   * 鼠标移出事件，清空hover高亮
+   */
   const handleMouseLeave = () => {
     hoveredProvince.value = null;
     emit('hover-city', null);
   };
+
+  /**
+   * 点击事件
+   * @param item 城市信息
+   */
+  const handleCityClick = (item: CityInfo) => {
+    // 直接传递
+    emit('click-city', item);
+  };
+
+  /**
+   * 右键事件
+   * @param e 右键鼠标点击事件
+   * @param item 城市信息
+   */
+  const handleContextMenu = (e: MouseEvent, item: CityInfo) => {
+    emit('contextmenu-city', e, item);
+  };
+
+  /**
+   * 双击事件
+   * @param item 城市信息
+   */
+  const handleDbClick = (item: CityInfo) => {
+    emit('dblclick-city', item);
+  };
+
+  const pinnedFeature = computed(() => {
+    return mapFeatures.value.filter((item) =>
+      props.adcodes.includes(item.info.id)
+    );
+  });
 
   defineExpose({
     projection,
@@ -131,9 +172,9 @@
           :style="item.customStyle"
           @mouseover="handleMouseOver(item.info)"
           @mouseleave="handleMouseLeave"
-          @click="emit('click-city', item.info)"
-          @contextmenu.prevent="emit('contextmenu-city', item.info, $event)"
-          @dblclick="emit('dblclick-city', item.info)">
+          @click="handleCityClick(item.info)"
+          @contextmenu.prevent="handleContextMenu($event, item.info)"
+          @dblclick="handleDbClick(item.info)">
           <title>{{ item.info.name }}</title>
         </path>
       </g>
@@ -145,6 +186,16 @@
           v-if="currentHoveredFeature"
           :d="currentHoveredFeature.pathData"
           class="province-stroke-highlight" />
+      </g>
+      <!--固定高亮地区-->
+      <g
+        class="map-hightlight-layer"
+        pointer-events="none">
+        <path
+          v-for="item in pinnedFeature"
+          :key="item.info.id"
+          :d="item.pathData"
+          class="province-stroke-highlight"></path>
       </g>
 
       <g class="map-overlay-svg-layer">

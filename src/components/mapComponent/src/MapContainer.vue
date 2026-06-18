@@ -9,6 +9,7 @@
     cityStyle?: CityStyleFn;
     zoomable?: boolean;
     draggable?: boolean;
+    adcodes?: number[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -19,7 +20,9 @@
   const emit = defineEmits<{
     (e: 'hover-city', cityInfo: CityInfo | null): void;
     (e: 'click-city', cityInfo: CityInfo): void;
+    (e: 'dblclick-city', cityInfo: CityInfo): void;
     (e: 'transform-change', state: MapTransformState): void;
+    (e: 'contextmenu-city', event: MouseEvent, cityInfo: CityInfo): void;
   }>();
 
   const scale = ref(1);
@@ -180,6 +183,20 @@
     })),
     getProjection: () => mapRef.value?.projection,
   });
+
+  const handleCityClick = (val: CityInfo): void => {
+    emit('click-city', val);
+  };
+  const handleCityDbClick = (val: CityInfo): void => {
+    emit('dblclick-city', val);
+  };
+  const handleCityHover = (val: CityInfo | null): void => {
+    hoveredCity.value = val;
+    emit('hover-city', val);
+  };
+  const handleContextMenu = (e: MouseEvent, item: CityInfo): void => {
+    emit('contextmenu-city', e, item);
+  };
 </script>
 
 <template>
@@ -196,13 +213,11 @@
         :scale="scale"
         :offset="offset"
         :is-dragging="isDragging"
-        @hover-city="
-          (val) => {
-            hoveredCity = val;
-            emit('hover-city', val);
-          }
-        "
-        @click-city="(val) => emit('click-city', val)">
+        :adcodes="adcodes"
+        @hover-city="handleCityHover"
+        @click-city="handleCityClick"
+        @dblclick-city="handleCityDbClick"
+        @contextmenu="handleContextMenu">
         <template #svg-overlay="{ projection }">
           <slot
             name="svg-overlay"
