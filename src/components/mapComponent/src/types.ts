@@ -18,3 +18,18 @@ export type ProjectionFn = (coord: Position) => [number, number];
 
 // 动态样式函数定义：接收城市信息，返回 CSS 样式对象或字符串
 export type CityStyleFn = (city: CityInfo) => Record<string, string | number>;
+
+export interface Feature {
+  info: CityInfo;
+  pathData: string;
+  customStyle: Record<string, string | number>;
+}
+
+export interface PinnedCityOption {
+  adcodes: number[];
+  color?: string;
+}
+
+export interface PinnedCityFeature extends PinnedCityOption {
+  features: Feature[];
+}

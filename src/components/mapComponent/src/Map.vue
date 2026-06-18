@@ -1,7 +1,15 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue';
   import type { GeoJSON, Position } from 'geojson';
-  import type { CityInfo, CityStyleFn, ProjectionFn } from './types';
+  import type {
+    CityInfo,
+    CityStyleFn,
+    Feature,
+    PinnedCityFeature,
+    PinnedCityOption,
+    ProjectionFn,
+  } from './types';
+  import { parseToHexColor } from '@/utils/parse.ts';
 
   interface Props {
     geoJsonData: GeoJSON;
@@ -9,7 +17,7 @@
     scale?: number; // 💡 新增：同步控制内部缩放
     offset?: { x: number; y: number }; // 💡 新增：同步控制内部平移
     isDragging?: boolean; // 💡 新增：同步拖拽状态以控制动画
-    adcodes?: number[];
+    pinnedCity?: PinnedCityOption[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -17,7 +25,7 @@
     scale: 1,
     offset: () => ({ x: 0, y: 0 }),
     isDragging: false,
-    adcodes: () => [],
+    pinnedCity: () => [],
   });
 
   const emit = defineEmits<{
@@ -54,7 +62,7 @@
       .join(' ');
   };
 
-  const mapFeatures = computed(() => {
+  const mapFeatures = computed<Feature[]>(() => {
     const data = props.geoJsonData;
     if (!data || data.type !== 'FeatureCollection') return [];
 
@@ -138,10 +146,32 @@
     emit('dblclick-city', item);
   };
 
-  const pinnedFeature = computed(() => {
-    return mapFeatures.value.filter((item) =>
-      props.adcodes.includes(item.info.id)
+  const pinnedCityFeature = computed<PinnedCityFeature[]>(() => {
+    const rs: PinnedCityFeature[] = props.pinnedCity.map(
+      (item: PinnedCityOption) => {
+        const hexColor = parseToHexColor(item?.color);
+        if (hexColor) {
+          return {
+            adcodes: item.adcodes,
+            color: hexColor,
+            features: [],
+          };
+        } else {
+          return {
+            adcodes: item.adcodes,
+            features: [],
+          };
+        }
+      }
     );
+    mapFeatures.value.forEach((item: Feature) => {
+      rs.forEach((pcf: PinnedCityFeature) => {
+        if (pcf.adcodes.includes(item.info.id)) {
+          pcf.features.push(item);
+        }
+      });
+    });
+    return rs;
   });
 
   defineExpose({
@@ -190,11 +220,21 @@
       <!--固定高亮地区-->
       <g
         class="map-hightlight-layer"
-        pointer-events="none">
+        pointer-events="none"
+        v-for="(item, index) in pinnedCityFeature"
+        :key="index">
         <path
-          v-for="item in pinnedFeature"
-          :key="item.info.id"
-          :d="item.pathData"
+          v-for="feature in item.features"
+          :key="feature.info.id"
+          :d="feature.pathData"
+          :style="
+            item.color
+              ? {
+                  stroke: item.color,
+                  fill: `color-mix(in srgb, ${item.color} 10%, transparent)`,
+                }
+              : {}
+          "
           class="province-stroke-highlight"></path>
       </g>
 
@@ -239,13 +279,13 @@
   }
 
   .province-path:hover {
-    fill: var(--color-text-primary) !important;
+    fill: var(--color-text-primary);
   }
 
   .province-stroke-highlight {
     fill: var(--color-map-bg-hover);
-    stroke: var(--color-map-border-hover) !important;
-    stroke-width: 1.5px !important;
+    stroke: var(--color-map-border-hover);
+    stroke-width: 1.5px;
     stroke-linejoin: round;
     vector-effect: non-scaling-stroke;
   }
