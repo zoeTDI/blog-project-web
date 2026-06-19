@@ -5,8 +5,8 @@
     CityInfo,
     CityStyleFn,
     Feature,
-    PinnedCityFeature,
-    PinnedCityOption,
+    MarkedCityFeatureGroup,
+    MarkedCityGroup,
     ProjectionFn,
   } from './types';
   import { parseToHexColor } from '@/utils/parse.ts';
@@ -17,7 +17,7 @@
     scale?: number; // 💡 新增：同步控制内部缩放
     offset?: { x: number; y: number }; // 💡 新增：同步控制内部平移
     isDragging?: boolean; // 💡 新增：同步拖拽状态以控制动画
-    pinnedCity?: PinnedCityOption[];
+    markedCityGroups?: MarkedCityGroup[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -25,7 +25,7 @@
     scale: 1,
     offset: () => ({ x: 0, y: 0 }),
     isDragging: false,
-    pinnedCity: () => [],
+    markedCityGroups: () => [],
   });
 
   const emit = defineEmits<{
@@ -155,18 +155,20 @@
     emit('dblclick-city', item);
   };
 
-  const pinnedCityFeature = computed<PinnedCityFeature[]>(() => {
-    const rs: PinnedCityFeature[] = props.pinnedCity.map(
-      (item: PinnedCityOption) => {
+  const pinnedCityFeature = computed<MarkedCityFeatureGroup[]>(() => {
+    const rs: MarkedCityFeatureGroup[] = props.markedCityGroups.map(
+      (item: MarkedCityGroup) => {
         const hexColor = parseToHexColor(item?.color);
         if (hexColor) {
           return {
+            id: item.id,
             adcodes: item.adcodes,
             color: hexColor,
             features: [],
           };
         } else {
           return {
+            id: item.id,
             adcodes: item.adcodes,
             features: [],
           };
@@ -174,7 +176,7 @@
       }
     );
     mapFeatures.value.forEach((item: Feature) => {
-      rs.forEach((pcf: PinnedCityFeature) => {
+      rs.forEach((pcf: MarkedCityFeatureGroup) => {
         if (pcf.adcodes.includes(item.info.id)) {
           pcf.features.push(item);
         }
@@ -220,8 +222,8 @@
       <g
         class="map-pinned-layer"
         pointer-events="none"
-        v-for="(item, index) in pinnedCityFeature"
-        :key="index">
+        v-for="item in pinnedCityFeature"
+        :key="item.id">
         <path
           class="province-stroke-highlight"
           v-for="feature in item.features"

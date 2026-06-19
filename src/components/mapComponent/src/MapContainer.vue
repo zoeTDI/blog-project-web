@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
-  import { Map, type PinnedCityOption } from '@/components/mapComponent';
+  import { Map, type MarkedCityGroup } from '@/components/mapComponent';
   import type { GeoJSON, Position } from 'geojson';
   import type { CityInfo, CityStyleFn, MapTransformState } from './types';
 
@@ -9,13 +9,13 @@
     cityStyle?: CityStyleFn;
     zoomable?: boolean;
     draggable?: boolean;
-    pinnedCity?: PinnedCityOption[];
+    markedCityGroups?: MarkedCityGroup[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
     zoomable: true,
     draggable: true,
-    pinnedCity: () => [],
+    markedCityGroups: () => [],
   });
 
   const emit = defineEmits<{
@@ -214,7 +214,7 @@
         :scale="scale"
         :offset="offset"
         :is-dragging="isDragging"
-        :pinned-city="props.pinnedCity"
+        :marked-city-groups="props.pinnedCity"
         @hover-city="handleCityHover"
         @click-city="handleCityClick"
         @dblclick-city="handleCityDbClick"

@@ -26,11 +26,12 @@ export interface Feature {
   customStyle: Record<string, string | number>;
 }
 
-export interface PinnedCityOption {
+export interface MarkedCityGroup {
+  id: number;
   adcodes: number[];
   color?: string;
 }
 
-export interface PinnedCityFeature extends PinnedCityOption {
+export interface MarkedCityFeatureGroup extends MarkedCityGroup {
   features: Feature[];
 }
