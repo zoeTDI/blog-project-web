@@ -182,6 +182,7 @@
         }
       });
     });
+    console.log('🚀 ~  ~ rs: ', rs);
     return rs;
   });
 
@@ -224,19 +225,35 @@
         pointer-events="none"
         v-for="item in pinnedCityFeature"
         :key="item.id">
-        <path
-          class="province-stroke-highlight"
+        <g
           v-for="feature in item.features"
-          :key="feature.info.id"
-          :d="feature.pathData"
-          :style="
-            item.color
-              ? {
-                  stroke: item.color,
-                  fill: `color-mix(in srgb, ${item.color} 10%, transparent)`,
-                }
-              : {}
-          " />
+          :key="feature.info.id">
+          <path
+            class="province-stroke-highlight"
+            :d="feature.pathData"
+            :style="
+              item.color
+                ? {
+                    stroke: item.color,
+                    fill: `color-mix(in srgb, ${item.color} 10%, transparent)`,
+                  }
+                : {}
+            "></path>
+          <circle
+            v-if="feature.info.center && feature.info.center.length >= 2"
+            :cx="projection(feature.info.center)[0]"
+            :cy="projection(feature.info.center)[1]"
+            r="6"
+            fill="#ffff00"
+            stroke="#000"
+            stroke-width="1"
+            :transform="`
+              translate(${projection(feature.info.center)[0]}, ${projection(feature.info.center)[1]})
+              scale(${1 / scale})
+              translate(${-projection(feature.info.center)[0]}, ${-projection(feature.info.center)[1]})
+            `"
+            style="vector-effect: non-scaling-stroke" />
+        </g>
       </g>
       <g
         class="map-first-highlight-layer"
