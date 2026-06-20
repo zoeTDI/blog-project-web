@@ -214,7 +214,7 @@
         :scale="scale"
         :offset="offset"
         :is-dragging="isDragging"
-        :marked-city-groups="props.pinnedCity"
+        :marked-city-groups="props.markedCityGroups"
         @hover-city="handleCityHover"
         @click-city="handleCityClick"
         @dblclick-city="handleCityDbClick"
