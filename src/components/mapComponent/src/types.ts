@@ -2,7 +2,7 @@ import type { Position } from 'geojson';
 
 // 基础城市信息接口
 export interface CityInfo {
-  id: number;
+  adcode: number;
   name: string;
   center: [number, number];
   properties?: any;
@@ -28,10 +28,15 @@ export interface Feature {
 
 export interface MarkedCityGroup {
   id: number;
-  adcodes: number[];
   style?: { color?: string };
+  nodes: Record<number, number[]>;
 }
 
-export interface MarkedCityFeatureGroup extends MarkedCityGroup {
-  features: Feature[];
+export interface MarkedCityGraphFeature {
+  id: number;
+  style?: { color?: string };
+  // 缓存匹配到的全量 Feature，方便 O(1) 查找
+  featureMap: Record<string, Feature>;
+  // 独立提取出所有需要绘制的边，供 v-for 渲染
+  edges: { from: Feature; to: Feature }[];
 }

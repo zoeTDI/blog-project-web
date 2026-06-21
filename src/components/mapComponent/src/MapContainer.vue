@@ -1,11 +1,10 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
   import { Map, type MarkedCityGroup } from '@/components/mapComponent';
-  import type { GeoJSON, Position } from 'geojson';
+  import type { Position } from 'geojson';
   import type { CityInfo, CityStyleFn, MapTransformState } from './types';
 
   interface Props {
-    geoJsonData: GeoJSON;
     cityStyle?: CityStyleFn;
     zoomable?: boolean;
     draggable?: boolean;
@@ -209,7 +208,6 @@
     <div class="map-layer-background">
       <Map
         ref="mapRef"
-        :geo-json-data="geoJsonData"
         :city-style="cityStyle"
         :scale="scale"
         :offset="offset"

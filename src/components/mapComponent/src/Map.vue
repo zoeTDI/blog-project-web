@@ -1,18 +1,18 @@
 <script setup lang="ts">
+  import ChinaGeoJson from '@/assets/data/China.json';
   import { computed, ref } from 'vue';
   import type { GeoJSON, Position } from 'geojson';
   import type {
     CityInfo,
     CityStyleFn,
     Feature,
-    MarkedCityFeatureGroup,
+    MarkedCityGraphFeature,
     MarkedCityGroup,
     ProjectionFn,
   } from './types';
   import { parseToHexColor } from '@/utils/parse.ts';
 
   interface Props {
-    geoJsonData: GeoJSON;
     cityStyle?: CityStyleFn;
     scale?: number; // 💡 新增：同步控制内部缩放
     offset?: { x: number; y: number }; // 💡 新增：同步控制内部平移
@@ -69,12 +69,13 @@
   };
 
   const mapFeatures = computed<Feature[]>(() => {
-    const data = props.geoJsonData;
+    const data = ChinaGeoJson as GeoJSON;
     if (!data || data.type !== 'FeatureCollection') return [];
 
     return data.features.map((feature, index) => {
       const name = feature.properties?.name || `区域 ${index}`;
-      const id = feature.properties?.adcode || feature.id || index.toString();
+      const adcode =
+        feature.properties?.adcode || feature.id || index.toString();
       const geo = feature.geometry;
 
       let pathData = '';
@@ -91,7 +92,7 @@
         | undefined;
 
       const cityInfo: CityInfo = {
-        id,
+        adcode,
         name,
         center: rawCenter,
         properties: feature.properties,
@@ -157,47 +158,45 @@
     emit('dblclick-city', item);
   };
 
-  const pinnedCityFeature = computed<MarkedCityFeatureGroup[]>(() => {
-    const rs: MarkedCityFeatureGroup[] = props.markedCityGroups.map(
-      (item: MarkedCityGroup) => {
-        const hexColor = parseToHexColor(item?.style?.color);
-        if (hexColor) {
-          return {
-            id: item.id,
-            adcodes: item.adcodes,
-            style: { color: hexColor },
-            features: [],
-          };
-        } else {
-          return {
-            id: item.id,
-            adcodes: item.adcodes,
-            features: [],
-          };
-        }
-      }
-    );
-    mapFeatures.value.forEach((item: Feature) => {
-      rs.forEach((pcf: MarkedCityFeatureGroup) => {
-        if (pcf.adcodes.includes(item.info.id)) {
-          pcf.features.push(item);
+  const pinnedCityGraphFeatures = computed<MarkedCityGraphFeature[]>(() => {
+    return props.markedCityGroups.map((group) => {
+      const hexColor = parseToHexColor(group?.style?.color);
+      const featureMap: Record<string, Feature> = {};
+      const edges: { from: Feature; to: Feature }[] = [];
+      // 构建 adcode -> Feature 的快速映射
+      const targetAdcodes: string[] = Object.keys(group.nodes);
+      mapFeatures.value.forEach((feat: Feature) => {
+        const featAdcodeStr = String(feat.info.adcode);
+        const isNode = targetAdcodes.includes(featAdcodeStr);
+        const isTarget = Object.values(group.nodes).some((outs) =>
+          outs.map(String).includes(featAdcodeStr)
+        );
+        if (isNode || isTarget) {
+          featureMap[featAdcodeStr] = feat;
         }
       });
+      // 根据邻接表构建有向边
+      Object.entries(group.nodes).forEach(
+        ([fromAdcode, outAdcodes]: [string, number[]]) => {
+          const fromFeature = featureMap[fromAdcode];
+          if (!fromFeature) return;
+          outAdcodes.forEach((toAdcode) => {
+            const toFeature = featureMap[toAdcode];
+            if (toFeature) {
+              edges.push({ from: fromFeature, to: toFeature });
+            }
+          });
+        }
+      );
+      return {
+        id: group.id,
+        style: hexColor ? { color: hexColor } : undefined,
+        featureMap,
+        edges,
+      };
     });
-    return rs;
   });
 
-  const getLinePosition = (
-    groupIndex: number,
-    featureIndex: number
-  ): { x1: number; y1: number; x2: number; y2: number } | null => {
-    if (featureIndex === 0) return null;
-    const last = pinnedCityFeature.value[groupIndex].features[featureIndex - 1];
-    const cur = pinnedCityFeature.value[groupIndex].features[featureIndex];
-    const [x1, y1] = projection(last.info.center);
-    const [x2, y2] = projection(cur.info.center);
-    return { x1, y1, x2, y2 };
-  };
   defineExpose({
     projection,
     WIDTH,
@@ -220,7 +219,7 @@
       <g class="map-contour-layer">
         <path
           v-for="item in mapFeatures"
-          :key="item.info.id"
+          :key="item.info.adcode"
           :d="item.pathData"
           class="province-path"
           :style="item.customStyle"
@@ -235,19 +234,19 @@
       <g
         class="map-pinned-layer"
         pointer-events="none"
-        v-for="(item, itemIndex) in pinnedCityFeature"
-        :key="item.id">
+        v-for="graph in pinnedCityGraphFeatures"
+        :key="graph.id">
         <g
-          v-for="(feature, featureIndex) in item.features"
-          :key="feature.info.id">
+          v-for="feature in graph.featureMap"
+          :key="feature.info.adcode">
           <path
             class="province-stroke-highlight"
             :d="feature.pathData"
             :style="
-              item?.style?.color
+              graph?.style?.color
                 ? {
-                    stroke: item.style.color,
-                    fill: `color-mix(in srgb, ${item.style.color} 10%, transparent)`,
+                    stroke: graph.style.color,
+                    fill: `color-mix(in srgb, ${graph.style.color} 10%, transparent)`,
                   }
                 : {}
             "></path>
@@ -265,15 +264,17 @@
               translate(${-projectionX(feature.info.center[0])}, ${-projectionY(feature.info.center[1])})
             `"
             style="vector-effect: non-scaling-stroke" />
-          <line
-            v-if="getLinePosition(itemIndex, featureIndex)"
-            :x1="projectionX(item.features[featureIndex - 1].info.center[0])"
-            :y1="projectionY(item.features[featureIndex - 1].info.center[1])"
-            :x2="projectionX(feature.info.center[0])"
-            :y2="projectionY(feature.info.center[1])"
-            style="vector-effect: non-scaling-stroke"
-            stroke="black" />
         </g>
+        <line
+          v-for="(edge, index) in graph.edges"
+          :key="index"
+          :x1="projectionX(edge.from.info.center[0])"
+          :y1="projectionY(edge.from.info.center[1])"
+          :x2="projectionX(edge.to.info.center[0])"
+          :y2="projectionY(edge.to.info.center[1])"
+          style="vector-effect: non-scaling-stroke"
+          :stroke="graph?.style?.color || 'black'"
+          stroke-width="1.5" />
       </g>
       <g
         class="map-first-highlight-layer"
