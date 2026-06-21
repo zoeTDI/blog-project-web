@@ -4,7 +4,7 @@ import type { Position } from 'geojson';
 export interface CityInfo {
   id: number;
   name: string;
-  center?: [number, number];
+  center: [number, number];
   properties?: any;
 }
 
@@ -29,7 +29,7 @@ export interface Feature {
 export interface MarkedCityGroup {
   id: number;
   adcodes: number[];
-  color?: string;
+  style?: { color?: string };
 }
 
 export interface MarkedCityFeatureGroup extends MarkedCityGroup {

@@ -40,12 +40,18 @@
   const hoveredProvince = ref<string | null>(null);
   const svgRef = ref<SVGElement | null>(null); // 💡 新增：SVG DOM 引用
 
+  const projectionX = (lng: number): number => {
+    if (typeof lng !== 'number') return 0;
+    return (lng - 73) * (WIDTH / (135 - 73));
+  };
+
+  const projectionY = (lat: number): number => {
+    if (typeof lat !== 'number') return 0;
+    return HEIGHT - (lat - 18) * (HEIGHT / (54 - 18));
+  };
+
   const projection: ProjectionFn = (coord: Position): [number, number] => {
-    const lng = coord[0];
-    const lat = coord[1];
-    const x = (lng - 73) * (WIDTH / (135 - 73));
-    const y = HEIGHT - (lat - 18) * (HEIGHT / (54 - 18));
-    return [x, y];
+    return [projectionX(coord[0]), projectionY(coord[1])];
   };
 
   const convertCoordsToPath = (rings: Position[][]): string => {
@@ -72,17 +78,13 @@
       const geo = feature.geometry;
 
       let pathData = '';
-      if (geo) {
-        if (geo.type === 'Polygon') {
-          pathData = convertCoordsToPath(geo.coordinates as Position[][]);
-        } else if (geo.type === 'MultiPolygon') {
-          pathData = geo.coordinates
-            .map((polygonCoords) =>
-              convertCoordsToPath(polygonCoords as Position[][])
-            )
-            .join(' ');
-        }
+      if (!Array.isArray(geo.coordinates)) {
+        geo.coordinates = [geo.coordinates];
       }
+
+      pathData = geo.coordinates
+        .map((coords) => convertCoordsToPath(coords as Position[][]))
+        .join(' ');
 
       const rawCenter = feature.properties?.center as
         | [number, number]
@@ -158,12 +160,12 @@
   const pinnedCityFeature = computed<MarkedCityFeatureGroup[]>(() => {
     const rs: MarkedCityFeatureGroup[] = props.markedCityGroups.map(
       (item: MarkedCityGroup) => {
-        const hexColor = parseToHexColor(item?.color);
+        const hexColor = parseToHexColor(item?.style?.color);
         if (hexColor) {
           return {
             id: item.id,
             adcodes: item.adcodes,
-            color: hexColor,
+            style: { color: hexColor },
             features: [],
           };
         } else {
@@ -182,10 +184,20 @@
         }
       });
     });
-    console.log('🚀 ~  ~ rs: ', rs);
     return rs;
   });
 
+  const getLinePosition = (
+    groupIndex: number,
+    featureIndex: number
+  ): { x1: number; y1: number; x2: number; y2: number } | null => {
+    if (featureIndex === 0) return null;
+    const last = pinnedCityFeature.value[groupIndex].features[featureIndex - 1];
+    const cur = pinnedCityFeature.value[groupIndex].features[featureIndex];
+    const [x1, y1] = projection(last.info.center);
+    const [x2, y2] = projection(cur.info.center);
+    return { x1, y1, x2, y2 };
+  };
   defineExpose({
     projection,
     WIDTH,
@@ -223,36 +235,44 @@
       <g
         class="map-pinned-layer"
         pointer-events="none"
-        v-for="item in pinnedCityFeature"
+        v-for="(item, itemIndex) in pinnedCityFeature"
         :key="item.id">
         <g
-          v-for="feature in item.features"
+          v-for="(feature, featureIndex) in item.features"
           :key="feature.info.id">
           <path
             class="province-stroke-highlight"
             :d="feature.pathData"
             :style="
-              item.color
+              item?.style?.color
                 ? {
-                    stroke: item.color,
-                    fill: `color-mix(in srgb, ${item.color} 10%, transparent)`,
+                    stroke: item.style.color,
+                    fill: `color-mix(in srgb, ${item.style.color} 10%, transparent)`,
                   }
                 : {}
             "></path>
           <circle
             v-if="feature.info.center && feature.info.center.length >= 2"
-            :cx="projection(feature.info.center)[0]"
-            :cy="projection(feature.info.center)[1]"
+            :cx="projectionX(feature.info.center[0])"
+            :cy="projectionY(feature.info.center[1])"
             r="6"
             fill="#ffff00"
             stroke="#000"
             stroke-width="1"
             :transform="`
-              translate(${projection(feature.info.center)[0]}, ${projection(feature.info.center)[1]})
+              translate(${projectionX(feature.info.center[0])}, ${projectionY(feature.info.center[1])})
               scale(${1 / scale})
-              translate(${-projection(feature.info.center)[0]}, ${-projection(feature.info.center)[1]})
+              translate(${-projectionX(feature.info.center[0])}, ${-projectionY(feature.info.center[1])})
             `"
             style="vector-effect: non-scaling-stroke" />
+          <line
+            v-if="getLinePosition(itemIndex, featureIndex)"
+            :x1="projectionX(item.features[featureIndex - 1].info.center[0])"
+            :y1="projectionY(item.features[featureIndex - 1].info.center[1])"
+            :x2="projectionX(feature.info.center[0])"
+            :y2="projectionY(feature.info.center[1])"
+            style="vector-effect: non-scaling-stroke"
+            stroke="black" />
         </g>
       </g>
       <g
