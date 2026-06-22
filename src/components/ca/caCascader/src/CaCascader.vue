@@ -92,8 +92,12 @@
    * @param i 数据层级
    */
   const handleOptionClick = (item: T, i: number) => {
-    curSelect.value.splice(i);
-    curSelect.value.push(item);
+    const nextSelect = [...curSelect.value];
+
+    nextSelect.splice(i);
+    nextSelect.push(item);
+
+    curSelect.value = nextSelect;
 
     // 没有子节点，关闭面板
     const children = getChildren(item);
@@ -133,6 +137,7 @@
     modelValue,
     (newModelVal) => {
       if (!newModelVal || newModelVal.length === 0) {
+        if (curSelect.value.length === 0) return;
         curSelect.value = [];
         return;
       }
