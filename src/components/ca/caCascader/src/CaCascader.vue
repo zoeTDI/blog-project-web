@@ -205,6 +205,12 @@
   .ca-cascader {
     width: max-content;
     position: relative;
+    z-index: 10;
+    transition: z-index 150ms step-end;
+  }
+  .ca-cascader.focus {
+    z-index: 100;
+    transition: none;
   }
 
   .ca-cascader_container {
@@ -242,6 +248,7 @@
     justify-content: flex-start;
     align-content: flex-start;
     position: absolute;
+    z-index: 10;
     top: 100%;
     height: 0;
     opacity: 0;
