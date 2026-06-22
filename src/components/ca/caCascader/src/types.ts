@@ -4,9 +4,9 @@ interface CascadeFieldName {
   children: string;
 }
 
-interface CascaderProps {
+interface CascaderProps<T = any> {
   type?: 'city' | 'custom';
-  options?: any[];
+  options?: T[];
   placeholder?: string;
   optionWidth?: number;
   fieldNames?: Partial<CascadeFieldName>;

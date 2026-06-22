@@ -1,13 +1,13 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Record<string, any>">
   import ChinaCityTree from '@/assets/data/ChinaCityTree.json';
-  import { computed, nextTick, ref, watch } from 'vue';
+  import { computed, nextTick, ref, shallowRef, watch } from 'vue';
   import { ChevronDownIcon } from '@heroicons/vue/24/outline';
   import type {
     CascadeFieldName,
     CascaderProps,
   } from '@/components/ca/caCascader';
 
-  const props = withDefaults(defineProps<CascaderProps>(), {
+  const props = withDefaults(defineProps<CascaderProps<T>>(), {
     type: 'custom',
     options: () => [],
     placeholder: '请选择数据',
@@ -21,13 +21,13 @@
   });
   const modelValue = defineModel<any[]>({ default: () => [] });
   const emits = defineEmits<{
-    (e: 'on-change', value: any[]): void;
+    (e: 'on-change', value: T[]): void;
   }>();
 
   const cascaderRef = ref<HTMLElement | null>(null);
   const panelRef = ref<HTMLElement | null>(null);
 
-  const curSelect = ref<any[]>([]);
+  const curSelect = shallowRef<T[]>([]);
   const isFocus = ref<boolean>(false);
   const panelDirection = ref<'right' | 'left'>('right');
 
@@ -37,18 +37,18 @@
     children: props.fieldNames?.children || 'children',
   }));
   // 获取数据
-  const getData = (): any[] => {
+  const getData = (): T[] => {
     if (props.type === 'city') {
-      return ChinaCityTree as any[];
+      return ChinaCityTree as unknown as T[];
     }
     return Array.isArray(props.options) ? props.options : [];
   };
   // 获取label
-  const getLabel = (item: any): string => item?.[keys.value.label] ?? '';
+  const getLabel = (item: T): string => item?.[keys.value.label] ?? '';
   // 获取value
-  const getValue = (item: any): any => item?.[keys.value.value] ?? '';
+  const getValue = (item: T): any => item?.[keys.value.value] ?? '';
   // 获取children
-  const getChildren = (item: any): any[] => item?.[keys.value.children] ?? '';
+  const getChildren = (item: T): T[] => item?.[keys.value.children] ?? '';
   // 获取分隔符
   const getSplitChar = (): string => {
     return props.splitChar && typeof props.splitChar === 'string'
@@ -59,8 +59,8 @@
   /**
    * 计算多集面板数据
    */
-  const panels = computed(() => {
-    const result: any[][] = [];
+  const panels = computed<T[][]>(() => {
+    const result: T[][] = [];
     result.push(getData());
     for (const item of curSelect.value) {
       const children = getChildren(item);
@@ -91,7 +91,7 @@
    * @param item 城市信息
    * @param i 数据层级
    */
-  const handleOptionClick = (item: City, i: number) => {
+  const handleOptionClick = (item: T, i: number) => {
     curSelect.value.splice(i);
     curSelect.value.push(item);
 
@@ -141,11 +141,7 @@
       if (JSON.stringify(curValues) === JSON.stringify(newModelVal)) return;
 
       // 树形递归查找匹配的节点链路
-      const findPath = (
-        list: any[],
-        index: number,
-        path: any[]
-      ): any[] | null => {
+      const findPath = (list: T[], index: number, path: T[]): T[] | null => {
         const targetValue = newModelVal[index];
         const found = list.find((item) => getValue(item) === targetValue);
         if (!found) return null;
