@@ -2,30 +2,70 @@
   import ChinaCityTree from '@/assets/data/ChinaCityTree.json';
   import { computed, nextTick, ref, watch } from 'vue';
   import { ChevronDownIcon } from '@heroicons/vue/24/outline';
-  import type { City, Props } from '@/components/ca/caCascader';
+  import type {
+    CascadeFieldName,
+    CascaderProps,
+  } from '@/components/ca/caCascader';
 
-  const props = withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<CascaderProps>(), {
+    type: 'custom',
+    options: () => [],
     placeholder: '请选择数据',
     optionWidth: 200,
+    splitChar: '/',
+    fieldNames: () => ({
+      label: 'label',
+      value: 'value',
+      children: 'children',
+    }),
   });
+  const modelValue = defineModel<any[]>({ default: () => [] });
   const emits = defineEmits<{
-    (e: 'on-change', value: City[]): void;
+    (e: 'on-change', value: any[]): void;
   }>();
 
   const cascaderRef = ref<HTMLElement | null>(null);
   const panelRef = ref<HTMLElement | null>(null);
 
-  const CITY_DATA: City[] = ChinaCityTree as City[];
-  const curSelect = ref<City[]>([]);
+  const curSelect = ref<any[]>([]);
   const isFocus = ref<boolean>(false);
   const panelDirection = ref<'right' | 'left'>('right');
 
+  const keys = computed<CascadeFieldName>(() => ({
+    label: props.fieldNames?.label || 'label',
+    value: props.fieldNames?.value || 'value',
+    children: props.fieldNames?.children || 'children',
+  }));
+  // 获取数据
+  const getData = (): any[] => {
+    if (props.type === 'city') {
+      return ChinaCityTree as any[];
+    }
+    return Array.isArray(props.options) ? props.options : [];
+  };
+  // 获取label
+  const getLabel = (item: any): string => item?.[keys.value.label] ?? '';
+  // 获取value
+  const getValue = (item: any): any => item?.[keys.value.value] ?? '';
+  // 获取children
+  const getChildren = (item: any): any[] => item?.[keys.value.children] ?? '';
+  // 获取分隔符
+  const getSplitChar = (): string => {
+    return props.splitChar && typeof props.splitChar === 'string'
+      ? props.splitChar
+      : '/';
+  };
+
+  /**
+   * 计算多集面板数据
+   */
   const panels = computed(() => {
-    const result: City[][] = [];
-    result.push(CITY_DATA);
+    const result: any[][] = [];
+    result.push(getData());
     for (const item of curSelect.value) {
-      if (item.children?.length) {
-        result.push(item.children);
+      const children = getChildren(item);
+      if (children?.length && children.length > 0) {
+        result.push(children);
       } else {
         break;
       }
@@ -54,7 +94,14 @@
   const handleOptionClick = (item: City, i: number) => {
     curSelect.value.splice(i);
     curSelect.value.push(item);
+
+    // 没有子节点，关闭面板
+    const children = getChildren(item);
+    if (!children || children.length == 0) {
+      handleInputBlur();
+    }
   };
+
   /**
    * 计算面板展开方向
    */
@@ -70,10 +117,50 @@
     panelDirection.value = rightSp > leftSp ? 'right' : 'left';
   };
 
-  watch(curSelect.value, (newValue) => {
-    console.log('🚀 ~  ~ newValue: ', newValue);
-    emits('on-change', newValue);
-  });
+  watch(
+    () => curSelect.value,
+    (newSelect) => {
+      const values = newSelect.map((item) => getValue(item));
+      modelValue.value = values;
+      emits('on-change', newSelect);
+    },
+    {
+      deep: true,
+    }
+  );
+
+  watch(
+    modelValue,
+    (newModelVal) => {
+      if (!newModelVal || newModelVal.length === 0) {
+        curSelect.value = [];
+        return;
+      }
+      // 如果内部已经对应上了，就不重复查找
+      const curValues = curSelect.value.map((item) => getValue(item));
+      if (JSON.stringify(curValues) === JSON.stringify(newModelVal)) return;
+
+      // 树形递归查找匹配的节点链路
+      const findPath = (
+        list: any[],
+        index: number,
+        path: any[]
+      ): any[] | null => {
+        const targetValue = newModelVal[index];
+        const found = list.find((item) => getValue(item) === targetValue);
+        if (!found) return null;
+
+        const newPath = [...path, found];
+        if (index === newModelVal.length - 1) return newPath;
+
+        return findPath(getChildren(found), index + 1, newPath);
+      };
+
+      const resultPath = findPath(getData(), 0, []);
+      if (resultPath) curSelect.value = resultPath;
+    },
+    { immediate: true }
+  );
 </script>
 
 <template>
@@ -84,7 +171,7 @@
     <div class="ca-cascader_container">
       <input
         type="text"
-        :value="curSelect.map((item) => item.label).join('/')"
+        :value="curSelect.map((item) => getLabel(item)).join(getSplitChar())"
         @focus="handleInputFocus"
         @blur="handleInputBlur"
         :placeholder="props.placeholder" />
@@ -101,10 +188,11 @@
         <ul class="menu">
           <li
             v-for="item in list"
-            :key="item.value"
+            :key="getValue(item)"
             class="option"
+            :class="{ active: getValue(curSelect[level]) === getValue(item) }"
             @mousedown.prevent="handleOptionClick(item, level)">
-            <span class="label">{{ item.label }}</span>
+            <span class="label">{{ getLabel(item) }}</span>
           </li>
         </ul>
       </div>
@@ -182,14 +270,30 @@
   .ca-cascader_panel {
     width: 100%;
     padding: 4px 0;
+    border-right: 2px solid var(--color-border);
   }
 
+  .ca-cascader_panel:last-child {
+    border-right-color: transparent;
+  }
   .ca-cascader_panel .option {
     padding: 8px;
   }
+
   .ca-cascader_panel .option:hover {
     background-color: var(--color-bg-hover);
   }
+
+  .ca-cascader_panel .option.active {
+    color: var(--color-accent, #3b82f6);
+    background-color: color-mix(
+      in srgb,
+      var(--color-accent, #3b82f6) 10%,
+      transparent
+    );
+    font-weight: 500;
+  }
+
   .ca-cascader_panel .option .label {
     user-select: none;
     -moz-user-select: none;

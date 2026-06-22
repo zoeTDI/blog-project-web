@@ -1,15 +1,16 @@
-interface City {
-  value: number;
+interface CascadeFieldName {
   label: string;
-  level: 'province' | 'district';
-  parentCode: number | null;
-  children: City[];
+  value: string;
+  children: string;
 }
 
-interface Props {
-  type?: 'city';
+interface CascaderProps {
+  type?: 'city' | 'custom';
+  options?: any[];
   placeholder?: string;
   optionWidth?: number;
+  fieldNames?: Partial<CascadeFieldName>;
+  splitChar?: string;
 }
 
-export type { City, Props };
+export type { CascadeFieldName, CascaderProps };
