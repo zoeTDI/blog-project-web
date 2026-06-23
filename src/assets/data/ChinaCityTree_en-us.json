@@ -3320,70 +3320,70 @@
       },
       {
         "value": 659001,
-        "label": "石河子市",
+        "label": "Shihezi",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659002,
-        "label": "阿拉尔市",
+        "label": "Alaer",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659003,
-        "label": "图木舒克市",
+        "label": "Tumushuke",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659004,
-        "label": "五家渠市",
+        "label": "Wujiaqu",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659005,
-        "label": "北屯市",
+        "label": "Beitun",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659006,
-        "label": "铁门关市",
+        "label": "Tiemenguan City",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659007,
-        "label": "双河市",
+        "label": "Shuanghe City",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659008,
-        "label": "可克达拉市",
+        "label": "Cocodala City",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659009,
-        "label": "昆玉市",
+        "label": "Kunyu",
         "level": "city",
         "parentCode": 650000,
         "children": []
       },
       {
         "value": 659010,
-        "label": "胡杨河市",
+        "label": "Huyanghe",
         "level": "city",
         "parentCode": 650000,
         "children": []
@@ -3413,126 +3413,126 @@
     "children": [
       {
         "value": 810001,
-        "label": "中西区",
+        "label": "Central And Western District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810002,
-        "label": "湾仔区",
+        "label": "Wan Chai District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810003,
-        "label": "东区",
+        "label": "Eastern District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810004,
-        "label": "南区",
+        "label": "Southern District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810005,
-        "label": "油尖旺区",
+        "label": "Yau Tsim Mong District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810006,
-        "label": "深水埗区",
+        "label": "Sham Shui Po District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810007,
-        "label": "九龙城区",
+        "label": "Kowloon City District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810008,
-        "label": "黄大仙区",
+        "label": "Wong Tai Sin District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810009,
-        "label": "观塘区",
+        "label": "Kwun Tong District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810010,
-        "label": "荃湾区",
+        "label": "Tsuen Wan District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810011,
-        "label": "屯门区",
+        "label": "Tuen Mun District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810012,
-        "label": "元朗区",
+        "label": "Yuen Long District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810013,
-        "label": "北区",
+        "label": "North District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810014,
-        "label": "大埔区",
+        "label": "Tai Po District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810015,
-        "label": "西贡区",
+        "label": "Sai Kung District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810016,
-        "label": "沙田区",
+        "label": "Sha Tin District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810017,
-        "label": "葵青区",
+        "label": "Kwai Tsing District",
         "level": "district",
         "parentCode": 810000,
         "children": []
       },
       {
         "value": 810018,
-        "label": "离岛区",
+        "label": "Island District",
         "level": "district",
         "parentCode": 810000,
         "children": []
@@ -3547,56 +3547,56 @@
     "children": [
       {
         "value": 820001,
-        "label": "花地玛堂区",
+        "label": "Our Lady Fatima Parish",
         "level": "district",
         "parentCode": 820000,
         "children": []
       },
       {
         "value": 820002,
-        "label": "花王堂区",
+        "label": "St. Anthony Parish",
         "level": "district",
         "parentCode": 820000,
         "children": []
       },
       {
         "value": 820003,
-        "label": "望德堂区",
+        "label": "St. Lazarus Parish",
         "level": "district",
         "parentCode": 820000,
         "children": []
       },
       {
         "value": 820004,
-        "label": "大堂区",
+        "label": "Sé Freguesias",
         "level": "district",
         "parentCode": 820000,
         "children": []
       },
       {
         "value": 820005,
-        "label": "风顺堂区",
+        "label": "Freguesia de S．Lourenço",
         "level": "district",
         "parentCode": 820000,
         "children": []
       },
       {
         "value": 820006,
-        "label": "嘉模堂区",
+        "label": "Our Lady Of Carmel's Parish",
         "level": "district",
         "parentCode": 820000,
         "children": []
       },
       {
         "value": 820007,
-        "label": "路凼填海区",
+        "label": "Cotai",
         "level": "district",
         "parentCode": 820000,
         "children": []
       },
       {
         "value": 820008,
-        "label": "圣方济各堂区",
+        "label": "São Francisco de Xavier",
         "level": "district",
         "parentCode": 820000,
         "children": []
