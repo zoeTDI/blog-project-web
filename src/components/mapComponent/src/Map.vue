@@ -255,8 +255,6 @@
             :cx="projectionX(feature.info.center[0])"
             :cy="projectionY(feature.info.center[1])"
             r="6"
-            fill="#ffff00"
-            stroke="#000"
             stroke-width="1"
             :transform="`
               translate(${projectionX(feature.info.center[0])}, ${projectionY(feature.info.center[1])})
@@ -274,7 +272,8 @@
           :y2="projectionY(edge.to.info.center[1])"
           style="vector-effect: non-scaling-stroke"
           :stroke="graph?.style?.color || 'black'"
-          stroke-width="1.5" />
+          stroke-width="1.5"
+          stroke-dasharray="10 15" />
       </g>
       <g
         class="map-first-highlight-layer"
@@ -334,5 +333,25 @@
     stroke-width: 1.5px;
     stroke-linejoin: round;
     vector-effect: non-scaling-stroke;
+  }
+
+  @keyframes dashMove {
+    to {
+      stroke-dashoffset: -25;
+    }
+  }
+
+  .map-pinned-layer line {
+    stroke: black;
+    animation: dashMove 1s linear infinite;
+  }
+
+  .dark .map-pinned-layer line {
+    stroke: white;
+  }
+
+  .map-pinned-layer circle {
+    fill: var(--color-accent);
+    stroke: color-mix(in srgb, var(--color-accent) 40%, transparent);
   }
 </style>
