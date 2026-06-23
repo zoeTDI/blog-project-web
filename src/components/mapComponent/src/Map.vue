@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import ChinaGeoJson from '@/assets/data/China.json';
+  import ChinaZhCnGeoJson from '@/assets/data/China_zh-cn.json';
+  import ChinaEnUsGeoJSON from '@/assets/data/China_en-us.json';
   import { computed, ref } from 'vue';
   import type { GeoJSON, Position } from 'geojson';
   import type {
@@ -11,6 +12,7 @@
     ProjectionFn,
   } from './types';
   import { parseToHexColor } from '@/utils/parse.ts';
+  import { useI18n } from 'vue-i18n';
 
   interface Props {
     cityStyle?: CityStyleFn;
@@ -34,6 +36,8 @@
     (e: 'contextmenu-city', event: MouseEvent, cityInfo: CityInfo): void;
     (e: 'dblclick-city', cityInfo: CityInfo): void;
   }>();
+
+  const { t, locale } = useI18n();
 
   const WIDTH = 800;
   const HEIGHT = 600;
@@ -69,7 +73,9 @@
   };
 
   const mapFeatures = computed<Feature[]>(() => {
-    const data = ChinaGeoJson as GeoJSON;
+    const data = (
+      locale.value === 'en-US' ? ChinaEnUsGeoJSON : ChinaZhCnGeoJson
+    ) as GeoJSON;
     if (!data || data.type !== 'FeatureCollection') return [];
 
     return data.features.map((feature, index) => {
