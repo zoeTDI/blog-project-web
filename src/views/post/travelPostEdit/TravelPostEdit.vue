@@ -8,6 +8,9 @@
   import { computed, ref } from 'vue';
   import { CaButton } from '@/components/ca/caButton';
   import { MarkdownRender } from '@/components/markdownRender';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
   const fromCity = ref<number[]>([]);
   const toCity = ref<number[]>([]);
   const toPinnedGroup = computed<MarkedCityGroup[]>(() => {
@@ -35,20 +38,20 @@
           v-model="fromCity"
           :marked-city-groups="toPinnedGroup">
           <template #info-panel="{ hoveredCity }">
-            {{ hoveredCity?.name || '未知地区' }}
+            {{ hoveredCity?.name || t('travelPost.unkonwnRegion') }}
           </template>
         </map-container>
       </section>
       <section class="note-edit">
         <section class="city">
           <div class="from">
-            <span class="label">出发地：</span>
+            <span class="label">{{ t('travelPost.fromCity') }}</span>
             <ca-cascader
               type="city"
               v-model="fromCity" />
           </div>
           <div class="to">
-            <span class="label">目的地：</span>
+            <span class="label">{{ t('travelPost.toCity') }}</span>
             <ca-cascader
               type="city"
               v-model="toCity" />
@@ -58,21 +61,21 @@
           <input
             class="note-title_input"
             type="text"
-            placeholder="请输入标题"
+            :placeholder="t('travelPost.titlePlaceholder')"
             v-model="noteTitle" />
           <ca-button
             v-show="noteStatus === 'code'"
             type="primary"
             class="preview"
             @click="() => (noteStatus = 'preview')"
-            >预览</ca-button
+            >{{ t('travelPost.preview') }}</ca-button
           >
           <ca-button
             v-show="noteStatus === 'preview'"
             type="primary"
             class="preview"
             @click="() => (noteStatus = 'code')"
-            >源码</ca-button
+            >{{ t('travelPost.sourceCode') }}</ca-button
           >
         </section>
         <section class="context">
@@ -80,7 +83,7 @@
             class="context_textarea"
             v-show="noteStatus === 'code'"
             v-model="noteText"
-            placeholder="请输入正文内容" />
+            :placeholder="t('travelPost.contentPlaceholder')" />
           <markdown-render
             class="preview"
             v-show="noteStatus === 'preview'"
