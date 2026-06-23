@@ -95,7 +95,7 @@
 
   .side {
     height: 100%;
-    background-color: #001529;
+    background-color: #1a1a1a;
     color: #fff;
     display: flex;
     flex-direction: column;
