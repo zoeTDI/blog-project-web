@@ -1,20 +1,17 @@
 <script setup lang="ts">
-  import { useRoute, useRouter } from 'vue-router';
+  import { useRoute } from 'vue-router';
   import { computed, ref, watch } from 'vue';
-  import type { MenuItem } from '@/components/ca/caSideMenu';
+  import type { MenuItem } from './types';
   import { isArray } from '@/utils/isFu.ts';
-  import {
-    ChevronDownIcon,
-    ChevronUpIcon,
-    Bars3BottomLeftIcon,
-  } from '@heroicons/vue/24/outline';
+  import { Bars3BottomLeftIcon } from '@heroicons/vue/24/outline';
   import { preferences } from '@/core/preferences';
   import { useI18n } from 'vue-i18n';
   import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
+  // 引入刚才创建的子组件
+  import CaSubMenuItem from './CaSubMenuItem.vue';
 
   const { t } = useI18n();
   const route = useRoute();
-  const router = useRouter();
 
   const translateString = (str: string): string => {
     if (str.startsWith(ROUTER_PREFIX)) {
@@ -39,28 +36,56 @@
       }
       return acc;
     }, obj);
-    // 正数：从小到大
     obj.positiveItems.sort((a, b) => a.no! - b.no!);
-
-    // 负数：从大到小 (例如 -1 靠近 0，排在 -2 前面)
     obj.negativeItems.sort((a, b) => a.no! - b.no!);
-
-    // 3. 返回合并结果：正数 -> 其他 -> 负数
     return [...obj.positiveItems, ...obj.otherItems, ...obj.negativeItems];
   };
 
+  // 递归处理原始路由格式化（核心改动）
+  const formatRawRoutes = (routes: any[]): MenuItem[] => {
+    const result: MenuItem[] = [];
+
+    routes.forEach((rawRoute) => {
+      if (rawRoute.meta?.hidden === true) return;
+
+      const menuItem: MenuItem = {
+        no: rawRoute.meta?.no,
+        title: translateString(rawRoute.meta?.title) || '未命名',
+        path: rawRoute.path,
+        name: rawRoute.name,
+        icon: rawRoute.meta?.icon || Bars3BottomLeftIcon,
+        hidden: rawRoute.meta?.hidden,
+      };
+
+      if (rawRoute.children && rawRoute.children.length > 0) {
+        // 深层递归
+        menuItem.children = formatRawRoutes(rawRoute.children);
+      }
+
+      // 如果有子节点或者自己是个有标题的有效页面才推入
+      if (
+        (menuItem.children && menuItem.children.length > 0) ||
+        rawRoute.meta?.title
+      ) {
+        result.push(menuItem);
+      }
+    });
+
+    return handleMenuSort(result);
+  };
+
+  // 统一的 menuTree 生成入口
   const menuTree = computed<MenuItem[]>(() => {
     const modules = import.meta.glob('@/router/modules/*.ts', { eager: true });
     const rawMenus: MenuItem[] = [];
 
     Object.keys(modules).forEach((key) => {
       const module = modules[key] as any;
-      // 获取默认导出的根节点（例如 backendRouter 是一个包含单个对象的数组，或者是个对象）
       const rawModule = module.default;
       const rootRoute = isArray(rawModule) ? rawModule[0] : rawModule;
 
       if (!rootRoute || rootRoute.meta?.hidden === true) return;
-      // 组装一级菜单
+
       const firstLevelMenu: MenuItem = {
         no: preferences.app.defaultHomePath.startsWith(rootRoute.path)
           ? 1
@@ -72,91 +97,82 @@
         children: [],
       };
 
-      // 组装二级菜单
       if (rootRoute.children && rootRoute.children.length > 0) {
-        rootRoute.children.forEach((child: any) => {
-          // 除非显式配置 hidden: true，否则默认展示
-          if (child.meta?.hidden !== true && child.meta?.title) {
-            firstLevelMenu.children?.push({
-              no: child.meta?.no,
-              title: translateString(child.meta.title) || '未知页面',
-              path: child.path,
-              name: child.name,
-              icon: child.meta?.icon || Bars3BottomLeftIcon,
-              hidden: child.meta?.hidden,
-            });
-          }
-        });
+        // 这里丢给递归函数，一并解决二、三、四级菜单的生成
+        firstLevelMenu.children = formatRawRoutes(rootRoute.children);
       }
 
-      // 如果一级菜单有子项，或者自身就是一个可点击的独立页面，则推入菜单栏
       if (firstLevelMenu.children!.length > 0 || rootRoute.meta?.title) {
         rawMenus.push(firstLevelMenu);
-      }
-    });
-
-    rawMenus.forEach((menu) => {
-      if (menu.children && menu.children.length > 0) {
-        menu.children = handleMenuSort(menu.children);
       }
     });
 
     return handleMenuSort(rawMenus);
   });
 
-  const activeSubMenuIndex = ref<number | null>(null);
+  // 改为数组来承载各级菜单的展开状态。存储的是路由的 path
+  const openedMenuKeys = ref<string[]>([]);
 
-  const handleMenuClick = (menu: MenuItem, index: number) => {
-    const hasChildren = menu.children && menu.children.length > 0;
-
+  // 展开和收起的处理逻辑
+  const handleToggleExpand = (path: string) => {
     if (isFold.value) {
       isFold.value = false;
     }
-
-    if (hasChildren) {
-      activeSubMenuIndex.value =
-        index === activeSubMenuIndex.value ? null : index;
+    const index = openedMenuKeys.value.indexOf(path);
+    if (index > -1) {
+      // 已经展开则收起
+      openedMenuKeys.value.splice(index, 1);
     } else {
-      router.push({ name: menu.name });
+      // 未展开则推入开启键值中
+      openedMenuKeys.value.push(path);
     }
   };
 
-  // 点击二级菜单跳转
-  const handleChildClick = (childPath: string) => {
-    router.push(childPath);
-  };
-
+  // 监听当前路由，自动展开对应链条上的父级菜单
   watch(
     () => route.path,
     (newPath) => {
-      menuTree.value.forEach((menu, index) => {
-        const hasActiveChild = menu.children?.some(
-          (child) => child.path === newPath
-        );
-        if (hasActiveChild || menu.path === newPath) {
-          activeSubMenuIndex.value = index;
+      const parentPaths: string[] = [];
+
+      // 深度查找路径上所有父节点的算法
+      const findParentPaths = (
+        menus: MenuItem[],
+        targetPath: string
+      ): boolean => {
+        for (const menu of menus) {
+          if (menu.path === targetPath) return true;
+          if (menu.children && menu.children.length > 0) {
+            parentPaths.push(menu.path);
+            if (findParentPaths(menu.children, targetPath)) return true;
+            parentPaths.pop(); // 没找到则回溯
+          }
+        }
+        return false;
+      };
+
+      findParentPaths(menuTree.value, newPath);
+      // 将找到的所有父级菜单的 path 加入展开队列
+      parentPaths.forEach((p) => {
+        if (!openedMenuKeys.value.includes(p)) {
+          openedMenuKeys.value.push(p);
         }
       });
     },
-    {
-      immediate: true,
-    }
+    { immediate: true }
   );
-  let memorizedIndex: number | null = null;
+
+  let memorizedKeys: string[] = [];
   const isFold = ref<boolean>(false);
+
   const foldMenu = () => {
     if (isFold.value) {
       // 展开
       isFold.value = false;
-      if (typeof memorizedIndex === 'number') {
-        activeSubMenuIndex.value = memorizedIndex;
-      }
+      openedMenuKeys.value = [...memorizedKeys];
     } else {
       // 折叠
-      if (typeof activeSubMenuIndex.value === 'number') {
-        memorizedIndex = activeSubMenuIndex.value;
-        activeSubMenuIndex.value = null;
-      }
+      memorizedKeys = [...openedMenuKeys.value];
+      openedMenuKeys.value = [];
       isFold.value = true;
     }
   };
@@ -167,72 +183,13 @@
 <template>
   <aside :class="['ca-side-menu', { fold: isFold }]">
     <div class="menu-container">
-      <div
-        v-for="(menu, index) in menuTree"
+      <CaSubMenuItem
+        v-for="menu in menuTree"
         :key="menu.path"
-        class="menu-group">
-        <!-- 一级菜单 -->
-        <div
-          :class="[
-            'menu-item',
-            'first-level',
-            {
-              active:
-                route.path === menu.path ||
-                route.name === menu.name ||
-                activeSubMenuIndex === index,
-            },
-          ]"
-          @click="handleMenuClick(menu, index)">
-          <div class="menu-item-left">
-            <component
-              :is="menu.icon"
-              v-if="menu.icon"
-              class="menu-icon" />
-            <span class="menu-title">{{ menu.title }}</span>
-          </div>
-
-          <div
-            v-if="menu.children && menu.children.length > 0"
-            class="menu-item-right">
-            <ChevronUpIcon
-              v-if="activeSubMenuIndex === index"
-              class="arrow-icon" />
-            <ChevronDownIcon
-              v-else
-              class="arrow-icon" />
-          </div>
-        </div>
-
-        <div
-          class="sub-menu"
-          :style="{
-            height:
-              activeSubMenuIndex === index
-                ? `${(menu.children?.length || 0) * 40}px`
-                : '0px',
-          }">
-          <div
-            v-for="child in menu.children"
-            :key="child.path"
-            :class="[
-              'menu-item',
-              'second-level',
-              {
-                active: route.path === child.path || route.name === child.name,
-              },
-            ]"
-            @click="handleChildClick(child.path)">
-            <div class="menu-item-left">
-              <component
-                :is="child.icon"
-                v-if="child.icon"
-                class="menu-icon sub-menu-icon" />
-              <span class="menu-title">{{ child.title }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        :item="menu"
+        :depth="1"
+        :opened-keys="openedMenuKeys"
+        @toggle-expand="handleToggleExpand" />
     </div>
   </aside>
 </template>
@@ -243,6 +200,7 @@
     overflow-y: auto;
     scrollbar-width: none;
     transition: all 300ms ease;
+    background-color: #1a1a1a;
   }
 
   .ca-side-menu::-webkit-scrollbar {
@@ -257,105 +215,22 @@
     padding: 8px 0;
   }
 
-  .menu-group {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .menu-item {
-    width: 240px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 44px;
-    padding: 0 16px;
-    color: rgba(255, 255, 255, 0.65);
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.25s ease;
-    user-select: none;
-  }
-
-  .menu-item:hover {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  .menu-item.active {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.02);
-  }
-
-  .menu-item-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-  }
-
-  .menu-icon {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    transition: color 0.25s;
-  }
-
-  .menu-item:hover .menu-icon,
-  .menu-item.active .menu-icon {
-    color: #fff;
-  }
-
-  .menu-title {
-    opacity: 1;
-    transition: opacity 300ms ease;
-  }
-
-  .menu-item-right {
-    display: flex;
-    align-items: center;
-  }
-
-  .arrow-icon {
-    width: 14px;
-    height: 14px;
-    color: rgba(255, 255, 255, 0.45);
-  }
-
-  /* 二级菜单容器 */
-  .sub-menu {
-    overflow: hidden;
-    transition: height 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    background-color: #000c17;
-  }
-
-  .menu-item.second-level {
-    height: 40px;
-    padding-left: 32px;
-  }
-
-  .sub-menu-icon {
-    width: 16px;
-    height: 16px;
-    color: rgba(255, 255, 255, 0.45);
-  }
-
-  .menu-item.second-level.active {
-    background-color: var(--color-bg) !important;
-    color: #fff;
-  }
-  .menu-item.second-level.active .sub-menu-icon {
-    color: #fff;
-  }
-
   /**
- * 折叠
+ * 折叠样式控制
  */
   .fold {
     width: 50px;
     overflow: hidden;
   }
 
-  .fold .menu-title {
+  /* 当侧边栏折叠时，隐藏递归组件里的文字和箭头 */
+  .fold :deep(.menu-title),
+  .fold :deep(.menu-item-right) {
     opacity: 0;
+    pointer-events: none;
+  }
+
+  .fold :deep(.sub-menu) {
+    display: none !important; /* 折叠时强行关闭子菜单展示 */
   }
 </style>
