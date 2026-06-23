@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { DocumentIcon, DocumentDuplicateIcon } from '@heroicons/vue/24/outline';
+import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
 export const POST_ROUTER_NAME: Record<string, string> = {
   POST_MANAGE: 'PostManage',
@@ -10,7 +11,7 @@ export const POST_ROUTER_NAME: Record<string, string> = {
 const postRouter: RouteRecordRaw[] = [
   {
     meta: {
-      title: '文章管理',
+      title: `${ROUTER_PREFIX}posts`,
     },
     path: '/posts', // 独立的前缀路径
     component: () => import('@/layouts/BackendLayout.vue'),
@@ -21,7 +22,7 @@ const postRouter: RouteRecordRaw[] = [
         name: POST_ROUTER_NAME.POST_MANAGE,
         component: () => import('@/views/post/postManage/PostManage.vue'),
         meta: {
-          title: '文章管理',
+          title: `${ROUTER_PREFIX}postManage`,
           requireLogin: true,
           icon: DocumentIcon,
         },
@@ -31,7 +32,7 @@ const postRouter: RouteRecordRaw[] = [
         name: POST_ROUTER_NAME.POST_EDIT,
         component: () => import('@/views/post/postEdit/PostEdit.vue'),
         meta: {
-          title: '编辑文章',
+          title: `${ROUTER_PREFIX}postEdit`,
           requireLogin: true,
           icon: DocumentDuplicateIcon,
         },
@@ -42,7 +43,7 @@ const postRouter: RouteRecordRaw[] = [
         component: () =>
           import('@/views/post/travelPostEdit/TravelPostEdit.vue'),
         meta: {
-          title: '编辑旅行文章',
+          title: `${ROUTER_PREFIX}travelPostEdit`,
           requireLogin: true,
           icon: DocumentDuplicateIcon,
         },

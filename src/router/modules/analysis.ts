@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { ChartBarSquareIcon, Squares2X2Icon } from '@heroicons/vue/24/outline';
+import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
 export const BACKEND_ROUTER_NAME = {
   DASHBOARD: 'Dashboard',
@@ -8,7 +9,7 @@ export const BACKEND_ROUTER_NAME = {
 const analysisRouter: RouteRecordRaw[] = [
   {
     meta: {
-      title: `分析`,
+      title: `${ROUTER_PREFIX}analysis`,
       icon: Squares2X2Icon,
     },
     path: '/analysis',
@@ -20,7 +21,7 @@ const analysisRouter: RouteRecordRaw[] = [
         name: BACKEND_ROUTER_NAME.DASHBOARD,
         component: () => import('@/views/analysis/dashboard/Dashboard.vue'),
         meta: {
-          title: '仪表盘',
+          title: `${ROUTER_PREFIX}dashboard`,
           requireLogin: true,
           icon: ChartBarSquareIcon,
           allowDefaultHome: true,

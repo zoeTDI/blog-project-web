@@ -1,15 +1,20 @@
-import type {RouteRecordRaw} from "vue-router";
-import {AdjustmentsHorizontalIcon, Cog6ToothIcon, WrenchIcon} from '@heroicons/vue/24/outline'
+import type { RouteRecordRaw } from 'vue-router';
+import {
+  AdjustmentsHorizontalIcon,
+  Cog6ToothIcon,
+  WrenchIcon,
+} from '@heroicons/vue/24/outline';
+import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
 export const SYSTEM_ROUTER_NAME: Record<string, string> = {
   SYSTEM_SETTING: 'SystemSetting',
   PROFILE_SETTING: 'ProfileSetting',
-}
+};
 
 const settingsRouter: RouteRecordRaw[] = [
   {
     meta: {
-      title: '系统配置',
+      title: `${ROUTER_PREFIX}settings`,
       icon: AdjustmentsHorizontalIcon,
     },
     path: '/settings', // 独立的前缀路径
@@ -21,23 +26,23 @@ const settingsRouter: RouteRecordRaw[] = [
         name: SYSTEM_ROUTER_NAME.SYSTEM_SETTING,
         component: () => import('@/views/systemSetting/SystemSetting.vue'),
         meta: {
-          title: '系统设置',
+          title: `${ROUTER_PREFIX}systemSetting`,
           requireLogin: true,
           icon: Cog6ToothIcon,
-        }
+        },
       },
       {
         path: '/settings/profile',
         name: SYSTEM_ROUTER_NAME.PROFILE_SETTING,
         component: () => import('@/views/profileSetting/ProfileSetting.vue'),
         meta: {
-          title: '个人设置',
+          title: `${ROUTER_PREFIX}profileSetting`,
           requireLogin: true,
           icon: WrenchIcon,
-        }
-      }
-    ]
-  }
-]
+        },
+      },
+    ],
+  },
+];
 
-export default settingsRouter
+export default settingsRouter;

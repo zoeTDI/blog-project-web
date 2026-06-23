@@ -5,7 +5,10 @@
   import { useTabStore } from '@/store/useTabStore.ts';
   import { ContextMenu } from '@/components/ca/caTabsBar';
   import { LockClosedIcon } from '@heroicons/vue/24/outline';
+  import { useI18n } from 'vue-i18n';
+  import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
+  const { t } = useI18n();
   const router = useRouter();
   const route = useRoute();
   const tabStore = useTabStore();
@@ -18,6 +21,12 @@
     if (contextMenuRef.value) {
       contextMenuRef.value?.open(e, tab);
     }
+  };
+  const translateString = (str: string): string => {
+    if (str.startsWith(ROUTER_PREFIX)) {
+      return t(str);
+    }
+    return str;
   };
 
   /**
@@ -44,7 +53,7 @@
         v-if="tab.icon"
         :is="tab.icon"
         class="tab-item-icon" />
-      <span class="tab-title">{{ tab.title }}</span>
+      <span class="tab-title">{{ translateString(tab.title) }}</span>
       <!--      固定图标-->
       <span
         v-if="tab.pinned"

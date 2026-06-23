@@ -9,9 +9,19 @@
     Bars3BottomLeftIcon,
   } from '@heroicons/vue/24/outline';
   import { preferences } from '@/core/preferences';
+  import { useI18n } from 'vue-i18n';
+  import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
+  const { t } = useI18n();
   const route = useRoute();
   const router = useRouter();
+
+  const translateString = (str: string): string => {
+    if (str.startsWith(ROUTER_PREFIX)) {
+      return t(str);
+    }
+    return str;
+  };
 
   const handleMenuSort = (menuItems: MenuItem[]): MenuItem[] => {
     const obj = {
@@ -50,13 +60,12 @@
       const rootRoute = isArray(rawModule) ? rawModule[0] : rawModule;
 
       if (!rootRoute || rootRoute.meta?.hidden === true) return;
-
       // 组装一级菜单
       const firstLevelMenu: MenuItem = {
         no: preferences.app.defaultHomePath.startsWith(rootRoute.path)
           ? 1
           : rootRoute.meta?.no,
-        title: rootRoute.meta?.title || '未命名分类',
+        title: translateString(rootRoute.meta?.title) || '未命名分类',
         path: rootRoute.path,
         name: rootRoute.name,
         icon: rootRoute.meta?.icon || Bars3BottomLeftIcon,
@@ -70,7 +79,7 @@
           if (child.meta?.hidden !== true && child.meta?.title) {
             firstLevelMenu.children?.push({
               no: child.meta?.no,
-              title: child.meta.title,
+              title: translateString(child.meta.title) || '未知页面',
               path: child.path,
               name: child.name,
               icon: child.meta?.icon || Bars3BottomLeftIcon,

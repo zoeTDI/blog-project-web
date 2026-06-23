@@ -11,6 +11,30 @@
   "components": {
     "caCascader": {
       "placeholder": "Please select..."
+    },
+    "caTabsBar": {
+      "close": "Close",
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "reload": "Reload",
+      "closeLeft": "Close Left Tabs",
+      "closeRight": "Close Right Tabs",
+      "closeOthers": "Close Other Tabs",
+      "closeAll": "Close All Tabs"
     }
+  },
+  "router": {
+    "analysis": "Analysis",
+    "dashboard": "Dashboard",
+    "categories": "Categories & Tags",
+    "categoryManage": "Category Manage",
+    "tagManage": "Tag Manage",
+    "posts": "Posts Manage",
+    "postManage": "Posts List",
+    "postEdit": "Edit Post",
+    "travelPostEdit": "Edit Travel Post",
+    "settings": "System Config",
+    "systemSetting": "System Settings",
+    "profileSetting": "Profile Settings"
   }
 }

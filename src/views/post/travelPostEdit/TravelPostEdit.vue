@@ -38,7 +38,7 @@
           v-model="fromCity"
           :marked-city-groups="toPinnedGroup">
           <template #info-panel="{ hoveredCity }">
-            {{ hoveredCity?.name || t('travelPost.unkonwnRegion') }}
+            {{ hoveredCity?.name || t('travelPost.unknownRegion') }}
           </template>
         </map-container>
       </section>

@@ -3,6 +3,7 @@ import { useLoadingStore } from '@/store/useLoadingStore.ts';
 import { ROUTER_NAMES } from '@/router/routerNames.ts';
 import { useUserStore } from '@/store/useUserStore.ts';
 import { preferenceManager, preferences } from '@/core/preferences';
+import { i18n, ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
 const defaultPreferences = preferenceManager.getInitialPreferences();
 
@@ -11,8 +12,12 @@ const getWebsiteName = () => {
 };
 
 const processDocumentTitle = (pageName: string) => {
-  if (typeof pageName === 'string' && pageName !== '') {
-    document.title = `${getWebsiteName()} - ${pageName}`;
+  let translation = pageName;
+  if (translation.startsWith(ROUTER_PREFIX)) {
+    translation = i18n.global.t(translation);
+  }
+  if (typeof translation === 'string' && translation !== '') {
+    document.title = `${getWebsiteName()} - ${translation}`;
   } else {
     document.title = getWebsiteName();
   }

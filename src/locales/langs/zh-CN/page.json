@@ -11,6 +11,30 @@
   "components": {
     "caCascader": {
       "placeholder": "请选择数据"
+    },
+    "tabsBar": {
+      "close": "关闭",
+      "pin": "固定",
+      "unpin": "取消固定",
+      "reload": "重新加载",
+      "closeLeft": "关闭左侧标签页",
+      "closeRight": "关闭右侧标签页",
+      "closeOthers": "关闭其他标签页",
+      "closeAll": "关闭全部标签页"
     }
+  },
+  "router": {
+    "analysis": "分析",
+    "dashboard": "仪表盘",
+    "categories": "分类与标签",
+    "categoryManage": "分类管理",
+    "tagManage": "标签管理",
+    "posts": "文章管理",
+    "postManage": "文章管理",
+    "postEdit": "编辑文章",
+    "travelPostEdit": "编辑旅行文章",
+    "settings": "系统配置",
+    "systemSetting": "系统设置",
+    "profileSetting": "个人设置"
   }
 }

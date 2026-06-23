@@ -14,7 +14,9 @@
   import { useTabStore } from '@/store/useTabStore.ts';
   import { useRoute, useRouter } from 'vue-router';
   import { preferences } from '@/core/preferences';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const router = useRouter();
   const route = useRoute();
   const tabStore = useTabStore();
@@ -152,14 +154,16 @@
     return [
       {
         key: 'close',
-        label: '关闭',
+        label: t('components.tabsBar.close'),
         icon: XMarkIcon,
         disabled: tab.pinned,
         action: () => closeTab(tab.path),
       },
       {
         key: 'pin',
-        label: tab.pinned ? '取消固定' : '固定',
+        label: tab.pinned
+          ? t('components.tabsBar.unpin')
+          : t('components.tabsBar.pin'),
         // 根据状态动态切换“固定锁”或“开锁”图标
         icon: tab.pinned ? LockOpenIcon : LockClosedIcon,
         disabled: isDefaultHome,
@@ -167,7 +171,7 @@
       },
       {
         key: 'reload',
-        label: '重新加载',
+        label: t('components.tabsBar.reload'),
         icon: ArrowPathIcon,
         disabled: false,
         action: () => reload(tab.path),
@@ -182,28 +186,28 @@
       // },
       {
         key: 'closeLeft',
-        label: '关闭左侧标签页',
+        label: t('components.tabsBar.closeLeft'),
         icon: ArrowLeftIcon,
         disabled: !hasCloseableLeft(tab.path),
         action: () => closeLeft(tab.path),
       },
       {
         key: 'closeRight',
-        label: '关闭右侧标签页',
+        label: t('components.tabsBar.closeRight'),
         icon: ArrowRightIcon,
         disabled: !hasCloseableRight(tab.path),
         action: () => closeRight(tab.path),
       },
       {
         key: 'closeOthers',
-        label: '关闭其他标签页',
+        label: t('components.tabsBar.closeOthers'),
         icon: MinusCircleIcon,
         disabled: !hasCloseableOthers(tab.path),
         action: () => closeOthers(tab.path),
       },
       {
         key: 'closeAll',
-        label: '关闭全部标签页',
+        label: t('components.tabsBar.closeAll'),
         icon: XMarkIcon,
         disabled: !hasCloseableAll(),
         action: closeAll,
