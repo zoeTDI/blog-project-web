@@ -1,3 +1,16 @@
 {
-  "message": "This is a test words."
+  "travelPost": {
+    "fromCity": "From: ",
+    "toCity": "To: ",
+    "titlePlaceholder": "Please enter a title",
+    "preview": "Preview",
+    "sourceCode": "Code",
+    "contentPlaceholder": "Please enter the main content...",
+    "unknownRegion": "Unknown Region"
+  },
+  "components": {
+    "caCascader": {
+      "placeholder": "Please select..."
+    }
+  }
 }

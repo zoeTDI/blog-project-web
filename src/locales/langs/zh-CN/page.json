@@ -1,3 +1,16 @@
 {
-  "message": "这是一段测试文字。"
+  "travelPost": {
+    "fromCity": "出发地：",
+    "toCity": "目的地：",
+    "titlePlaceholder": "请输入标题",
+    "preview": "预览",
+    "sourceCode": "源码",
+    "contentPlaceholder": "请输入正文内容",
+    "unknownRegion": "未知地区"
+  },
+  "components": {
+    "caCascader": {
+      "placeholder": "请选择数据"
+    }
+  }
 }

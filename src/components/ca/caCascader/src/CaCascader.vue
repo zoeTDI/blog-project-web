@@ -1,16 +1,18 @@
 <script setup lang="ts" generic="T extends Record<string, any>">
-  import ChinaCityTree from '@/assets/data/ChinaCityTree.json';
+  import ChinaCityTree_zh_cn from '@/assets/data/ChinaCityTree_zh-cn.json';
+  import ChinaCityTree_en_us from '@/assets/data/ChinaCityTree_en-us.json';
   import { computed, nextTick, ref, shallowRef, watch } from 'vue';
   import { ChevronDownIcon } from '@heroicons/vue/24/outline';
   import type {
     CascadeFieldName,
     CascaderProps,
   } from '@/components/ca/caCascader';
+  import { useI18n } from 'vue-i18n';
 
   const props = withDefaults(defineProps<CascaderProps<T>>(), {
     type: 'custom',
     options: () => [],
-    placeholder: '请选择数据',
+    placeholder: '',
     optionWidth: 200,
     splitChar: '/',
     fieldNames: () => ({
@@ -24,6 +26,8 @@
     (e: 'on-change', value: T[]): void;
   }>();
 
+  const { t, locale } = useI18n();
+
   const cascaderRef = ref<HTMLElement | null>(null);
   const panelRef = ref<HTMLElement | null>(null);
 
@@ -31,6 +35,9 @@
   const isFocus = ref<boolean>(false);
   const panelDirection = ref<'right' | 'left'>('right');
 
+  const displayPlaceholder = computed(() => {
+    return props.placeholder || t('components.caCascader.placeholder');
+  });
   const keys = computed<CascadeFieldName>(() => ({
     label: props.fieldNames?.label || 'label',
     value: props.fieldNames?.value || 'value',
@@ -39,7 +46,11 @@
   // 获取数据
   const getData = (): T[] => {
     if (props.type === 'city') {
-      return ChinaCityTree as unknown as T[];
+      if (locale.value === 'en-US') {
+        return ChinaCityTree_en_us as unknown as T[];
+      } else {
+        return ChinaCityTree_zh_cn as unknown as T[];
+      }
     }
     return Array.isArray(props.options) ? props.options : [];
   };
@@ -121,10 +132,30 @@
     panelDirection.value = rightSp > leftSp ? 'right' : 'left';
   };
 
+  const updateSelectPathByModel = (currentModelVal: any[]) => {
+    if (!currentModelVal || currentModelVal.length === 0) {
+      curSelect.value = [];
+      return;
+    }
+    const findPath = (list: T[], index: number, path: T[]): T[] | null => {
+      const targetValue = currentModelVal[index];
+      const found = list.find((item) => getValue(item) === targetValue);
+      if (!found) return null;
+
+      const newPath = [...path, found];
+      if (index === currentModelVal.length - 1) return newPath;
+
+      return findPath(getChildren(found), index + 1, newPath);
+    };
+    const resultPath = findPath(getData(), 0, []);
+    if (resultPath) curSelect.value = resultPath;
+  };
+
   watch(
     () => curSelect.value,
     (newSelect) => {
       const values = newSelect.map((item) => getValue(item));
+      if (JSON.stringify(modelValue.value) === JSON.stringify(values)) return;
       modelValue.value = values;
       emits('on-change', newSelect);
     },
@@ -145,23 +176,20 @@
       const curValues = curSelect.value.map((item) => getValue(item));
       if (JSON.stringify(curValues) === JSON.stringify(newModelVal)) return;
 
-      // 树形递归查找匹配的节点链路
-      const findPath = (list: T[], index: number, path: T[]): T[] | null => {
-        const targetValue = newModelVal[index];
-        const found = list.find((item) => getValue(item) === targetValue);
-        if (!found) return null;
-
-        const newPath = [...path, found];
-        if (index === newModelVal.length - 1) return newPath;
-
-        return findPath(getChildren(found), index + 1, newPath);
-      };
-
-      const resultPath = findPath(getData(), 0, []);
-      if (resultPath) curSelect.value = resultPath;
+      updateSelectPathByModel(newModelVal);
     },
     { immediate: true }
   );
+
+  watch(locale, () => {
+    if (
+      props.type === 'city' &&
+      modelValue.value &&
+      modelValue.value.length > 0
+    ) {
+      updateSelectPathByModel(modelValue.value);
+    }
+  });
 </script>
 
 <template>

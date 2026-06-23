@@ -1,0 +1,3606 @@
+[
+  {
+    "value": 110000,
+    "label": "Beijing",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 110101,
+        "label": "Dongcheng District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110102,
+        "label": "Xicheng District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110105,
+        "label": "Chaoyang District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110106,
+        "label": "Fengtai District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110107,
+        "label": "Shijingshan District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110108,
+        "label": "Haidian District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110109,
+        "label": "Mentougou District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110111,
+        "label": "Fangshan District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110112,
+        "label": "Tongzhou District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110113,
+        "label": "Shunyi District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110114,
+        "label": "Changping District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110115,
+        "label": "Daxing District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110116,
+        "label": "Huairou District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110117,
+        "label": "Pinggu District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110118,
+        "label": "Miyun District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      },
+      {
+        "value": 110119,
+        "label": "Yanqing District",
+        "level": "district",
+        "parentCode": 110000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 120000,
+    "label": "Tianjin",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 120101,
+        "label": "Heping District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120102,
+        "label": "Hedong District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120103,
+        "label": "Hexi District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120104,
+        "label": "Nankai District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120105,
+        "label": "Hebei District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120106,
+        "label": "Hongqiao District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120110,
+        "label": "Dongli District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120111,
+        "label": "Xiqing District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120112,
+        "label": "Jinnan District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120113,
+        "label": "Beichen District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120114,
+        "label": "Wuqing District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120115,
+        "label": "Baodi District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120116,
+        "label": "Binhai New Area",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120117,
+        "label": "Ninghe District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120118,
+        "label": "Jinghai District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      },
+      {
+        "value": 120119,
+        "label": "Jizhou District",
+        "level": "district",
+        "parentCode": 120000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 130000,
+    "label": "Hebei Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 130100,
+        "label": "Shijiazhuang",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 130200,
+        "label": "Tangshan",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 130300,
+        "label": "Qinhuangdao",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 130400,
+        "label": "Handan",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 130500,
+        "label": "Xingtai",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 130600,
+        "label": "Baoding",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 130700,
+        "label": "Zhangjiakou",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 130800,
+        "label": "Chengde",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 130900,
+        "label": "Cangzhou",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 131000,
+        "label": "Langfang",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      },
+      {
+        "value": 131100,
+        "label": "Hengshui",
+        "level": "city",
+        "parentCode": 130000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 140000,
+    "label": "Shanxi Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 140100,
+        "label": "Taiyuan",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 140200,
+        "label": "Datong",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 140300,
+        "label": "Yangquan",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 140400,
+        "label": "Changzhi",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 140500,
+        "label": "Jincheng",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 140600,
+        "label": "Shuozhou",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 140700,
+        "label": "Jinzhong",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 140800,
+        "label": "Yuncheng",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 140900,
+        "label": "Xinzhou",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 141000,
+        "label": "Linfen",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      },
+      {
+        "value": 141100,
+        "label": "Lüliang",
+        "level": "city",
+        "parentCode": 140000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 150000,
+    "label": "Inner Mongolia Autonomous Region",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 150100,
+        "label": "Hohhot",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 150200,
+        "label": "Baotou",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 150300,
+        "label": "Wuhai",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 150400,
+        "label": "Chifeng",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 150500,
+        "label": "Tongliao",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 150600,
+        "label": "Ordos",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 150700,
+        "label": "Hulunbuir",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 150800,
+        "label": "Bayannur",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 150900,
+        "label": "Ulanqab",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 152200,
+        "label": "Xing'an League",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 152500,
+        "label": "Xilingol League",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      },
+      {
+        "value": 152900,
+        "label": "Alxa League",
+        "level": "city",
+        "parentCode": 150000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 210000,
+    "label": "Liaoning Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 210100,
+        "label": "Shenyang",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 210200,
+        "label": "Dalian",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 210300,
+        "label": "Anshan",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 210400,
+        "label": "Fushun",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 210500,
+        "label": "Benxi",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 210600,
+        "label": "Dandong",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 210700,
+        "label": "Jinzhou",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 210800,
+        "label": "Yingkou",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 210900,
+        "label": "Fuxin",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 211000,
+        "label": "Liaoyang",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 211100,
+        "label": "Panjin",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 211200,
+        "label": "Tieling",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 211300,
+        "label": "Chaoyang",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      },
+      {
+        "value": 211400,
+        "label": "Huludao",
+        "level": "city",
+        "parentCode": 210000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 220000,
+    "label": "Jilin Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 220100,
+        "label": "Changchun",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      },
+      {
+        "value": 220200,
+        "label": "Jilin City",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      },
+      {
+        "value": 220300,
+        "label": "Siping",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      },
+      {
+        "value": 220400,
+        "label": "Liaoyuan",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      },
+      {
+        "value": 220500,
+        "label": "Tonghua",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      },
+      {
+        "value": 220600,
+        "label": "Baishan",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      },
+      {
+        "value": 220700,
+        "label": "Songyuan",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      },
+      {
+        "value": 220800,
+        "label": "Baicheng",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      },
+      {
+        "value": 222400,
+        "label": "Yanbian Korean Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 220000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 230000,
+    "label": "Heilongjiang Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 230100,
+        "label": "Harbin",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 230200,
+        "label": "Qiqihar",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 230300,
+        "label": "Jixi",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 230400,
+        "label": "Hegang",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 230500,
+        "label": "Shuangyashan",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 230600,
+        "label": "Daqing",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 230700,
+        "label": "Yichun",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 230800,
+        "label": "Jiamusi",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 230900,
+        "label": "Qitaihe",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 231000,
+        "label": "Mudanjiang",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 231100,
+        "label": "Heihe",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 231200,
+        "label": "Suihua",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      },
+      {
+        "value": 232700,
+        "label": "Greater Khingan Range",
+        "level": "city",
+        "parentCode": 230000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 310000,
+    "label": "Shanghai",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 310101,
+        "label": "黄浦区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310104,
+        "label": "徐汇区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310105,
+        "label": "长宁区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310106,
+        "label": "静安区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310107,
+        "label": "普陀区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310109,
+        "label": "虹口区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310110,
+        "label": "杨浦区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310112,
+        "label": "闵行区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310113,
+        "label": "宝山区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310114,
+        "label": "嘉定区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310115,
+        "label": "浦东新区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310116,
+        "label": "金山区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310117,
+        "label": "松江区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310118,
+        "label": "青浦区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310120,
+        "label": "奉贤区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      },
+      {
+        "value": 310151,
+        "label": "崇明区",
+        "level": "district",
+        "parentCode": 310000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 320000,
+    "label": "Jiangsu Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 320100,
+        "label": "Nanjing",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 320200,
+        "label": "Wuxi",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 320300,
+        "label": "Xuzhou",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 320400,
+        "label": "Changzhou",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 320500,
+        "label": "Suzhou",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 320600,
+        "label": "Nantong",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 320700,
+        "label": "Lianyungang",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 320800,
+        "label": "Huai'an",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 320900,
+        "label": "Yancheng",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 321000,
+        "label": "Yangzhou",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 321100,
+        "label": "Zhenjiang",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 321200,
+        "label": "Taizhou",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      },
+      {
+        "value": 321300,
+        "label": "Suqian",
+        "level": "city",
+        "parentCode": 320000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 330000,
+    "label": "Zhejiang Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 330100,
+        "label": "Hangzhou",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 330200,
+        "label": "Ningbo",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 330300,
+        "label": "Wenzhou",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 330400,
+        "label": "Jiaxing",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 330500,
+        "label": "Huzhou",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 330600,
+        "label": "Shaoxing",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 330700,
+        "label": "Jinhua",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 330800,
+        "label": "Quzhou",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 330900,
+        "label": "Zhoushan",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 331000,
+        "label": "Taizhou",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      },
+      {
+        "value": 331100,
+        "label": "Lishui",
+        "level": "city",
+        "parentCode": 330000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 340000,
+    "label": "Anhui Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 340100,
+        "label": "Hefei",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 340200,
+        "label": "Wuhu",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 340300,
+        "label": "Bengbu",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 340400,
+        "label": "Huainan",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 340500,
+        "label": "Ma'anshan",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 340600,
+        "label": "Huaibei",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 340700,
+        "label": "Tongling",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 340800,
+        "label": "Anqing",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 341000,
+        "label": "Huangshan",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 341100,
+        "label": "Chuzhou",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 341200,
+        "label": "Fuyang",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 341300,
+        "label": "Suzhou",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 341500,
+        "label": "Lu'an",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 341600,
+        "label": "Bozhou",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 341700,
+        "label": "Chizhou",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      },
+      {
+        "value": 341800,
+        "label": "Xuancheng",
+        "level": "city",
+        "parentCode": 340000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 350000,
+    "label": "Fujian Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 350100,
+        "label": "Fuzhou",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      },
+      {
+        "value": 350200,
+        "label": "Xiamen",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      },
+      {
+        "value": 350300,
+        "label": "Putian",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      },
+      {
+        "value": 350400,
+        "label": "Sanming",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      },
+      {
+        "value": 350500,
+        "label": "Quanzhou",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      },
+      {
+        "value": 350600,
+        "label": "Zhangzhou",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      },
+      {
+        "value": 350700,
+        "label": "Nanping",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      },
+      {
+        "value": 350800,
+        "label": "Longyan",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      },
+      {
+        "value": 350900,
+        "label": "Ningde",
+        "level": "city",
+        "parentCode": 350000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 360000,
+    "label": "Jiangxi Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 360100,
+        "label": "Nanchang",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 360200,
+        "label": "Jingdezhen",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 360300,
+        "label": "Pingxiang",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 360400,
+        "label": "Jiujiang",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 360500,
+        "label": "Xinyu",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 360600,
+        "label": "Yingtan",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 360700,
+        "label": "Ganzhou",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 360800,
+        "label": "Ji'an",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 360900,
+        "label": "Yichun",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 361000,
+        "label": "Fuzhou",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      },
+      {
+        "value": 361100,
+        "label": "Shangrao",
+        "level": "city",
+        "parentCode": 360000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 370000,
+    "label": "Shandong Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 370100,
+        "label": "Jinan",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 370200,
+        "label": "Qingdao",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 370300,
+        "label": "Zibo",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 370400,
+        "label": "Zaozhuang",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 370500,
+        "label": "Dongying",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 370600,
+        "label": "Yantai",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 370700,
+        "label": "Weifang",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 370800,
+        "label": "Jining",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 370900,
+        "label": "Tai'an",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 371000,
+        "label": "Weihai",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 371100,
+        "label": "Rizhao",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 371300,
+        "label": "Linyi",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 371400,
+        "label": "Dezhou",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 371500,
+        "label": "Liaocheng",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 371600,
+        "label": "Binzhou",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      },
+      {
+        "value": 371700,
+        "label": "Heze",
+        "level": "city",
+        "parentCode": 370000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 410000,
+    "label": "Henan Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 410100,
+        "label": "Zhengzhou",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 410200,
+        "label": "Kaifeng",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 410300,
+        "label": "Luoyang",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 410400,
+        "label": "Pingdingshan",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 410500,
+        "label": "Anyang",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 410600,
+        "label": "Hebi",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 410700,
+        "label": "Xinxiang",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 410800,
+        "label": "Jiaozuo",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 410900,
+        "label": "Puyang",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 411000,
+        "label": "Xuchang",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 411100,
+        "label": "Luohe",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 411200,
+        "label": "Sanmenxia",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 411300,
+        "label": "Nanyang",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 411400,
+        "label": "Shangqiu",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 411500,
+        "label": "Xinyang",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 411600,
+        "label": "Zhoukou",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 411700,
+        "label": "Zhumadian",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      },
+      {
+        "value": 419001,
+        "label": "济源市",
+        "level": "city",
+        "parentCode": 410000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 420000,
+    "label": "Hubei Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 420100,
+        "label": "Wuhan",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 420200,
+        "label": "Huangshi",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 420300,
+        "label": "Shiyan",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 420500,
+        "label": "Yichang",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 420600,
+        "label": "Xiangyang",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 420700,
+        "label": "Ezhou",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 420800,
+        "label": "Jingmen",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 420900,
+        "label": "Xiaogan",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 421000,
+        "label": "Jingzhou",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 421100,
+        "label": "Huanggang",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 421200,
+        "label": "Xianning",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 421300,
+        "label": "Suizhou",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 422800,
+        "label": "Enshi Tujia and Miao Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 429004,
+        "label": "仙桃市",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 429005,
+        "label": "潜江市",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 429006,
+        "label": "天门市",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      },
+      {
+        "value": 429021,
+        "label": "神农架林区",
+        "level": "city",
+        "parentCode": 420000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 430000,
+    "label": "Hunan Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 430100,
+        "label": "Changsha",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 430200,
+        "label": "Zhuzhou",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 430300,
+        "label": "Xiangtan",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 430400,
+        "label": "Hengyang",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 430500,
+        "label": "Shaoyang",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 430600,
+        "label": "Yueyang",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 430700,
+        "label": "Changde",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 430800,
+        "label": "Zhangjiajie",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 430900,
+        "label": "Yiyang",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 431000,
+        "label": "Chenzhou",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 431100,
+        "label": "Yongzhou",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 431200,
+        "label": "Huaihua",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 431300,
+        "label": "Loudi",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      },
+      {
+        "value": 433100,
+        "label": "Xiangxi Tujia and Miao Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 430000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 440000,
+    "label": "Guangdong Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 440100,
+        "label": "Guangzhou",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 440200,
+        "label": "Shaoguan",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 440300,
+        "label": "Shenzhen",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 440400,
+        "label": "Zhuhai",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 440500,
+        "label": "Shantou",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 440600,
+        "label": "Foshan",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 440700,
+        "label": "Jiangmen",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 440800,
+        "label": "Zhanjiang",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 440900,
+        "label": "Maoming",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 441200,
+        "label": "Zhaoqing",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 441300,
+        "label": "Huizhou",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 441400,
+        "label": "Meizhou",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 441500,
+        "label": "Shanwei",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 441600,
+        "label": "Heyuan",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 441700,
+        "label": "Yangjiang",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 441800,
+        "label": "Qingyuan",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 441900,
+        "label": "Dongguan",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 442000,
+        "label": "Zhongshan",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 445100,
+        "label": "Chaozhou",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 445200,
+        "label": "Jieyang",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      },
+      {
+        "value": 445300,
+        "label": "Yunfu",
+        "level": "city",
+        "parentCode": 440000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 450000,
+    "label": "Guangxi Zhuang Autonomous Region",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 450100,
+        "label": "Nanning",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 450200,
+        "label": "Liuzhou",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 450300,
+        "label": "Guilin",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 450400,
+        "label": "Wuzhou",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 450500,
+        "label": "Beihai",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 450600,
+        "label": "Fangchenggang",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 450700,
+        "label": "Qinzhou",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 450800,
+        "label": "Guigang",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 450900,
+        "label": "Yulin",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 451000,
+        "label": "Baise",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 451100,
+        "label": "Hezhou",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 451200,
+        "label": "Hechi",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 451300,
+        "label": "Laibin",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      },
+      {
+        "value": 451400,
+        "label": "Chongzuo",
+        "level": "city",
+        "parentCode": 450000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 460000,
+    "label": "Hainan Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 460100,
+        "label": "Haikou",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 460200,
+        "label": "Sanya",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 460300,
+        "label": "Sansha",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 460400,
+        "label": "Danzhou",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469001,
+        "label": "五指山市",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469002,
+        "label": "琼海市",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469005,
+        "label": "文昌市",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469006,
+        "label": "万宁市",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469007,
+        "label": "东方市",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469021,
+        "label": "定安县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469022,
+        "label": "屯昌县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469023,
+        "label": "澄迈县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469024,
+        "label": "临高县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469025,
+        "label": "白沙黎族自治县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469026,
+        "label": "昌江黎族自治县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469027,
+        "label": "乐东黎族自治县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469028,
+        "label": "陵水黎族自治县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469029,
+        "label": "保亭黎族苗族自治县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      },
+      {
+        "value": 469030,
+        "label": "琼中黎族苗族自治县",
+        "level": "city",
+        "parentCode": 460000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 500000,
+    "label": "Chongqing",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 500101,
+        "label": "万州区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500102,
+        "label": "涪陵区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500103,
+        "label": "渝中区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500104,
+        "label": "大渡口区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500105,
+        "label": "江北区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500106,
+        "label": "沙坪坝区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500107,
+        "label": "九龙坡区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500108,
+        "label": "南岸区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500109,
+        "label": "北碚区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500110,
+        "label": "綦江区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500111,
+        "label": "大足区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500112,
+        "label": "渝北区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500113,
+        "label": "巴南区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500114,
+        "label": "黔江区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500115,
+        "label": "长寿区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500116,
+        "label": "江津区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500117,
+        "label": "合川区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500118,
+        "label": "永川区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500119,
+        "label": "南川区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500120,
+        "label": "璧山区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500151,
+        "label": "铜梁区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500152,
+        "label": "潼南区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500153,
+        "label": "荣昌区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500154,
+        "label": "开州区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500155,
+        "label": "梁平区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500156,
+        "label": "武隆区",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500229,
+        "label": "城口县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500230,
+        "label": "丰都县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500231,
+        "label": "垫江县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500233,
+        "label": "忠县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500235,
+        "label": "云阳县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500236,
+        "label": "奉节县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500237,
+        "label": "巫山县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500238,
+        "label": "巫溪县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500240,
+        "label": "石柱土家族自治县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500241,
+        "label": "秀山土家族苗族自治县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500242,
+        "label": "酉阳土家族苗族自治县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      },
+      {
+        "value": 500243,
+        "label": "彭水苗族土家族自治县",
+        "level": "district",
+        "parentCode": 500000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 510000,
+    "label": "Sichuan Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 510100,
+        "label": "Chengdu",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 510300,
+        "label": "Zigong",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 510400,
+        "label": "Panzhihua",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 510500,
+        "label": "Luzhou",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 510600,
+        "label": "Deyang",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 510700,
+        "label": "Mianyang",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 510800,
+        "label": "Guangyuan",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 510900,
+        "label": "Suining",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511000,
+        "label": "Neijiang",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511100,
+        "label": "Leshan",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511300,
+        "label": "Nanchong",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511400,
+        "label": "Meishan",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511500,
+        "label": "Yibin",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511600,
+        "label": "Guang'an",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511700,
+        "label": "Dazhou",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511800,
+        "label": "Ya'an",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 511900,
+        "label": "Bazhong",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 512000,
+        "label": "Ziyang",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 513200,
+        "label": "Aba Tibetan and Qiang Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 513300,
+        "label": "Garzê Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      },
+      {
+        "value": 513400,
+        "label": "Liangshan Yi Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 510000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 520000,
+    "label": "Guizhou Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 520100,
+        "label": "Guiyang",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      },
+      {
+        "value": 520200,
+        "label": "Liupanshui",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      },
+      {
+        "value": 520300,
+        "label": "Zunyi",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      },
+      {
+        "value": 520400,
+        "label": "Anshun",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      },
+      {
+        "value": 520500,
+        "label": "Bijie",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      },
+      {
+        "value": 520600,
+        "label": "Tongren",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      },
+      {
+        "value": 522300,
+        "label": "Qianxinan Buyei and Miao Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      },
+      {
+        "value": 522600,
+        "label": "Qiandongnan Miao and Dong Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      },
+      {
+        "value": 522700,
+        "label": "Qiannan Buyei and Miao Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 520000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 530000,
+    "label": "Yunnan Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 530100,
+        "label": "Kunming",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 530300,
+        "label": "Qujing",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 530400,
+        "label": "Yuxi",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 530500,
+        "label": "Baoshan",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 530600,
+        "label": "Zhaotong",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 530700,
+        "label": "Lijiang",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 530800,
+        "label": "Pu'er",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 530900,
+        "label": "Lincang",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 532300,
+        "label": "Chuxiong Yi Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 532500,
+        "label": "Honghe Hani and Yi Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 532600,
+        "label": "Wenshan Zhuang and Miao Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 532800,
+        "label": "Xishuangbanna Dai Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 532900,
+        "label": "Dali Bai Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 533100,
+        "label": "Dehong Dai and Jingpo Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 533300,
+        "label": "Nujiang Lisu Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      },
+      {
+        "value": 533400,
+        "label": "Diqing Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 530000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 540000,
+    "label": "Tibet Autonomous Region",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 540100,
+        "label": "Lhasa",
+        "level": "city",
+        "parentCode": 540000,
+        "children": []
+      },
+      {
+        "value": 540200,
+        "label": "Shigatse",
+        "level": "city",
+        "parentCode": 540000,
+        "children": []
+      },
+      {
+        "value": 540300,
+        "label": "Qamdo",
+        "level": "city",
+        "parentCode": 540000,
+        "children": []
+      },
+      {
+        "value": 540400,
+        "label": "Nyingchi",
+        "level": "city",
+        "parentCode": 540000,
+        "children": []
+      },
+      {
+        "value": 540500,
+        "label": "Shannan",
+        "level": "city",
+        "parentCode": 540000,
+        "children": []
+      },
+      {
+        "value": 540600,
+        "label": "Nagqu",
+        "level": "city",
+        "parentCode": 540000,
+        "children": []
+      },
+      {
+        "value": 542500,
+        "label": "Ngari Prefecture",
+        "level": "city",
+        "parentCode": 540000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 610000,
+    "label": "Shaanxi Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 610100,
+        "label": "Xi'an",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 610200,
+        "label": "Tongchuan",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 610300,
+        "label": "Baoji",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 610400,
+        "label": "Xianyang",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 610500,
+        "label": "Weinan",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 610600,
+        "label": "Yan'an",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 610700,
+        "label": "Hanzhong",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 610800,
+        "label": "Yulin",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 610900,
+        "label": "Ankang",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      },
+      {
+        "value": 611000,
+        "label": "Shangluo",
+        "level": "city",
+        "parentCode": 610000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 620000,
+    "label": "Gansu Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 620100,
+        "label": "Lanzhou",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 620200,
+        "label": "Jiayuguan",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 620300,
+        "label": "Jinchang",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 620400,
+        "label": "Baiyin",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 620500,
+        "label": "Tianshui",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 620600,
+        "label": "Wuwei",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 620700,
+        "label": "Zhangye",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 620800,
+        "label": "Pingliang",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 620900,
+        "label": "Jiuquan",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 621000,
+        "label": "Qingyang",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 621100,
+        "label": "Dingxi",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 621200,
+        "label": "Longnan",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 622900,
+        "label": "Linxia Hui Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      },
+      {
+        "value": 623000,
+        "label": "Gannan Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 620000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 630000,
+    "label": "Qinghai Province",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 630100,
+        "label": "Xining",
+        "level": "city",
+        "parentCode": 630000,
+        "children": []
+      },
+      {
+        "value": 630200,
+        "label": "Haidong",
+        "level": "city",
+        "parentCode": 630000,
+        "children": []
+      },
+      {
+        "value": 632200,
+        "label": "Haibei Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 630000,
+        "children": []
+      },
+      {
+        "value": 632300,
+        "label": "Huangnan Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 630000,
+        "children": []
+      },
+      {
+        "value": 632500,
+        "label": "Hainan Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 630000,
+        "children": []
+      },
+      {
+        "value": 632600,
+        "label": "Golog Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 630000,
+        "children": []
+      },
+      {
+        "value": 632700,
+        "label": "Yushu Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 630000,
+        "children": []
+      },
+      {
+        "value": 632800,
+        "label": "Haixi Mongol and Tibetan Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 630000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 640000,
+    "label": "Ningxia Hui Autonomous Region",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 640100,
+        "label": "Yinchuan",
+        "level": "city",
+        "parentCode": 640000,
+        "children": []
+      },
+      {
+        "value": 640200,
+        "label": "Shizuishan",
+        "level": "city",
+        "parentCode": 640000,
+        "children": []
+      },
+      {
+        "value": 640300,
+        "label": "Wuzhong",
+        "level": "city",
+        "parentCode": 640000,
+        "children": []
+      },
+      {
+        "value": 640400,
+        "label": "Guyuan",
+        "level": "city",
+        "parentCode": 640000,
+        "children": []
+      },
+      {
+        "value": 640500,
+        "label": "Zhongwei",
+        "level": "city",
+        "parentCode": 640000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 650000,
+    "label": "Xinjiang Uygur Autonomous Region",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 650100,
+        "label": "Ürümqi",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 650200,
+        "label": "Karamay",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 650400,
+        "label": "Turpan",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 650500,
+        "label": "Hami",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 652300,
+        "label": "Changji Hui Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 652700,
+        "label": "Bortala Mongol Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 652800,
+        "label": "Bayingolin Mongol Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 652900,
+        "label": "Aksu Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 653000,
+        "label": "Kizilsu Kirghiz Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 653100,
+        "label": "Kashgar Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 653200,
+        "label": "Hotan Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 654000,
+        "label": "Ili Kazakh Autonomous Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 654200,
+        "label": "Tacheng Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 654300,
+        "label": "Altay Prefecture",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659001,
+        "label": "石河子市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659002,
+        "label": "阿拉尔市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659003,
+        "label": "图木舒克市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659004,
+        "label": "五家渠市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659005,
+        "label": "北屯市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659006,
+        "label": "铁门关市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659007,
+        "label": "双河市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659008,
+        "label": "可克达拉市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659009,
+        "label": "昆玉市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      },
+      {
+        "value": 659010,
+        "label": "胡杨河市",
+        "level": "city",
+        "parentCode": 650000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 100000,
+    "label": "100000",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 710000,
+        "label": "Taiwan Province",
+        "level": "province",
+        "parentCode": 100000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 810000,
+    "label": "Hong Kong Special Administrative Region",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 810001,
+        "label": "中西区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810002,
+        "label": "湾仔区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810003,
+        "label": "东区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810004,
+        "label": "南区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810005,
+        "label": "油尖旺区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810006,
+        "label": "深水埗区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810007,
+        "label": "九龙城区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810008,
+        "label": "黄大仙区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810009,
+        "label": "观塘区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810010,
+        "label": "荃湾区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810011,
+        "label": "屯门区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810012,
+        "label": "元朗区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810013,
+        "label": "北区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810014,
+        "label": "大埔区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810015,
+        "label": "西贡区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810016,
+        "label": "沙田区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810017,
+        "label": "葵青区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      },
+      {
+        "value": 810018,
+        "label": "离岛区",
+        "level": "district",
+        "parentCode": 810000,
+        "children": []
+      }
+    ]
+  },
+  {
+    "value": 820000,
+    "label": "Macao Special Administrative Region",
+    "level": "province",
+    "parentCode": null,
+    "children": [
+      {
+        "value": 820001,
+        "label": "花地玛堂区",
+        "level": "district",
+        "parentCode": 820000,
+        "children": []
+      },
+      {
+        "value": 820002,
+        "label": "花王堂区",
+        "level": "district",
+        "parentCode": 820000,
+        "children": []
+      },
+      {
+        "value": 820003,
+        "label": "望德堂区",
+        "level": "district",
+        "parentCode": 820000,
+        "children": []
+      },
+      {
+        "value": 820004,
+        "label": "大堂区",
+        "level": "district",
+        "parentCode": 820000,
+        "children": []
+      },
+      {
+        "value": 820005,
+        "label": "风顺堂区",
+        "level": "district",
+        "parentCode": 820000,
+        "children": []
+      },
+      {
+        "value": 820006,
+        "label": "嘉模堂区",
+        "level": "district",
+        "parentCode": 820000,
+        "children": []
+      },
+      {
+        "value": 820007,
+        "label": "路凼填海区",
+        "level": "district",
+        "parentCode": 820000,
+        "children": []
+      },
+      {
+        "value": 820008,
+        "label": "圣方济各堂区",
+        "level": "district",
+        "parentCode": 820000,
+        "children": []
+      }
+    ]
+  }
+]
