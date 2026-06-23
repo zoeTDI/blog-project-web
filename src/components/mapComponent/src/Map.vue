@@ -60,15 +60,18 @@
 
   const convertCoordsToPath = (rings: Position[][]): string => {
     return rings
-      .map(
-        (ring) =>
+      .map((ring) => {
+        if (!Array.isArray(ring)) return '';
+        return (
           ring
-            .map((coord, i) => {
+            .map((coord) => {
               const [x, y] = projection(coord);
-              return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`;
+              return `${'M'}${x.toFixed(2)} ${y.toFixed(2)}`;
             })
-            .join(' ') + ' Z'
-      )
+            .join(' ')
+            .replace(/ M/g, ' L') + ' Z'
+        );
+      })
       .join(' ');
   };
 
@@ -85,18 +88,26 @@
       const geo = feature.geometry;
 
       let pathData = '';
-      if (!Array.isArray(geo.coordinates)) {
-        geo.coordinates = [geo.coordinates];
+
+      try {
+        if (geo.type === 'MultiPolygon') {
+          pathData = (geo.coordinates as Position[][][])
+            .map((polygonCoords) => convertCoordsToPath(polygonCoords))
+            .join(' ');
+        } else {
+          let coords = geo.coordinates;
+          if (!Array.isArray(coords)) {
+            coords = [coords];
+          }
+          pathData = (coords as Position[][])
+            .map((ring) => convertCoordsToPath([ring]))
+            .join(' ');
+        }
+      } catch (err) {
+        // 静默处理错误，保证基础渲染不崩溃
       }
 
-      pathData = geo.coordinates
-        .map((coords) => convertCoordsToPath(coords as Position[][]))
-        .join(' ');
-
-      const rawCenter = feature.properties?.center as
-        | [number, number]
-        | undefined;
-
+      const rawCenter = feature.properties?.center as [number, number];
       const cityInfo: CityInfo = {
         adcode,
         name,
