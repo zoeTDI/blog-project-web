@@ -165,6 +165,7 @@
     width: 100%;
     font-size: 16px;
     color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
     background-color: transparent;
     resize: none;
   }
