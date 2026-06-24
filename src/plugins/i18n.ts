@@ -1,9 +1,14 @@
 import { createI18n, useI18n } from 'vue-i18n';
 import { messages } from '@/locales';
 import type { App } from 'vue';
-import { preferences, SUPPORT_LANGUAGE_OPTIONS } from '@/core/preferences';
+import {
+  preferences,
+  SUPPORT_LANGUAGE_OPTIONS,
+  type SupportLanguageOption,
+} from '@/core/preferences';
 
 const ROUTER_PREFIX = 'router.';
+const DEFAULT_MESSAGE: SupportLanguageOption = 'zh-CN';
 
 const getInitialLocale = () => {
   return preferences.app.locale || SUPPORT_LANGUAGE_OPTIONS.zh_CN;
@@ -33,4 +38,4 @@ const setupI18n = (app: App<Element>) => {
 
 const $t = i18n.global.t;
 
-export { setupI18n, i18n, $t, ROUTER_PREFIX, translateString };
+export { setupI18n, i18n, $t, ROUTER_PREFIX, DEFAULT_MESSAGE, translateString };

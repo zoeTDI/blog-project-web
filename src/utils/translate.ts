@@ -1,4 +1,4 @@
-import { i18n } from '@/plugins/i18n.ts';
+import { DEFAULT_MESSAGE, i18n } from '@/plugins/i18n.ts';
 import type { SupportLanguageOption } from '@/core/preferences';
 
 /**
@@ -12,10 +12,21 @@ const getDynamicText = (
 ): string => {
   if (!fieldObj) return fallback;
   if (typeof fieldObj === 'string') return fieldObj;
+
   const currentLocale = i18n.global.locale as SupportLanguageOption;
-  return (
-    fieldObj[currentLocale] || fieldObj['en-US'] || Object.values(fieldObj)[0]
-  );
+
+  const currentText = fieldObj[currentLocale];
+
+  if (currentText && currentText.trim() !== '') {
+    return currentText;
+  }
+
+  const defaultText = fieldObj[DEFAULT_MESSAGE];
+  if (defaultText && defaultText !== '') {
+    return defaultText;
+  }
+
+  return fallback;
 };
 
 export { getDynamicText };
