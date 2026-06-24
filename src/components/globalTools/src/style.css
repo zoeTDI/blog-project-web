@@ -1,0 +1,31 @@
+.tool-wrapper {
+  position: relative;
+}
+
+.tool-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s ease;
+}
+.tool-btn:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-hover-accent);
+}
+.tool-btn.rounded {
+  border-radius: 6px;
+}
+.tool-btn.circle {
+  border-radius: 50%;
+}
+.icon {
+  width: 100%;
+  flex-shrink: 0;
+}

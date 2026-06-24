@@ -1,4 +1,9 @@
 type ToolType = 'theme' | 'fullscreen' | 'timezone' | 'language';
 
 type ToolShape = 'rounded' | 'circle';
-export type { ToolType, ToolShape }
+
+interface ButtonProps {
+  shape?: ToolShape;
+}
+
+export type { ToolType, ToolShape, ButtonProps };
