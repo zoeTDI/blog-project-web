@@ -33,7 +33,8 @@
       timezone: TIMEZONE_OPTIONS.UTC,
       watermark: false,
       watermarkContent: '',
-      websiteName: '',
+      websiteName_zh_CN: '',
+      websiteName_en_US: '',
     },
     breadcrumb: {
       enable: false,
@@ -151,10 +152,17 @@
           <fieldset class="form-section">
             <legend>应用全局配置</legend>
             <div class="form-item">
-              <label>网站名称：</label>
+              <label>网站名称（中文）：</label>
               <input
                 type="text"
-                v-model="formState.app.websiteName"
+                v-model="formState.app.websiteName_zh_CN"
+                placeholder="请输入网站名称" />
+            </div>
+            <div class="form-item">
+              <label>网站名称（英文）：</label>
+              <input
+                type="text"
+                v-model="formState.app.websiteName_en_US"
                 placeholder="请输入网站名称" />
             </div>
             <div class="form-item">

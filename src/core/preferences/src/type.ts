@@ -1,16 +1,21 @@
 export const SUPPORT_LANGUAGE_OPTIONS = {
   zh_CN: 'zh-CN',
-  en_US: 'en-US'
+  en_US: 'en-US',
 } as const;
 
-export type SupportLanguageOption = typeof SUPPORT_LANGUAGE_OPTIONS[keyof typeof SUPPORT_LANGUAGE_OPTIONS]
+export type SupportLanguageOption =
+  (typeof SUPPORT_LANGUAGE_OPTIONS)[keyof typeof SUPPORT_LANGUAGE_OPTIONS];
 
-export type ThemeModeOptions = 'light' | 'dark'
+export type ThemeModeOptions = 'light' | 'dark';
 
 /**
  * 页面切换动画
  */
-export type PageTransitionType = 'fade' | 'fade-down' | 'fade-slide' | 'fade-up';
+export type PageTransitionType =
+  | 'fade'
+  | 'fade-down'
+  | 'fade-slide'
+  | 'fade-up';
 
 export const TIMEZONE_OPTIONS = {
   UTC: 'UTC',
@@ -29,7 +34,8 @@ export const TIMEZONE_OPTIONS = {
   Pacific_Auckland: 'Pacific/Auckland',
 } as const;
 
-export type TimezoneOption = typeof TIMEZONE_OPTIONS[keyof typeof TIMEZONE_OPTIONS];
+export type TimezoneOption =
+  (typeof TIMEZONE_OPTIONS)[keyof typeof TIMEZONE_OPTIONS];
 
 export interface AppPreferences {
   /**
@@ -53,16 +59,20 @@ export interface AppPreferences {
    */
   watermarkContent: string;
   /**
-   * 网站名称
+   * 网站名称（中文）
    */
-  websiteName: string;
+  websiteName_zh_CN: string;
+  /**
+   * 网站名称（英文）
+   */
+  websiteName_en_US: string;
   /**
    * 网站时区
    */
   timezone: TimezoneOption;
 }
 
-export type BreadcrumbStyleType = 'normal' | 'background'
+export type BreadcrumbStyleType = 'normal' | 'background';
 
 export interface BreadcrumbPreferences {
   /**
@@ -183,7 +193,7 @@ export interface LogoPreferences {
   sourceDark?: string;
 }
 
-export interface NavigationPreferences { }
+export interface NavigationPreferences {}
 
 export interface ThemePreferences {
   /**
@@ -323,19 +333,22 @@ type AnyCustomPreferencesField =
   | CustomPreferencesSwitchField;
 
 type CustomPreferencesField<
-  TCustomPreferences extends object = CustomPreferencesRecord
+  TCustomPreferences extends object = CustomPreferencesRecord,
 > =
   string extends Extract<keyof TCustomPreferences, string>
-  ? AnyCustomPreferencesField
-  : {
-    [K in Extract<keyof TCustomPreferences, string>]: TCustomPreferences[K] extends boolean
-    ? CustomPreferencesSwitchField<K>
-    : TCustomPreferences[K] extends number
-    ? CustomPreferencesNumberField<K>
-    : TCustomPreferences[K] extends string
-    ? CustomPreferencesInputField<K> | CustomPreferencesSelectField<K>
-    : never;
-  }[Extract<keyof TCustomPreferences, string>];
+    ? AnyCustomPreferencesField
+    : {
+        [K in Extract<
+          keyof TCustomPreferences,
+          string
+        >]: TCustomPreferences[K] extends boolean
+          ? CustomPreferencesSwitchField<K>
+          : TCustomPreferences[K] extends number
+            ? CustomPreferencesNumberField<K>
+            : TCustomPreferences[K] extends string
+              ? CustomPreferencesInputField<K> | CustomPreferencesSelectField<K>
+              : never;
+      }[Extract<keyof TCustomPreferences, string>];
 
 export interface PreferencesExtension<
   TCustomPreference extends object = CustomPreferencesRecord,
@@ -345,6 +358,6 @@ export interface PreferencesExtension<
   title?: string;
 }
 
-type CustomPreferencesValue = boolean | number | string
+type CustomPreferencesValue = boolean | number | string;
 
-export type CustomPreferencesRecord = Record<string, CustomPreferencesValue>
+export type CustomPreferencesRecord = Record<string, CustomPreferencesValue>;

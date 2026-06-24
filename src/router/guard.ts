@@ -4,11 +4,19 @@ import { ROUTER_NAMES } from '@/router/routerNames.ts';
 import { useUserStore } from '@/store/useUserStore.ts';
 import { preferenceManager, preferences } from '@/core/preferences';
 import { i18n, ROUTER_PREFIX } from '@/plugins/i18n.ts';
+import { getDynamicText } from '@/utils/translate.ts';
 
 const defaultPreferences = preferenceManager.getInitialPreferences();
 
 const getWebsiteName = () => {
-  return preferences.app.websiteName || defaultPreferences.app.websiteName;
+  return getDynamicText({
+    'zh-CN':
+      preferences.app.websiteName_zh_CN ||
+      defaultPreferences.app.websiteName_zh_CN,
+    'en-US':
+      preferences.app.websiteName_en_US ||
+      defaultPreferences.app.websiteName_en_US,
+  });
 };
 
 const processDocumentTitle = (pageName: string) => {

@@ -182,12 +182,18 @@ class PreferenceManager {
         updateThemeColor(theme.colorPrimary);
       }
     }
-    if (app) {
-      if (app?.websiteName && app.websiteName.trim() !== '') {
+    if (app || updates.app?.locale) {
+      const currentLocale = this.state.app.locale;
+      const websiteName =
+        currentLocale === 'zh-CN'
+          ? this.state.app.websiteName_zh_CN
+          : this.state.app.websiteName_en_US;
+
+      if (websiteName && websiteName.trim() !== '') {
         const curWebsiteName = document.title;
         let a = curWebsiteName.split(' - ');
         if (a.length > 1) {
-          a[0] = app.websiteName;
+          a[0] = websiteName;
           document.title = a.join(' - ');
         }
         // 如果长度小于2，说明当前页面不需要使用网站名称作为前缀
