@@ -59,7 +59,14 @@
                 }) || "BLOG'S TITLE"
               }}
             </div>
-            <div class="site-slogan">记录、探索与生活的极简志</div>
+            <div class="site-slogan">
+              {{
+                getDynamicText({
+                  'zh-CN': preferences.app.websiteSubName_zh_CN,
+                  'en-US': preferences.app.websiteName_en_US,
+                })
+              }}
+            </div>
           </div>
         </div>
         <div class="header-actions">
