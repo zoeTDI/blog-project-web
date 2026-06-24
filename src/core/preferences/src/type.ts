@@ -59,13 +59,29 @@ export interface AppPreferences {
    */
   watermarkContent: string;
   /**
-   * 网站名称（中文）
+   * 网站名称（zh-CN）
    */
   websiteName_zh_CN: string;
   /**
-   * 网站名称（英文）
+   * 网站名称（en-US）
    */
   websiteName_en_US: string;
+  /**
+   * 网站副标题（zh-CN）
+   */
+  websiteSubName_zh_CN: string;
+  /**
+   * 网站副标题（en-US）
+   */
+  websiteSubName_en_US: string;
+  /**
+   * 站长的个性签名(zh-CN)
+   */
+  signature_zh_CN: string;
+  /**
+   * 站长的个性签名(en-US)
+   */
+  signature_en_US: string;
   /**
    * 网站时区
    */

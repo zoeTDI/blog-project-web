@@ -35,6 +35,10 @@
       watermarkContent: '',
       websiteName_zh_CN: '',
       websiteName_en_US: '',
+      websiteSubName_zh_CN: '',
+      websiteSubName_en_US: '',
+      signature_zh_CN: '',
+      signature_en_US: '',
     },
     breadcrumb: {
       enable: false,
@@ -164,6 +168,34 @@
                 type="text"
                 v-model="formState.app.websiteName_en_US"
                 placeholder="请输入网站名称" />
+            </div>
+            <div class="form-item">
+              <label>网站副标题（中文）：</label>
+              <input
+                type="text"
+                v-model="formState.app.websiteSubName_zh_CN"
+                placeholder="请输入网站副标题" />
+            </div>
+            <div class="form-item">
+              <label>网站副标题（英文）：</label>
+              <input
+                type="text"
+                v-model="formState.app.websiteSubName_en_US"
+                placeholder="请输入网站副标题" />
+            </div>
+            <div class="form-item">
+              <label>站长个性签名（中文）：</label>
+              <input
+                type="text"
+                v-model="formState.app.signature_zh_CN"
+                placeholder="请输入个性签名" />
+            </div>
+            <div class="form-item">
+              <label>站长个性签名（英文）：</label>
+              <input
+                type="text"
+                v-model="formState.app.signature_en_US"
+                placeholder="请输入个型签名" />
             </div>
             <div class="form-item">
               <label>默认主页路径：</label>
@@ -534,30 +566,6 @@
               <p class="field-tip">
                 请输入合法的 CSS 颜色值，例如：#1677ff、rgba(0,0,0,0.5) 或 blue
               </p>
-            </div>
-          </fieldset>
-          <fieldset class="form-section">
-            <legend>快捷控制挂件显示控制</legend>
-            <div class="form-item checkbox-item">
-              <input
-                type="checkbox"
-                id="widget-theme"
-                v-model="formState.widgetPreferences.themeToggle" />
-              <label for="widget-theme">在顶栏展示“主题切换”按钮</label>
-            </div>
-            <div class="form-item checkbox-item">
-              <input
-                type="checkbox"
-                id="widget-language"
-                v-model="formState.widgetPreferences.languageToggle" />
-              <label for="widget-language">在顶栏展示“语言切换”按钮</label>
-            </div>
-            <div class="form-item checkbox-item">
-              <input
-                type="checkbox"
-                id="widget-timezone"
-                v-model="formState.widgetPreferences.timezoneToggle" />
-              <label for="widget-timezone">在顶栏展示“时区切换”按钮</label>
             </div>
           </fieldset>
 
