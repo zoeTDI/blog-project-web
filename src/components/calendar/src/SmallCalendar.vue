@@ -152,17 +152,10 @@
 
   const hasTodo = (date: Date): boolean => {
     if (!todoData.value) return false;
-
-    const y = date.getFullYear();
-    const m = date.getMonth();
-    const d = date.getDate();
-
-    // 逐层检查是否存在
-    const yearData = todoData.value[y];
-    const monthData = yearData ? yearData[m] : undefined;
-    const dayData = monthData ? monthData[d] : undefined;
-
-    // 如果 dayData 存在且数组长度大于 0，则返回 true
+    const y = date.getFullYear(),
+      m = date.getMonth(),
+      d = date.getDate();
+    const dayData = todoData.value[y]?.[m]?.[d];
     return !!(dayData && dayData.length > 0);
   };
 
@@ -213,8 +206,7 @@
 </script>
 
 <template>
-  <div class="big-calendar">
-    <!--   头部区域 -->
+  <div class="small-calendar">
     <header class="header">
       <div class="left btns">
         <div
@@ -247,7 +239,7 @@
         </div>
       </div>
     </header>
-    <!--   内容区域 -->
+
     <section>
       <template
         v-for="dayOfLastMonth in days.lastDays"
@@ -257,15 +249,12 @@
           :class="{
             weekend:
               dayOfLastMonth.getDay() == 6 || dayOfLastMonth.getDay() == 0,
+            'has-todo': hasTodo(dayOfLastMonth),
           }">
           <div class="label">{{ dayOfLastMonth.getDate() }}</div>
-          <day-todo
+          <div
             v-if="hasTodo(dayOfLastMonth)"
-            :todos="
-              todoData![dayOfLastMonth.getFullYear()][
-                dayOfLastMonth.getMonth()
-              ][dayOfLastMonth.getDate()]
-            " />
+            class="indicator"></div>
         </div>
       </template>
       <template
@@ -276,15 +265,12 @@
           :class="{
             today: isSameDay(today, dayOfCurMonth),
             weekend: dayOfCurMonth.getDay() == 6 || dayOfCurMonth.getDay() == 0,
+            'has-todo': hasTodo(dayOfCurMonth),
           }">
           <div class="label">{{ dayOfCurMonth.getDate() }}</div>
-          <day-todo
+          <div
             v-if="hasTodo(dayOfCurMonth)"
-            :todos="
-              todoData![dayOfCurMonth.getFullYear()][dayOfCurMonth.getMonth()][
-                dayOfCurMonth.getDate()
-              ]
-            " />
+            class="indicator"></div>
         </div>
       </template>
       <template
@@ -295,15 +281,12 @@
           :class="{
             weekend:
               dayOfNextMonth.getDay() == 6 || dayOfNextMonth.getDay() == 0,
+            'has-todo': hasTodo(dayOfNextMonth),
           }">
           <div class="label">{{ dayOfNextMonth.getDate() }}</div>
-          <day-todo
+          <div
             v-if="hasTodo(dayOfNextMonth)"
-            :todos="
-              todoData![dayOfNextMonth.getFullYear()][
-                dayOfNextMonth.getMonth()
-              ][dayOfNextMonth.getDate()]
-            " />
+            class="indicator"></div>
         </div>
       </template>
     </section>
@@ -311,9 +294,10 @@
 </template>
 
 <style scoped>
-  .big-calendar {
+  .small-calendar {
     width: 100%;
     border: 1px solid var(--color-border);
+    padding: 8px;
   }
   .header {
     display: flex;
@@ -363,19 +347,21 @@
     width: 100%;
     min-width: 0;
     padding: 4px 8px;
-    aspect-ratio: 8/5;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
+    aspect-ratio: 1/1;
     will-change: background-color, color;
     transition:
       background-color 150ms ease,
       color 150ms ease;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   section .day .label {
     width: 100%;
-    font-size: 20px;
+    font-size: 16px;
+    text-align: center;
   }
   section .day:hover,
   section .day.weekend:hover {
@@ -393,5 +379,13 @@
   }
   section .day.weekend {
     background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+
+  .indicator {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    margin-top: 2px;
+    background-color: var(--color-accent);
   }
 </style>
