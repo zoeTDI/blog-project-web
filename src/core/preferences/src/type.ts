@@ -75,6 +75,10 @@ export interface AppPreferences {
    */
   websiteSubName_en_US: string;
   /**
+   * 站长名字
+   */
+  websiteMaster: string;
+  /**
    * 站长的个性签名(zh-CN)
    */
   signature_zh_CN: string;
