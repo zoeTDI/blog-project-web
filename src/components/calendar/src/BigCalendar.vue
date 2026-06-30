@@ -12,6 +12,7 @@
     type CalendarProps,
     DAY_OF_WEEK_MAP,
     DayTodo,
+    TODO_COLORS,
     type TodoData,
   } from '@/components/calendar';
   import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
@@ -21,10 +22,21 @@
     2026: {
       5: {
         30: [
-          { id: 1, title: '标题一', context: '内容内容内容内容' },
-          { id: 2, title: '', context: '' },
-          { id: 3, title: '', context: '' },
-          { id: 4, title: '', context: '' },
+          {
+            id: 1,
+            title: '',
+            context:
+              '内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容',
+            color: TODO_COLORS[0].value,
+          },
+          { id: 2, title: '', context: '内容2', color: TODO_COLORS[1].value },
+          {
+            id: 3,
+            title: '标题三',
+            context: '内容3',
+            color: TODO_COLORS[2].value,
+          },
+          { id: 4, title: '', context: '内容4', color: TODO_COLORS[3].value },
         ],
       },
     },
@@ -340,11 +352,13 @@
   section {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    min-width: 0;
     align-content: center;
     justify-items: center;
   }
   section .day {
     width: 100%;
+    min-width: 0;
     padding: 4px 8px;
     aspect-ratio: 8/5;
     display: flex;
@@ -354,6 +368,7 @@
     transition:
       background-color 150ms ease,
       color 150ms ease;
+    overflow: hidden;
   }
   section .day .label {
     width: 100%;

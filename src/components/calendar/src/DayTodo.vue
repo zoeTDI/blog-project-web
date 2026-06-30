@@ -13,7 +13,8 @@
     <div
       class="todo-item"
       v-for="item in props.todos.slice(0, 3)"
-      :key="item.id">
+      :key="item.id"
+      :style="{ backgroundColor: item.color || 'transparent' }">
       <div class="label">{{ displayText(item) }}</div>
     </div>
     <div
@@ -24,4 +25,35 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .day-todo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .todo-item {
+    width: 100%;
+    padding: 2px 4px;
+    border-radius: 4px;
+    box-sizing: border-box;
+
+    color: var(--color-text-primary, #333);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ellipsis {
+    text-align: center;
+    font-weight: bold;
+  }
+</style>
