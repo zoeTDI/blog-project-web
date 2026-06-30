@@ -5,58 +5,39 @@
     ChevronRightIcon,
     ChevronDoubleRightIcon,
   } from '@heroicons/vue/24/outline';
-  import { computed, onMounted, ref, shallowRef } from 'vue';
+  import { computed } from 'vue';
   import { isSameDay } from '@/utils/isFu.ts';
-  import { mockApiFetch } from '@/utils/mock.ts';
   import {
-    type CalendarProps,
     DAY_OF_WEEK_MAP,
-    DayTodo,
-    TODO_COLORS,
+    type DayOfWeek,
     type TodoData,
   } from '@/components/calendar';
-  import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
-  import { caMessage } from '@/components/ca/caMessage';
 
-  const mockData: TodoData = {
-    2026: {
-      5: {
-        30: [
-          {
-            id: 1,
-            title: '',
-            context:
-              '内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容',
-            color: TODO_COLORS[0].value,
-          },
-          { id: 2, title: '', context: '内容2', color: TODO_COLORS[1].value },
-          {
-            id: 3,
-            title: '标题三',
-            context: '内容3',
-            color: TODO_COLORS[2].value,
-          },
-          { id: 4, title: '', context: '内容4', color: TODO_COLORS[3].value },
-        ],
-      },
-    },
-  };
+  const props = withDefaults(
+    defineProps<{
+      firstDayOfWeek?: DayOfWeek;
+      todoData?: TodoData | null;
+      startDay?: Date;
+    }>(),
+    {
+      firstDayOfWeek: 'Monday',
+      todoData: () => ({}),
+      startDay: () => new Date(),
+    }
+  );
 
-  const props = withDefaults(defineProps<CalendarProps>(), {
-    firstDayOfWeek: 'Monday',
-  });
+  const emit = defineEmits<{
+    (e: 'update:startDay', startDay: Date): void;
+    (e: 'request-data', startDay: Date): void;
+  }>();
 
-  const MAX_CACHE_SIZE = 24;
-  const loadedMonths = shallowRef<Map<string, TodoData>>(new Map());
   const today = new Date();
-  const startDay = ref(today);
-  const todoData = ref<TodoData | null>(null);
-  const year = computed(() => startDay.value.getFullYear());
-  const month = computed(() => startDay.value.getMonth() + 1);
-  const day = computed(() => startDay.value.getDate());
+  const year = computed(() => props.startDay.getFullYear());
+  const month = computed(() => props.startDay.getMonth() + 1);
+  const day = computed(() => props.startDay.getDate());
   const days = computed(() => {
-    const year = startDay.value.getFullYear();
-    const month = startDay.value.getMonth();
+    const year = props.startDay.getFullYear();
+    const month = props.startDay.getMonth();
 
     const firstDayOfMonth = new Date(year, month, 1);
     const firstDayOfWeek = DAY_OF_WEEK_MAP[props.firstDayOfWeek];
@@ -85,124 +66,35 @@
     };
   });
 
-  const goToToday = async () => {
-    startDay.value = new Date();
-    const year = startDay.value.getFullYear();
-    const month = startDay.value.getMonth();
-    const key = `${year}-${month}`;
-    const cacheData = getFromCache(key);
-    if (cacheData) {
-      todoData.value = cacheData;
-    } else {
-      const data = await fetchDate(year, month);
-      if (data && Object.keys(data).length > 0) {
-        todoData.value = data;
-        cacheDataAndSetPriority(key, data);
-      }
-    }
+  const changeDate = (newDate: Date) => {
+    emit('update:startDay', newDate);
+    emit('request-data', newDate);
   };
-  const debounceGoToToday = useDebounceFn(async () => {
-    await goToToday();
-  }, 200);
+
+  const goToToday = async () => {
+    changeDate(today);
+  };
 
   const handleYear = async (change: number) => {
-    const newDate = new Date(startDay.value);
+    const newDate = new Date(props.startDay);
     newDate.setFullYear(newDate.getFullYear() + change);
-    startDay.value = newDate;
-    const year = startDay.value.getFullYear();
-    const month = startDay.value.getMonth();
-    const key = `${year}-${month}`;
-    const cacheData = getFromCache(key);
-    if (cacheData) {
-      todoData.value = cacheData;
-    } else {
-      const data = await fetchDate(year, month);
-      if (data && Object.keys(data).length > 0) {
-        todoData.value = data;
-        cacheDataAndSetPriority(key, data);
-      }
-    }
+    changeDate(newDate);
   };
-  const debounceHandleYear = useDebounceFn(async (change: number) => {
-    await handleYear(change);
-  }, 200);
 
   const handleMonth = async (change: number) => {
-    const newDate = new Date(startDay.value);
+    const newDate = new Date(props.startDay);
     newDate.setMonth(newDate.getMonth() + change);
-    startDay.value = newDate;
-    const year = startDay.value.getFullYear();
-    const month = startDay.value.getMonth();
-    const key = `${year}-${month}`;
-    const cacheData = getFromCache(key);
-    if (cacheData) {
-      todoData.value = cacheData;
-    } else {
-      const data = await fetchDate(year, month);
-      if (data && Object.keys(data).length > 0) {
-        todoData.value = data;
-        cacheDataAndSetPriority(key, data);
-      }
-    }
+    changeDate(newDate);
   };
 
-  const debounceHandleMonth = useDebounceFn(async (change: number) => {
-    await handleMonth(change);
-  }, 200);
-
   const hasTodo = (date: Date): boolean => {
-    if (!todoData.value) return false;
+    if (!props.todoData) return false;
     const y = date.getFullYear(),
       m = date.getMonth(),
       d = date.getDate();
-    const dayData = todoData.value[y]?.[m]?.[d];
+    const dayData = props.todoData[y]?.[m]?.[d];
     return !!(dayData && dayData.length > 0);
   };
-
-  const fetchDate = async (year: number, month: number): Promise<TodoData> => {
-    //   todo 未来在此处调用数据获取api
-    try {
-      return {} as TodoData;
-    } catch (error) {
-      // 消息组件，会在屏幕上弹出一个消息通知，3秒后消失
-      caMessage.error('获取数据失败');
-    }
-  };
-
-  const updateCachePriority = (key: string, data: TodoData) => {
-    const cache = new Map(loadedMonths.value);
-    if (cache.has(key)) {
-      cache.delete(key);
-    } else if (cache.size >= MAX_CACHE_SIZE) {
-      const oldestKey = cache.keys().next().value;
-      if (oldestKey) cache.delete(oldestKey);
-    }
-    cache.set(key, data);
-    loadedMonths.value = cache;
-  };
-
-  const cacheDataAndSetPriority = (key: string, data: TodoData) => {
-    const clonedData = JSON.parse(JSON.stringify(data));
-    updateCachePriority(key, clonedData);
-  };
-
-  const getFromCache = (key: string): TodoData | undefined => {
-    const cache = loadedMonths.value;
-    if (!cache.has(key)) return undefined;
-    const val = cache.get(key);
-    if (val) {
-      updateCachePriority(key, val);
-    }
-    return val;
-  };
-
-  onMounted(async () => {
-    todoData.value = await mockApiFetch(mockData);
-    const year = startDay.value.getFullYear();
-    const month = startDay.value.getMonth();
-    const key = `${year}-${month}`;
-    cacheDataAndSetPriority(key, todoData.value);
-  });
 </script>
 
 <template>
@@ -211,30 +103,30 @@
       <div class="left btns">
         <div
           class="last-year btn"
-          @click="debounceHandleYear(-1)">
+          @click="handleYear(-1)">
           <chevron-double-left-icon class="icon" />
         </div>
         <div
           class="last-month btn"
-          @click="debounceHandleMonth(-1)">
+          @click="handleMonth(-1)">
           <chevron-left-icon class="icon" />
         </div>
       </div>
       <div
         class="today"
-        @click="debounceGoToToday">
+        @click="goToToday">
         {{ year }} / {{ month }} /
         {{ day }}
       </div>
       <div class="right btns">
         <div
           class="next-month btn"
-          @click="debounceHandleMonth(1)">
+          @click="handleMonth(1)">
           <chevron-right-icon clas="icon" />
         </div>
         <div
           class="next-year btn"
-          @click="debounceHandleYear(1)">
+          @click="handleYear(1)">
           <chevron-double-right-icon class="icon" />
         </div>
       </div>

@@ -5,6 +5,7 @@ interface CalendarProps {
   // 设置一周的第一天
   firstDayOfWeek?: DayOfWeek;
 }
+
 type TodoItem = { id: number; title?: string; context: string; color?: string };
 type TodoData = {
   [year: number]: {
@@ -20,4 +21,11 @@ interface DayTodoProps {
 
 type TodoColor = (typeof TODO_COLORS)[number]['value'];
 
-export type { CalendarProps, TodoData, TodoItem, DayTodoProps, TodoColor };
+export type {
+  CalendarProps,
+  TodoData,
+  TodoItem,
+  DayTodoProps,
+  TodoColor,
+  DayOfWeek,
+};
