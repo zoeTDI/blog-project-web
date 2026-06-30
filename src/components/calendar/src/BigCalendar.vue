@@ -15,6 +15,7 @@
     type TodoData,
   } from '@/components/calendar';
   import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
+  import { caMessage } from '@/components/ca/caMessage';
 
   const mockData: TodoData = {
     2026: {
@@ -82,8 +83,10 @@
       todoData.value = cacheData;
     } else {
       const data = await fetchDate(year, month);
-      todoData.value = data;
-      cacheDataAndSetPriority(key, data);
+      if (data && Object.keys(data).length > 0) {
+        todoData.value = data;
+        cacheDataAndSetPriority(key, data);
+      }
     }
   };
   const debounceGoToToday = useDebounceFn(async () => {
@@ -102,8 +105,10 @@
       todoData.value = cacheData;
     } else {
       const data = await fetchDate(year, month);
-      todoData.value = data;
-      cacheDataAndSetPriority(key, data);
+      if (data && Object.keys(data).length > 0) {
+        todoData.value = data;
+        cacheDataAndSetPriority(key, data);
+      }
     }
   };
   const debounceHandleYear = useDebounceFn(async (change: number) => {
@@ -122,10 +127,13 @@
       todoData.value = cacheData;
     } else {
       const data = await fetchDate(year, month);
-      todoData.value = data;
-      cacheDataAndSetPriority(key, data);
+      if (data && Object.keys(data).length > 0) {
+        todoData.value = data;
+        cacheDataAndSetPriority(key, data);
+      }
     }
   };
+
   const debounceHandleMonth = useDebounceFn(async (change: number) => {
     await handleMonth(change);
   }, 200);
@@ -148,7 +156,12 @@
 
   const fetchDate = async (year: number, month: number): Promise<TodoData> => {
     //   todo 未来在此处调用数据获取api
-    return {} as TodoData;
+    try {
+      return {} as TodoData;
+    } catch (error) {
+      // 消息组件，会在屏幕上弹出一个消息通知，3秒后消失
+      caMessage.error('获取数据失败');
+    }
   };
 
   const updateCachePriority = (key: string, data: TodoData) => {
@@ -205,7 +218,7 @@
       </div>
       <div
         class="today"
-        @click="goToToday">
+        @click="debounceGoToToday">
         {{ year }} / {{ month }} /
         {{ day }}
       </div>
