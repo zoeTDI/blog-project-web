@@ -1,22 +1,45 @@
 <script setup lang="ts">
+  import { computed } from 'vue';
   import { type MessageItemProps } from '@/components/ca/caMessage';
+  import {
+    ChatBubbleOvalLeftIcon, // primary
+    CheckCircleIcon, // success
+    ExclamationTriangleIcon, // warn
+    XCircleIcon, // error
+  } from '@heroicons/vue/24/outline';
 
-  withDefaults(defineProps<MessageItemProps>(), {
+  const props = withDefaults(defineProps<MessageItemProps>(), {
     type: 'primary',
     content: '',
   });
+
   defineEmits<{
     (e: 'close'): void;
   }>();
+
+  const iconComponent = computed(() => {
+    const icons = {
+      primary: ChatBubbleOvalLeftIcon,
+      success: CheckCircleIcon,
+      warn: ExclamationTriangleIcon,
+      error: XCircleIcon,
+    };
+    return icons[props.type];
+  });
 </script>
 
 <template>
   <div :class="['ca-message-item', `ca-message-${type}`]">
+    <component
+      :is="iconComponent"
+      class="ca-message-icon" />
+
     <span class="ca-message-item_content">{{ content }}</span>
+
     <button
       class="ca-message-item_close"
       @click="$emit('close')">
-      x
+      ×
     </button>
   </div>
 </template>
@@ -25,39 +48,48 @@
   .ca-message-item {
     display: flex;
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 16px;
     border-radius: 4px;
-    background-color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    pointer-events: auto; /* 恢复鼠标交互 */
-    min-width: 200px;
-    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: auto;
+    min-width: 240px;
+    justify-content: flex-start;
+    color: #fff;
   }
 
-  /* 针对不同类型的样式定义 */
+  /* 图标样式 */
+  .ca-message-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  /* 类型背景色 */
   .ca-message-primary {
-    border-left: 4px solid var(--primary-color, #1890ff);
+    background-color: var(--primary-color, #1890ff);
   }
   .ca-message-success {
-    border-left: 4px solid var(--success-color, #52c41a);
+    background-color: var(--success-color, #52c41a);
   }
   .ca-message-error {
-    border-left: 4px solid var(--error-color, #ff4d4f);
+    background-color: var(--error-color, #ff4d4f);
   }
   .ca-message-warn {
-    border-left: 4px solid var(--warning-color, #faad14);
+    background-color: var(--warning-color, #faad14);
   }
 
   .ca-message-item_close {
+    margin-left: auto;
     background: none;
     border: none;
     cursor: pointer;
-    margin-left: 10px;
-    font-size: 16px;
-    color: #999;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0;
   }
 
   .ca-message-item_close:hover {
-    color: #333;
+    color: #fff;
   }
 </style>
