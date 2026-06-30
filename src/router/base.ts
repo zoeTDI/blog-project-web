@@ -131,6 +131,14 @@ export const baseRouter: RouteRecordRaw[] = [
           title: `旅行`,
         },
       },
+      {
+        path: '/stroke',
+        name: ROUTER_NAMES.STROKE,
+        component: () => import('@/views/stroke/Stroke.vue'),
+        meta: {
+          title: '行程',
+        },
+      },
     ],
   },
   // 登录页面

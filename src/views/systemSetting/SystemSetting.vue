@@ -33,6 +33,7 @@
       timezone: TIMEZONE_OPTIONS.UTC,
       watermark: false,
       watermarkContent: '',
+      websiteMaster: '',
       websiteName_zh_CN: '',
       websiteName_en_US: '',
       websiteSubName_zh_CN: '',
@@ -182,6 +183,13 @@
                 type="text"
                 v-model="formState.app.websiteSubName_en_US"
                 placeholder="请输入网站副标题" />
+            </div>
+            <div class="form-item">
+              <label>站长名称：</label>
+              <input
+                type="text"
+                v-model="formState.app.websiteMaster"
+                placeholder="请输入站长名称" />
             </div>
             <div class="form-item">
               <label>站长个性签名（中文）：</label>

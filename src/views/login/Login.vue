@@ -14,8 +14,8 @@
   const router = useRouter();
   const userStore = useUserStore();
 
-  const email = ref('');
-  const password = ref('');
+  const email = ref('admin@caldm.cn');
+  const password = ref('123456');
   const errorMessage = ref('');
 
   const handleLogin = async () => {
