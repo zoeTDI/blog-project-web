@@ -5,6 +5,7 @@ import ThemeButton from '@/components/globalTools/src/ThemeButton.vue';
 import FullscreenButton from '@/components/globalTools/src/FullscreenButton.vue';
 import TimezoneButton from '@/components/globalTools/src/TimezoneButton.vue';
 import LanguageButton from '@/components/globalTools/src/LanguageButton.vue';
+import PreferencesSettingButton from '@/components/globalTools/src/PreferencesSettingButton.vue';
 
 export type * from '@/components/globalTools/src/types.ts';
 export {
@@ -14,4 +15,5 @@ export {
   FullscreenButton,
   TimezoneButton,
   LanguageButton,
+  PreferencesSettingButton,
 };

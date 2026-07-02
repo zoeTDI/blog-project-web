@@ -3,6 +3,7 @@
   import {
     FullscreenButton,
     LanguageButton,
+    PreferencesSettingButton,
     ThemeButton,
     TimezoneButton,
   } from '@/components/globalTools';
@@ -22,6 +23,7 @@
       <fullscreen-button :shape="shape" />
       <timezone-button :shape="shape" />
       <language-button :shape="shape" />
+      <PreferencesSettingButton :shape="shape" />
     </slot>
   </div>
 </template>
