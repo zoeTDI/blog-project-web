@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import { BigCalendar } from '@/components/calendar';
+  import Calendar from '@/components/calendar/src/Calendar.vue';
 </script>
 
 <template>
   <div class="stroke">
-    <big-calendar />
+    <calendar />
   </div>
 </template>
 
