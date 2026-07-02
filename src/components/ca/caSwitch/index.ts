@@ -1,7 +1,5 @@
-import CaSwitch from "@/components/ca/caSwitch/src/CaSwitch.vue";
-
-import type {SwitchOption} from "@/components/ca/caSwitch/src/types.ts";
+import CaSwitch from '@/components/ca/caSwitch/src/CaSwitch.vue';
 
 export default CaSwitch;
 
-export type * from './src/types.ts'
+export type * from './src/types.ts';
