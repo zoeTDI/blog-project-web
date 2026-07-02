@@ -76,8 +76,8 @@
 }
 
 /* 默认变量（浅色模式） */
-#app {
-  --app-accent-color: #aa3bff;
+:root {
+  --app-accent-color: unset;
   --content-max-width-S: 800px;
   --content-max-width-M: 1000px;
   --content-max-width-L: 1200px;
@@ -130,7 +130,7 @@
 }
 
 /* 深色模式变量 - 当包含 .dark 类时激活 */
-#app.dark {
+.dark {
   --color-text-primary: #a19ba8;
 
   --color-text-h: #f5f5f5;
