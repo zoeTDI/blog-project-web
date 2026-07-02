@@ -1,10 +1,14 @@
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { ref, watch } from 'vue';
   import CaSwitch, { type SwitchOption } from '@/components/ca/caSwitch';
   import { MoonIcon, SunIcon } from '@heroicons/vue/24/outline';
   import { CaInkTree } from '@/components/background/caInkTree';
   import { CaSearch } from '@/components/ca/caSearch';
-  import { preferenceManager, preferences } from '@/core/preferences';
+  import {
+    preferenceManager,
+    preferences,
+    type ThemeModeOptions,
+  } from '@/core/preferences';
   import {
     GlobalTools,
     LanguageButton,
@@ -13,22 +17,6 @@
   } from '@/components/globalTools';
   import { BaseLayoutFooter, BaseLayoutHeader } from '@/components/baseLayout';
   import { WebsiteSummary } from '@/components/websiteSummary';
-
-  const themeMode = computed(() => {
-    return preferences.theme.mode || 'light';
-  });
-
-  const caSwitchOptions: [SwitchOption, SwitchOption] = [
-    { value: 'light', label: 'LIGHT', icon: SunIcon },
-    { value: 'dark', label: 'DARK', icon: MoonIcon },
-  ];
-
-  const handleThemeChange = () => {
-    const newTheme = preferences.theme.mode === 'light' ? 'dark' : 'light';
-    preferenceManager.updatePreferences({
-      theme: { mode: newTheme },
-    });
-  };
 </script>
 
 <template>
@@ -55,12 +43,6 @@
           <ca-search
             type="expand"
             src="topNav" />
-          <ca-switch
-            v-model="themeMode"
-            @update:model-value="handleThemeChange"
-            :options="caSwitchOptions"
-            mode="full"
-            class="icon" />
         </template>
       </base-layout-header>
     </header>
