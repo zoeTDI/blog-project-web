@@ -137,7 +137,7 @@
 
   .slide {
     z-index: 2;
-    background-color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 75%, transparent);
   }
 
   .slide-shadow {
@@ -156,6 +156,10 @@
     z-index: 3;
     flex-shrink: 0;
     gap: 8px;
+  }
+
+  .option.is-active {
+    color: #fff;
   }
 
   .squeeze {
