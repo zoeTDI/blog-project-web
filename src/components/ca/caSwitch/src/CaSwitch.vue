@@ -1,116 +1,165 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline';
-import type { SwitchOption } from "./types.ts";
-import type {ComponentSize} from "#/component.ts";
+  import { computed, nextTick, onMounted, type Ref, ref } from 'vue';
+  import type { SwitchOption } from './types.ts';
+  import type { ComponentSize } from '#/component.ts';
+  import caSwitch from '@/components/ca/caSwitch';
 
-const props = withDefaults(defineProps<{
-  modelValue: any;
-  options?: [SwitchOption, SwitchOption];
-  prefix?: string;
-  mode?: 'full' | 'icon';
-  size?: ComponentSize; // 新增 size 属性
-}>(), {
-  mode: 'icon',
-  prefix: '',
-  size: 'M' // 默认为 M
-});
+  const props = withDefaults(
+    defineProps<{
+      options?: SwitchOption[];
+      prefix?: string;
+      mode?: 'full' | 'icon';
+      size?: ComponentSize; // 新增 size 属性
+    }>(),
+    {
+      options: () => [],
+      mode: 'icon',
+      prefix: '',
+      size: 'M',
+    }
+  );
 
-const emit = defineEmits(['update:modelValue']);
+  const model = defineModel<string>({ default: '' });
 
-const defaultOptions: [SwitchOption, SwitchOption] = [
-  { value: true, label: 'ON', icon: CheckIcon },
-  { value: false, label: 'OFF', icon: XMarkIcon }
-];
+  const SIZE_MAP = {
+    s: 16,
+    m: 20,
+    l: 24,
+  };
 
-const currentOptions = computed(() => props.options || defaultOptions);
+  const slideRef = ref<HTMLElement | null>(null);
+  const slideShadowRef = ref<HTMLElement | null>(null);
+  const caSwitchRef = ref<HTMLElement | null>(null);
 
-const activeOption = computed(() => {
-  return currentOptions.value.find(opt => opt.value === props.modelValue) || currentOptions.value[0];
-});
+  const size = computed(() => {
+    const key = props.size.toUpperCase();
+    return key in SIZE_MAP ? SIZE_MAP[key as keyof typeof SIZE_MAP] : 20;
+  });
 
-const toggle = () => {
-  const [opt1, opt2] = currentOptions.value;
-  const nextValue = props.modelValue === opt1.value ? opt2.value : opt1.value;
-  emit('update:modelValue', nextValue);
-};
+  const moveSlide = (targetEl: HTMLElement, el: Ref) => {
+    const container = targetEl.closest('.ca-switch')!.getBoundingClientRect();
+    const targetRect = targetEl.getBoundingClientRect();
+    const left = targetRect.left - container?.left;
+    const width = targetRect.width;
+    el.value.style.left = `${left}px`;
+    el.value.style.width = `${width}px`;
+  };
+
+  const toggle = (val: string, target: HTMLElement) => {
+    model.value = val;
+    if (slideRef.value) {
+      moveSlide(target, slideRef);
+      slideRef.value.style.opacity = '1';
+    }
+  };
+
+  const handleMouseover = (target: HTMLElement) => {
+    if (!slideShadowRef.value) return;
+    moveSlide(target, slideShadowRef);
+    slideShadowRef.value.style.opacity = '1';
+    slideShadowRef.value.classList.add('squeezz');
+  };
+
+  const handleMouseout = () => {
+    if (!slideShadowRef.value) return;
+    slideShadowRef.value.style.opacity = '0';
+    slideShadowRef.value.classList.remove('squeeze');
+  };
+
+  onMounted(async () => {
+    await nextTick();
+    if (model.value && caSwitchRef.value) {
+      const activeOption = caSwitchRef.value.querySelector(
+        `.option:nth-child(${props.options.findIndex((o) => o.value === model.value) + 3})`
+      ) as HTMLElement;
+      if (activeOption) {
+        moveSlide(activeOption, slideRef);
+        if (slideRef.value) slideRef.value.style.opacity = '1';
+      }
+    }
+  });
 </script>
 
 <template>
   <div
-      class="ca-switch"
-      :class="[`is-${mode}`, `size-${size}`]"
-      @click="toggle"
-      :title="activeOption.label"
-  >
-    <div v-if="mode === 'full'" class="ca-switch__text">
-      <span v-if="prefix" class="ca-switch__prefix">{{ prefix }}</span>
-      <span class="ca-switch__label">{{ activeOption.label ?? activeOption.value }}</span>
-    </div>
-
-    <div class="ca-switch__icon-holder">
-      <component :is="activeOption.icon" class="ca-icon" />
+    class="ca-switch"
+    ref="caSwitchRef">
+    <div
+      class="slide"
+      ref="slideRef"></div>
+    <div
+      class="slide-shadow"
+      ref="slideShadowRef"></div>
+    <div
+      class="option"
+      :class="{ 'is-active': model === option.value }"
+      v-for="option in props.options"
+      :key="option.value"
+      @click="toggle(option.value, $event.currentTarget as HTMLElement)"
+      @mouseover="handleMouseover($event.currentTarget as HTMLElement)"
+      @mouseout="handleMouseout">
+      <div
+        class="icon"
+        :style="{ width: size + 'px', height: size + 'px' }"
+        v-if="option.icon">
+        <component :is="option.icon" />
+      </div>
+      <div
+        class="label"
+        v-if="props.mode === 'full'">
+        {{ option.label }}
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.ca-switch {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid var(--color-border);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-  background-color: transparent;
-  gap: 8px; /* 文字和图标的间距 */
-}
+  .ca-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border-radius: 5000em;
+    padding: 2px 4px;
+    height: 30px;
 
-.ca-switch:hover {
-  border-color: var(--color-border-hover-accent);
-}
+    background: var(--color-bg);
+  }
 
-/* --- 尺寸控制逻辑 --- */
+  .slide,
+  .slide-shadow {
+    border-radius: 5000em;
+    position: absolute;
+    display: inline-block;
+    height: 100%;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1.05);
+  }
 
-/* 1. 仅图标模式 (is-icon) */
-.is-icon.size-S { padding: 6px; }
-.is-icon.size-M { padding: 8px; } /* 修改前的原尺寸 */
-.is-icon.size-L { padding: 12px; }
+  .slide {
+    z-index: 2;
+    background-color: var(--color-accent);
+  }
 
-/* 2. 全模式 (is-full) */
-.is-full.size-S { padding: 4px 10px; }
-.is-full.size-M { padding: 6px 14px; } /* 修改前的原尺寸 */
-.is-full.size-L { padding: 10px 20px; }
+  .slide-shadow {
+    opacity: 0;
+    z-index: 1;
 
-/* 3. 内部元素尺寸调整 */
-.size-S .ca-switch__text { font-size: 10px; }
-.size-S .ca-icon { width: 12px; height: 12px; }
+    background-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+    box-shadow: 0 0 20px #ffffffaa inset;
+  }
 
-.size-M .ca-switch__text { font-size: 11px; } /* 修改前的原尺寸 */
-.size-M .ca-icon { width: 14px; height: 14px; }
+  .option {
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    z-index: 3;
+    flex-shrink: 0;
+    gap: 8px;
+  }
 
-.size-L .ca-switch__text { font-size: 14px; }
-.size-L .ca-icon { width: 18px; height: 18px; }
-
-/* --- 基础文本样式 --- */
-.ca-switch__text {
-  font-family: var(--font-text);
-  letter-spacing: 1px;
-  display: flex;
-  gap: 4px;
-}
-
-.ca-switch__prefix {
-  opacity: 0.5;
-}
-
-.ca-switch__label {
-  color: var(--color-accent);
-  font-weight: 600;
-}
-
-.ca-icon {
-  color: var(--color-accent);
-  display: block;
-}
+  .squeeze {
+    transform: scale(0.9);
+  }
 </style>
