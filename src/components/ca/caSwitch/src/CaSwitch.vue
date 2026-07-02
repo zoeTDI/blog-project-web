@@ -2,7 +2,6 @@
   import { computed, nextTick, onMounted, type Ref, ref } from 'vue';
   import type { SwitchOption } from './types.ts';
   import type { ComponentSize } from '#/component.ts';
-  import caSwitch from '@/components/ca/caSwitch';
 
   const props = withDefaults(
     defineProps<{
