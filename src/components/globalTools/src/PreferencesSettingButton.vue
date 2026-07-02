@@ -7,6 +7,7 @@
   import {
     customPreferences,
     type CustomPreferencesRecord,
+    preferenceManager,
     preferences,
     type Preferences,
     TIMEZONE_OPTIONS,
@@ -14,6 +15,7 @@
   import { type RouteRecordNormalized, useRouter } from 'vue-router';
   import { CaRow } from '@/components/ca/CaRow';
   import { CaCol } from '@/components/ca/caCol';
+  import { CaButton } from '@/components/ca/caButton';
 
   withDefaults(defineProps<ButtonProps>(), {
     shape: 'rounded',
@@ -118,7 +120,6 @@
   const lightLogoError = ref(false);
   const darkLogoError = ref(false);
 
-  // —— 新增：当用户重新编辑或清空 URL 时，重置失败状态 ——
   watch(
     () => formState.value.logo.source,
     () => {
@@ -149,6 +150,20 @@
     caDrawerRef.value.open();
   };
 
+  const saveFormState = () => {
+    preferenceManager.updatePreferences(formState.value);
+  };
+  const resetFormState = () => {
+    preferenceManager.resetPreferences();
+  };
+
+  const saveCustomFormState = () => {
+    preferenceManager.updateCustomPreferences(customFormState.value);
+  };
+  const resetCustomFormState = () => {
+    preferenceManager.resetCustomPreferences();
+  };
+
   watch(curTab, (newVal, oldVal) => {
     const oldIndex = TAB_OPTION.findIndex((o) => o.value === oldVal);
     const newIndex = TAB_OPTION.findIndex((o) => o.value === newVal);
@@ -169,7 +184,7 @@
     <button
       :class="['tool-btn', shape]"
       @click="openDrawer()"
-      title="切换语言">
+      title="打开偏好设置">
       <cog8-tooth-icon class="icon" />
     </button>
     <ca-drawer ref="caDrawerRef">
@@ -473,7 +488,7 @@
                     </div>
                   </ca-col>
                   <ca-col :span="24">
-                    <div class="form-item row">
+                    <div class="form-item text-area-item">
                       <label>特殊地区补充备案警示语：</label>
                       <textarea
                         v-model="formState.copyright.beianExtra"
@@ -834,6 +849,18 @@
             </section>
           </transition-group>
         </div>
+        <footer class="btns">
+          <ca-button
+            type="primary"
+            @click="resetFormState"
+            >重置偏好设置</ca-button
+          >
+          <ca-button
+            type="primary"
+            @click="saveFormState"
+            >保存偏好设置</ca-button
+          >
+        </footer>
       </div>
     </ca-drawer>
   </div>
@@ -891,13 +918,21 @@
     padding: 4px 0;
   }
 
+  .form-item.row.text-area-item {
+    align-items: flex-start;
+  }
+  .form-item.row.text-area-item label {
+    margin-top: 8px;
+  }
+
   .form-item.row label {
     white-space: nowrap;
   }
 
   .form-item.row input[type='text'],
   .form-item.row input[type='number'],
-  .form-item.row select {
+  .form-item.row select,
+  .form-item.row textarea {
     flex: 1;
   }
 
@@ -922,10 +957,9 @@
 
   .form-item input[type='text'],
   .form-item input[type='number'],
-  .form-item select {
+  .form-item select,
+  .form-item textarea {
     width: 100%;
-    height: 38px;
-    padding: 0 12px;
     font-size: 14px;
     color: #333333;
     background-color: #ffffff;
@@ -936,6 +970,21 @@
     box-sizing: border-box;
   }
 
+  .form-item input[type='text'],
+  .form-item input[type='number'],
+  .form-item select {
+    height: 38px;
+    padding: 0 12px;
+  }
+
+  .form-item textarea {
+    min-height: 80px;
+    padding: 8px 12px;
+    resize: vertical;
+    line-height: 1.5;
+    font-family: inherit;
+  }
+
   .form-item select {
     padding-right: 28px;
     cursor: pointer;
@@ -943,13 +992,15 @@
 
   .form-item input[type='text']:hover,
   .form-item input[type='number']:hover,
-  .form-item select:hover {
+  .form-item select:hover,
+  .form-item textarea:hover {
     border-color: #40a9ff;
   }
 
   .form-item input[type='text']:focus,
   .form-item input[type='number']:focus,
-  .form-item select:focus {
+  .form-item select:focus,
+  .form-item textarea:focus {
     border-color: #1677ff;
     box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
   }
@@ -1022,7 +1073,12 @@
     padding: 8px;
     box-sizing: border-box;
   }
-  /* —— 预览区域样式结束 —— */
+
+  .btns {
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 20px;
+  }
 
   .slide-forward-enter-from {
     transform: translateX(100%);
