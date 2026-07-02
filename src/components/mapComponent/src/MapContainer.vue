@@ -264,7 +264,6 @@
     transition:
       background-color 0.3s ease,
       border-color 0.3s ease;
-    max-width: var(--content-max-width-M);
     padding: var(--content-padding-M);
     user-select: none;
   }
