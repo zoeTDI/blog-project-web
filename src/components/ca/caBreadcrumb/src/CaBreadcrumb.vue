@@ -4,6 +4,7 @@
   import { ChevronDoubleRightIcon } from '@heroicons/vue/24/outline';
   import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
   import { useI18n } from 'vue-i18n';
+  import { preferences } from '@/core/preferences';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -21,7 +22,9 @@
 </script>
 
 <template>
-  <nav class="ca-breadcrumb">
+  <nav
+    class="ca-breadcrumb"
+    v-if="preferences.breadcrumb.enable">
     <ol
       class="breadcrumb-list"
       v-if="matched.length > 1">
@@ -30,10 +33,14 @@
         v-for="(route, index) in matched"
         :key="route.path">
         <span
-          :class="['text', { 'is-last': index === matched.length - 1 }]"
+          :class="[
+            'text',
+            { 'is-last': index === matched.length - 1 },
+            { background: preferences.breadcrumb.styleType === 'background' },
+          ]"
           @click="jumpTo(route)">
           <component
-            v-if="route.meta?.icon"
+            v-if="route.meta?.icon && preferences.breadcrumb.showIcon"
             :is="route.meta.icon"
             class="breadcrumb-icon" />
           {{ translateString(route.meta.title) }}
@@ -70,6 +77,7 @@
     -moz-user-select: none;
     cursor: pointer;
     transition: all ease 150ms;
+    padding: 4px 8px;
   }
 
   .breadcrumb-icon {
@@ -95,6 +103,10 @@
     background-color: var(--color-accent);
     bottom: -2px;
     left: 0;
+  }
+
+  .text.is-last.background {
+    background-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
   }
 
   .text:not(.is-last):hover {
