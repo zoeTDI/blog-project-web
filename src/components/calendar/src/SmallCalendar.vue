@@ -29,6 +29,7 @@
   const emit = defineEmits<{
     (e: 'update:startDay', startDay: Date): void;
     (e: 'request-data', startDay: Date): void;
+    (e: 'date-click', data: { year: number; month: number; day: number }): void;
   }>();
 
   const today = new Date();
@@ -95,6 +96,14 @@
     const dayData = props.todoData[y]?.[m]?.[d];
     return !!(dayData && dayData.length > 0);
   };
+
+  const handleDateClick = (date: Date) => {
+    emit('date-click', {
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      day: date.getDate(),
+    });
+  };
 </script>
 
 <template>
@@ -143,7 +152,11 @@
               dayOfLastMonth.getDay() == 6 || dayOfLastMonth.getDay() == 0,
             'has-todo': hasTodo(dayOfLastMonth),
           }">
-          <div class="label">{{ dayOfLastMonth.getDate() }}</div>
+          <div
+            class="label"
+            @click="handleDateClick(dayOfLastMonth)">
+            {{ dayOfLastMonth.getDate() }}
+          </div>
           <div
             v-if="hasTodo(dayOfLastMonth)"
             class="indicator"></div>
@@ -159,7 +172,11 @@
             weekend: dayOfCurMonth.getDay() == 6 || dayOfCurMonth.getDay() == 0,
             'has-todo': hasTodo(dayOfCurMonth),
           }">
-          <div class="label">{{ dayOfCurMonth.getDate() }}</div>
+          <div
+            class="label"
+            @click="handleDateClick(dayOfCurMonth)">
+            {{ dayOfCurMonth.getDate() }}
+          </div>
           <div
             v-if="hasTodo(dayOfCurMonth)"
             class="indicator"></div>
@@ -175,7 +192,11 @@
               dayOfNextMonth.getDay() == 6 || dayOfNextMonth.getDay() == 0,
             'has-todo': hasTodo(dayOfNextMonth),
           }">
-          <div class="label">{{ dayOfNextMonth.getDate() }}</div>
+          <div
+            class="label"
+            @click="handleDateClick(dayOfNextMonth)">
+            {{ dayOfNextMonth.getDate() }}
+          </div>
           <div
             v-if="hasTodo(dayOfNextMonth)"
             class="indicator"></div>
@@ -198,7 +219,7 @@
     padding: 4px;
     background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
   }
-  .today {
+  .header .today {
     cursor: pointer;
     padding: 4px 8px;
     will-change: background-color;
@@ -254,6 +275,7 @@
     width: 100%;
     font-size: 16px;
     text-align: center;
+    cursor: pointer;
   }
   section .day:hover,
   section .day.weekend:hover {

@@ -1,23 +1,17 @@
 <script setup lang="ts">
-  import {
-    ref,
-    onMounted,
-    onUnmounted,
-    provide,
-    shallowRef,
-    computed,
-    watch,
-  } from 'vue';
+  import { ref, onMounted, onUnmounted, provide, shallowRef, watch } from 'vue';
   import {
     BigCalendar,
     type CalendarProps,
     SmallCalendar,
     TODO_COLORS,
     type TodoData,
+    type TodoItem,
   } from '@/components/calendar';
   import { caMessage } from '@/components/ca/caMessage';
   import { mockApiFetch } from '@/utils/mock.ts';
   import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
+  import { CaDrawer } from '@/components/ca/caDrawer';
 
   const mockData: TodoData = {
     2026: {
@@ -49,9 +43,14 @@
 
   const BREAKPOINT = 600;
   const MAX_CACHE_SIZE = 24;
+
   const containerRef = ref<HTMLElement | null>(null);
+  const caDrawerRef = ref<InstanceType<typeof CaDrawer> | null>(null);
+
   const isSmall = ref(false);
+
   const todoData = ref<TodoData | null>(null);
+  const showTodo = ref<TodoItem[]>([]);
   const startDay = ref(new Date());
   const loadedMonths = shallowRef<Map<string, TodoData>>(new Map());
   let observer: ResizeObserver | null = null;
@@ -115,6 +114,24 @@
     }
   };
 
+  const handleCalendarClick = (data: {
+    year: number;
+    month: number;
+    day: number;
+  }) => {
+    if (!caDrawerRef.value) return;
+    if (!todoData.value) return;
+    if (
+      !todoData.value[data.year] ||
+      !todoData.value[data.year][data.month] ||
+      !todoData.value[data.year][data.month][data.day]
+    ) {
+      return;
+    }
+    showTodo.value = todoData.value[data.year][data.month][data.day];
+    caDrawerRef.value.open();
+  };
+
   provide('calendarData', { todoData, startDay });
 
   watch(startDay, (newDate) => {
@@ -154,13 +171,38 @@
       :start-day="startDay"
       :todo-data="todoData"
       :first-day-of-week="props.firstDayOfWeek"
+      @date-click="handleCalendarClick"
       @update:start-day="handleUpdateStartDay" />
     <big-calendar
       v-if="!isSmall"
       :start-day="startDay"
       :todo-data="todoData"
       :first-day-of-week="props.firstDayOfWeek"
+      @date-click="handleCalendarClick"
       @update:start-day="handleUpdateStartDay" />
+    <ca-drawer ref="caDrawerRef">
+      <div class="todo-items-container">
+        <div
+          class="todo-item"
+          v-for="item in showTodo"
+          :key="item.id"
+          :style="{
+            backgroundColor: item.color,
+          }">
+          <div
+            class="title"
+            v-if="item.title"
+            :style="{
+              borderBottomColor: `color-mix(in srgb, ${item.color} 80%, black)`,
+            }">
+            {{ item.title }}
+          </div>
+          <div class="context">
+            {{ item.context }}
+          </div>
+        </div>
+      </div>
+    </ca-drawer>
   </div>
 </template>
 
@@ -169,5 +211,23 @@
     width: 100%;
     height: 100%;
     min-width: 300px;
+  }
+  .todo-items-container {
+    width: max-content;
+    max-width: 25svw;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+  }
+  .todo-item {
+    padding: 20px;
+    max-height: 350px;
+    overflow-y: scroll;
+  }
+  .todo-item .title {
+    padding-bottom: 6px;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    margin-bottom: 12px;
   }
 </style>

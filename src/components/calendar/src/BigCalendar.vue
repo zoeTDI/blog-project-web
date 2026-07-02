@@ -30,6 +30,7 @@
   const emit = defineEmits<{
     (e: 'update:startDay', startDay: Date): void;
     (e: 'request-data', startDay: Date): void;
+    (e: 'date-click', data: { year: number; month: number; day: number }): void;
   }>();
 
   const today = new Date();
@@ -103,6 +104,13 @@
     // 如果 dayData 存在且数组长度大于 0，则返回 true
     return !!(dayData && dayData.length > 0);
   };
+  const handleDateClick = (date: Date) => {
+    emit('date-click', {
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      day: date.getDate(),
+    });
+  };
 </script>
 
 <template>
@@ -151,7 +159,11 @@
             weekend:
               dayOfLastMonth.getDay() == 6 || dayOfLastMonth.getDay() == 0,
           }">
-          <div class="label">{{ dayOfLastMonth.getDate() }}</div>
+          <div
+            class="label"
+            @click="handleDateClick(dayOfLastMonth)">
+            {{ dayOfLastMonth.getDate() }}
+          </div>
           <day-todo
             v-if="hasTodo(dayOfLastMonth)"
             :todos="
@@ -170,7 +182,11 @@
             today: isSameDay(today, dayOfCurMonth),
             weekend: dayOfCurMonth.getDay() == 6 || dayOfCurMonth.getDay() == 0,
           }">
-          <div class="label">{{ dayOfCurMonth.getDate() }}</div>
+          <div
+            class="label"
+            @click="handleDateClick(dayOfCurMonth)">
+            {{ dayOfCurMonth.getDate() }}
+          </div>
           <day-todo
             v-if="hasTodo(dayOfCurMonth)"
             :todos="
@@ -189,7 +205,11 @@
             weekend:
               dayOfNextMonth.getDay() == 6 || dayOfNextMonth.getDay() == 0,
           }">
-          <div class="label">{{ dayOfNextMonth.getDate() }}</div>
+          <div
+            class="label"
+            @click="handleDateClick(dayOfNextMonth)">
+            {{ dayOfNextMonth.getDate() }}
+          </div>
           <day-todo
             v-if="hasTodo(dayOfNextMonth)"
             :todos="
@@ -215,7 +235,7 @@
     padding: 4px;
     background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
   }
-  .today {
+  .header .today {
     cursor: pointer;
     padding: 4px 8px;
     will-change: background-color;
@@ -273,6 +293,7 @@
   section .day .label {
     width: 100%;
     font-size: 20px;
+    cursor: pointer;
   }
   section .day:hover,
   section .day.weekend:hover {
