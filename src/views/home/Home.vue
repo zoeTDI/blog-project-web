@@ -1,11 +1,6 @@
 <script setup lang="ts">
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import { preferences } from '@/core/preferences';
-  import { start } from '@/api/user.ts';
-
-  const btnFn = async () => {
-    await start();
-  };
 </script>
 
 <template>
@@ -24,7 +19,6 @@
             >@username</a
           ></span
         >
-        <button @click="btnFn">Start</button>
       </div>
     </section>
 
