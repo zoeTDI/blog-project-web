@@ -214,6 +214,7 @@
   }
   .todo-items-container {
     width: max-content;
+    min-width: 300px;
     max-width: 25svw;
     display: flex;
     flex-direction: column;
@@ -223,6 +224,7 @@
     padding: 20px;
     max-height: 350px;
     overflow-y: scroll;
+    scrollbar-width: none;
   }
   .todo-item .title {
     padding-bottom: 6px;
