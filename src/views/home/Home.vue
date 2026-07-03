@@ -95,6 +95,24 @@
           <p>行程 / 旅行 / 兴趣</p>
         </div>
       </div>
+
+      <div class="grid-item">
+        <div class="item-header">
+          <span class="index">04</span>
+          <span class="tag">SPACE</span>
+        </div>
+        <div class="item-body">
+          <div class="main-links">
+            <!-- 这里优先采用 path 跳转，防止你还没在 ROUTER_NAMES 注册常量 -->
+            <router-link
+              :to="{ name: ROUTER_NAMES.MOMENTS }"
+              class="nav-title">
+              <h2>MOMENTS<span class="arrow">↗</span></h2>
+            </router-link>
+          </div>
+          <p>个人空间 / 碎碎念 / 日常动态</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
