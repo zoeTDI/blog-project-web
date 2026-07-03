@@ -45,7 +45,8 @@ class PreferenceManager {
    * 初始化缓存控制器、响应式状态以及防抖保存函数
    */
   private constructor() {
-    this.cache = new StorageManager();
+    // todo 后续可改成根据用户信息创建相应的存储空间
+    this.cache = new StorageManager({ namespace: 'caldm' });
     this.initialPreferences = defaultPreferences;
     this.state = reactive<Preferences>({ ...this.initialPreferences });
     this.initialCustomPreferences = defaultCustomPreference;
