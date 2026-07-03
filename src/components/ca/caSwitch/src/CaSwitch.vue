@@ -1,7 +1,16 @@
 <script setup lang="ts">
-  import { computed, nextTick, onMounted, type Ref, ref } from 'vue';
+  import {
+    computed,
+    nextTick,
+    onMounted,
+    onUnmounted,
+    type Ref,
+    ref,
+    watch,
+  } from 'vue';
   import type { SwitchOption } from './types.ts';
   import type { ComponentSize } from '#/component.ts';
+  import caSwitch from '@/components/ca/caSwitch';
 
   const props = withDefaults(
     defineProps<{
@@ -29,6 +38,8 @@
   const slideRef = ref<HTMLElement | null>(null);
   const slideShadowRef = ref<HTMLElement | null>(null);
   const caSwitchRef = ref<HTMLElement | null>(null);
+
+  let observer: IntersectionObserver | null = null;
 
   const size = computed(() => {
     const key = props.size.toUpperCase();
@@ -65,16 +76,45 @@
     slideShadowRef.value.classList.remove('squeeze');
   };
 
-  onMounted(async () => {
+  const updateActiveSlide = async () => {
     await nextTick();
     if (model.value && caSwitchRef.value) {
+      const index = props.options.findIndex((o) => o.value === model.value);
+      if (index === -1) return;
       const activeOption = caSwitchRef.value.querySelector(
-        `.option:nth-child(${props.options.findIndex((o) => o.value === model.value) + 3})`
+        `.option:nth-child(${index + 3})`
       ) as HTMLElement;
-      if (activeOption) {
+      if (activeOption && activeOption.getBoundingClientRect().width > 0) {
         moveSlide(activeOption, slideRef);
         if (slideRef.value) slideRef.value.style.opacity = '1';
       }
+    }
+  };
+
+  watch(
+    () => model.value,
+    () => {
+      updateActiveSlide();
+    },
+    { immediate: true }
+  );
+
+  onMounted(async () => {
+    if (caSwitchRef.value) {
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            updateActiveSlide();
+          }
+        });
+      });
+      observer.observe(caSwitchRef.value);
+    }
+  });
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+      observer = null;
     }
   });
 </script>
