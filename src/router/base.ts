@@ -141,6 +141,14 @@ export const baseRouter: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    meta: {
+      title: '我的空间',
+    },
+    path: '/moments',
+    name: ROUTER_NAMES.MOMENTS,
+    component: () => import('@/views/moments/Moments.vue'),
+  },
   // 登录页面
   {
     path: '/',
