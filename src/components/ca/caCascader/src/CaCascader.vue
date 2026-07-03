@@ -26,7 +26,7 @@
     (e: 'on-change', value: T[]): void;
   }>();
 
-  const { t, locale } = useI18n();
+  const { locale } = useI18n();
 
   const cascaderRef = ref<HTMLElement | null>(null);
   const panelRef = ref<HTMLElement | null>(null);
@@ -35,9 +35,6 @@
   const isFocus = ref<boolean>(false);
   const panelDirection = ref<'right' | 'left'>('right');
 
-  const displayPlaceholder = computed(() => {
-    return props.placeholder || t('components.caCascader.placeholder');
-  });
   const keys = computed<CascadeFieldName>(() => ({
     label: props.fieldNames?.label || 'label',
     value: props.fieldNames?.value || 'value',
