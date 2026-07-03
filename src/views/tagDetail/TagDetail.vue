@@ -16,7 +16,7 @@
     return route.query?.name || '';
   };
 
-  const tagList = ref<{ id: string; name: string }[]>([]);
+  const tagList = ref<{ id: string; name: string; count: number }[]>([]);
   const timeLineData = ref<TimelineGroup[]>([
     {
       title: '2024年',
@@ -66,18 +66,18 @@
   ]);
 
   const mockData = [
-    { id: 1, name: 'Vue3', count: 25 },
-    { id: 2, name: 'JavaScript', count: 30 },
-    { id: 3, name: 'TypeScript', count: 18 },
-    { id: 4, name: 'Canvas', count: 12 },
-    { id: 5, name: 'CSS布局', count: 22 },
-    { id: 6, name: '前端工程化', count: 8 },
-    { id: 7, name: '极简主义', count: 15 },
-    { id: 8, name: 'Three.js', count: 5 },
-    { id: 9, name: '性能优化', count: 14 },
-    { id: 10, name: '算法', count: 6 },
-    { id: 11, name: 'Node.js', count: 10 },
-    { id: 12, name: 'Vite', count: 20 },
+    { id: '1', name: 'Vue3', count: 25 },
+    { id: '2', name: 'JavaScript', count: 30 },
+    { id: '3', name: 'TypeScript', count: 18 },
+    { id: '4', name: 'Canvas', count: 12 },
+    { id: '5', name: 'CSS布局', count: 22 },
+    { id: '6', name: '前端工程化', count: 8 },
+    { id: '7', name: '极简主义', count: 15 },
+    { id: '8', name: 'Three.js', count: 5 },
+    { id: '9', name: '性能优化', count: 14 },
+    { id: '10', name: '算法', count: 6 },
+    { id: '11', name: 'Node.js', count: 10 },
+    { id: '12', name: 'Vite', count: 20 },
   ];
 
   onMounted(async () => {
