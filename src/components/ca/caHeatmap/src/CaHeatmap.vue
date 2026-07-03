@@ -16,18 +16,18 @@
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    data: null, // 默认改为 null 方便判断是否启用内部模拟
+    data: null,
     rate: null,
-    height: 220,
-    bottomHeight: 15,
+    height: 240, // 略微增加了默认高度，给底部的图例留出更充裕的纵向空间
+    bottomHeight: 18, // 略微增加底部占比，用于容纳日期和说明
     firstDayOfWeek: 1,
   });
 
   const mapWrapperRef = ref<HTMLElement | null>(null);
-  const viewBox = ref<string>(`0 0 600 220`);
+  const viewBox = ref<string>(`0 0 600 240`);
 
   const svgWidth = ref(600);
-  const svgHeight = ref(220);
+  const svgHeight = ref(240);
 
   // 组件内部自治的异步模拟数据源与加载状态
   const internalData = ref<HeatmapData>({});
@@ -62,8 +62,18 @@
   };
 
   /**
-   * 内部方法：根据渲染所需的起止时间跨度，精确生成模拟数据
+   * 核心修改：根据新的默认规则映射 level
    */
+  const getLevelByCount = (count: number): number => {
+    if (count <= 1) return 0;
+    if (count > 1 && count <= 3) return 1;
+    if (count > 3 && count <= 5) return 2;
+    if (count > 5 && count <= 10) return 3;
+    if (count > 10 && count <= 15) return 4;
+    return 5; // 大于 15 阶段
+  };
+
+  // 内部方法：根据渲染所需的起止时间跨度，精确生成模拟数据
   const generateInternalMockData = (earliestDate: Date): HeatmapData => {
     const mockData: HeatmapData = {};
     const now = new Date();
@@ -73,7 +83,6 @@
       now.getDate()
     );
 
-    // 计算从最早那周的第一天到今天一共包含多少天
     const diffTime = todayStart.getTime() - earliestDate.getTime();
     const totalDays = Math.ceil(diffTime / (24 * 60 * 60 * 1000)) + 1;
 
@@ -83,12 +92,9 @@
       );
       const dateStr = formatDateString(currentLoopDate);
 
-      const count = Math.floor(Math.random() * 31);
-      let level = 0;
-      if (count > 0 && count <= 5) level = 1;
-      else if (count > 5 && count <= 12) level = 2;
-      else if (count > 12 && count <= 22) level = 3;
-      else if (count > 22) level = 4;
+      // 模拟生成 0 ~ 25 之间的记录数据
+      const count = Math.floor(Math.random() * 26);
+      const level = getLevelByCount(count);
 
       mockData[dateStr] = {
         date: dateStr,
@@ -122,7 +128,6 @@
     const labels = [];
     let lastDisplayedMonthKey = '';
 
-    // 如果外部没有传入数据，则合并或采用内部生成的模拟数据状态
     const activeData = props.data || internalData.value;
 
     for (let c = 0; c < cols; c++) {
@@ -146,7 +151,6 @@
         );
         const dateStr = formatDateString(currentRectDate);
 
-        // 匹配外部数据源或组件自治的模拟数据源
         const cellData: HeatmapValue = activeData[dateStr] || {
           date: dateStr,
           count: 0,
@@ -194,7 +198,7 @@
           id: `label-${c}`,
           text: labelText,
           x: colXCenter,
-          y: lineYCoordinate.value + 20,
+          y: lineYCoordinate.value + 16, // 日期文本纵向位置微调
         });
       }
     }
@@ -204,14 +208,33 @@
       labels,
       size,
       gap,
-      // 将最左侧一列（即最早的一周）的第一天日期暴露出来，供初始化模拟数据使用
       earliestDate: new Date(
         lastColFirstDayTime - (cols - 1) * 7 * 24 * 60 * 60 * 1000
       ),
     };
   });
 
-  // 标记是否已经初始化过内部模拟数据，防止 resize 时重复拉取请求
+  // 计算说明图例（Legend）方块的相关配置坐标
+  const legendConfig = computed(() => {
+    const boxSize = 11; // 说明方块稍微小一点，显得精致
+    const boxGap = 4;
+    const totalBoxes = 6; // 0级 到 5级 共 6 个方块
+
+    // 图例整体的宽度
+    const legendWidth = 30 + (boxSize + boxGap) * totalBoxes + 35;
+
+    // 至于右下角
+    const startX = svgWidth.value - legendWidth;
+    const startY = lineYCoordinate.value + 22;
+
+    return {
+      startX,
+      startY,
+      boxSize,
+      boxGap,
+    };
+  });
+
   let isMockInitialized = false;
 
   const initInternalMockData = async () => {
@@ -220,12 +243,9 @@
 
     try {
       internalLoading.value = true;
-      // 精确根据视图所能容纳的最早方格日期，生成填满屏幕所需的模拟数据集
       const generatedData = generateInternalMockData(
         gridConfig.value.earliestDate
       );
-
-      // 模拟接口延迟返回
       const result = await mockApiFetch(generatedData, 800);
       internalData.value = result;
     } catch (error) {
@@ -235,15 +255,14 @@
     }
   };
 
+  // --- 处理鼠标滑过事件以精确定位 Tip ---
   const handleMouseEnter = (event: MouseEvent, cellData: HeatmapValue) => {
     const rectElement = event.currentTarget as SVRECTElement;
     if (!rectElement || !mapWrapperRef.value) return;
 
-    // 获取方格和最外层包裹容器的视口相对位置
     const rectBounds = rectElement.getBoundingClientRect();
     const containerBounds = mapWrapperRef.value.getBoundingClientRect();
 
-    // 像素差值计算：方格顶端中心点相对于包裹容器左上角的像素坐标
     tipX.value = rectBounds.left - containerBounds.left + rectBounds.width / 2;
     tipY.value = rectBounds.top - containerBounds.top;
 
@@ -267,8 +286,6 @@
           svgWidth.value = width;
           svgHeight.value = height;
           viewBox.value = `0 0 ${width} ${height}`;
-
-          // 当元素尺寸首次确定、并计算出满屏所需要的 earliestDate 后，触发异步数据的加载
           initInternalMockData();
         }
       });
@@ -310,9 +327,7 @@
               rx="2"
               class="heatmap-cell"
               @mouseenter="handleMouseEnter($event, rect.data)"
-              @mouseleave="handleMouseLeave">
-              <title>{{ rect.data.date }} : {{ rect.data.count }} 次操作</title>
-            </rect>
+              @mouseleave="handleMouseLeave" />
           </g>
 
           <line
@@ -334,7 +349,46 @@
               {{ label.text }}
             </text>
           </g>
+
+          <g class="legend-group">
+            <text
+              :x="legendConfig.startX"
+              :y="legendConfig.startY + 10"
+              class="heatmap-label legend-text"
+              text-anchor="start">
+              Less
+            </text>
+
+            <rect
+              v-for="level in [0, 1, 2, 3, 4, 5]"
+              :key="'legend-' + level"
+              :x="
+                legendConfig.startX +
+                32 +
+                level * (legendConfig.boxSize + legendConfig.boxGap)
+              "
+              :y="legendConfig.startY"
+              :width="legendConfig.boxSize"
+              :height="legendConfig.boxSize"
+              :data-level="level"
+              rx="1.5"
+              class="heatmap-cell legend-cell" />
+
+            <text
+              :x="
+                legendConfig.startX +
+                32 +
+                6 * (legendConfig.boxSize + legendConfig.boxGap) +
+                4
+              "
+              :y="legendConfig.startY + 10"
+              class="heatmap-label legend-text"
+              text-anchor="start">
+              More
+            </text>
+          </g>
         </svg>
+
         <ca-heatmap-tip
           :visible="tipVisible"
           :x="tipX"
@@ -351,7 +405,7 @@
     padding: 10px;
     position: relative;
     min-height: 100px;
-    background-color: transparent; /* 允许继承父级卡片的背景色 */
+    background-color: transparent;
   }
   .map-wrapper {
     width: 100%;
@@ -370,37 +424,55 @@
     font-size: 13px;
   }
 
+  /* 基本方格样式 */
   .heatmap-cell {
     fill: var(--color-bg-hover, #eef0f2);
     transition:
       fill 0.2s ease,
       filter 0.2s ease;
     cursor: pointer;
+    stroke: color-mix(
+      in srgb,
+      var(--color-border) 75%,
+      var(--color-text-primary)
+    );
   }
 
   .heatmap-cell:hover {
     filter: brightness(1.15);
   }
 
+  /* 核心修改：5个等级色彩梯度设计，完美支持 color-mix 的跨主题自适应 */
   .heatmap-cell[data-level='1'] {
-    fill: color-mix(in srgb, var(--color-accent) 20%, var(--color-bg, #ffffff));
+    fill: color-mix(in srgb, var(--color-accent) 15%, var(--color-bg, #ffffff));
   }
-
   .heatmap-cell[data-level='2'] {
-    fill: color-mix(in srgb, var(--color-accent) 45%, var(--color-bg, #ffffff));
+    fill: color-mix(in srgb, var(--color-accent) 35%, var(--color-bg, #ffffff));
   }
-
   .heatmap-cell[data-level='3'] {
-    fill: color-mix(in srgb, var(--color-accent) 70%, var(--color-bg, #ffffff));
+    fill: color-mix(in srgb, var(--color-accent) 55%, var(--color-bg, #ffffff));
+  }
+  .heatmap-cell[data-level='4'] {
+    fill: color-mix(in srgb, var(--color-accent) 75%, var(--color-bg, #ffffff));
+  }
+  .heatmap-cell[data-level='5'] {
+    fill: var(--color-accent); /* 第五阶段最高亮：100% 用户自定义主题色 */
   }
 
-  .heatmap-cell[data-level='4'] {
-    fill: var(--color-accent);
+  /* 图例专属样式：去除手型指针，不响应 hover 变色效果 */
+  .legend-cell {
+    cursor: default;
+  }
+  .legend-cell:hover {
+    filter: none;
+  }
+  .legend-text {
+    font-size: 11px;
+    opacity: 0.8;
   }
 
   .heatmap-label {
     font-size: 11px;
-    /* 标签颜色使用全局样式表定义的文本色或描述色 */
     fill: #64748b;
     user-select: none;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
