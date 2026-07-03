@@ -90,6 +90,14 @@
       let pathData = '';
 
       try {
+        if (geo.type === 'GeometryCollection') {
+          console.warn(`暂不支持解析 GeometryCollection 类型: ${name}`);
+          return {
+            info: null,
+            pathData: '',
+            customStyle: null,
+          }; // 或者给个空路径
+        }
         if (geo.type === 'MultiPolygon') {
           pathData = (geo.coordinates as Position[][][])
             .map((polygonCoords) => convertCoordsToPath(polygonCoords))
