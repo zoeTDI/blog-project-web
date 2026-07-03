@@ -54,7 +54,7 @@
    * 此方法能自适应外部容器的任何高宽比变化及 letterbox 留白。
    */
   const getSvgSpaceCoords = (clientX: number, clientY: number) => {
-    const svgElement = mapRef.value?.svgRef;
+    const svgElement = mapRef.value?.svgRef as SVGSVGElement | undefined;
     if (!svgElement) return { x: 0, y: 0 };
 
     const point = svgElement.createSVGPoint();
