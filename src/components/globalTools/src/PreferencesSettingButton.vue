@@ -120,19 +120,6 @@
   const lightLogoError = ref(false);
   const darkLogoError = ref(false);
 
-  watch(
-    () => formState.value.logo.source,
-    () => {
-      lightLogoError.value = false;
-    }
-  );
-  watch(
-    () => formState.value.logo.sourceDark,
-    () => {
-      darkLogoError.value = false;
-    }
-  );
-
   const homePathOptions = computed(() => {
     const routes = router.getRoutes();
     return routes
@@ -164,11 +151,22 @@
       newIndex > oldIndex ? 'slide-forward' : 'slide-backward';
   });
 
+  watch(
+    () => formState.value.logo.source,
+    () => {
+      lightLogoError.value = false;
+    }
+  );
+  watch(
+    () => formState.value.logo.sourceDark,
+    () => {
+      darkLogoError.value = false;
+    }
+  );
+
   onMounted(async () => {
     formState.value = JSON.parse(JSON.stringify(preferences));
     customFormState.value = JSON.parse(JSON.stringify(customPreferences));
-    await nextTick();
-    openDrawer();
   });
 </script>
 
