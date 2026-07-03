@@ -157,13 +157,6 @@
     preferenceManager.resetPreferences();
   };
 
-  const saveCustomFormState = () => {
-    preferenceManager.updateCustomPreferences(customFormState.value);
-  };
-  const resetCustomFormState = () => {
-    preferenceManager.resetCustomPreferences();
-  };
-
   watch(curTab, (newVal, oldVal) => {
     const oldIndex = TAB_OPTION.findIndex((o) => o.value === oldVal);
     const newIndex = TAB_OPTION.findIndex((o) => o.value === newVal);
