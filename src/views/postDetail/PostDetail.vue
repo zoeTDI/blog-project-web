@@ -222,7 +222,7 @@
             <ca-row>
               <ca-col
                 class="supple-info"
-                v-if="displaySuppleInfo">
+                v-if="displaySuppleInfo()">
                 <exclamation-triangle-icon class="icon" />
                 补充说明 / WARNING：文章上次更新时间过于久远，信息可能失效。
               </ca-col>
