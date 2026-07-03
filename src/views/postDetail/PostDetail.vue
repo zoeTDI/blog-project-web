@@ -50,6 +50,7 @@
   const handleCopy = (event: ClipboardEvent) => {
     // 1. 获取用户实际选中的文本
     const selection = window.getSelection();
+    if (!selection) return;
     const selectedText = selection.toString();
 
     // 2. 构建版权声明文本
