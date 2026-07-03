@@ -3,9 +3,8 @@ import {
   type IStorageItem,
   LocalStorageDriver,
   MemoryStorageDriver,
-  type StorageManagerOptions
-} from "@/cache";
-
+  type StorageManagerOptions,
+} from '@/cache';
 
 /**
  * 统一存储管理器
@@ -18,22 +17,25 @@ class StorageManager {
   private readonly prefix: string;
   /** 统一设置的过期时间（毫秒），null 表示永久存储 */
   private readonly ttl: number | null;
-  
+
   /**
    * 构造函数
    * @param options 配置项
    * @param options.namespace 命名空间，用于隔离不同的业务缓存，防止键名冲突
    * @param options.ttl 默认过期时间（毫秒），不传或传 undefined 则默认永久存储
    */
-  constructor(options: StorageManagerOptions = {}) {
+  constructor(options: StorageManagerOptions) {
     if (!options.namespace || options.namespace === '') {
       console.warn('存储管理没有设置命名空间，改动将会影响所有存储中心。');
+      throw new Error(
+        '[StorageManager] 构造失败：namespace 是必填参数，请传入有效的命名空间。'
+      );
     }
     this.driver = this.createDefaultStorage();
     this.prefix = options?.namespace || '';
     this.ttl = options.ttl ?? null;
   }
-  
+
   /**
    * 存储指定键的值，并自动注入过期时间
    * @template T 存储的数据类型
@@ -51,7 +53,7 @@ class StorageManager {
     };
     await this.driver.setItem<IStorageItem<T>>(fullKey, storageItem);
   }
-  
+
   /**
    * 获取指定键的值，并包含「惰性删除」的过期校验
    * @template T 期望返回的数据类型
@@ -61,21 +63,21 @@ class StorageManager {
   async getItem<T>(key: string): Promise<T | null> {
     const fullKey = this.getFullKey(key);
     const cachedItem = await this.driver.getItem<IStorageItem<T>>(fullKey);
-    
+
     // 缓存不存在
     if (!cachedItem) {
       return null;
     }
-    
+
     // 校验是否过期，若过期则触发「惰性删除」机制
     if (cachedItem.expire !== null && Date.now() > cachedItem.expire) {
       await this.removeItem(key);
       return null;
     }
-    
+
     return cachedItem.value;
   }
-  
+
   /**
    * 移除指定键及其对应的数据
    * @param key 键名（不需要带前缀）
@@ -85,31 +87,42 @@ class StorageManager {
     const fullKey = this.getFullKey(key);
     await this.driver.removeItem(fullKey);
   }
-  
+
   /**
    * 清除当前命名空间下的所有缓存数据（不影响其他命名空间）
    * @returns 异步操作的 Promise 凭证
    */
   async clear(): Promise<void> {
-    const keys = (await this.driver.keys()).filter((key: string) => key.startsWith(this.prefix));
-    await Promise.all(keys.map(async (key: string) => {
-      await this.driver.removeItem(key);
-    }));
+    const keys = (await this.driver.keys()).filter((key: string) =>
+      key.startsWith(this.prefix)
+    );
+    await Promise.all(
+      keys.map(async (key: string) => {
+        await this.driver.removeItem(key);
+      })
+    );
   }
-  
+
   /**
    * 主动扫描并清理当前命名空间下所有已经过期的数据
    * @returns 异步操作的 Promise 凭证
    */
   async clearExpired(): Promise<void> {
     const allKeys = await this.driver.keys();
-    const currentNamespaceKeys = allKeys.filter((key: string) => key.startsWith(this.prefix));
-    
+    const currentNamespaceKeys = allKeys.filter((key: string) =>
+      key.startsWith(this.prefix)
+    );
+
     await Promise.all(
       currentNamespaceKeys.map(async (fullKey: string) => {
         try {
-          const cachedItem = await this.driver.getItem<IStorageItem<unknown>>(fullKey);
-          if (cachedItem && cachedItem.expire !== null && Date.now() > cachedItem.expire) {
+          const cachedItem =
+            await this.driver.getItem<IStorageItem<unknown>>(fullKey);
+          if (
+            cachedItem &&
+            cachedItem.expire !== null &&
+            Date.now() > cachedItem.expire
+          ) {
             await this.driver.removeItem(fullKey); // 💡 之前代码里的 removeItem 没带前缀会漏删，这里改用底层 driver 物理删除
           }
         } catch (e) {
@@ -119,7 +132,7 @@ class StorageManager {
       })
     );
   }
-  
+
   /**
    * 获取当前命名空间下的所有键名列表
    * @returns 返回过滤并剥离了命名空间前缀后的纯净键名数组
@@ -130,7 +143,7 @@ class StorageManager {
       .filter((key: string) => key.startsWith(this.prefix))
       .map((key: string) => key.slice(this.prefix.length + 1));
   }
-  
+
   /**
    * 根据当前运行环境创建默认的存储驱动
    * 优先使用 LocalStorage，若在 SSR 阶段或无 window 环境则降级为内存存储驱动
@@ -143,15 +156,15 @@ class StorageManager {
       return new MemoryStorageDriver();
     }
   }
-  
+
   /**
    * 拼接命名空间前缀，获取底层驱动所需的完整键名
    * @param key 原始键名
    * @returns 拼接后的完整键名（例如: namespace-key）
    */
   private getFullKey(key: string): string {
-    return (this.prefix && this.prefix !== '') ? `${this.prefix}-${key}` : key;
+    return this.prefix && this.prefix !== '' ? `${this.prefix}-${key}` : key;
   }
 }
 
-export {StorageManager};
+export { StorageManager };
