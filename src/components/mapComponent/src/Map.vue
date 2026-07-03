@@ -37,7 +37,7 @@
     (e: 'dblclick-city', cityInfo: CityInfo): void;
   }>();
 
-  const { t, locale } = useI18n();
+  const { locale } = useI18n();
 
   const WIDTH = 800;
   const HEIGHT = 600;
