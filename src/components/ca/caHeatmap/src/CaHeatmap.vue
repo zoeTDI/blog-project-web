@@ -351,6 +351,7 @@
     padding: 10px;
     position: relative;
     min-height: 100px;
+    background-color: transparent; /* 允许继承父级卡片的背景色 */
   }
   .map-wrapper {
     width: 100%;
@@ -369,30 +370,37 @@
     font-size: 13px;
   }
 
-  /* 基本方格样式 */
   .heatmap-cell {
-    fill: #eef0f2;
-    transition: fill 0.2s ease;
+    fill: var(--color-bg-hover, #eef0f2);
+    transition:
+      fill 0.2s ease,
+      filter 0.2s ease;
+    cursor: pointer;
   }
+
   .heatmap-cell:hover {
-    filter: brightness(0.85);
+    filter: brightness(1.15);
   }
 
   .heatmap-cell[data-level='1'] {
-    fill: #acd5f2;
+    fill: color-mix(in srgb, var(--color-accent) 20%, var(--color-bg, #ffffff));
   }
+
   .heatmap-cell[data-level='2'] {
-    fill: #7fa8d9;
+    fill: color-mix(in srgb, var(--color-accent) 45%, var(--color-bg, #ffffff));
   }
+
   .heatmap-cell[data-level='3'] {
-    fill: #4f7bc1;
+    fill: color-mix(in srgb, var(--color-accent) 70%, var(--color-bg, #ffffff));
   }
+
   .heatmap-cell[data-level='4'] {
-    fill: #1f4ea8;
+    fill: var(--color-accent);
   }
 
   .heatmap-label {
     font-size: 11px;
+    /* 标签颜色使用全局样式表定义的文本色或描述色 */
     fill: #64748b;
     user-select: none;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;

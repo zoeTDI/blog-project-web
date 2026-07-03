@@ -31,17 +31,27 @@
     position: absolute;
     transform: translate(-50%, -100%);
     margin-top: -8px;
-    background: rgba(15, 23, 42, 0.9);
-    color: #ffffff;
+    background: color-mix(
+      in srgb,
+      var(--color-text-primary, #000000) 92%,
+      var(--color-bg, #ffffff)
+    );
+    color: var(--color-bg, #ffffff);
     padding: 6px 10px;
+    border: 1px solid
+      color-mix(in srgb, var(--color-text-primary) 15%, transparent);
     border-radius: 4px;
     font-size: 12px;
     white-space: nowrap;
     z-index: 999;
     box-shadow:
-      0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      0 4px 12px -2px rgba(0, 0, 0, 0.15),
+      0 2px 6px -1px rgba(0, 0, 0, 0.1);
     pointer-events: none;
+    transition:
+      background-color 0.3s,
+      color 0.3s,
+      border-color 0.3s;
   }
 
   .tip-content {
@@ -51,27 +61,47 @@
   }
 
   .tip-date {
-    color: #94a3b8;
+    color: color-mix(in srgb, var(--color-bg, #ffffff) 65%, transparent);
     font-size: 11px;
   }
 
   .tip-count {
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .tip-arrow {
     position: absolute;
-    bottom: -4px;
+    bottom: -6px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid rgba(15, 23, 42, 0.9);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid
+      color-mix(
+        in srgb,
+        var(--color-text-primary, #000000) 92%,
+        var(--color-bg, #ffffff)
+      );
   }
 
-  /* 动画效果 */
+  .tip-arrow::after {
+    content: '';
+    position: absolute;
+    bottom: 1px;
+    left: -6px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid
+      color-mix(
+        in srgb,
+        var(--color-text-primary, #000000) 92%,
+        var(--color-bg, #ffffff)
+      );
+    z-index: -1;
+  }
+
   .fade-enter-active,
   .fade-leave-active {
     transition:
