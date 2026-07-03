@@ -9,12 +9,14 @@
   import CaTimeLine from '@/components/ca/caTimeline/src/CaTimeLine.vue';
   import type { TimelineGroup } from '@/components/ca/caTimeline';
   import { mockApiFetch } from '@/utils/mock.ts';
+  // @ts-ignore
   import { escapeHtml } from 'markdown-it/lib/common/utils';
 
   const route = useRoute();
   const queryValue = ref<string>('');
 
   const fetchSearchResult = async (params: object) => {
+    console.log('🚀 ~ fetchSearchResult ~ params: ', params);
     const rawData = await mockApiFetch(
       [
         {
