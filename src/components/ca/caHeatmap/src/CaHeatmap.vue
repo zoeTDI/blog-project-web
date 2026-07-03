@@ -5,12 +5,15 @@
     rate?: number | null;
     height?: number;
     bottomHeight?: number;
+    // 新增字段：设置星期的第一天（0: 周日, 1: 周一, 2: 周二, ..., 6: 周六）
+    firstDayOfWeek?: number;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     rate: null,
     height: 220,
     bottomHeight: 10,
+    firstDayOfWeek: 1, // 默认星期一为第一天
   });
 
   const mapWrapperRef = ref<HTMLElement | null>(null);
@@ -21,10 +24,23 @@
 
   let observer: ResizeObserver | null = null;
 
+  // 分隔线的绝对 Y 坐标
   const lineYCoordinate = computed(() => {
     return svgHeight.value * (1 - props.bottomHeight / 100);
   });
 
+  // 获取今天在当前自定义星期排列下的索引位置 (0 到 6)
+  const todayGridIndex = computed(() => {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 (周日) 到 6 (周六)
+
+    // 计算今天对应当前周设置的第几天
+    // 例如：如果 firstDayOfWeek 是 1 (周一)，今天周一(1)，则结果为 0
+    // 如果今天周日(0)，则结果为 (0 - 1 + 7) % 7 = 6
+    return (dayOfWeek - props.firstDayOfWeek + 7) % 7;
+  });
+
+  // 动态计算方格的尺寸和布局
   const gridConfig = computed(() => {
     const gapRatio = 0.15;
     const rows = 7; // 固定 7 行
@@ -32,11 +48,20 @@
     const size = lineYCoordinate.value / (rows + rows * gapRatio);
     const gap = size * gapRatio;
 
+    // 计算总列数
     const cols = Math.floor((svgWidth.value + gap) / (size + gap));
 
     const rects = [];
     for (let c = 0; c < cols; c++) {
       for (let r = 0; r < rows; r++) {
+        // 判断是否为最后一列（即本周）
+        const isLastColumn = c === cols - 1;
+
+        // 如果是最后一列，并且当前行的索引大于今天的索引，说明是本周的未来日期，直接跳过不绘制
+        if (isLastColumn && r > todayGridIndex.value) {
+          continue;
+        }
+
         rects.push({
           id: `${c}-${r}`,
           x: c * (size + gap),
