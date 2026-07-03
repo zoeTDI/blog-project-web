@@ -103,14 +103,19 @@
     return val;
   };
 
-  const fetchData = async (year: number, month: number): Promise<TodoData> => {
+  const fetchData = async (
+    year: number,
+    month: number
+  ): Promise<TodoData | null> => {
     //   todo 未来在此处调用数据获取api
     try {
       console.info('触发请求');
+      console.info('请求参数：year ', year, ' month ', month);
       return {} as TodoData;
     } catch (error) {
       // 消息组件，会在屏幕上弹出一个消息通知，3秒后消失
       caMessage.error('获取数据失败');
+      return null;
     }
   };
 
