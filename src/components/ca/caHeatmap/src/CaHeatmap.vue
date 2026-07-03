@@ -1,7 +1,11 @@
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, ref } from 'vue';
   import { mockApiFetch } from '@/utils/mock.ts';
-  import type { HeatmapData, HeatmapValue } from '@/components/ca/caHeatmap';
+  import {
+    CaHeatmapTip,
+    type HeatmapData,
+    type HeatmapValue,
+  } from '@/components/ca/caHeatmap';
 
   interface Props {
     data?: HeatmapData | null; // 允许外部不传或传空，若为空则启用组件内挂载时的模拟数据
@@ -30,6 +34,12 @@
   const internalLoading = ref(false);
 
   let observer: ResizeObserver | null = null;
+
+  // --- Tip 状态相关变量 ---
+  const tipVisible = ref(false);
+  const tipX = ref(0);
+  const tipY = ref(0);
+  const tipActiveData = ref<HeatmapValue | null>(null);
 
   // 分隔线的绝对 Y 坐标
   const lineYCoordinate = computed(() => {
@@ -225,6 +235,26 @@
     }
   };
 
+  const handleMouseEnter = (event: MouseEvent, cellData: HeatmapValue) => {
+    const rectElement = event.currentTarget as SVRECTElement;
+    if (!rectElement || !mapWrapperRef.value) return;
+
+    // 获取方格和最外层包裹容器的视口相对位置
+    const rectBounds = rectElement.getBoundingClientRect();
+    const containerBounds = mapWrapperRef.value.getBoundingClientRect();
+
+    // 像素差值计算：方格顶端中心点相对于包裹容器左上角的像素坐标
+    tipX.value = rectBounds.left - containerBounds.left + rectBounds.width / 2;
+    tipY.value = rectBounds.top - containerBounds.top;
+
+    tipActiveData.value = cellData;
+    tipVisible.value = true;
+  };
+
+  const handleMouseLeave = () => {
+    tipVisible.value = false;
+  };
+
   onMounted(async () => {
     if (mapWrapperRef.value) {
       observer = new ResizeObserver((entries) => {
@@ -278,7 +308,9 @@
               :height="rect.size"
               :data-level="rect.data.level"
               rx="2"
-              class="heatmap-cell">
+              class="heatmap-cell"
+              @mouseenter="handleMouseEnter($event, rect.data)"
+              @mouseleave="handleMouseLeave">
               <title>{{ rect.data.date }} : {{ rect.data.count }} 次操作</title>
             </rect>
           </g>
@@ -303,6 +335,11 @@
             </text>
           </g>
         </svg>
+        <ca-heatmap-tip
+          :visible="tipVisible"
+          :x="tipX"
+          :y="tipY"
+          :data="tipActiveData" />
       </div>
     </div>
   </div>
@@ -317,6 +354,7 @@
   }
   .map-wrapper {
     width: 100%;
+    position: relative;
   }
   svg {
     width: 100%;
@@ -337,7 +375,7 @@
     transition: fill 0.2s ease;
   }
   .heatmap-cell:hover {
-    filter: brightness(0.9);
+    filter: brightness(0.85);
   }
 
   .heatmap-cell[data-level='1'] {
