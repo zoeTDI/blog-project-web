@@ -21,6 +21,7 @@ const parseToHexColor = (value: any): string | null => {
     }
     return `#${hex}`;
   }
+  return null;
 };
 
 export { parseToHexColor };

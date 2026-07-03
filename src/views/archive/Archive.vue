@@ -3,7 +3,7 @@
   import { CaRow } from '@/components/ca/CaRow';
   import { CaCol } from '@/components/ca/caCol';
   import { CaSection } from '@/components/ca/caSection';
-  import { TagCloud } from '@/components/tagCloud';
+  import { type Tag, TagCloud } from '@/components/tagCloud';
   import { CaList, CaListItem } from '@/components/ca/caList';
   import { CaTimeline } from '@/components/ca/caTimeline';
   import { useRouter } from 'vue-router';
@@ -130,11 +130,7 @@
   const height = 280;
 
   const router = useRouter();
-  const handleTagClick = (value: {
-    id: string;
-    name: string;
-    count: number;
-  }) => {
+  const handleTagClick = (value: Tag) => {
     console.log('🚀 ~ handleTagClick ~ value: ', value);
 
     router.push({ name: ROUTER_NAMES.TAG_DETAIL, params: { ...value } });

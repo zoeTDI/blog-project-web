@@ -1,11 +1,6 @@
 <script setup lang="ts">
   import { onMounted, ref, watch, onUnmounted, nextTick } from 'vue';
-
-  interface Tag {
-    id: number;
-    name: string;
-    count: number;
-  }
+  import type { Tag } from '@/components/tagCloud';
 
   const props = withDefaults(
     defineProps<{

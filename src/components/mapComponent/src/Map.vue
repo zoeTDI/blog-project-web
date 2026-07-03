@@ -92,11 +92,21 @@
       try {
         if (geo.type === 'GeometryCollection') {
           console.warn(`暂不支持解析 GeometryCollection 类型: ${name}`);
+
+          // 先构建出合法的 cityInfo，确保 info 属性不为 null
+          const rawCenter = feature.properties?.center as [number, number];
+          const cityInfo: CityInfo = {
+            adcode,
+            name,
+            center: rawCenter,
+            properties: feature.properties,
+          };
+
           return {
-            info: null,
-            pathData: '',
-            customStyle: null,
-          }; // 或者给个空路径
+            info: cityInfo, // 保持满足类型
+            pathData: '', // 空路径，不会在画布上渲染出任何东西
+            customStyle: props.cityStyle(cityInfo), // 正常执行或给空对象 {}
+          };
         }
         if (geo.type === 'MultiPolygon') {
           pathData = (geo.coordinates as Position[][][])

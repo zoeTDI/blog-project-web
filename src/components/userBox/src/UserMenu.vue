@@ -220,7 +220,7 @@
     right: 0;
     width: 12px;
     height: 12px;
-    background-color: var(#34d399); /* 尝试使用全局成功色，没有则用原色 */
+    background-color: #34d399; /* 尝试使用全局成功色，没有则用原色 */
     border: 2px solid var(--color-container-bg); /* 边框颜色与菜单背景一致，实现镂空效果 */
     border-radius: 50%;
   }

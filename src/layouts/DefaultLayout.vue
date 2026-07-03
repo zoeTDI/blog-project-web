@@ -1,14 +1,7 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
-  import CaSwitch, { type SwitchOption } from '@/components/ca/caSwitch';
-  import { MoonIcon, SunIcon } from '@heroicons/vue/24/outline';
   import { CaInkTree } from '@/components/background/caInkTree';
   import { CaSearch } from '@/components/ca/caSearch';
-  import {
-    preferenceManager,
-    preferences,
-    type ThemeModeOptions,
-  } from '@/core/preferences';
+  import { preferences } from '@/core/preferences';
   import {
     GlobalTools,
     LanguageButton,

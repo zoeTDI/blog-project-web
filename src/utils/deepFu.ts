@@ -1,4 +1,4 @@
-import {isObject} from "@/utils/isFu.ts";
+import { isObject } from '@/utils/isFu.ts';
 
 /**
  * 深度合并两个或多个对象（右侧优先覆盖）
@@ -6,23 +6,34 @@ import {isObject} from "@/utils/isFu.ts";
  * @param sources 一个或多个用于合并的源对象
  * @returns 合并后的深层类型对象
  */
-export const deepMerge = (target, ...sources) => {
+export const deepMerge = <T extends Record<string, any>>(
+  target: T,
+  ...sources: any[]
+): T => {
+  // 👈 显式声明返回类型为 T，解决 TS7023
   if (!sources.length) return target;
+
   const source = sources.shift();
+
   if (isObject(target) && isObject(source)) {
     for (const key in source) {
       if (key === '__proto__' || key === 'constructor') {
         continue;
       }
-      if (isObject(source[key])) {
-        if (!target[key]) {
-          Object.assign(target, {[key]: {}});
+
+      // 使用类型断言安全地在泛型对象上读写键值
+      const targetObj = target as Record<string, any>;
+      const sourceObj = source as Record<string, any>;
+
+      if (isObject(sourceObj[key])) {
+        if (!targetObj[key]) {
+          Object.assign(targetObj, { [key]: {} });
         }
-        deepMerge(target[key], source[key]);
+        deepMerge(targetObj[key], sourceObj[key]);
       } else {
-        Object.assign(target, {[key]: source[key]})
+        Object.assign(targetObj, { [key]: sourceObj[key] });
       }
     }
   }
   return deepMerge(target, ...sources);
-}
+};
