@@ -3,7 +3,7 @@
     radius?: number;
     alt?: string;
     url: string;
-    errorUrl: string;
+    errorUrl?: string;
     size?: number;
   }
   const props = withDefaults(defineProps<Props>(), {
