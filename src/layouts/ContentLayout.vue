@@ -1,53 +1,128 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { BaseLayoutHeader } from '@/components/baseLayout';
+  import { WebsiteSummary } from '@/components/websiteSummary';
+  import {
+    GlobalTools,
+    LanguageButton,
+    ThemeButton,
+    TimezoneButton,
+  } from '@/components/globalTools';
+  import { preferences } from '@/core/preferences';
+  import { CaSearch } from '@/components/ca/caSearch';
+
+  interface SidebarOption {
+    isShow?: boolean;
+    width?: number;
+  }
+
+  interface Props {
+    left?: SidebarOption;
+    right?: SidebarOption;
+  }
+  withDefaults(defineProps<Props>(), {
+    left: () => ({ isShow: true }),
+    right: () => ({ isShow: true }),
+  });
+</script>
 
 <template>
   <div class="content-layout">
-    <aside class="sidebar-left">
-      <slot name="sidebar-left">
-        <div class="default-sidebar">Sidebar Left</div>
-      </slot>
-    </aside>
+    <header class="header">
+      <base-layout-header>
+        <template #logo>
+          <website-summary />
+        </template>
+        <template #action>
+          <global-tools>
+            <theme-button
+              v-if="preferences.widgetPreferences.themeToggle"
+              shape="circle" />
+            <language-button
+              v-if="preferences.widgetPreferences.languageToggle"
+              shape="circle" />
+            <timezone-button
+              v-if="preferences.widgetPreferences.timezoneToggle"
+              shape="circle" />
+          </global-tools>
+          <ca-search
+            type="expand"
+            src="topNav" />
+        </template>
+      </base-layout-header>
+    </header>
     <main class="main-content">
-      <slot name="content"></slot>
+      <aside
+        class="sidebar-left"
+        :style="
+          typeof left.width === 'number' ? { width: `${left.width}px` } : {}
+        "
+        v-if="left?.isShow">
+        <slot name="sidebar-left"></slot>
+      </aside>
+      <section class="content-container">
+        <slot name="content"> </slot>
+      </section>
+      <aside
+        class="sidebar-right"
+        :style="
+          typeof right.width === 'number' ? { width: `${right.width}px` } : {}
+        "
+        v-if="right?.isShow">
+        <slot name="sidebar-right"></slot>
+      </aside>
     </main>
-    <aside class="sidebar-right">
-      <slot name="sidebar-right">
-        <div class="default-sidebar">Sidebar Right</div>
-      </slot>
-    </aside>
   </div>
 </template>
 
 <style scoped>
   .content-layout {
     display: flex;
-    width: 100vw;
-    height: 100vh;
-    background-color: #f5f7f9;
+    flex-direction: column;
     overflow: hidden;
+    width: 100svw;
+    height: 100svh;
+    max-height: 100svh;
+    background-color: var(--color-container-bg);
+    color: var(--color-text-primary);
+  }
+
+  .content-layout * {
+    outline: 1px dashed #aaa;
+  }
+
+  .header {
+    flex: 0 1 10%;
+    padding: 40px 60px;
+  }
+
+  .main-content {
+    display: flex;
+    justify-content: space-between;
+    flex: 1 1 auto;
+    overflow-y: scroll;
+    scrollbar-width: none;
   }
 
   .sidebar-right,
   .sidebar-left {
-    width: 280px;
-    height: 100%;
-    background-color: #ffffff;
+    overflow: scroll;
+    background-color: var(--color-container-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-text);
+    scrollbar-width: none;
+  }
+  .sidebar-left {
     border-right: 1px solid #e8e8e8;
-    padding: 24px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  }
+  .sidebar-right {
+    border-left: 1px solid #e8e8e8;
   }
 
-  .main-content {
-    flex: 1;
+  .content-container {
+    width: 100%;
     height: 100%;
-    padding: 24px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    font-family: var(--font-text);
   }
 </style>
