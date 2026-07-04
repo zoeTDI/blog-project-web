@@ -1,11 +1,12 @@
 <script setup lang="ts">
   import type { ButtonProps } from '@/components/globalTools';
-  import { computed, nextTick, onMounted, ref, watch } from 'vue';
+  import { computed, onMounted, ref, watch } from 'vue';
   import { CaDrawer } from '@/components/ca/caDrawer';
   import { Cog8ToothIcon } from '@heroicons/vue/24/outline';
   import CaSwitch, { type SwitchOption } from '@/components/ca/caSwitch';
   import {
     customPreferences,
+    customPreferencesExtension,
     type CustomPreferencesRecord,
     preferenceManager,
     preferences,
@@ -32,6 +33,7 @@
     { value: 'theme', label: '主题设置' },
     { value: 'transition', label: '动画设置' },
     { value: 'widgetPreferences', label: '功能设置' },
+    { value: 'custom', label: customPreferencesExtension.tabLabel },
   ] as const;
   const THEME_OPTION: SwitchOption[] = [
     { value: 'light', label: '明亮模式' },
@@ -139,9 +141,11 @@
 
   const saveFormState = () => {
     preferenceManager.updatePreferences(formState.value);
+    preferenceManager.updateCustomPreferences(customFormState.value);
   };
   const resetFormState = () => {
     preferenceManager.resetPreferences();
+    preferenceManager.resetCustomPreferences();
   };
 
   watch(curTab, (newVal, oldVal) => {
@@ -745,13 +749,11 @@
                         <br />
                       </div>
                     </div>
-                  </ca-col>
-                  <ca-col :span="24">
                     <p class="field-tip">
-                      请输入合法的 CSS 颜色值，例如：#1677ff、rgba(0,0,0,0.5) 或
-                      blue
+                      请输入十六进制的 CSS 颜色值，例如：#1677ff
                     </p>
                   </ca-col>
+                  <!-- <ca-col :span="24"> </ca-col> -->
                 </ca-row>
               </div>
             </section>
@@ -852,6 +854,57 @@
                 </ca-row>
               </div>
             </section>
+            <section
+              class="tab-section"
+              v-show="curTab === TAB_OPTION[10].value"
+              :key="TAB_OPTION[10].value"
+              :id="TAB_OPTION[10].value">
+              <ca-row :gap="20">
+                <ca-col
+                  v-for="field in customPreferencesExtension.fields"
+                  :key="field.key"
+                  :span="24">
+                  <div class="form-item">
+                    <label>{{ field.label }}</label>
+                    <template v-if="field.component === 'switch'">
+                      <input
+                        type="checkbox"
+                        v-model="customFormState[field.key]" />
+                    </template>
+
+                    <template v-else-if="field.component === 'select'">
+                      <select v-model="customFormState[field.key]">
+                        <option
+                          v-for="opt in field.options"
+                          :key="opt.value"
+                          :value="opt.value">
+                          {{ opt.label }}
+                        </option>
+                      </select>
+                    </template>
+
+                    <template v-else-if="field.component === 'number'">
+                      <input
+                        type="number"
+                        v-model.number="customFormState[field.key]"
+                        v-bind="field.componentProps" />
+                    </template>
+
+                    <template v-else>
+                      <input
+                        type="text"
+                        v-model="customFormState[field.key]"
+                        :placeholder="field.placeholder" />
+                    </template>
+                    <p
+                      v-if="field.tip"
+                      class="field-tip">
+                      {{ field.tip }}
+                    </p>
+                  </div>
+                </ca-col>
+              </ca-row>
+            </section>
           </transition-group>
         </div>
       </div>
@@ -865,6 +918,17 @@
   .preferences-setting-container {
     width: 100%;
     max-width: 800px;
+  }
+
+  .header {
+    width: 100%;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .header::-webkit-scrollbar {
+    display: none;
   }
 
   .tab-container {
@@ -1000,6 +1064,14 @@
 
   .form-item input::placeholder {
     color: #bfbfbf;
+  }
+
+  .field-tip {
+    font-size: 12px;
+    color: var(--color-text-primary);
+    margin-top: -8px;
+    margin-left: 5px;
+    margin-bottom: 12px;
   }
 
   .color-input-wrapper {
