@@ -2,14 +2,19 @@
 
 <template>
   <div class="content-layout">
-    <aside class="sidebar">
-      <slot name="sidebar">
-        <div class="default-sidebar">Sidebar</div>
+    <aside class="sidebar-left">
+      <slot name="sidebar-left">
+        <div class="default-sidebar">Sidebar Left</div>
       </slot>
     </aside>
     <main class="main-content">
       <slot name="content"></slot>
     </main>
+    <aside class="sidebar-right">
+      <slot name="sidebar-right">
+        <div class="default-sidebar">Sidebar Right</div>
+      </slot>
+    </aside>
   </div>
 </template>
 
@@ -22,7 +27,8 @@
     overflow: hidden;
   }
 
-  .sidebar {
+  .sidebar-right,
+  .sidebar-left {
     width: 280px;
     height: 100%;
     background-color: #ffffff;
