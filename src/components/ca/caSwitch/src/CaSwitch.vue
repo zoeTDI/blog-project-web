@@ -10,7 +10,6 @@
   } from 'vue';
   import type { SwitchOption } from './types.ts';
   import type { ComponentSize } from '#/component.ts';
-  import caSwitch from '@/components/ca/caSwitch';
 
   const props = withDefaults(
     defineProps<{
@@ -157,13 +156,27 @@
     position: relative;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 2px;
     border-radius: 5000em;
     padding: 2px 4px;
     height: 30px;
 
     background: var(--color-bg);
+
+    overflow-x: auto;
+    white-space: nowrap;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ca-switch::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ca-switch > div {
+    flex-shrink: 0;
   }
 
   .slide,
