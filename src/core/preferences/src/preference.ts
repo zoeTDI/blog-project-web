@@ -12,7 +12,8 @@ import { StorageManager } from '@/cache';
 import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
 import { markRaw, reactive, readonly } from 'vue';
 import { deepMerge } from '@/utils/deepFu.ts';
-import type { DeepPartial } from '@/types/deepType';
+
+import type { DeepPartial } from '#/utils';
 
 const STORAGE_KEYS = {
   CUSTOM: 'preferences-custom',

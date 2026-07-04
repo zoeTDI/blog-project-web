@@ -2,7 +2,7 @@ import {
   type ThemeModeOptions,
   type ThemePreferences,
 } from '@/core/preferences';
-import type { DeepPartial } from '@/types/deepType';
+import type { DeepPartial } from '#/utils';
 
 const updateThemeMode = (themePreferences: DeepPartial<ThemePreferences>) => {
   if (Object.keys(themePreferences).includes('mode')) {
