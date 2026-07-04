@@ -179,6 +179,20 @@
       <cog8-tooth-icon class="icon" />
     </button>
     <ca-drawer ref="caDrawerRef">
+      <template #header>
+        <div class="btns">
+          <ca-button
+            type="primary"
+            @click="resetFormState"
+            >重置偏好设置</ca-button
+          >
+          <ca-button
+            type="primary"
+            @click="saveFormState"
+            >保存偏好设置</ca-button
+          >
+        </div>
+      </template>
       <div class="preferences-setting-container">
         <header class="header">
           <ca-switch
@@ -840,18 +854,6 @@
             </section>
           </transition-group>
         </div>
-        <footer class="btns">
-          <ca-button
-            type="primary"
-            @click="resetFormState"
-            >重置偏好设置</ca-button
-          >
-          <ca-button
-            type="primary"
-            @click="saveFormState"
-            >保存偏好设置</ca-button
-          >
-        </footer>
       </div>
     </ca-drawer>
   </div>
