@@ -6,10 +6,16 @@
   const props = withDefaults(defineProps<SimpleIconProps>(), {
     size: 24,
     color: '',
+    colored: false,
   });
   const fillColor = computed(() => {
-    const propsColor = parseToHexColor(props.color);
-    return propsColor ? props.color : `#${props.icon.hex}`;
+    if (props.color && parseToHexColor(props.color)) {
+      return props.color;
+    }
+    if (props.colored) {
+      return `#${props.icon.hex}`;
+    }
+    return 'currentColor';
   });
 </script>
 
