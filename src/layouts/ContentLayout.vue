@@ -86,10 +86,6 @@
     color: var(--color-text-primary);
   }
 
-  .content-layout * {
-    outline: 1px dashed #aaa;
-  }
-
   .header {
     flex: 0 1 10%;
     padding: 40px 60px;
