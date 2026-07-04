@@ -78,12 +78,19 @@
 /* 默认变量（浅色模式） */
 :root {
   --app-accent-color: unset;
+  /*单列布局页面的宽度和内间距*/
   --content-max-width-S: 800px;
   --content-max-width-M: 1000px;
   --content-max-width-L: 1200px;
   --content-padding-S: 20px 10px;
   --content-padding-M: 40px 20px;
   --content-padding-L: 60px 40px;
+
+  /*三列布局页面的宽度和内间距*/
+  --layout-3col-max-width: 1600px;
+  --layout-3col-sidebar-basis: 25%;
+  --layout-3col-sidebar-min-w: 260px;
+  --layout-3col-sidebar-max-w: 380px;
 
   --font-text: system-ui, 'Segoe UI', Roboto, sans-serif;
   --font-h: "Source Serif 4", "Noto Serif SC", "Georgia", serif;
