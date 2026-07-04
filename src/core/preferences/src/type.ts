@@ -1,10 +1,11 @@
+import type { ValueOf } from '#/utils';
+
 export const SUPPORT_LANGUAGE_OPTIONS = {
   zh_CN: 'zh-CN',
   en_US: 'en-US',
 } as const;
 
-export type SupportLanguageOption =
-  (typeof SUPPORT_LANGUAGE_OPTIONS)[keyof typeof SUPPORT_LANGUAGE_OPTIONS];
+export type SupportLanguageOption = ValueOf<typeof SUPPORT_LANGUAGE_OPTIONS>;
 
 export type ThemeModeOptions = 'light' | 'dark';
 
@@ -34,8 +35,9 @@ export const TIMEZONE_OPTIONS = {
   Pacific_Auckland: 'Pacific/Auckland',
 } as const;
 
-export type TimezoneOption =
-  (typeof TIMEZONE_OPTIONS)[keyof typeof TIMEZONE_OPTIONS];
+export type TimezoneOption = ValueOf<typeof TIMEZONE_OPTIONS>;
+
+// 核心偏好设置结构
 
 export interface AppPreferences {
   /**
@@ -303,6 +305,7 @@ export interface Preferences {
   widgetPreferences: WidgetPreferences;
 }
 
+// 字段渲染组件类型定义
 interface BaseCustomPreferencesField<
   TKey extends string = string,
   TValue extends CustomPreferencesValue = CustomPreferencesValue,
@@ -346,29 +349,39 @@ interface CustomPreferencesSwitchField<
   component: 'switch';
 }
 
+/**
+ * 所有可用组件的并集，用于通用渲染逻辑
+ */
 type AnyCustomPreferencesField =
   | CustomPreferencesInputField
   | CustomPreferencesNumberField
   | CustomPreferencesSelectField
   | CustomPreferencesSwitchField;
 
-type CustomPreferencesField<
-  TCustomPreferences extends object = CustomPreferencesRecord,
-> =
-  string extends Extract<keyof TCustomPreferences, string>
-    ? AnyCustomPreferencesField
-    : {
-        [K in Extract<
-          keyof TCustomPreferences,
-          string
-        >]: TCustomPreferences[K] extends boolean
-          ? CustomPreferencesSwitchField<K>
-          : TCustomPreferences[K] extends number
-            ? CustomPreferencesNumberField<K>
-            : TCustomPreferences[K] extends string
-              ? CustomPreferencesInputField<K> | CustomPreferencesSelectField<K>
-              : never;
-      }[Extract<keyof TCustomPreferences, string>];
+/**
+ * 自动化类型映射逻辑 (元编程)
+ *
+ * 根据传入的对象类型，自动推导出对应的 Field 集合
+ */
+type MapField<K extends string, V> = V extends boolean
+  ? CustomPreferencesSwitchField<K>
+  : V extends number
+    ? CustomPreferencesNumberField<K>
+    : V extends string
+      ? CustomPreferencesInputField<K> | CustomPreferencesSelectField<K>
+      : never;
+
+export type CustomPreferencesField<TCustomPreferences extends object> = {
+  [K in keyof TCustomPreferences & string]: MapField<K, TCustomPreferences[K]>;
+}[keyof TCustomPreferences & string];
+
+/**
+ * 业务契约
+ *
+ * 面向具体业务使用的接口定义
+ */
+export type CustomPreferencesValue = boolean | number | string;
+export type CustomPreferencesRecord = Record<string, CustomPreferencesValue>;
 
 export interface PreferencesExtension<
   TCustomPreference extends object = CustomPreferencesRecord,
@@ -377,7 +390,3 @@ export interface PreferencesExtension<
   tabLabel: string;
   title?: string;
 }
-
-type CustomPreferencesValue = boolean | number | string;
-
-export type CustomPreferencesRecord = Record<string, CustomPreferencesValue>;
