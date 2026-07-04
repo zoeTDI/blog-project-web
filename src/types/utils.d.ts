@@ -11,3 +11,10 @@ export type ValueOf<T> = T[keyof T];
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
+
+/**
+ * 强制非空类型
+ * 从类型 T 中剔除掉 null 和 undefined
+ * 如果 T 本身就是 null 或 undefined，则返回 never
+ */
+export type NonNullable<T> = T extends null | undefined ? never : T;
