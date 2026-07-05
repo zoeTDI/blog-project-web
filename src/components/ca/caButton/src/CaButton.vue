@@ -33,7 +33,6 @@
 
   // 计算类名
   const buttonClasses = computed(() => [
-    'ca-button',
     `is-${props.type}`,
     `is-${props.size}`,
     {
@@ -48,6 +47,7 @@
 
 <template>
   <button
+    class="ca-button"
     :type="nativeType"
     :class="buttonClasses"
     :disabled="disabled || loading"
@@ -90,7 +90,6 @@
     position: relative;
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     overflow: hidden;
-    white-space: nowrap;
     gap: 8px;
   }
 
