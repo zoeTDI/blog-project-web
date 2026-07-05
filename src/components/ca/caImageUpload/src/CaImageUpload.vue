@@ -48,10 +48,6 @@
 
   const triggerReplace = (index: number) => {
     replaceIndex.value = index;
-    console.log(
-      '🚀 ~ triggerReplace ~ replaceInputRef.value: ',
-      replaceInputRef.value
-    );
     replaceInputRef.value?.click();
   };
 
@@ -74,7 +70,7 @@
     }
   };
 
-  defineExpose<CaImageUploadExpose>({ clearFiles });
+  defineExpose<CaImageUploadExpose>({ clearFiles});
 </script>
 
 <template>
@@ -89,15 +85,15 @@
       name="list"
       tag="div"
       class="upload-list">
+      <ca-image-uploader-trigger
+        v-if="showTrigger"
+        @files-selected="handleFilesSelected" />
       <ca-image-preview-item
         v-for="(item, index) in files"
         :key="item.id"
         :item="item"
         @remove="handleRemove(index)"
         @reupload="triggerReplace(index)" />
-      <ca-image-uploader-trigger
-        v-if="showTrigger"
-        @files-selected="handleFilesSelected" />
     </transition-group>
   </div>
 </template>
