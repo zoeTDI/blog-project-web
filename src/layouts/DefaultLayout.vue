@@ -16,7 +16,9 @@
   <div class="app-wrapper">
     <CaInkTree />
 
-    <header class="layout-header">
+    <header
+      class="layout-header"
+      v-if="preferences.header.enable">
       <base-layout-header>
         <template #logo>
           <website-summary />
@@ -44,7 +46,9 @@
       <router-view />
     </main>
 
-    <footer class="layout-footer">
+    <footer
+      class="layout-footer"
+      v-if="preferences.footer.enable">
       <base-layout-footer />
     </footer>
   </div>

@@ -21,28 +21,10 @@
 
 <template>
   <div :class="['content-layout', mode]">
-    <header class="header">
-      <base-layout-header>
-        <template #logo>
-          <website-summary />
-        </template>
-        <template #action>
-          <global-tools>
-            <theme-button
-              v-if="preferences.widgetPreferences.themeToggle"
-              shape="circle" />
-            <language-button
-              v-if="preferences.widgetPreferences.languageToggle"
-              shape="circle" />
-            <timezone-button
-              v-if="preferences.widgetPreferences.timezoneToggle"
-              shape="circle" />
-          </global-tools>
-          <ca-search
-            type="expand"
-            src="topNav" />
-        </template>
-      </base-layout-header>
+    <header
+      class="header"
+      v-if="preferences.header.enable">
+      <slot name="header" />
     </header>
     <main class="main-content">
       <aside
