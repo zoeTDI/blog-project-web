@@ -157,10 +157,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 2px;
+    gap: 20px;
     border-radius: 5000em;
     padding: 2px 4px;
-    height: 30px;
 
     background: var(--color-bg);
 
