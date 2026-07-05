@@ -270,12 +270,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
   }
   section .day .label {
     width: 100%;
     font-size: 16px;
     text-align: center;
     cursor: pointer;
+    line-height: 1;
   }
   section .day:hover,
   section .day.weekend:hover {
@@ -296,10 +298,15 @@
   }
 
   .indicator {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 4px;
     height: 4px;
     border-radius: 50%;
     margin-top: 2px;
     background-color: var(--color-accent);
+    pointer-events: none;
   }
 </style>
