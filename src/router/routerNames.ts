@@ -16,5 +16,6 @@ export const ROUTER_NAMES = {
   TRAVEL: 'Travel',
   STROKE: 'Stroke',
   MOMENTS: 'moments',
+  MOMENTS_SPACE: 'momentsSpace',
   LOGIN: 'Login',
 };
