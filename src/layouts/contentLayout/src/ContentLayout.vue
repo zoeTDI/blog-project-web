@@ -64,18 +64,15 @@
   /* 布局模式二：侧边栏撑满视口 (即：中间留白，侧边栏在屏幕边缘) */
   .content-layout.full .main-content {
     justify-content: space-between;
-    padding: 0 40px;
     max-width: none;
   }
 
   .sidebar-left,
   .sidebar-right {
     flex: 0 0 var(--layout-3col-sidebar-basis);
-    padding: 20px;
   }
   .content-container {
     flex: 1;
-    padding: 40px;
     overflow-y: auto;
   }
 </style>
