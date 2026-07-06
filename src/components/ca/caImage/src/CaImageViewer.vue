@@ -13,14 +13,64 @@
 
   const emits = defineEmits<CaImageViewEmits>();
 
+  const scale = ref(1);
+  const translateX = ref(0);
+  const translateY = ref(0);
+  const isDragging = ref(false);
+  const startX = ref(0);
+  const startY = ref(0);
+
+  const isScaling = ref(false);
+  let scaleTimeout: ReturnType<typeof setTimeout> | null = null;
+
   const open = () => {
     visible.value = true;
   };
 
-  // 暴露给外部的 close 方法
   const close = () => {
     visible.value = false;
-    emits('close'); // 依然触发事件，方便外部可能需要的监听
+    emits('close');
+  };
+
+  const handleWheel = (e: WheelEvent) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale.value = Math.min(Math.max(scale.value + delta, 0.1), 6);
+
+    isScaling.value = true;
+    if (scaleTimeout) clearTimeout(scaleTimeout);
+
+    scaleTimeout = setTimeout(() => {
+      isScaling.value = false;
+    }, 500);
+  };
+
+  const handleMouseDown = (e: MouseEvent) => {
+    isDragging.value = true;
+    startX.value = e.clientX - translateX.value;
+    startY.value = e.clientY - translateY.value;
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging.value) return;
+    translateX.value = e.clientX - startX.value;
+    translateY.value = e.clientY - startY.value;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.value = false;
+  };
+
+  const resetTransform = () => {
+    scale.value = 1;
+    translateX.value = 0;
+    translateY.value = 0;
+
+    isScaling.value = true;
+    if (scaleTimeout) clearTimeout(scaleTimeout);
+    scaleTimeout = setTimeout(() => {
+      isScaling.value = false;
+    }, 500);
   };
 
   watch(visible, (val) => {
@@ -29,6 +79,7 @@
 
   onUnmounted(() => {
     document.body.style.overflow = '';
+    if (scaleTimeout) clearTimeout(scaleTimeout);
   });
 
   defineExpose<CaImageViewerExpose>({
@@ -49,7 +100,14 @@
     <div
       class="ca-image-viewer"
       v-if="visible"
-      @click.self="close">
+      @mousemove="handleMouseMove"
+      @mouseup="handleMouseUp"
+      @mouseleave="handleMouseUp">
+      <div
+        class="ca-image-viewer__scale-indicator"
+        v-if="isScaling">
+        {{ (scale * 100).toFixed(0) }}%
+      </div>
       <div
         class="ca-image-viewer__close"
         @click="close">
@@ -60,7 +118,15 @@
       <img
         :src="url"
         alt="Preview"
-        class="ca-image-viewer__img" />
+        class="ca-image-viewer__img"
+        :style="{
+          transform: `scale(${scale}) translate(${translateX}px, ${translateY}px)`,
+          cursor: isDragging ? 'grabbing' : 'grab',
+        }"
+        @wheel="handleWheel"
+        @mousedown="handleMouseDown"
+        @dblclick="resetTransform"
+        @dragstart.prevent />
     </div>
   </Teleport>
 </template>
@@ -79,6 +145,22 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+  }
+
+  .ca-image-viewer__scale-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 8px 16px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    user-select: none;
   }
 
   .ca-image-viewer__close {
@@ -120,19 +202,8 @@
     max-height: 90%;
     object-fit: contain;
     user-select: none;
-    animation: zoomIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     border-radius: 4px;
-  }
-
-  @keyframes zoomIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
+    transform-origin: center center;
   }
 </style>
