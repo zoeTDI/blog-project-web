@@ -1,8 +1,11 @@
 <script setup lang="ts">
+  import defaultAvatar from '@/assets/avatar.svg';
   import type { UserMenuOption } from '@/components/userBox';
   import { useUserStore } from '@/store/useUserStore.ts';
   import { ref, watchEffect } from 'vue';
   import type { UserInfo } from '@/store/useUserStore.ts';
+  import { preferences } from '@/core/preferences';
+  import { CaAvatar } from '@/components/ca/caAvatar';
 
   defineEmits(['logout', 'lock']);
 
@@ -17,6 +20,18 @@
       groups: () => [],
     }
   );
+
+  /**
+   * 获取头像
+   */
+  const getAvatarUrl = () => {
+    if (!userInfo.value?.avatar || userInfo.value.avatar.trim() == '') {
+      return defaultAvatar;
+    } else {
+      return userInfo.value.avatar;
+    }
+  };
+
   const registerGlobalHotkey = (
     shortcutStr: string,
     callback: (e: KeyboardEvent) => void
@@ -110,12 +125,10 @@
     <!-- 用户信息头部 -->
     <div class="user-profile">
       <div class="avatar-wrapper">
-        <img
-          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Panda"
-          alt="Admin"
-          class="avatar" />
-        <!-- 绿色的在线状态小圆点 -->
-        <span class="status-dot"></span>
+        <ca-avatar
+          :size="44"
+          :url="getAvatarUrl()"
+          :error-url="defaultAvatar" />
       </div>
       <div class="user-info">
         <div class="name-row">

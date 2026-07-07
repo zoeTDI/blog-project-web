@@ -4,7 +4,7 @@
   import UserMenu from './UserMenu.vue';
   import { preferences } from '@/core/preferences/index.ts';
   import defaultAvatar from '@/assets/avatar.svg';
-  import { onMounted, ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
   import {
     type MessageItem,
@@ -15,6 +15,7 @@
   import { useUserStore } from '@/store/useUserStore.ts';
   import { useRoute, useRouter } from 'vue-router';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
+  import { CaAvatar } from '@/components/ca/caAvatar';
 
   const mockMessages: MessageItem[] = [
     {
@@ -76,7 +77,7 @@
   const router = useRouter();
   const route = useRoute();
   const userStore = useUserStore();
-  const avatarUrl = preferences.app.defaultAvatar;
+  const userInfo = computed(() => userStore.getUserInfo());
   let hoverTimer: ReturnType<typeof setTimeout> | null = null;
   // 消息队列的显示状态
   const isMessageVisible = ref<boolean>(false);
@@ -108,6 +109,17 @@
       },
     ],
   ]);
+
+  /**
+   * 获取头像
+   */
+  const getAvatarUrl = () => {
+    if (!userInfo.value?.avatar || userInfo.value.avatar.trim() == '') {
+      return defaultAvatar;
+    } else {
+      return userInfo.value.avatar;
+    }
+  };
 
   /**
    * 向后端更新消息状态
@@ -168,14 +180,7 @@
       isUserMenuVisible.value = false;
     }, 300);
   };
-  /**
-   * 处理用户头像加载失败。失败时改为使用默认头像
-   * @param event
-   */
-  const handleImageError = (event: Event) => {
-    const imgElement = event.target as HTMLImageElement;
-    imgElement.src = defaultAvatar;
-  };
+
   /**
    * 加载用户消息队列
    */
@@ -209,11 +214,10 @@
       class="action-item user-avatar"
       @mouseenter="showUserMenu"
       @mouseleave="hideUserMenu">
-      <img
-        :src="avatarUrl"
-        alt="User Avatar"
-        class="avatar-img"
-        @error="handleImageError" />
+      <ca-avatar
+        :url="getAvatarUrl()"
+        :size="28"
+        :error-url="defaultAvatar" />
       <UserMenu
         v-show="isUserMenuVisible"
         :groups="userMenuGroups" />
@@ -232,6 +236,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   .icon {
     width: 20px;
@@ -242,13 +247,5 @@
   .user-avatar {
     width: 32px;
     height: 32px;
-  }
-
-  .avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 1px solid var(--color-border);
   }
 </style>
