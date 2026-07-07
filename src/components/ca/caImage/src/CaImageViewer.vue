@@ -47,14 +47,14 @@
 
   const handleMouseDown = (e: MouseEvent) => {
     isDragging.value = true;
-    startX.value = e.clientX - translateX.value;
-    startY.value = e.clientY - translateY.value;
+    startX.value = e.clientX - translateX.value * scale.value;
+    startY.value = e.clientY - translateY.value * scale.value;
   };
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging.value) return;
-    translateX.value = e.clientX - startX.value;
-    translateY.value = e.clientY - startY.value;
+    translateX.value = (e.clientX - startX.value) / scale.value;
+    translateY.value = (e.clientY - startY.value) / scale.value;
   };
 
   const handleMouseUp = () => {
