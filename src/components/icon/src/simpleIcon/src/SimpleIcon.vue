@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import type { SimpleIconProps } from '@/components/simpleIcon';
   import { computed } from 'vue';
-  import { parseToHexColor } from '@/utils/parse.ts';
+  import { parseToHexColor } from '@/utils/parse.js';
+  import type { SimpleIconProps } from '@/components/icon';
 
   const props = withDefaults(defineProps<SimpleIconProps>(), {
     size: 24,
