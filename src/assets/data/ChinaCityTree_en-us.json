@@ -1604,7 +1604,7 @@
       },
       {
         "value": 419001,
-        "label": "济源市",
+        "label": "Jiyuan City",
         "level": "city",
         "parentCode": 410000,
         "children": []
@@ -1710,28 +1710,28 @@
       },
       {
         "value": 429004,
-        "label": "仙桃市",
+        "label": "Xiantao City",
         "level": "city",
         "parentCode": 420000,
         "children": []
       },
       {
         "value": 429005,
-        "label": "潜江市",
+        "label": "Qianjiang City",
         "level": "city",
         "parentCode": 420000,
         "children": []
       },
       {
         "value": 429006,
-        "label": "天门市",
+        "label": "Tianmen City",
         "level": "city",
         "parentCode": 420000,
         "children": []
       },
       {
         "value": 429021,
-        "label": "神农架林区",
+        "label": "Shennongjia Forestry District",
         "level": "city",
         "parentCode": 420000,
         "children": []
@@ -2141,98 +2141,98 @@
       },
       {
         "value": 469001,
-        "label": "五指山市",
+        "label": "Wuzhishan",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469002,
-        "label": "琼海市",
+        "label": "Qionghai City",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469005,
-        "label": "文昌市",
+        "label": "Wenchang City",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469006,
-        "label": "万宁市",
+        "label": "Wanning",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469007,
-        "label": "东方市",
+        "label": "Dongfang City",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469021,
-        "label": "定安县",
+        "label": "Ding'an",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469022,
-        "label": "屯昌县",
+        "label": "Tunchang",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469023,
-        "label": "澄迈县",
+        "label": "Chengmai County",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469024,
-        "label": "临高县",
+        "label": "Lingao County",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469025,
-        "label": "白沙黎族自治县",
+        "label": "Baisha Li Autonomous County",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469026,
-        "label": "昌江黎族自治县",
+        "label": "Changjiang Li Autonomous County",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469027,
-        "label": "乐东黎族自治县",
+        "label": "Ledong Li Autonomous County",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469028,
-        "label": "陵水黎族自治县",
+        "label": "Lingshui Li autonomous county",
         "level": "city",
         "parentCode": 460000,
         "children": []
       },
       {
         "value": 469029,
-        "label": "保亭黎族苗族自治县",
+        "label": "BaotingLiandMiaoAutonomousCounty",
         "level": "city",
         "parentCode": 460000,
         "children": []
@@ -2436,84 +2436,84 @@
       },
       {
         "value": 500229,
-        "label": "城口县",
+        "label": "Chengkou County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500230,
-        "label": "丰都县",
+        "label": "Fengdu County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500231,
-        "label": "垫江县",
+        "label": "DianJiang county",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500233,
-        "label": "忠县",
+        "label": "Zhong County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500235,
-        "label": "云阳县",
+        "label": "Yunyang County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500236,
-        "label": "奉节县",
+        "label": "Fengjie County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500237,
-        "label": "巫山县",
+        "label": "Wushan County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500238,
-        "label": "巫溪县",
+        "label": "Wuxi County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500240,
-        "label": "石柱土家族自治县",
+        "label": "Shizhu Tujia Autonomous County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500241,
-        "label": "秀山土家族苗族自治县",
+        "label": "XiuShan Tujia&Miao Autonomous County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500242,
-        "label": "酉阳土家族苗族自治县",
+        "label": "Youyang Tujia and Miao Autonomous County",
         "level": "district",
         "parentCode": 500000,
         "children": []
       },
       {
         "value": 500243,
-        "label": "彭水苗族土家族自治县",
+        "label": "Pengshui Miao&Tujia Autonomous County",
         "level": "district",
         "parentCode": 500000,
         "children": []
