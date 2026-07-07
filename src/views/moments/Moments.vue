@@ -13,10 +13,11 @@
   import { preferences } from '@/core/preferences';
   import { siBilibili, siGithub, siGmail, siTiktok } from 'simple-icons';
   import type { SimpleIcon as SimpleIconType } from 'simple-icons';
-  import { SimpleIcon } from '@/components/simpleIcon';
+
   import { CaList, CaListItem } from '@/components/ca/caList';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import Calendar from '@/components/calendar/src/Calendar.vue';
+  import { SimpleIcon } from '@/components/icon';
 
   interface OutLinkItem {
     id: string;
@@ -203,7 +204,6 @@
   .moment-right {
     display: flex;
     flex-direction: column;
-    align-items: center;
     row-gap: 20px;
     padding: 0 36px;
     height: 100%;
