@@ -5,6 +5,12 @@
 export type ValueOf<T> = T[keyof T];
 
 /**
+ * 自定义类型函数：从对象类型中自动提取所有的 Key 类型
+ * T: 传入的对象类型
+ */
+export type KeyOf<T> = keyof T;
+
+/**
  * 深度递归可选类型
  * T: 传入的对象类型
  */
