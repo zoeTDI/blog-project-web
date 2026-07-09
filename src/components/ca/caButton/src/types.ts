@@ -1,7 +1,7 @@
 import type { Component } from 'vue';
 import type { ComponentSize } from '#/component.ts';
 
-export type CaButtonType = 'primary' | 'secondary' | 'text' | 'outline';
+export type CaButtonType = 'primary' | 'text' | 'outline';
 
 export interface CaButtonProps {
   // 按钮风格类型
@@ -33,6 +33,4 @@ export interface CaButtonProps {
   // 是否是圆角按钮（正圆形，通常用于仅图标按钮）
   round?: boolean;
 
-  // 原生按钮类型
-  nativeType?: 'button' | 'submit' | 'reset';
 }

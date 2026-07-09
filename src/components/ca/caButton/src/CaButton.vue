@@ -16,7 +16,6 @@
     hoverEffect: 'none' as const,
     block: false,
     round: false,
-    nativeType: 'button' as const,
   });
 
   const emit = defineEmits<{
@@ -48,7 +47,7 @@
 <template>
   <button
     class="ca-button"
-    :type="nativeType"
+    type="button"
     :class="buttonClasses"
     :disabled="disabled || loading"
     @click="handleClick">
@@ -81,14 +80,14 @@
     align-items: center;
     justify-content: center;
     outline: none;
-    border: 1px solid var(--color-border);
+    border: 1px solid transparent;
     background: transparent;
     color: var(--color-text-primary);
     font-family: var(--font-text);
     cursor: pointer;
     user-select: none;
     position: relative;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     overflow: hidden;
     gap: 8px;
   }
@@ -120,13 +119,35 @@
 
   /* --- 类型风格 --- */
   .is-primary {
+    background-color: var(--color-bg);
     border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
+  .is-primary:hover:not(:disabled):not(.hover-expand) {
+    background-color: var(--color-bg-hover);
+    border-color: var(--color-border-hover-accent);
+    color: var(--color-accent);
+    opacity: 0.9;
+  }
+
+  .is-outline {
+    border-color: var(--color-border);
+    background-color: var(--color-container-bg);
+    color: var(--color-text-primary);
+  }
+  .is-outline:hover:not(:disabled):not(.hover-expand) {
+    border-color: var(--color-border-hover-accent);
+    color: var(--color-accent);
+    opacity: 0.9;
   }
 
   .is-text {
     border-color: transparent;
     padding-left: 4px;
     padding-right: 4px;
+  }
+  .is-text:hover:not(:disabled):not(.hover-expand) {
+    color: var(--color-accent);
   }
 
   .hover-expand:hover:not(:disabled) {
@@ -136,10 +157,6 @@
     color: var(--color-text-hover-accent);
   }
 
-  .ca-button:hover:not(:disabled):not(.hover-expand) {
-    border-color: var(--color-border-hover-accent);
-    color: var(--color-text-hover-accent);
-  }
 
   /* --- 点击反馈 --- */
   .ca-button:active:not(:disabled) {
