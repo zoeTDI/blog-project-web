@@ -3,7 +3,7 @@ import type { ComponentSize } from '#/component.ts';
 
 export type CaButtonType = 'primary' | 'secondary' | 'text' | 'outline';
 
-export interface ButtonProps {
+export interface CaButtonProps {
   // 按钮风格类型
   type?: CaButtonType;
 

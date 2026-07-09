@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import { computed } from 'vue';
   import {
-    type ButtonProps,
+    type CaButtonProps,
     type CaButtonType,
   } from '@/components/ca/caButton';
   import type { ComponentSize } from '#/component.ts';
 
   // 使用 withDefaults 设置默认值
-  const props = withDefaults(defineProps<ButtonProps>(), {
+  const props = withDefaults(defineProps<CaButtonProps>(), {
     type: 'secondary' as CaButtonType,
     size: 'M' as ComponentSize,
     loading: false,
