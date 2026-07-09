@@ -18,6 +18,7 @@
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import Calendar from '@/components/calendar/src/Calendar.vue';
   import { SimpleIcon } from '@/components/icon';
+  import { DataBoard } from '@/components/dataBoard';
 
   interface OutLinkItem {
     id: string;
@@ -78,6 +79,21 @@
       id: ROUTER_NAMES.MOVIES,
       label: '影视',
       link: { name: ROUTER_NAMES.MOVIES },
+    },
+  ];
+
+  const dataBoardData = [
+    {
+      label: '总浏览量',
+      value: 3200,
+    },
+    {
+      label: '今日浏览量',
+      value: 32000,
+    },
+    {
+      label: '访客总数',
+      value: 200,
     },
   ];
 </script>
@@ -170,6 +186,7 @@
     <template #sidebar-right>
       <section class="moment-right">
         <calendar />
+        <data-board :data="dataBoardData" animation />
       </section>
     </template>
   </content-layout>
