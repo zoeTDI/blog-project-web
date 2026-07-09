@@ -29,22 +29,22 @@
     try {
       // 模拟后端验证登录
       const mockUserResponse = {
-        success: true,
+        userInfo: {
+          email: '1234567890@123.com',
+          avatar:
+            'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/20260530013432342.png',
+          nickname: 'Admin',
+        },
         token: 'fake-jwt-token',
-        name: 'Admin',
+        role: 'admin',
       };
       const res = await mockApiFetch(mockUserResponse, 1200);
 
-      if (res.success) {
-        userStore.setAuthToken(res.token);
-        const userInfo: UserInfo = {
-          email: email.value,
-          avatar: preferences.app.defaultAvatar,
-          nickname: 'admin',
-        };
-        userStore.setUserInfo(userInfo);
-        router.push({ name: BACKEND_ROUTER_NAME.DASHBOARD });
-      }
+      userStore.setAuthToken(res.token);
+      userStore.setRole(res.role);
+      const userInfo: UserInfo = { ...res.userInfo };
+      userStore.setUserInfo(userInfo);
+      await router.push({ name: BACKEND_ROUTER_NAME.DASHBOARD });
     } catch (error) {
       errorMessage.value = '认证失败，请检查账户信息 / AUTHENTICATION FAILED';
     }
