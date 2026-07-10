@@ -172,7 +172,7 @@
       </ca-row>
       <ca-row :gap="20">
         <ca-col
-          :offset="11"
+          :offset="10"
           :span="4">
           <div class="metadata-item">
             👁 VIEWS {{ data.meta.viewCount || 0 }}
