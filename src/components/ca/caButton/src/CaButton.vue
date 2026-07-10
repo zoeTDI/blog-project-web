@@ -8,7 +8,7 @@
 
   // 使用 withDefaults 设置默认值
   const props = withDefaults(defineProps<CaButtonProps>(), {
-    type: 'secondary' as CaButtonType,
+    type: 'primary' as CaButtonType,
     size: 'M' as ComponentSize,
     loading: false,
     disabled: false,
