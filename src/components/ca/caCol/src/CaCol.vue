@@ -14,15 +14,20 @@
 
   const rowGap = inject<ComputedRef<number>>('CaRowGap');
 
-  const colStyles = computed(() => {});
-
-  const getSafeValue = (val: any) => {
-    return getSafeNumber(val, 24, 0);
-  };
+  const style = computed(() => {
+    const safeSpan = getSafeNumber(props.span, 24, 0);
+    const ratio = (safeSpan / 24) * 100;
+    const gap = getSafeNumber(rowGap!.value) * (1 - safeSpan / 24);
+    return {
+      flex: `0 0 calc(${ratio}% - ${gap}px)`,
+    };
+  });
 </script>
 
 <template>
-  <div class="ca-col">
+  <div
+    class="ca-col"
+    :style="style">
     <slot />
   </div>
 </template>
