@@ -12,7 +12,7 @@ const iconOption = {
 };
 
 const meta = {
-  title: 'Ca/CaButton',
+  title: 'Component/Ca/CaButton',
   component: CaButton,
   tags: ['autodocs'],
   argTypes: {
