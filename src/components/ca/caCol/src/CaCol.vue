@@ -1,65 +1,59 @@
 <script setup lang="ts">
-  import { inject, computed, type ComputedRef, onMounted } from 'vue';
-  import { getSafeNumber } from '@/utils/safeFu.ts';
+  import type { CaColProps } from '@/components/ca/caCol';
+  import { computed, type CSSProperties, inject } from 'vue';
+  import { caRowContextKey } from '@/components/ca/CaRow';
+  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
+  import { isNumber, isObject } from '@/utils/isFu.ts';
 
-  interface ColProps {
-    span?: number;
-    offset?: number;
-  }
-
-  const props = withDefaults(defineProps<ColProps>(), {
-    span: 24,
-    offset: 0,
+  defineOptions({
+    name: 'CaCol',
   });
 
-  const rowGap = inject<ComputedRef<number>>('CaRowGap');
-  const currentLineUsed = inject<ComputedRef<number>>('CaRowUsedCols');
-  const registerCol =
-    inject<(span: number, offset: number) => void>('registerCol');
+  const props = withDefaults(defineProps<CaColProps>(), {
+    tag: 'div',
+    span: 24,
+    offset: 0,
+    pull: 0,
+    push: 0,
+  });
 
-  const offsetElements = computed(() => {
-    if (props.offset <= 0) return [];
+  const ns = useCSSNamespace('col');
 
-    const remaining = 24 - (currentLineUsed?.value || 0);
-    const safeOffset = getSafeNumber(props.offset, 24, 0);
-    if (safeOffset <= remaining) {
-      return [{ span: safeOffset }];
-    } else {
-      return [{ span: remaining }, { span: props.offset - remaining }];
-    }
+  const { gap } = inject(caRowContextKey, { gap: computed(() => 0) });
+
+  const classes = computed(() => {
+    const cls: string[] = [];
+    const pos = ['span', 'offset', 'pull', 'push'] as const;
+    pos.forEach((prop) => {
+      const size = props[prop];
+      if (isNumber(size)) {
+        if (prop === 'span') cls.push(ns.s(`${props[prop]}`));
+        else if (size > 0) cls.push(ns.s(`${prop}-${props[prop]}`));
+      }
+    });
+
+    if (gap.value) cls.push(ns.is('gap'));
+    return [ns.b(), ...cls];
   });
 
   const style = computed(() => {
-    const safeSpan = getSafeNumber(props.span, 24, 0);
-    const ratio = (safeSpan / 24) * 100;
-    const gap = getSafeNumber(rowGap!.value) * (1 - safeSpan / 24);
-    return {
-      flex: `0 0 calc(${ratio}% - ${gap}px)`,
-    };
-  });
-  onMounted(() => {
-    registerCol?.(props.span, props.offset);
+    const styles: CSSProperties = {};
+    if (gap.value > 0) {
+      styles.paddingLeft = styles.paddingRight = `${gap.value / 2}px`;
+    }
+    return styles;
   });
 </script>
 
 <template>
-  <div
-    v-for="(el, index) in offsetElements"
-    :key="index"
-    class="ca-col-offset"
-    :style="{ flex: `0 0 ${(el.span / 24) * 100}%` }"></div>
-  <div
-    class="ca-col"
+  <component
+    :is="tag"
+    :class="classes"
     :style="style">
     <slot />
-  </div>
+  </component>
 </template>
 
 <style scoped>
-  .ca-col {
-    box-sizing: border-box;
-    min-width: 0;
-    overflow: hidden;
-    background-color: #aaaaaa;
-  }
+  @import '../styles/caCol.css';
 </style>
