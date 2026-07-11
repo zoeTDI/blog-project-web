@@ -1,56 +1,50 @@
 <script setup lang="ts">
-  import { provide, computed, ref } from 'vue';
-  import { getSafeNumber } from '@/utils/safeFu.ts';
-  interface RowProps {
-    gap?: number;
-  }
+  import { caRowContextKey, type CaRowProps } from '@/components/ca/CaRow';
+  import { computed, type CSSProperties, provide } from 'vue';
+  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
 
-  const props = withDefaults(defineProps<RowProps>(), {
+  const props = withDefaults(defineProps<CaRowProps>(), {
+    tag: 'div',
     gap: 0,
-    offset: 0,
+    justify: 'start',
   });
 
-  const usedCols = ref<number>(0);
+  defineOptions({
+    name: 'CaRow',
+  });
 
-  const registerCol = (span: number, offset: number) => {
-    const safeSpan = getSafeNumber(span, 24, 0);
-    const safeOffset = getSafeNumber(offset, 24, 0);
+  const ns = useCSSNamespace('row');
 
-    const totalNeeded = safeSpan + safeOffset;
+  const gap = computed(() => props.gap);
 
-    if (usedCols.value + safeOffset + safeSpan > 24) {
-      usedCols.value = (usedCols.value + safeOffset + safeSpan) % 24;
-    } else {
-      usedCols.value += totalNeeded;
+  provide(caRowContextKey, { gap });
+
+  const classes = computed(() => {
+    const classes: string[] = [
+      ns.b(),
+      ns.is(`justify-${props.justify}`, props.justify !== 'start'),
+      ns.is(`align-${props.align}`, !!props.align),
+    ];
+    return classes;
+  });
+
+  const style = computed(() => {
+    const styles: CSSProperties = {};
+    if (!props.gap) {
+      return styles;
     }
-  };
-
-  provide(
-    'CaRowGap',
-    computed(() => props.gap)
-  );
-  provide('registerCol', registerCol);
-
-  const rowStyles = computed(() => ({
-    gap: `${props.gap}px`,
-  }));
+    styles.marginRight = styles.marginLeft = `-${gap.value / 2}px`;
+    return styles;
+  });
 </script>
 
 <template>
-  <div
-    class="ca-row"
-    :style="rowStyles">
+  <component
+    :is="tag"
+    :class="classes"
+    :style="style">
     <slot />
-  </div>
+  </component>
 </template>
 
-<style scoped>
-  .ca-row {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    box-sizing: border-box;
-    background-color: #d9d9d9;
-    /* 确保 gap 产生的额外宽度不会撑破容器（在特定 flex 模式下有用） */
-  }
-</style>
+<style scoped></style>
