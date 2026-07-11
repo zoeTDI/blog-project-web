@@ -1,5 +1,5 @@
-import { buildProps, definePropType } from '@/utils/runtime.ts';
-import { mutable } from '#/typescript.ts';
+import { buildProps } from '@/utils/runtime.ts';
+
 
 export type CaColSizeObject = {
   span?: number;
