@@ -47,4 +47,6 @@
   </component>
 </template>
 
-<style scoped></style>
+<style scoped>
+  @import "../styles/caRow.css";
+</style>
