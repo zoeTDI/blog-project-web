@@ -46,7 +46,7 @@ export const Default: Story = {
     },
     template: `
       <CaRow v-bind="args">
-        <CaCol :span="24" style="background: #d3dce6; color: #333;">
+        <CaCol :span="24" >
           <div style="background: #d3dce6; padding: 10px 0;text-align: center">24</div>
         </CaCol>
         <CaCol v-for="i in 2" :key="i" :span="24/2">
