@@ -1,0 +1,18 @@
+.ca-select {
+  position: relative;
+}
+
+.ca-select input[typs="text"] {
+  border: 1px solid var(--color-border);
+  outline: 1px solid transparent;
+}
+
+.ca-select--S {
+}
+
+.ca-select--M {
+
+}
+
+.ca-select--L {
+}
