@@ -54,6 +54,10 @@
   animation: ca-marquee-scroll var(--ca-marquee-duration) linear infinite;
 }
 
+.ca-marquee__content.is-scrolling:hover {
+  animation-play-state: paused;
+}
+
 .ca-marquee .ca-marquee__close-btn {
   margin-left: auto;
   padding-right: 16px;
