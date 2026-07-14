@@ -1,4 +1,8 @@
 .ca-marquee {
+  position: absolute;
+  top: 0;
+  left: 0;
+
   width: 100svw;
 
   padding: 4px 0;

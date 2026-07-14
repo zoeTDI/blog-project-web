@@ -92,38 +92,40 @@
 </script>
 
 <template>
-  <div
-    v-if="visible"
-    :class="classes">
+  <Teleport to="body">
     <div
-      v-if="props.icon"
-      :class="[ns.e('icon')]">
-      <HeroIcon
-        :icon="icon"
-        :size="22" />
-    </div>
-
-    <div
-      ref="containerRef"
-      :class="[ns.e('content-wrapper')]">
+      v-if="visible"
+      :class="classes">
       <div
-        ref="contentRef"
-        :class="[ns.e('content'), ns.is('scrolling', scrollbable)]"
-        :style="contentStyle">
-        {{ contentStyle }}
-        {{ props.content }}
+        v-if="props.icon"
+        :class="[ns.e('icon')]">
+        <HeroIcon
+          :icon="icon"
+          :size="22" />
+      </div>
+
+      <div
+        ref="containerRef"
+        :class="[ns.e('content-wrapper')]">
+        <div
+          ref="contentRef"
+          :class="[ns.e('content'), ns.is('scrolling', scrollbable)]"
+          :style="contentStyle">
+          {{ contentStyle }}
+          {{ props.content }}
+        </div>
+      </div>
+
+      <div
+        v-if="props.closeable"
+        :class="[ns.e('close-btn')]"
+        @click="close">
+        <HeroIcon
+          :icon="XMarkIcon"
+          :size="18" />
       </div>
     </div>
-
-    <div
-      v-if="props.closeable"
-      :class="[ns.e('close-btn')]"
-      @click="close">
-      <HeroIcon
-        :icon="XMarkIcon"
-        :size="18" />
-    </div>
-  </div>
+  </Teleport>
 </template>
 
 <style scoped>
