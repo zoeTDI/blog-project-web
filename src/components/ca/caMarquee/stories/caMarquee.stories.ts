@@ -1,7 +1,6 @@
 import { CaMarquee } from '@/components/ca/caMarquee';
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
-
 const meta = {
   title: 'Component/Ca/CaMarquee',
   component: CaMarquee,
@@ -57,6 +56,32 @@ export const CloseAble: Story = {
   args: {
     content: 'Default Content',
     closeable: true,
+    duration: 10000,
+    scrollable: true,
+    speed: 50,
+  },
+
+  render: (args) => ({
+    components: {
+      CaMarquee,
+    },
+
+    setup() {
+      return { args };
+    },
+
+    template: `
+      <CaMarquee v-bind="args"></CaMarquee>
+    `,
+  }),
+};
+
+export const LongText: Story = {
+  args: {
+    icon: 'info',
+    content:
+      'Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text Long Text',
+    closeable: false,
     duration: 10000,
     scrollable: true,
     speed: 50,
