@@ -111,7 +111,6 @@
           ref="contentRef"
           :class="[ns.e('content'), ns.is('scrolling', scrollbable)]"
           :style="contentStyle">
-          {{ contentStyle }}
           {{ props.content }}
         </div>
       </div>
