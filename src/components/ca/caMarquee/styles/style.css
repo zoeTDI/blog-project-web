@@ -1,0 +1,39 @@
+.ca-marquee {
+  width: 100svw;
+
+  padding: 4px 0;
+
+  font-size: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ca-marquee.ca-marquee--info {
+  background-color: #fff4a1;
+}
+
+.ca-marquee.ca-marquee--success {
+  background-color: #abffa7;
+  color: #545454;
+}
+
+.ca-marquee.ca-marquee--warning {
+  background-color: #ffa744;
+  color: #fff;
+}
+
+.ca-marquee.ca-marquee--error {
+  background-color: #fd8484;
+  color: #fff;
+}
+
+.ca-marquee .ca-marquee__icon {
+  margin-right: 6px;
+}
+
+.ca-marquee .ca-marquee__close-btn {
+  margin-left: 20px;
+  cursor: pointer;
+}
