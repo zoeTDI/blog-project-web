@@ -9,9 +9,16 @@
   import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
   // 引入刚才创建的子组件
   import CaSubMenuItem from './CaSubMenuItem.vue';
+  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
 
   const { t } = useI18n();
   const route = useRoute();
+  const ns = useCSSNamespace('side-menu');
+
+  const classes = computed(() => {
+    const cls: string[] = [ns.b(), ns.is('fold', isFold.value)];
+    return cls;
+  });
 
   const translateString = (str: string): string => {
     if (str.startsWith(ROUTER_PREFIX)) {
@@ -181,8 +188,8 @@
 </script>
 
 <template>
-  <aside :class="['ca-side-menu', { fold: isFold }]">
-    <div class="menu-container">
+  <aside :class="classes">
+    <div :class="[ns.e('container')]">
       <CaSubMenuItem
         v-for="menu in menuTree"
         :key="menu.path"
@@ -195,42 +202,5 @@
 </template>
 
 <style scoped>
-  .ca-side-menu {
-    width: 240px;
-    overflow-y: auto;
-    scrollbar-width: none;
-    transition: all 300ms ease;
-    background-color: #1a1a1a;
-  }
-
-  .ca-side-menu::-webkit-scrollbar {
-    display: none;
-  }
-
-  .menu-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px 0;
-  }
-
-  /**
- * 折叠样式控制
- */
-  .fold {
-    width: 50px;
-    overflow: hidden;
-  }
-
-  /* 当侧边栏折叠时，隐藏递归组件里的文字和箭头 */
-  .fold :deep(.menu-title),
-  .fold :deep(.menu-item-right) {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .fold :deep(.sub-menu) {
-    display: none !important; /* 折叠时强行关闭子菜单展示 */
-  }
+  @import '../styles/style.css';
 </style>

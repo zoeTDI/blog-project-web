@@ -1,0 +1,38 @@
+.ca-side-menu {
+  width: 240px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  transition: all 300ms ease;
+  background-color: #1a1a1a;
+}
+
+.ca-side-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.ca-side-menu__container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+/**
+* 折叠样式控制
+*/
+.is-fold {
+  width: 50px;
+  overflow: hidden;
+}
+
+/* 当侧边栏折叠时，隐藏递归组件里的文字和箭头 */
+.is-fold :deep(.menu-title),
+.is-fold :deep(.menu-item-right) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.is-fold :deep(.sub-menu) {
+  display: none !important; /* 折叠时强行关闭子菜单展示 */
+}
