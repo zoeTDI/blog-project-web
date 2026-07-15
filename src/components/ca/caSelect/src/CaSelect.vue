@@ -18,6 +18,7 @@
   const inputRef = ref<HTMLInputElement | null>(null);
 
   const visible = ref<boolean>(false);
+  const displayLabel = ref<string>('');
 
   const inputWidth = computed(() => {
     if (!inputRef.value) return 0;
@@ -29,7 +30,13 @@
     return cls;
   });
 
-  provide(caSelectKey, { inputWidth });
+  const selectOption = (value: any, label: string) => {
+    model.value = value;
+    displayLabel.value = label;
+    visible.value = false;
+  };
+
+  provide(caSelectKey, { inputWidth, selectOption, selectedValue: model });
 
   const dropdownVisibleControl = (e: Event) => {
     const targetEl = e.target;

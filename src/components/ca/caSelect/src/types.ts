@@ -1,4 +1,8 @@
-export type CaSelectOption = string[];
+export type CaSelectOption = {
+  label: string;
+  value: any;
+};
+
 export type CaSelectGroup = {
   label: string;
   options: CaSelectOption[];
@@ -12,6 +16,8 @@ export interface CaSelectProps {
 export interface CaSelectGroupProps {
   label?: string;
 }
+
+export type CaSelectOptionProps = CaSelectOption;
 
 export interface CaSelectEmits {}
 
