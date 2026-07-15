@@ -32,5 +32,15 @@
     flex-direction: column;
     flex-wrap: nowrap;
     overflow-x: scroll;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .ca-select-group__select-group-label {
+    padding: 8px 12px 4px;
+    color: var(--color-text-primary);
+    opacity: 0.6;
   }
 </style>

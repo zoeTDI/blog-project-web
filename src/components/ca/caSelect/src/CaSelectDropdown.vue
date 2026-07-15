@@ -33,17 +33,19 @@
   .ca-select-dropdown {
     position: absolute;
     overflow-y: auto;
-    top: calc(100% + 12px);
+    top: calc(100% + 4px);
     left: 0;
 
     min-height: 20px;
+    max-height: 240px;
     background-color: var(--color-container-bg);
     border: 1px solid var(--color-border);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    padding: 8px 0;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 4px 0;
     z-index: 1000;
     scrollbar-width: thin;
     scrollbar-color: var(--color-border) transparent;
+    transition: all 0.2s ease-in-out;
   }
 </style>
