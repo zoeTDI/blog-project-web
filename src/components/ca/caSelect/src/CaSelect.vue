@@ -8,6 +8,7 @@
   } from '@/components/ca/caSelect';
 
   const props = withDefaults(defineProps<CaSelectProps>(), {
+    disabled: false,
     placeholder: 'Select',
     size: 'M',
   });
@@ -26,7 +27,11 @@
   });
 
   const classes = computed(() => {
-    const cls: string[] = [ns.b(), ns.m(props.size)];
+    const cls: string[] = [
+      ns.b(),
+      ns.m(props.size),
+      ns.is('disabled', props.disabled),
+    ];
     return cls;
   });
 
@@ -57,12 +62,13 @@
 <template>
   <div :class="classes">
     <input
+      :disabled="props.disabled"
       ref="inputRef"
       type="text"
       :class="[ns.e('input')]"
       v-bind:value="model"
       :placeholder="props.placeholder" />
-    <CaSelectDropdown v-show="visible">
+    <CaSelectDropdown v-show="visible && !props.disabled">
       <slot />
     </CaSelectDropdown>
   </div>

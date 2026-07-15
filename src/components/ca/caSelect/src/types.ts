@@ -9,6 +9,7 @@ export type CaSelectGroup = {
 };
 
 export interface CaSelectProps {
+  disabled?: boolean;
   placeholder?: string;
   size?: 'S' | 'M' | 'L';
 }

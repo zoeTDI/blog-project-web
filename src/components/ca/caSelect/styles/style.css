@@ -16,3 +16,7 @@
 
 .ca-select--L {
 }
+
+/*禁用状态*/
+.ca-select.is-disabled {
+}
