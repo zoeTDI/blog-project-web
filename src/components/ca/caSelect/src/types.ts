@@ -1,12 +1,16 @@
-export type CaSelectOption = string[]
+export type CaSelectOption = string[];
 export type CaSelectGroup = {
-  label: string,
-  options: CaSelectOption[]
-}
+  label: string;
+  options: CaSelectOption[];
+};
 
 export interface CaSelectProps {
   placeholder?: string;
-  size?: 'S'|'M'|'L'
+  size?: 'S' | 'M' | 'L';
+}
+
+export interface CaSelectGroupProps {
+  label?: string;
 }
 
 export interface CaSelectEmits {}
