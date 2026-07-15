@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
   import { computed, inject } from 'vue';
-  import { caSelectKey } from '@/components/ca/caSelect';
+  import { caSelectStyleKey } from '@/components/ca/caSelect';
 
   const ns = useCSSNamespace('select-dropdown');
 
-  const { inputWidth } = inject(caSelectKey, { inputWidth: computed(() => 0) });
+  const { selectWidth } = inject(caSelectStyleKey, {
+    selectWidth: computed(() => 0),
+  });
 
   const classes = computed(() => {
     const cls: string[] = [ns.b()];
@@ -14,7 +16,7 @@
 
   const styles = computed(() => {
     return {
-      width: `${inputWidth.value}px`,
+      width: `${selectWidth.value}px`,
     };
   });
 </script>

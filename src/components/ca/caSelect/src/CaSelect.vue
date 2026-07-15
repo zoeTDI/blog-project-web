@@ -4,6 +4,7 @@
   import {
     CaSelectDropdown,
     caSelectKey,
+    caSelectStyleKey,
     type CaSelectProps,
   } from '@/components/ca/caSelect';
 
@@ -22,9 +23,9 @@
   const visible = ref<boolean>(false);
   const displayLabel = ref<string>('');
 
-  const inputWidth = computed(() => {
-    if (!inputRef.value) return 0;
-    return (inputRef.value as HTMLInputElement).offsetWidth;
+  const selectWidth = computed(() => {
+    if (!selectRef.value) return 0;
+    return (selectRef.value as HTMLInputElement).offsetWidth;
   });
 
   const classes = computed(() => {
@@ -42,7 +43,8 @@
     visible.value = false;
   };
 
-  provide(caSelectKey, { inputWidth, selectOption, selectedValue: model });
+  provide(caSelectKey, { selectOption, selectedValue: model });
+  provide(caSelectStyleKey, { selectWidth });
 
   const dropdownVisibleControl = (e: Event) => {
     const targetEl = e.target as HTMLElement;
