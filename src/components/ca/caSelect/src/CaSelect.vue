@@ -16,6 +16,7 @@
   const model = defineModel({ default: '' });
   const ns = useCSSNamespace('select');
 
+  const selectRef = ref<HTMLElement | null>(null);
   const inputRef = ref<HTMLInputElement | null>(null);
 
   const visible = ref<boolean>(false);
@@ -44,10 +45,16 @@
   provide(caSelectKey, { inputWidth, selectOption, selectedValue: model });
 
   const dropdownVisibleControl = (e: Event) => {
-    const targetEl = e.target;
-    if (!targetEl) return;
-    const classes = Array.from((targetEl as HTMLInputElement).classList);
-    visible.value = classes.includes(ns.e('input'));
+    const targetEl = e.target as HTMLElement;
+    if (!targetEl || !selectRef.value) return;
+    const isClickInside = selectRef.value.contains(targetEl);
+    if (isClickInside) {
+      if (targetEl.classList.contains(ns.e('input'))) {
+        visible.value = true;
+      }
+    } else {
+      visible.value = false;
+    }
   };
 
   onMounted(() => {
@@ -60,7 +67,9 @@
 </script>
 
 <template>
-  <div :class="classes">
+  <div
+    ref="selectRef"
+    :class="classes">
     <input
       :disabled="props.disabled"
       ref="inputRef"
