@@ -10,7 +10,8 @@ interface MenuItem {
   title: string;
   name: string;
   path: string;
-  icon?: Component;
+  prefixIcon?: Component;
+  suffixIcon?: Component;
   hidden?: boolean;
   children?: MenuItem[];
 }

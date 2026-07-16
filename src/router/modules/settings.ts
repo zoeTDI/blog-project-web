@@ -15,7 +15,7 @@ const settingsRouter: RouteRecordRaw[] = [
   {
     meta: {
       title: `${ROUTER_PREFIX}settings`,
-      icon: AdjustmentsHorizontalIcon,
+      prefixIcon: AdjustmentsHorizontalIcon,
     },
     path: '/settings', // 独立的前缀路径
     component: () => import('@/layouts/BackendLayout.vue'),
@@ -28,7 +28,7 @@ const settingsRouter: RouteRecordRaw[] = [
         meta: {
           title: `${ROUTER_PREFIX}systemSetting`,
           requireLogin: true,
-          icon: Cog6ToothIcon,
+          prefixIcon: Cog6ToothIcon,
         },
       },
       {
@@ -38,7 +38,7 @@ const settingsRouter: RouteRecordRaw[] = [
         meta: {
           title: `${ROUTER_PREFIX}profileSetting`,
           requireLogin: true,
-          icon: WrenchIcon,
+          prefixIcon: WrenchIcon,
         },
       },
     ],

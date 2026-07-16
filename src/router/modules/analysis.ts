@@ -10,7 +10,7 @@ const analysisRouter: RouteRecordRaw[] = [
   {
     meta: {
       title: `${ROUTER_PREFIX}analysis`,
-      icon: Squares2X2Icon,
+      prefixIcon: Squares2X2Icon,
     },
     path: '/analysis',
     component: () => import('@/layouts/BackendLayout.vue'),
@@ -23,7 +23,7 @@ const analysisRouter: RouteRecordRaw[] = [
         meta: {
           title: `${ROUTER_PREFIX}dashboard`,
           requireLogin: true,
-          icon: ChartBarSquareIcon,
+          prefixIcon: ChartBarSquareIcon,
           allowDefaultHome: true,
         },
       },

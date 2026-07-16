@@ -24,7 +24,7 @@ const postRouter: RouteRecordRaw[] = [
         meta: {
           title: `${ROUTER_PREFIX}postManage`,
           requireLogin: true,
-          icon: DocumentIcon,
+          prefixIcon: DocumentIcon,
         },
       },
       {
@@ -34,7 +34,7 @@ const postRouter: RouteRecordRaw[] = [
         meta: {
           title: `${ROUTER_PREFIX}postEdit`,
           requireLogin: true,
-          icon: DocumentDuplicateIcon,
+          prefixIcon: DocumentDuplicateIcon,
         },
       },
       {
@@ -45,7 +45,7 @@ const postRouter: RouteRecordRaw[] = [
         meta: {
           title: `${ROUTER_PREFIX}travelPostEdit`,
           requireLogin: true,
-          icon: DocumentDuplicateIcon,
+          prefixIcon: DocumentDuplicateIcon,
         },
       },
     ],

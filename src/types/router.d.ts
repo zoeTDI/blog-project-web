@@ -5,7 +5,9 @@ declare module 'vue-router' {
     // 页面标题
     title: string;
     // 页面图标，会在面包屑导航、侧边菜单、标签页等地方使用
-    icon?: Component;
+    prefixIcon?: Component;
+    // 页面后缀图标
+    suffixIcon?: Component;
     // 值为true时在侧边菜单中隐藏
     hidden?: boolean;
     // 自定义在侧边菜单中的排序，1为第一位，2为第二位，-1为最后一位，-2为倒数第二位，以此类推，若不设置，则根据title排序

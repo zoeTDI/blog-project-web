@@ -1,5 +1,8 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { TagIcon, InboxStackIcon } from '@heroicons/vue/24/outline';
+import {
+  TagIcon,
+  InboxStackIcon,
+} from '@heroicons/vue/24/outline';
 import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
 export const CATEGORY_ROUTER_NAME: Record<string, string> = {
@@ -23,7 +26,7 @@ const categoriesRouter: RouteRecordRaw[] = [
         meta: {
           title: `${ROUTER_PREFIX}categoryManage`,
           requireLogin: true,
-          icon: InboxStackIcon,
+          prefixIcon: InboxStackIcon,
         },
       },
       {
@@ -33,7 +36,7 @@ const categoriesRouter: RouteRecordRaw[] = [
         meta: {
           title: `${ROUTER_PREFIX}tagManage`,
           requireLogin: true,
-          icon: TagIcon,
+          prefixIcon: TagIcon,
         },
       },
     ],

@@ -82,7 +82,8 @@
         title: translateString(rawRoute.meta?.title) || '未命名',
         path: rawRoute.path,
         name: rawRoute.name,
-        icon: rawRoute.meta?.icon || Bars3BottomLeftIcon,
+        prefixIcon: rawRoute.meta?.prefixIcon,
+        suffixIcon: rawRoute.meta?.suffixIcon,
         hidden: rawRoute.meta?.hidden,
       };
 
@@ -122,7 +123,8 @@
         title: translateString(rootRoute.meta?.title) || '未命名分类',
         path: rootRoute.path,
         name: rootRoute.name,
-        icon: rootRoute.meta?.icon || Bars3BottomLeftIcon,
+        prefixIcon: rootRoute.meta?.prefixIcon,
+        suffixIcon: rootRoute.meta?.suffixIcon,
         children: [],
       };
 
@@ -161,8 +163,13 @@
         :menu-info="group">
         <template
           #prefix
-          v-if="group.icon">
-          <HeroIcon :icon="group.icon" />
+          v-if="group.prefixIcon">
+          <HeroIcon :icon="group.prefixIcon" />
+        </template>
+        <template
+          #suffix
+          v-if="group.suffixIcon">
+          <HeroIcon :icon="group.suffixIcon" />
         </template>
         <CaSideMenuOption
           v-for="option in group.children || []"
@@ -171,8 +178,13 @@
           :route-name="option.name">
           <template
             #prefix
-            v-if="option?.icon">
-            <HeroIcon :icon="option.icon" />
+            v-if="option?.prefixIcon">
+            <HeroIcon :icon="option.prefixIcon" />
+          </template>
+          <template
+            #suffix
+            v-if="option?.suffixIcon">
+            <HeroIcon :icon="option.suffixIcon" />
           </template>
           <template #default> {{ option.title }} </template>
         </CaSideMenuOption>

@@ -5,6 +5,7 @@
   import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
   import { useI18n } from 'vue-i18n';
   import { preferences } from '@/core/preferences';
+  import { HeroIcon } from '@/components/icon';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -39,11 +40,15 @@
             { background: preferences.breadcrumb.styleType === 'background' },
           ]"
           @click="jumpTo(route)">
-          <component
-            v-if="route.meta?.icon && preferences.breadcrumb.showIcon"
-            :is="route.meta.icon"
-            class="breadcrumb-icon" />
+          <HeroIcon
+            class="breadcrumb-icon"
+            v-if="route.meta?.prefixIcon && preferences.breadcrumb.showIcon"
+            :icon="route.meta.prefixIcon" />
           {{ translateString(route.meta.title) }}
+          <HeroIcon
+            class="breadcrumb-icon"
+            v-if="route.meta?.suffixIcon && preferences.breadcrumb.showIcon"
+            :icon="route.meta.suffixIcon" />
         </span>
         <div
           class="suffix"

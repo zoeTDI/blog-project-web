@@ -36,7 +36,8 @@ export const useTabStore = defineStore(
         // 1. 设置默认值
         title: route.meta.title as string,
         path: route.path,
-        icon: route.meta?.icon || HomeIcon,
+        prefixIcon: route.meta?.prefixIcon || HomeIcon,
+        suffixIcon: route.meta?.suffixIcon || undefined,
         pinned: route.meta?.affixTab === true,
 
         // 2. 使用展开运算符覆盖默认值
@@ -86,7 +87,8 @@ export const useTabStore = defineStore(
           title: (route.meta?.title as string) || '未命名页面',
           path: route.path,
           pinned: false,
-          icon: route.meta?.icon,
+          prefixIcon: route.meta?.prefixIcon,
+          suffixIcon: route.meta?.suffixIcon || undefined,
         });
       }
     };

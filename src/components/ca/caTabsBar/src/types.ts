@@ -1,4 +1,4 @@
-import type { Component } from "vue";
+import type { Component } from 'vue';
 
 interface HomeTabParam {
   path: string;
@@ -10,7 +10,8 @@ interface TabItem {
   title: string;
   path: string;
   pinned: boolean;
-  icon?: Component
+  prefixIcon?: Component;
+  suffixIcon?: Component;
 }
 
 interface ContextMenuItem {
@@ -22,8 +23,4 @@ interface ContextMenuItem {
   icon?: Component;
 }
 
-export type {
-  HomeTabParam,
-  TabItem,
-  ContextMenuItem,
-}
+export type { HomeTabParam, TabItem, ContextMenuItem };
