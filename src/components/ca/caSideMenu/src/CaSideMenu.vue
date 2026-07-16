@@ -164,11 +164,6 @@
           v-if="group.icon">
           <HeroIcon :icon="group.icon" />
         </template>
-        <template
-          #suffix
-          v-if="group.icon">
-          <HeroIcon :icon="group.icon" />
-        </template>
         <CaSideMenuOption
           v-for="option in group.children || []"
           :key="option.path"
@@ -180,11 +175,6 @@
             <HeroIcon :icon="option.icon" />
           </template>
           <template #default> {{ option.title }} </template>
-          <template
-            #suffix
-            v-if="option?.icon">
-            <HeroIcon :icon="option.icon" />
-          </template>
         </CaSideMenuOption>
       </CaSideMenuGroup>
     </div>
