@@ -7,9 +7,12 @@
   import { preferences } from '@/core/preferences';
   import { useI18n } from 'vue-i18n';
   import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
-  // 引入刚才创建的子组件
-  import CaSubMenuItem from './CaSubMenuItem.vue';
   import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
+  import {
+    CaSideMenuGroup,
+    CaSideMenuOption,
+  } from '@/components/ca/caSideMenu';
+  import { HeroIcon } from '@/components/icon';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -190,13 +193,40 @@
 <template>
   <aside :class="classes">
     <div :class="[ns.e('container')]">
-      <CaSubMenuItem
-        v-for="menu in menuTree"
-        :key="menu.path"
-        :item="menu"
-        :depth="1"
-        :opened-keys="openedMenuKeys"
-        @toggle-expand="handleToggleExpand" />
+      <CaSideMenuGroup
+        v-for="group in menuTree"
+        :key="group.path"
+        :label="group.title"
+        :active="route.path.startsWith(group.path)"
+        :menu-info="group">
+        <template
+          #prefix
+          v-if="group.icon">
+          <HeroIcon :icon="group.icon" />
+        </template>
+        <template
+          #suffix
+          v-if="group.icon">
+          <HeroIcon :icon="group.icon" />
+        </template>
+        <CaSideMenuOption
+          v-for="option in group.children || []"
+          :key="option.path"
+          :active="option.path === route.path"
+          :route-name="option.name">
+          <template
+            #prefix
+            v-if="option?.icon">
+            <HeroIcon :icon="option.icon" />
+          </template>
+          <template #default> {{ option.title }} </template>
+          <template
+            #suffix
+            v-if="option?.icon">
+            <HeroIcon :icon="option.icon" />
+          </template>
+        </CaSideMenuOption>
+      </CaSideMenuGroup>
     </div>
   </aside>
 </template>
