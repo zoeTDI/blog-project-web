@@ -1,12 +1,20 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
-  import { computed } from 'vue';
+  import { computed, inject } from 'vue';
   import {
     type LocationQueryRaw,
     type RouteParamsRaw,
     useRouter,
   } from 'vue-router';
   import { isString } from '@/utils/isFu.ts';
+  import {
+    caSideMenuKey,
+    DefaultOptionHeight,
+  } from '@/components/ca/caSideMenu';
+
+  const { optionHeight } = inject(caSideMenuKey, {
+    optionHeight: computed(() => DefaultOptionHeight),
+  });
 
   const router = useRouter();
   const ns = useCSSNamespace('side-menu-option');
@@ -31,6 +39,13 @@
     return cls;
   });
 
+  const styles = computed(() => {
+    const _ = {
+      'option-height': `${optionHeight.value}px`,
+    };
+    return ns.cssVarBlock(_);
+  });
+
   const handleClick = () => {
     if (isString(props?.routeName)) {
       router.push({
@@ -49,6 +64,7 @@
 <template>
   <div
     :class="classes"
+    :style="styles"
     @click="handleClick">
     <div :class="[ns.s('prefix')]">
       <slot name="prefix" />

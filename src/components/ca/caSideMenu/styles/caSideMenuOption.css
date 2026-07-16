@@ -13,7 +13,7 @@
   color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
   font-size: 14px;
-  height: 44px;
+  height: var(--ca-side-menu-option-option-height);
 }
 
 .ca-side-menu-option.is-active {

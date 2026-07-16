@@ -1,5 +1,10 @@
 import type { Component } from 'vue';
 
+export interface CaSideMenuProps {
+  width?: number;
+  optionHeight?: number;
+}
+
 interface MenuItem {
   no?: number;
   title: string;

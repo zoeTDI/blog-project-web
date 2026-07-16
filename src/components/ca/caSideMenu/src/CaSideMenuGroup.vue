@@ -1,8 +1,12 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
-  import { computed, type CSSProperties, ref, useSlots } from 'vue';
+  import { computed, type CSSProperties, inject, ref, useSlots } from 'vue';
   import { isArray } from '@/utils/isFu.ts';
-  import type { MenuItem } from '@/components/ca/caSideMenu';
+  import {
+    caSideMenuKey,
+    DefaultOptionHeight,
+    type MenuItem,
+  } from '@/components/ca/caSideMenu';
   import { useRouter } from 'vue-router';
 
   const props = withDefaults(
@@ -16,6 +20,10 @@
       label: '',
     }
   );
+
+  const { optionHeight } = inject(caSideMenuKey, {
+    optionHeight: computed(() => DefaultOptionHeight),
+  });
 
   const slots = useSlots();
   const router = useRouter();
@@ -46,6 +54,7 @@
 
   const styles = computed(() => {
     const _ = {
+      'option-height': `${optionHeight.value}px`,
       height: '0px',
     };
 
@@ -58,7 +67,7 @@
     }
     const height = defaultValue.reduce((pre, cur) => {
       if (isArray(cur.children)) {
-        pre += (cur.children as Array<any>).length * 44;
+        pre += (cur.children as Array<any>).length * optionHeight.value;
       }
       return pre;
     }, 0);

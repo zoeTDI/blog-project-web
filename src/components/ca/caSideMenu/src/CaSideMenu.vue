@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { useRoute } from 'vue-router';
-  import { computed, ref, watch } from 'vue';
-  import type { MenuItem } from './types';
-  import { isArray } from '@/utils/isFu.ts';
+  import { computed, provide, ref } from 'vue';
+  import type { CaSideMenuProps, MenuItem } from './types';
+  import { isArray, isNumber } from '@/utils/isFu.ts';
   import { Bars3BottomLeftIcon } from '@heroicons/vue/24/outline';
   import { preferences } from '@/core/preferences';
   import { useI18n } from 'vue-i18n';
@@ -11,16 +11,35 @@
   import {
     CaSideMenuGroup,
     CaSideMenuOption,
+    DefaultOptionHeight,
+    DefaultWidth,
   } from '@/components/ca/caSideMenu';
   import { HeroIcon } from '@/components/icon';
+  import { caSideMenuKey } from '@/components/ca/caSideMenu/src/constants.ts';
+
+  const props = withDefaults(defineProps<CaSideMenuProps>(), {
+    width: DefaultWidth,
+    optionHeight: DefaultOptionHeight,
+  });
 
   const { t } = useI18n();
   const route = useRoute();
   const ns = useCSSNamespace('side-menu');
 
+  const optionHeight = computed(() =>
+    isNumber(props.optionHeight) ? props.optionHeight : DefaultOptionHeight
+  );
+
   const classes = computed(() => {
     const cls: string[] = [ns.b(), ns.is('fold', isFold.value)];
     return cls;
+  });
+
+  const styles = computed(() => {
+    const _ = {
+      width: isNumber(props.width) ? props.width + 'px' : DefaultWidth + 'px',
+    };
+    return ns.cssVarBlock(_);
   });
 
   const translateString = (str: string): string => {
@@ -120,78 +139,19 @@
     return handleMenuSort(rawMenus);
   });
 
-  // 改为数组来承载各级菜单的展开状态。存储的是路由的 path
-  const openedMenuKeys = ref<string[]>([]);
-
-  // 展开和收起的处理逻辑
-  const handleToggleExpand = (path: string) => {
-    if (isFold.value) {
-      isFold.value = false;
-    }
-    const index = openedMenuKeys.value.indexOf(path);
-    if (index > -1) {
-      // 已经展开则收起
-      openedMenuKeys.value.splice(index, 1);
-    } else {
-      // 未展开则推入开启键值中
-      openedMenuKeys.value.push(path);
-    }
-  };
-
-  // 监听当前路由，自动展开对应链条上的父级菜单
-  watch(
-    () => route.path,
-    (newPath) => {
-      const parentPaths: string[] = [];
-
-      // 深度查找路径上所有父节点的算法
-      const findParentPaths = (
-        menus: MenuItem[],
-        targetPath: string
-      ): boolean => {
-        for (const menu of menus) {
-          if (menu.path === targetPath) return true;
-          if (menu.children && menu.children.length > 0) {
-            parentPaths.push(menu.path);
-            if (findParentPaths(menu.children, targetPath)) return true;
-            parentPaths.pop(); // 没找到则回溯
-          }
-        }
-        return false;
-      };
-
-      findParentPaths(menuTree.value, newPath);
-      // 将找到的所有父级菜单的 path 加入展开队列
-      parentPaths.forEach((p) => {
-        if (!openedMenuKeys.value.includes(p)) {
-          openedMenuKeys.value.push(p);
-        }
-      });
-    },
-    { immediate: true }
-  );
-
-  let memorizedKeys: string[] = [];
   const isFold = ref<boolean>(false);
 
   const foldMenu = () => {
-    if (isFold.value) {
-      // 展开
-      isFold.value = false;
-      openedMenuKeys.value = [...memorizedKeys];
-    } else {
-      // 折叠
-      memorizedKeys = [...openedMenuKeys.value];
-      openedMenuKeys.value = [];
-      isFold.value = true;
-    }
+    isFold.value = !isFold.value;
   };
-
+  provide(caSideMenuKey, { optionHeight });
   defineExpose({ foldMenu, isFold });
 </script>
 
 <template>
-  <aside :class="classes">
+  <aside
+    :class="classes"
+    :style="styles">
     <div :class="[ns.e('container')]">
       <CaSideMenuGroup
         v-for="group in menuTree"
