@@ -202,5 +202,5 @@
 </template>
 
 <style scoped>
-  @import '../styles/style.css';
+  @import '../styles/caSideMenu.css';
 </style>
