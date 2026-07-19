@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter web build"
+    "dev:web": "pnpm --filter web dev",
+    "dev:mobile": "pnpm --filter mobile dev",
+    "dev:all": "pnpm --filter \"*\" --parallel dev",
+    "build:web": "pnpm --filter web build",
+    "build:mobile": "pnpm --filter mobile build"
   },
   "keywords": [],
   "author": "",
