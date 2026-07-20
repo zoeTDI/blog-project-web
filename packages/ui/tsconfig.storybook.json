@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "./tsconfig.json"
+  ],
+  "include": [
+    ".storybook/**/*",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx",
+    "src/**/*.mdx"
+  ],
+  "compilerOptions": {
+    // 关键：关闭复合模式和类型导出，因为 Storybook 只是在本地开发时需要类型提示，不需要打包它
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true
+  }
+}

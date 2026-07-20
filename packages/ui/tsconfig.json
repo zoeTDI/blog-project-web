@@ -18,5 +18,10 @@
         "./src/*"
       ]
     }
-  }
+  },
+  "references": [
+    {
+      "path": "./tsconfig.storybook.json"
+    }
+  ]
 }
