@@ -362,7 +362,17 @@ importers:
         specifier: ^3.2.7
         version: 3.3.7(typescript@6.0.3)
 
-  packages/ui: {}
+  packages/ui:
+    devDependencies:
+      '@vue/tsconfig':
+        specifier: ^0.9.1
+        version: 0.9.1(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3))
+      typescript:
+        specifier: ~6.0.0
+        version: 6.0.3
+      vue:
+        specifier: ^3.5.38
+        version: 3.5.40(typescript@6.0.3)
 
 packages:
 
