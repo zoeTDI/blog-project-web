@@ -16,7 +16,6 @@
     "@caldm/request": "workspace:*",
     "@caldm/ui": "workspace:*",
     "@heroicons/vue": "^2.2.0",
-    "axios": "^1.15.2",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.1",
     "markdown-it-attrs": "^4.3.1",
@@ -25,7 +24,7 @@
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "simple-icons": "^16.24.1",
-    "vue": "^3.5.32",
+    "vue": "^3.5.40",
     "vue-i18n": "^11.4.5",
     "vue-router": "^5.0.6"
   },
@@ -44,9 +43,7 @@
     "jsdom": "^29.1.1",
     "prettier": "^3.8.4",
     "storybook": "^10.4.6",
-    "typescript": "~6.0.2",
     "vite": "^8.0.9",
-    "vitest": "^4.1.8",
-    "vue-tsc": "^3.2.7"
+    "vitest": "^4.1.8"
   }
 }

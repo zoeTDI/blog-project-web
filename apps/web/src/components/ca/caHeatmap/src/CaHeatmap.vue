@@ -257,7 +257,7 @@
 
   // --- 处理鼠标滑过事件以精确定位 Tip ---
   const handleMouseEnter = (event: MouseEvent, cellData: HeatmapValue) => {
-    const rectElement = event.currentTarget as SVRECTElement;
+    const rectElement = event.currentTarget as SVGRectElement;
     if (!rectElement || !mapWrapperRef.value) return;
 
     const rectBounds = rectElement.getBoundingClientRect();

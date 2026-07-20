@@ -1,16 +1,12 @@
 {
+  "extends": ["../../tsconfig.json"],
+  "include": ["src/**/*", "index.ts"],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "strict": true,
-    "declaration": true,      // 自动生成类型声明文件
-    "skipLibCheck": true,     // 跳过依赖库的类型检查，加快速度
-    "esModuleInterop": true,
-    "baseUrl": ".",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
-  },
-  "include": ["src/**/*"]
+  }
 }

@@ -1,0 +1,39 @@
+{
+  // 显式声明根目录不直接包含、也不去扫描任何需要编译的源代码文件。
+  "files": [],
+  "include": [],
+  // 开启 TypeScript 的 “项目引用 (Project References)” 功能，将各个独立的子项目注册进全局网络中。
+  "references": [
+    {
+      "path": "./apps/web"
+    },
+    {
+      "path": "./apps/mobile"
+    },
+    // Packages 公共包（新增）
+    {
+      "path": "./packages/hook"
+    },
+    {
+      "path": "./packages/request"
+    },
+    {
+      "path": "./packages/ui"
+    }
+  ],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    // 指导 TypeScript 使用最符合现代打包工具（如 Vite, Webpack）的模块解析策略。
+    "moduleResolution": "bundler",
+    "useDefineForClassFields": true,
+    // 开启 TypeScript 的严格类型检查全家桶（包含 noImplicitAny, strictNullChecks 等）。
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
+  }
+}

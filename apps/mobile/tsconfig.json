@@ -8,7 +8,10 @@
       "path": "./tsconfig.app.json"
     },
     {
-      "path": "./tsconfig.vitest.json"
+      "path": "../../packages/hook"
+    },
+    {
+      "path": "../../packages/request"
     }
   ]
 }

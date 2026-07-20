@@ -9,7 +9,7 @@ import {
 import { defaultPreferences } from '@/core/preferences/src/config.ts';
 import { defaultCustomPreference } from '@/core/preferences/src/curtomConfig.ts';
 import { StorageManager } from '@/cache';
-import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
+import {useDebounceFn} from '@caldm/hook';
 import { markRaw, reactive, readonly } from 'vue';
 import { deepMerge } from '@/utils/deepFu.ts';
 
