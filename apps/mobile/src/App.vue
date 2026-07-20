@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import { defHttp } from '@/utils/request.ts';
+
+const handleClick = async () => {
+  const data = await defHttp.get("/dev-api/test/config/get?key=system.user.init-password")
+  console.log("🚀 ~ handleClick ~ data: ", data);
+}
 </script>
 
 <template>
   <header>
+    <button @click="handleClick">发请求</button>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
