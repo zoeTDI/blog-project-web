@@ -2,11 +2,13 @@ import axios, { type AxiosRequestConfig } from 'axios';
 import type { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { ROUTER_NAMES } from '@/router/routerNames.ts';
 import type { Router } from 'vue-router';
+import { caMessage } from '@/components/ca/caMessage';
 
 interface ResponseData<T = any> {
   code: number;
   message: string;
   data: T;
+  timestamp: number;
 }
 
 // 1. 创建实例
@@ -37,12 +39,19 @@ service.interceptors.response.use(
       return res.data;
     }
     console.error('业务错误:', res.message || 'Error');
-    return Promise.reject(new Error(res.message || 'Error'));
+    caMessage.error("系统开小差了。");
+
+    if (res.code === 401) {
+      const router = (await import('@/router')).default as unknown as Router;
+      router.push({ name: ROUTER_NAMES.LOGIN });
+    }
+
+    return null;
   },
-  (error) => {
+  () => {
     // 处理 HTTP 错误码（401, 404, 500等）
-    console.error('网络错误:', error.message);
-    return Promise.reject(error);
+    caMessage.error("网络错误，请检查网络连接");
+    return null;
   }
 );
 
@@ -58,18 +67,18 @@ function baseRequest<T = any>(
     ...extraConfig,
   };
   if (method.toLowerCase() === 'get') {
-    // GET 请求：将对象放入 params，Axios 会自动将其转为 ?id=xxx
+    // GET 请求：将对象放入 params
     config.params = params;
   } else {
-    // 非 GET 请求（POST/PUT等）：将对象放入 data，作为请求体发送
+    // 非 GET 请求（POST/PUT等）
     config.data = params;
   }
   return service(config) as unknown as Promise<T>;
 }
 
 export const defHttp = {
-  get: <T = any>(url: string, params?: object, config?: AxiosRequestConfig) =>
-    baseRequest<T>(url, params, 'get', config),
+  get: <T = any>(url: string, data?: object, config?: AxiosRequestConfig) =>
+    baseRequest<T>(url, data, 'get', config),
   post: <T = any>(url: string, data?: object, config?: AxiosRequestConfig) =>
     baseRequest<T>(url, data, 'post', config),
   put: <T = any>(url: string, data?: object, config?: AxiosRequestConfig) =>
