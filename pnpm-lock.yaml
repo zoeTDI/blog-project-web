@@ -231,6 +231,9 @@ importers:
       pinia:
         specifier: ^3.0.4
         version: 3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3))
+      pinia-plugin-persistedstate:
+        specifier: ^4.7.1
+        version: 4.7.1(pinia@3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3)))
       vue:
         specifier: ^3.5.40
         version: 3.5.40(typescript@6.0.3)
@@ -386,6 +389,15 @@ importers:
       axios:
         specifier: ^1.18.1
         version: 1.18.1
+
+  packages/store:
+    dependencies:
+      pinia:
+        specifier: ^3.0.4
+        version: 3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3))
+      pinia-plugin-persistedstate:
+        specifier: ^4.7.1
+        version: 4.7.1(pinia@3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3)))
 
   packages/ui:
     devDependencies:
@@ -4934,6 +4946,12 @@ snapshots:
       defu: 6.1.7
     optionalDependencies:
       pinia: 3.0.4(typescript@5.9.3)(vue@3.5.40(typescript@5.9.3))
+
+  pinia-plugin-persistedstate@4.7.1(pinia@3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3))):
+    dependencies:
+      defu: 6.1.7
+    optionalDependencies:
+      pinia: 3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3))
 
   pinia@3.0.4(typescript@5.9.3)(vue@3.5.40(typescript@5.9.3)):
     dependencies:

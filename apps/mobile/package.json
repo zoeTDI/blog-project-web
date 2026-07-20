@@ -16,6 +16,7 @@
     "@caldm/request": "workspace:*",
     "@caldm/ui": "workspace:*",
     "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
     "vue": "^3.5.40",
     "vue-router": "^5.1.0"
   },
