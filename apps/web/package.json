@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@caldm/hook": "workspace:*",
+    "@caldm/request": "workspace:*",
     "@caldm/ui": "workspace:*",
     "@heroicons/vue": "^2.2.0",
     "axios": "^1.15.2",

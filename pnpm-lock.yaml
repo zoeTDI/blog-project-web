@@ -212,6 +212,9 @@ importers:
       '@caldm/hook':
         specifier: workspace:*
         version: link:../../packages/hook
+      '@caldm/request':
+        specifier: workspace:*
+        version: link:../../packages/request
       '@caldm/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -270,6 +273,9 @@ importers:
       '@caldm/hook':
         specifier: workspace:*
         version: link:../../packages/hook
+      '@caldm/request':
+        specifier: workspace:*
+        version: link:../../packages/request
       '@caldm/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -379,6 +385,12 @@ importers:
       vue:
         specifier: ^3.5.38
         version: 3.5.40(typescript@6.0.3)
+
+  packages/request:
+    dependencies:
+      axios:
+        specifier: ^1.18.1
+        version: 1.18.1
 
   packages/ui:
     devDependencies:
