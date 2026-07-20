@@ -12,6 +12,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@caldm/hook": "workspace:*",
     "@caldm/ui": "workspace:*",
     "@heroicons/vue": "^2.2.0",
     "axios": "^1.15.2",
