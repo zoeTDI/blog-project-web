@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed, onUnmounted, useSlots } from 'vue';
   import type { CaCardFooterAction } from '@/components/ca/caCard';
-  import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
+  import { useDebounceFn } from '@caldm/hook';
   import { CaButton } from '@/components/ca/caButton';
 
   interface Props {

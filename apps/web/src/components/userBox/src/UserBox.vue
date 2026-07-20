@@ -2,10 +2,9 @@
   import { BellIcon, EnvelopeIcon } from '@heroicons/vue/24/outline';
   import MessageList from './MessageList.vue';
   import UserMenu from './UserMenu.vue';
-  import { preferences } from '@/core/preferences/index.ts';
   import defaultAvatar from '@/assets/avatar.svg';
   import { computed, onMounted, ref } from 'vue';
-  import { useDebounceFn } from '@/hooks/useDebounceFn.ts';
+  import { useDebounceFn } from '@caldm/hook';
   import {
     type MessageItem,
     MessageSource,
