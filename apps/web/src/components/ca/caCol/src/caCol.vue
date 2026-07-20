@@ -2,8 +2,8 @@
   import type { CaColProps } from '@/components/ca/caCol';
   import { computed, type CSSProperties, inject } from 'vue';
   import { caRowContextKey } from '@/components/ca/CaRow';
-  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
-  import { isNumber, isObject } from '@/utils/isFu.ts';
+  import { isNumber } from '@/utils/isFu.ts';
+  import { useCSSNamespace } from '@caldm/hook';
 
   defineOptions({
     name: 'CaCol',

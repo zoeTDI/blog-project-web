@@ -3,11 +3,10 @@
   import { computed, provide, ref } from 'vue';
   import type { CaSideMenuProps, MenuItem } from './types';
   import { isArray, isNumber } from '@/utils/isFu.ts';
-  import { Bars3BottomLeftIcon } from '@heroicons/vue/24/outline';
   import { preferences } from '@/core/preferences';
   import { useI18n } from 'vue-i18n';
   import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
-  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
+  import { useCSSNamespace } from '@caldm/hook';
   import {
     CaSideMenuGroup,
     CaSideMenuOption,

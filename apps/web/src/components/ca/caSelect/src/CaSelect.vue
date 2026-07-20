@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, onMounted, onUnmounted, provide, ref } from 'vue';
-  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
+  import { useCSSNamespace } from '@caldm/hook';
   import {
     CaSelectDropdown,
     caSelectKey,

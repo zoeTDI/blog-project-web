@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
+  import { useCSSNamespace } from '@caldm/hook';
   import { computed } from 'vue';
   import type { CaSelectGroupProps } from '@/components/ca/caSelect';
 

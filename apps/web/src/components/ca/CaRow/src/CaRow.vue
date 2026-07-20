@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { caRowContextKey, type CaRowProps } from '@/components/ca/CaRow';
   import { computed, type CSSProperties, provide } from 'vue';
-  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
+  import { useCSSNamespace } from '@caldm/hook';
 
   const props = withDefaults(defineProps<CaRowProps>(), {
     tag: 'div',
@@ -48,5 +48,5 @@
 </template>
 
 <style scoped>
-  @import "../styles/caRow.css";
+  @import '../styles/caRow.css';
 </style>

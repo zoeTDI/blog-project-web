@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useCSSNamespace } from '@/hooks/useCSSNamespace.ts';
+  import { useCSSNamespace } from '@caldm/hook';
   import { computed, inject } from 'vue';
   import {
     caSelectKey,
