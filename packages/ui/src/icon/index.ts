@@ -7,3 +7,4 @@ export {
 };
 export * from './simpleIcon/src/types.ts';
 export * from './heroIcon/src/types.ts';
+export * from './src/types.ts';
