@@ -3,6 +3,7 @@
   import type { ComponentSize } from '#/component.ts';
   import { useCSSNamespace } from '@caldm/hook';
   import { computed, ref } from 'vue';
+  import { CaIcon } from '../../../icon';
 
   defineOptions({
     name: 'CaButton',
@@ -24,6 +25,18 @@
   const ns = useCSSNamespace('button');
 
   const active = ref<boolean>(false);
+
+  const iconSize = computed(() => {
+    switch (props.size) {
+      case 'S':
+        return 14;
+      case 'L':
+        return 20;
+      case 'M':
+      default:
+        return 16;
+    }
+  });
 
   const handleTouchStart = () => {
     if (props.disabled || props.loading) return;
@@ -64,18 +77,20 @@
           @touchmove="handleTouchEnd"
           @touchend="handleTouchEnd"
           @touchcancel="handleTouchEnd">
-    <component :is="icon"
-               v-if="icon && !loading && iconPosition === 'left'"
-               :class="[ns.e('icon'), ns.is('left')]" />
+    <CaIcon v-if="icon && !loading && iconPosition === 'left'"
+            :icon="icon"
+            :size="iconSize"
+            :class="[ns.e('icon'), ns.is('left')]" />
     <span :class="ns.e('content')">
       <slot />
       <span v-if="loading" :class="ns.e('loader')">
         <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
       </span>
     </span>
-    <component :is="icon"
-               v-if="icon && !loading && iconPosition === 'right'"
-               :class="[ns.e('icon'), ns.is('right')]" />
+    <CaIcon v-if="icon && !loading && iconPosition === 'right'"
+            :icon="icon"
+            :size="iconSize"
+            :class="[ns.e('icon'), ns.is('right')]" />
   </button>
 </template>
 
