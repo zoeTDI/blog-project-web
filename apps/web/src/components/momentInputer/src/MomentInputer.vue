@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import { CaRow } from '@/components/ca/CaRow';
-  import { CaCol } from '@/components/ca/caCol';
+  import { CaRow, CaCol } from '@caldm/ui';
   import { CaButton } from '@/components/ca/caButton';
   import { ref } from 'vue';
   import { CaImageUpload } from '@/components/ca/caImageUpload';

@@ -14,8 +14,7 @@
     TIMEZONE_OPTIONS,
   } from '@/core/preferences';
   import { type RouteRecordNormalized, useRouter } from 'vue-router';
-  import { CaRow } from '@/components/ca/CaRow';
-  import { CaCol } from '@/components/ca/caCol';
+  import { CaRow, CaCol } from '@caldm/ui';
   import { CaButton } from '@/components/ca/caButton';
 
   withDefaults(defineProps<ButtonProps>(), {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { CaRow } from '@/components/ca/CaRow';
-  import { CaCol } from '@/components/ca/caCol';
+  import { CaRow, CaCol } from '@caldm/ui';
   import { CaSection } from '@/components/ca/caSection';
   import { type Tag, TagCloud } from '@/components/tagCloud';
   import { CaList, CaListItem } from '@/components/ca/caList';

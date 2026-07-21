@@ -1,12 +1,11 @@
 <script setup lang="ts">
-  import { CaRow } from '@/components/ca/CaRow';
-  import { CaCol } from '@/components/ca/caCol';
   import { onMounted, ref } from 'vue';
   import {
     animateNumber,
     easingFunctionsOption,
     getDurationByValue,
   } from '@/utils/NumberAnimation.ts';
+  import { CaRow, CaCol } from '@caldm/ui';
 
   interface DataBoardProps {
     data: { label: string; value: number }[];

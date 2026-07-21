@@ -2,8 +2,7 @@
   import { ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
   import { mockApiFetch } from '@/utils/mock';
-  import { CaRow } from '@/components/ca/CaRow';
-  import { CaCol } from '@/components/ca/caCol';
+  import { CaRow, CaCol } from '@caldm/ui';
   import {
     ExclamationTriangleIcon,
     Squares2X2Icon,

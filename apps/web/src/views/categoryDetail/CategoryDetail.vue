@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
-  import { CaRow } from '@/components/ca/CaRow';
-  import { CaCol } from '@/components/ca/caCol';
+  import { CaRow, CaCol } from '@caldm/ui';
   import { CaSection } from '@/components/ca/caSection';
   import { useRoute } from 'vue-router';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';

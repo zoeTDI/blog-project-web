@@ -1,8 +1,7 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
-  import { CaRow } from '@/components/ca/CaRow';
-  import { CaCol } from '@/components/ca/caCol';
+  import { CaRow, CaCol } from '@caldm/ui';
   import { CaSection } from '@/components/ca/caSection';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import { ArrowLeftIcon } from '@heroicons/vue/24/outline';

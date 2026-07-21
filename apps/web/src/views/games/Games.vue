@@ -1,8 +1,7 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
   import { mockApiFetch } from '@/utils/mock.ts';
-  import { CaRow } from '@/components/ca/CaRow';
-  import { CaCol } from '@/components/ca/caCol';
+  import { CaRow, CaCol } from '@caldm/ui';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
 
   const mockData: { id: string; url: string; alt?: string }[] = [
