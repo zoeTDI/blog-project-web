@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import { defHttp } from '@/utils/request.ts';
+import { CaInkTree } from '@caldm/ui';
 
 const handleClick = async () => {
   const data = await defHttp.get("/dev-api/test/config/get?key=system.user.init-password")
@@ -10,6 +11,7 @@ const handleClick = async () => {
 </script>
 
 <template>
+  <ca-ink-tree :max-trees="3" :spawn-interval="5000" />
   <header>
     <button @click="handleClick">发请求</button>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />

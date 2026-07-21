@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { CaInkTree } from '@/components/background/caInkTree';
+  import { CaInkTree } from '@caldm/ui';
   import { CaSearch } from '@/components/ca/caSearch';
   import { preferences } from '@/core/preferences';
   import {
@@ -14,7 +14,7 @@
 
 <template>
   <div class="app-wrapper">
-    <CaInkTree />
+    <CaInkTree :max-trees="6" color-var-name="--text-primary" />
 
     <header
       class="layout-header"
