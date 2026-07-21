@@ -115,6 +115,18 @@
     opacity: 0.12;
   }
 
+  .ca-button__icon {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+  }
+
+  .ca-button_-content {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
   @media (hover: hover) {
     .ca-button--primary:hover:not(:disabled):not(.hover-expand) {
       background-color: var(--color-bg-hover);
