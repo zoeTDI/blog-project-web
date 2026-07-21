@@ -6,7 +6,6 @@
     LockClosedIcon,
     LockOpenIcon,
     ArrowPathIcon,
-    // ArrowTopRightOnSquareIcon,
     ArrowLeftIcon,
     ArrowRightIcon,
     MinusCircleIcon,
@@ -15,6 +14,7 @@
   import { useRoute, useRouter } from 'vue-router';
   import { preferences } from '@/core/preferences';
   import { useI18n } from 'vue-i18n';
+  import { CaIcon } from '@caldm/ui';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -264,9 +264,9 @@
         :class="['context-menu-item', { disabled: item.disabled }]"
         @click="!item.disabled && menuClick($event, item)">
         <!-- 菜单项图标 -->
-        <component
+        <CaIcon
           v-if="item?.icon"
-          :is="item.icon"
+          :icon="item.icon"
           class="menu-item-icon" />
         <!-- 菜单项文字 -->
         <span class="menu-item-label">{{ item.label }}</span>

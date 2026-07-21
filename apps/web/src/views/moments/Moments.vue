@@ -12,50 +12,51 @@
   import { CaSearch } from '@/components/ca/caSearch';
   import { preferences } from '@/core/preferences';
   import { siBilibili, siGithub, siGmail, siTiktok } from 'simple-icons';
-  import type { SimpleIcon as SimpleIconType } from 'simple-icons';
 
   import { CaList, CaListItem } from '@/components/ca/caList';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import Calendar from '@/components/calendar/src/Calendar.vue';
-  import { SimpleIcon } from '@/components/icon';
   import { DataBoard } from '@/components/dataBoard';
+  import { createSimpleIcon } from '@caldm/ui';
+  import type { Component } from 'vue';
+  import { CaIcon } from '@caldm/ui';
 
   interface OutLinkItem {
     id: string;
     label: string;
     link: string;
-    icon?: SimpleIconType;
+    icon?: Component;
   }
   interface InLinkItem {
     id: string;
     label: string;
     link: { name: string };
-    icon?: SimpleIconType;
+    icon?: Component;
   }
 
   const contacts: OutLinkItem[] = [
     {
       id: 'github',
       label: 'GitHub',
-      icon: siGithub,
+      icon: createSimpleIcon(siGithub),
       link: 'https://github.com/zoeTDI',
     },
     {
       id: 'bilibili',
       label: '哔哩哔哩',
-      icon: siBilibili,
+      icon: createSimpleIcon(siBilibili),
       link: 'https://space.bilibili.com/你的UID',
     },
     {
       id: 'douyin',
       label: '抖音',
-      icon: siTiktok,
+      icon: createSimpleIcon(siTiktok),
       link: 'https://www.douyin.com/user/你的主页ID',
     },
     {
       id: 'email',
       label: '电子邮箱',
-      icon: siGmail,
+      icon: createSimpleIcon(siGmail),
       link: 'mailto:your.email@example.com',
     },
   ];
@@ -141,9 +142,9 @@
                     <span
                       class="icon-wrapper"
                       v-if="item.icon">
-                      <simple-icon
+                      <CaIcon
                         :icon="item.icon"
-                        :size="24" />
+                        :size="18" />
                     </span>
                   </template>
                   <span class="list-item-label">{{ item.label }}</span>
@@ -165,9 +166,9 @@
                     <span
                       class="icon-wrapper"
                       v-if="item?.icon">
-                      <simple-icon
+                      <CaIcon
                         :icon="item.icon"
-                        :size="24" />
+                        :size="18" />
                     </span>
                   </template>
                   <span class="list-item-label">{{ item.label }}</span>
@@ -186,7 +187,9 @@
     <template #sidebar-right>
       <section class="moment-right">
         <calendar />
-        <data-board :data="dataBoardData" animation />
+        <data-board
+          :data="dataBoardData"
+          animation />
       </section>
     </template>
   </content-layout>

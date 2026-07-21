@@ -1,4 +1,4 @@
-import { caMarquee, CaMarquee } from '@/components/ca/caMarquee';
+import { CaMarquee } from '@/components/ca/caMarquee';
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 
 const meta = {

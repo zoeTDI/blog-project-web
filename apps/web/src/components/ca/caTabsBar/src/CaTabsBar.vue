@@ -7,7 +7,7 @@
   import { LockClosedIcon } from '@heroicons/vue/24/outline';
   import { useI18n } from 'vue-i18n';
   import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
-  import { HeroIcon } from '@/components/icon';
+  import { CaIcon } from '@caldm/ui';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -50,7 +50,7 @@
       :class="['tab-item', { active: activeTabPath === tab.path }]"
       @click="handleClickTab(tab.path)"
       @contextmenu.prevent="handleOpenContextMenu($event, tab)">
-      <HeroIcon
+      <CaIcon
         :icon="tab.prefixIcon"
         v-if="tab.prefixIcon"
         class="tab-item-icon" />

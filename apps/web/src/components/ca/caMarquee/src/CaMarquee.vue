@@ -5,8 +5,8 @@
     caMarqueeIconMap,
     type CaMarqueeProps,
   } from '@/components/ca/caMarquee';
-  import { HeroIcon } from '@/components/icon';
   import { XMarkIcon } from '@heroicons/vue/24/outline';
+  import { CaIcon } from '@caldm/ui';
 
   const props = withDefaults(defineProps<CaMarqueeProps>(), {
     icon: 'info',
@@ -20,7 +20,7 @@
   const containerRef = ref<HTMLElement | null>(null);
   const contentRef = ref<HTMLElement | null>(null);
 
-  const scrollbable = ref<boolean>(false);
+  const scrollable = ref<boolean>(false);
   const visible = ref<boolean>(true);
 
   const textWidth = ref<number>(0);
@@ -45,7 +45,7 @@
   });
 
   const contentStyle = computed(() => {
-    if (!scrollbable.value) return {};
+    if (!scrollable.value) return {};
     return ns.cssVarBlock({
       'text-width': `${textWidth.value}px`,
       'container-width': `${containerWidth.value}px`,
@@ -55,7 +55,7 @@
 
   const checkScroll = async () => {
     if (!props.scrollable) {
-      scrollbable.value = false;
+      scrollable.value = false;
       return;
     }
     await nextTick();
@@ -65,7 +65,7 @@
 
       containerWidth.value = cw;
       textWidth.value = tw;
-      scrollbable.value = tw > cw;
+      scrollable.value = tw > cw;
     }
   };
 
@@ -99,7 +99,7 @@
       <div
         v-if="props.icon"
         :class="[ns.e('icon')]">
-        <HeroIcon
+        <CaIcon
           :icon="icon"
           :size="22" />
       </div>
@@ -109,7 +109,7 @@
         :class="[ns.e('content-wrapper')]">
         <div
           ref="contentRef"
-          :class="[ns.e('content'), ns.is('scrolling', scrollbable)]"
+          :class="[ns.e('content'), ns.is('scrolling', scrollable)]"
           :style="contentStyle">
           {{ props.content }}
         </div>
@@ -119,7 +119,7 @@
         v-if="props.closeable"
         :class="[ns.e('close-btn')]"
         @click="close">
-        <HeroIcon
+        <CaIcon
           :icon="XMarkIcon"
           :size="18" />
       </div>

@@ -13,8 +13,8 @@
     DefaultOptionHeight,
     DefaultWidth,
   } from '@/components/ca/caSideMenu';
-  import { HeroIcon } from '@/components/icon';
   import { caSideMenuKey } from '@/components/ca/caSideMenu/src/constants.ts';
+  import { CaIcon } from '@caldm/ui';
 
   const props = withDefaults(defineProps<CaSideMenuProps>(), {
     width: DefaultWidth,
@@ -163,12 +163,12 @@
         <template
           #prefix
           v-if="group.prefixIcon">
-          <HeroIcon :icon="group.prefixIcon" />
+          <CaIcon :icon="group.prefixIcon" :size="20" />
         </template>
         <template
           #suffix
           v-if="group.suffixIcon">
-          <HeroIcon :icon="group.suffixIcon" />
+          <CaIcon :icon="group.suffixIcon" :size="20" />
         </template>
         <CaSideMenuOption
           v-for="option in group.children || []"
@@ -178,12 +178,12 @@
           <template
             #prefix
             v-if="option?.prefixIcon">
-            <HeroIcon :icon="option.prefixIcon" />
+            <CaIcon :icon="option.prefixIcon" :size="20" />
           </template>
           <template
             #suffix
             v-if="option?.suffixIcon">
-            <HeroIcon :icon="option.suffixIcon" />
+            <CaIcon :icon="option.suffixIcon" :size="20" />
           </template>
           <template #default> {{ option.title }} </template>
         </CaSideMenuOption>
