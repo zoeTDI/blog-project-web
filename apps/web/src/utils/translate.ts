@@ -1,3 +1,4 @@
+import { getDynamicText as getDynamicTextCore } from '@caldm/utils';
 import { DEFAULT_MESSAGE, i18n } from '@/plugins/i18n.ts';
 import type { SupportLanguageOption } from '@/core/preferences';
 
@@ -10,23 +11,12 @@ const getDynamicText = (
   fieldObj: Record<SupportLanguageOption, string> | string,
   fallback = ''
 ): string => {
-  if (!fieldObj) return fallback;
-  if (typeof fieldObj === 'string') return fieldObj;
-
-  const currentLocale = i18n.global.locale as SupportLanguageOption;
-
-  const currentText = fieldObj[currentLocale];
-
-  if (currentText && currentText.trim() !== '') {
-    return currentText;
-  }
-
-  const defaultText = fieldObj[DEFAULT_MESSAGE];
-  if (defaultText && defaultText !== '') {
-    return defaultText;
-  }
-
-  return fallback;
+  return getDynamicTextCore(
+    fieldObj,
+    i18n.global.locale as SupportLanguageOption,
+    DEFAULT_MESSAGE as SupportLanguageOption,
+    fallback
+  );
 };
 
 export { getDynamicText };

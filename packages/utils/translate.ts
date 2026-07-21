@@ -1,32 +1,26 @@
-import { DEFAULT_MESSAGE, i18n } from '@/plugins/i18n.ts';
-import type { SupportLanguageOption } from '@/core/preferences';
+export type LanguageKey = string;
 
-/**
- * 动态解析多语言字段
- * @param fieldObj 后端返回的JSON对象
- * @param fallback 兜底默认文本
- */
-const getDynamicText = (
-  fieldObj: Record<SupportLanguageOption, string> | string,
-  fallback = ''
+export const getDynamicText = <L extends string = string>(
+  fieldObj: Record<L, string> | string | null | undefined,
+  currentLocale: L,
+  defaultLocale?: L,
+  fallback = '',
 ): string => {
   if (!fieldObj) return fallback;
   if (typeof fieldObj === 'string') return fieldObj;
 
-  const currentLocale = i18n.global.locale as SupportLanguageOption;
-
+  // 匹配当前语言
   const currentText = fieldObj[currentLocale];
-
   if (currentText && currentText.trim() !== '') {
     return currentText;
   }
 
-  const defaultText = fieldObj[DEFAULT_MESSAGE];
-  if (defaultText && defaultText !== '') {
-    return defaultText;
+  // 匹配兜底语言
+  if (defaultLocale) {
+    const defaultText = fieldObj[defaultLocale];
+    if (defaultText && defaultText.trim() !== '') {
+      return defaultText;
+    }
   }
-
   return fallback;
 };
-
-export { getDynamicText };
