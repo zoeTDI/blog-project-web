@@ -111,6 +111,7 @@
     overflow: hidden;
     gap: 8px;
     -webkit-tap-highlight-color: transparent;
+    vertical-align: middle;
   }
 
   .ca-button::after {
