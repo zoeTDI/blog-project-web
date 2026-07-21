@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue';
-  import type { SimpleIconProps } from '@/icon/simpleIcon/src/types.ts';
+  import type { SimpleIconProps } from '@/icon';
 
   defineOptions({
     name: 'CaSimpleIcon',
