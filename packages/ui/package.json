@@ -8,6 +8,9 @@
     "build-storybook": "storybook build"
   },
   "private": true,
+  "dependencies": {
+    "@caldm/hook": "workspace:*"
+  },
   "peerDependencies": {
     "vue": "^3.5.0"
   },

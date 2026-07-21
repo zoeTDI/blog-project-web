@@ -7,7 +7,8 @@
     "env.d.ts",
     "src/**/*",
     "**/*.vue",
-    "index.ts"
+    "index.ts",
+    "**/*.ts"
   ],
   "compilerOptions": {
     "composite": true,

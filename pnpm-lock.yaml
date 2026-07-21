@@ -400,6 +400,10 @@ importers:
         version: 4.7.1(pinia@3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3)))
 
   packages/ui:
+    dependencies:
+      '@caldm/hook':
+        specifier: workspace:*
+        version: link:../hook
     devDependencies:
       '@storybook/addon-a11y':
         specifier: ^10.4.6
