@@ -2,7 +2,7 @@
   import type { CaButtonEmits, CaButtonProps, CaButtonType } from './types.ts';
   import type { ComponentSize } from '#/component.ts';
   import { useCSSNamespace } from '@caldm/hook';
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
 
   defineOptions({
     name: 'CaButton',
@@ -23,6 +23,17 @@
 
   const ns = useCSSNamespace('button');
 
+  const active = ref<boolean>(false);
+
+  const handleTouchStart = () => {
+    if (props.disabled || props.loading) return;
+    active.value = true;
+  };
+
+  const handleTouchEnd = () => {
+    active.value = false;
+  };
+
   const handleClick = (event: MouseEvent) => {
     if (props.disabled || props.loading) {
       event.preventDefault();
@@ -39,12 +50,20 @@
     ns.is('disabled', props.disabled),
     ns.is('block', props.block),
     ns.is('round', props.round),
+    ns.is('active', active.value),
     props.hoverEffect !== 'none' ? `hover-${props.hoverEffect}` : '',
   ]);
 </script>
 
 <template>
-  <button :class="classes" type="button" :disabled="disabled || loading" @click="handleClick">
+  <button :class="classes"
+          type="button"
+          :disabled="disabled || loading"
+          @click="handleClick"
+          @touchstart="handleTouchStart"
+          @touchmove="handleTouchEnd"
+          @touchend="handleTouchEnd"
+          @touchcancel="handleTouchEnd">
     <component :is="icon"
                v-if="icon && !loading && iconPosition === 'left'"
                :class="[ns.e('icon'), ns.is('left')]" />
@@ -76,6 +95,50 @@
     transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     overflow: hidden;
     gap: 8px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ca-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-text-primary, #000);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .ca-button.is-active::after {
+    opacity: 0.12;
+  }
+
+  @media (hover: hover) {
+    .ca-button--primary:hover:not(:disabled):not(.hover-expand) {
+      background-color: var(--color-bg-hover);
+      border-color: var(--color-border-hover-accent);
+      color: var(--color-accent);
+      opacity: 0.9;
+    }
+
+    .ca-button--outline:hover:not(:disabled):not(.hover-expand) {
+      border-color: var(--color-border-hover-accent);
+      color: var(--color-accent);
+      opacity: 0.9;
+    }
+
+    .ca-button--text:hover:not(:disabled):not(.hover-expand) {
+      color: var(--color-accent);
+    }
+
+    .hover-expand:hover:not(:disabled) {
+      padding-left: 60px;
+      padding-right: 60px;
+      border-color: var(--color-border-hover-accent);
+      color: var(--color-text-hover-accent);
+    }
   }
 
   .ca-button--s {
@@ -111,23 +174,10 @@
     color: var(--color-text-primary, #333);
   }
 
-  .ca-button--primary:hover:not(:disabled):not(.hover-expand) {
-    background-color: var(--color-bg-hover);
-    border-color: var(--color-border-hover-accent);
-    color: var(--color-accent);
-    opacity: 0.9;
-  }
-
   .ca-button--outline {
     border-color: var(--color-border, #ccc);
     background-color: var(--color-container-bg);
     color: var(--color-text-primary, #333);
-  }
-
-  .ca-button--outline:hover:not(:disabled):not(.hover-expand) {
-    border-color: var(--color-border-hover-accent);
-    color: var(--color-accent);
-    opacity: 0.9;
   }
 
   .ca-button--text {
@@ -138,13 +188,6 @@
 
   .ca-button--text:hover:not(:disabled):not(.hover-expand) {
     color: var(--color-accent);
-  }
-
-  .hover-expand:hover:not(:disabled) {
-    padding-left: 60px;
-    padding-right: 60px;
-    border-color: var(--color-border-hover-accent);
-    color: var(--color-text-hover-accent);
   }
 
   .ca-button:active:not(:disabled) {
@@ -189,5 +232,11 @@
       opacity: 0;
       transform: translateY(0);
     }
+  }
+
+  .is-disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+    filter: grayscale(1);
   }
 </style>
