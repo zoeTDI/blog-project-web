@@ -1,3 +1,5 @@
+import { buildProps } from '@caldm/utils';
+
 export const CaRowJustify = [
   'start',
   'center',
@@ -15,3 +17,23 @@ export interface CaRowProps {
   justify?: (typeof CaRowJustify)[number];
   align?: (typeof CaRowAlign)[number];
 }
+
+export const caRowProps = buildProps({
+  tag: {
+    type: String,
+    default: 'div',
+  },
+  gutter: {
+    type: Number,
+    default: 0,
+  },
+  justify: {
+    type: String,
+    default: 'start',
+    values: CaRowJustify,
+  },
+  align: {
+    type: String,
+    values: CaRowAlign,
+  },
+});

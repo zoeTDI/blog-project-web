@@ -1,3 +1,5 @@
+import { buildProps } from '@caldm/utils';
+
 export type CaColSizeObject = {
   span?: number;
   offset?: number;
@@ -14,3 +16,26 @@ export interface CaColProps {
   pull?: number;
   push?: number;
 }
+
+export const caColProps = buildProps({
+  tag: {
+    type: String,
+    default: 'div',
+  },
+  span: {
+    type: Number,
+    default: 24,
+  },
+  offset: {
+    type: Number,
+    default: 0,
+  },
+  pull: {
+    type: Number,
+    default: 0,
+  },
+  push: {
+    type: Number,
+    default: 0,
+  },
+} as const);

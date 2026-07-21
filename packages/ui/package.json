@@ -18,6 +18,7 @@
   "private": true,
   "dependencies": {
     "@caldm/hook": "workspace:*",
+    "@caldm/utils": "workspace:*",
     "@heroicons/vue": "^2.2.0",
     "simple-icons": "^16.26.0"
   },
