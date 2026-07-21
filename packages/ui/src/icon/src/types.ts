@@ -4,11 +4,11 @@ import type { SimpleIconProps } from '@/icon/simpleIcon/src/types.ts';
 export type IconType = 'hero' | 'simple';
 
 export interface HeroIconDispatcherProps extends HeroIconProps {
-  type: 'hero';
+  type?: 'hero';
 }
 
 export interface SimpleIconDispatcherProps extends SimpleIconProps {
-  type: 'simple';
+  type?: 'simple';
 }
 
 export type CaIconProps = HeroIconDispatcherProps | SimpleIconDispatcherProps;
