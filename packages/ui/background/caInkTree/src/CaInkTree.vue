@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { onMounted, onUnmounted, ref } from 'vue';
   import type { CaInkTreeProps } from './types.ts';
-  import { useDebounceFn } from '@caldm/hook';
+  import { useCSSNamespace, useDebounceFn } from '@caldm/hook';
 
   const props = withDefaults(defineProps<CaInkTreeProps>(), {
     maxTrees: 5,
@@ -11,6 +11,8 @@
     spawnInterval: 3000,
     colorVarName: '--text',
   });
+
+  const ns = useCSSNamespace('ink-tree');
 
   const canvasRef = ref<HTMLCanvasElement | null>(null);
   let ctx: CanvasRenderingContext2D | null = null;
@@ -28,8 +30,10 @@
       return props.colorGetter(alpha);
     }
 
+    const varName = props.colorVarName.startsWith('--') ? props.colorVarName : ns.cssVarName(props.colorVarName);
+
     const textColor = getComputedStyle(document.documentElement)
-      .getPropertyValue(props.colorVarName)
+      .getPropertyValue(varName)
       .trim();
 
     if (textColor.startsWith('#')) {
@@ -231,11 +235,11 @@
 </script>
 
 <template>
-  <canvas ref="canvasRef" class="ca-ink-tree-canvas" />
+  <canvas ref="canvasRef" :class="[ns.b(),ns.e('canvas')]" />
 </template>
 
 <style scoped>
-  .ca-ink-tree-canvas {
+  .ca-ink-tree__canvas {
     position: fixed;
     top: 0;
     left: 0;
