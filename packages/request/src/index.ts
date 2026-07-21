@@ -11,6 +11,7 @@ interface ResponseData<T = any> {
 export interface HttpConfig {
   baseURL: string;
   timeout?: number;
+  getToken?: () => string | null | Promise<string | null>;
   onUnauthorized?: () => void;
   onErrorMessage?: (msg: string) => void;
 }
@@ -18,23 +19,26 @@ export interface HttpConfig {
 export function createHttp(options: HttpConfig) {
   const service = axios.create({
     baseURL: options.baseURL,
-    timeout: options.timeout || 5000,
+    timeout: options.timeout || 10000,
   });
 
+  // 请求拦截器
   service.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
+    async (config: InternalAxiosRequestConfig) => {
+      if (options.getToken) {
+        const token = await options.getToken();
+        if (token && config.headers) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      }
       return config;
     },
     (error) => Promise.reject(error),
   );
 
+  // 响应拦截器
   service.interceptors.response.use(
     (response: AxiosResponse) => {
-      // Http 状态码处理
-      if (response.status === 401) {
-        options.onUnauthorized?.();
-        return null;
-      }
 
       const res = response.data as ResponseData;
 
@@ -42,50 +46,49 @@ export function createHttp(options: HttpConfig) {
         return res.data;
       }
 
-      console.error('业务错误:', res.message || 'Error');
-      options.onErrorMessage?.(res.message || '系统开小差了。');
-
       // 业务状态码处理
       if (res.code === 401) {
         options.onUnauthorized?.();
       }
 
-      return null;
+      const errorMsg = res.message || '系统开小差了。';
+      options.onErrorMessage?.(errorMsg);
+
+      return Promise.reject(new Error(errorMsg));
     },
     (error) => {
-      options.onErrorMessage?.('网络错误，请检查网络连接');
-      return null;
+      if (error.response) {
+        if (error.response.status === 401) {
+          options.onUnauthorized?.();
+        }
+        const msg = error.response.data?.message || `网络请求错误 (${error.response.status})`;
+        options.onErrorMessage?.(msg);
+      } else if (error.message.includes('timeout')) {
+        options.onErrorMessage?.('网络请求超时，请稍后重试');
+      } else {
+        options.onErrorMessage?.('网络错误，请检查网络连接');
+      }
+      return Promise.reject(error);
     },
   );
 
-  function baseRequest<T = any>(
-    url: string,
-    params: object = {},
-    method: 'get' | 'post' | 'put' | 'delete' = 'get',
-    extraConfig: AxiosRequestConfig = {},
-  ): Promise<T> {
-    const config: AxiosRequestConfig = {
-      url,
-      method,
-      ...extraConfig,
-    };
-    if (method.toLowerCase() === 'get') {
-      config.params = params;
-    } else {
-      config.data = params;
-    }
-    return service(config) as unknown as Promise<T>;
-  }
-
   return {
-    get: <T = any>(url: string, data?: object, config?: AxiosRequestConfig) =>
-      baseRequest(url, data, 'get', config),
-    post: <T = any>(url: string, data?: object, config?: AxiosRequestConfig) =>
-      baseRequest<T>(url, data, 'post', config),
-    put: <T = any>(url: string, data?: object, config?: AxiosRequestConfig) =>
-      baseRequest<T>(url, data, 'put', config),
-    delete: <T = any>(url: string, params?: object, config?: AxiosRequestConfig) =>
-      baseRequest<T>(url, params, 'delete', config),
+    instance: service,
+    get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+      return service.get(url, config) as unknown as Promise<T>;
+    },
+
+    post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+      return service.post(url, data, config) as unknown as Promise<T>;
+    },
+
+    put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+      return service.put(url, data, config) as unknown as Promise<T>;
+    },
+
+    delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+      return service.delete(url, config) as unknown as Promise<T>;
+    },
   };
 }
 
