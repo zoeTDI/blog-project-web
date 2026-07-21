@@ -404,6 +404,9 @@ importers:
       '@caldm/hook':
         specifier: workspace:*
         version: link:../hook
+      '@caldm/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@heroicons/vue':
         specifier: ^2.2.0
         version: 2.2.0(vue@3.5.40(typescript@6.0.3))
@@ -438,6 +441,18 @@ importers:
       vite:
         specifier: ^8.1.5
         version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(yaml@2.9.0)
+      vue:
+        specifier: ^3.5.40
+        version: 3.5.40(typescript@6.0.3)
+
+  packages/utils:
+    devDependencies:
+      '@vue/tsconfig':
+        specifier: ^0.9.1
+        version: 0.9.1(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3))
+      typescript:
+        specifier: ~6.0.0
+        version: 6.0.3
       vue:
         specifier: ^3.5.40
         version: 3.5.40(typescript@6.0.3)
