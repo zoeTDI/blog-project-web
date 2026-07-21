@@ -1,12 +1,12 @@
-import {isArray, isObject} from "@/utils/isFu.ts";
+import { isArray, isObject } from './isFu.ts';
 
 type DiffResult<T> = Partial<{ [K in keyof T]: T[K] extends object ? DiffResult<T[K]> : T[K] }>
 
 const arraysEqual = <T>(a: T[], b: T[]): boolean => {
   if (a.length !== b.length) {
-    return false
+    return false;
   }
-  const counter = new Map<T, number>()
+  const counter = new Map<T, number>();
   for (const value of a) {
     counter.set(value, (counter.get(value) || 0) + 1);
   }
@@ -18,7 +18,7 @@ const arraysEqual = <T>(a: T[], b: T[]): boolean => {
     counter.set(value, count - 1);
   }
   return true;
-}
+};
 
 const diff = <
   T extends Record<string, any>
@@ -36,14 +36,14 @@ const diff = <
       keys.forEach((key) => {
         const valueDiff = findDifferences(o1[key], o2[key]);
         if (valueDiff !== undefined) {
-          diffResult[key] = valueDiff
+          diffResult[key] = valueDiff;
         }
       });
       return Object.keys(diffResult).length > 0 ? diffResult : undefined;
     }
     return o1 === o2 ? undefined : o2;
-  }
+  };
   return findDifferences(obj1, obj2);
-}
+};
 
-export {arraysEqual, diff}
+export { arraysEqual, diff };

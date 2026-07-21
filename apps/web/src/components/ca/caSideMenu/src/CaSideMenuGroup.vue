@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@caldm/hook';
   import { computed, type CSSProperties, inject, ref, useSlots } from 'vue';
-  import { isArray } from '@/utils/isFu.ts';
+  import { isArray } from '@caldm/utils';
   import {
     caSideMenuKey,
     DefaultOptionHeight,

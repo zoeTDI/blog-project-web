@@ -1,4 +1,4 @@
-import { isObject } from '@/utils/isFu.ts';
+import { isObject } from './isFu.ts';
 
 /**
  * 深度合并两个或多个对象（右侧优先覆盖）

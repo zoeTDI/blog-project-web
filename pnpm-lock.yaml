@@ -286,6 +286,9 @@ importers:
       '@caldm/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@caldm/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@heroicons/vue':
         specifier: ^2.2.0
         version: 2.2.0(vue@3.5.40(typescript@6.0.3))

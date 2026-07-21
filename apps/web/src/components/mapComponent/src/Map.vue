@@ -11,7 +11,7 @@
     MarkedCityGroup,
     ProjectionFn,
   } from './types';
-  import { parseToHexColor } from '@/utils/parse.ts';
+  import { parseToHexColor } from '@caldm/utils';
   import { useI18n } from 'vue-i18n';
 
   interface Props {

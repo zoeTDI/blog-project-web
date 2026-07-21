@@ -6,7 +6,7 @@
     type RouteParamsRaw,
     useRouter,
   } from 'vue-router';
-  import { isString } from '@/utils/isFu.ts';
+  import { isString } from '@caldm/utils';
   import {
     caSideMenuKey,
     DefaultOptionHeight,

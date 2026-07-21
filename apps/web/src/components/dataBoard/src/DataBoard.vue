@@ -4,7 +4,7 @@
     animateNumber,
     easingFunctionsOption,
     getDurationByValue,
-  } from '@/utils/NumberAnimation.ts';
+  } from '@caldm/utils';
   import { CaRow, CaCol } from '@caldm/ui';
 
   interface DataBoardProps {

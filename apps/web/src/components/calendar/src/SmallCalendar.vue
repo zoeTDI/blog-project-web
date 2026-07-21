@@ -6,7 +6,7 @@
     ChevronDoubleRightIcon,
   } from '@heroicons/vue/24/outline';
   import { computed } from 'vue';
-  import { isSameDay } from '@/utils/isFu.ts';
+  import { isSameDay } from '@caldm/utils';
   import {
     DAY_OF_WEEK_MAP,
     type DayOfWeek,

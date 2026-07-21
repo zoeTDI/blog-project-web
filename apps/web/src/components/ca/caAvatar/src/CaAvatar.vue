@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue';
-  import { parseToHexColor } from '@/utils/parse.ts';
+  import {parseToHexColor} from '@caldm/utils';
   import {
     type CaAvatarProps,
     type DotColor,

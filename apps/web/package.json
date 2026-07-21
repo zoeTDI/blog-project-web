@@ -15,6 +15,7 @@
     "@caldm/hook": "workspace:*",
     "@caldm/request": "workspace:*",
     "@caldm/ui": "workspace:*",
+    "@caldm/utils": "workspace:*",
     "@heroicons/vue": "^2.2.0",
     "highlight.js": "^11.11.1",
     "markdown-it": "^14.1.1",

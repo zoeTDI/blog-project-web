@@ -4,7 +4,6 @@ export * from './escapeUtils';
 export * from './isFu';
 export * from './NumberAnimation';
 export * from './parse';
-export * from './placeholderImage';
 export * from './runtime';
 export * from './safeFu';
 export * from './TimezoneUtils';

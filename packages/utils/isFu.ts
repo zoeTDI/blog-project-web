@@ -14,9 +14,6 @@ const isSameDay = (d1: Date, d2: Date) => {
   );
 };
 
-const isDev = (): boolean => import.meta.env.DEV;
-const isProd = (): boolean => import.meta.env.PROD;
-
 const isString = (val: any): val is string => typeof val === 'string';
 const isUndefined = (val: any): val is undefined => val === undefined;
 const isBoolean = (val: any): val is boolean => typeof val === 'boolean';
@@ -44,8 +41,6 @@ const isWindow = (val: unknown): val is Window => val === window;
 export {
   isObject,
   isArray,
-  isDev,
-  isProd,
   isSameDay,
   isString,
   isUndefined,

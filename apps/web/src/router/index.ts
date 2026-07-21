@@ -1,8 +1,8 @@
-import {baseRouter} from "./base.ts";
-import type {RouteRecordRaw} from "vue-router";
-import {isArray} from "@/utils/isFu.ts";
+import { baseRouter } from './base.ts';
+import type { RouteRecordRaw } from 'vue-router';
+import { isArray } from '@caldm/utils';
 
-const modules = import.meta.glob('./modules/*.ts', {eager: true})
+const modules = import.meta.glob('./modules/*.ts', { eager: true });
 
 const dynamicRoutes: RouteRecordRaw[] = [];
 Object.keys(modules).forEach((key) => {
@@ -10,16 +10,13 @@ Object.keys(modules).forEach((key) => {
   const routerModule = module.default;
   if (routerModule) {
     if (isArray(routerModule)) {
-      dynamicRoutes.push(...routerModule)
+      dynamicRoutes.push(...routerModule);
     } else {
-      dynamicRoutes.push(routerModule)
+      dynamicRoutes.push(routerModule);
     }
   }
-})
+});
 
-const routes = [
-  ...baseRouter,
-  ...dynamicRoutes,
-]
+const routes = [...baseRouter, ...dynamicRoutes];
 
 export default routes;

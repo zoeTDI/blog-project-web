@@ -11,7 +11,7 @@ import { defaultCustomPreference } from '@/core/preferences/src/curtomConfig.ts'
 import { StorageManager } from '@/cache';
 import {useDebounceFn} from '@caldm/hook';
 import { markRaw, reactive, readonly } from 'vue';
-import { deepMerge } from '@/utils/deepFu.ts';
+import { deepMerge } from '@caldm/utils';
 
 import type { DeepPartial } from '#/utils';
 

@@ -2,7 +2,7 @@
   import { useRoute } from 'vue-router';
   import { computed, provide, ref } from 'vue';
   import type { CaSideMenuProps, MenuItem } from './types';
-  import { isArray, isNumber } from '@/utils/isFu.ts';
+  import { isArray, isNumber } from '@caldm/utils';
   import { preferences } from '@/core/preferences';
   import { useI18n } from 'vue-i18n';
   import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
@@ -163,12 +163,16 @@
         <template
           #prefix
           v-if="group.prefixIcon">
-          <CaIcon :icon="group.prefixIcon" :size="20" />
+          <CaIcon
+            :icon="group.prefixIcon"
+            :size="20" />
         </template>
         <template
           #suffix
           v-if="group.suffixIcon">
-          <CaIcon :icon="group.suffixIcon" :size="20" />
+          <CaIcon
+            :icon="group.suffixIcon"
+            :size="20" />
         </template>
         <CaSideMenuOption
           v-for="option in group.children || []"
@@ -178,12 +182,16 @@
           <template
             #prefix
             v-if="option?.prefixIcon">
-            <CaIcon :icon="option.prefixIcon" :size="20" />
+            <CaIcon
+              :icon="option.prefixIcon"
+              :size="20" />
           </template>
           <template
             #suffix
             v-if="option?.suffixIcon">
-            <CaIcon :icon="option.suffixIcon" :size="20" />
+            <CaIcon
+              :icon="option.suffixIcon"
+              :size="20" />
           </template>
           <template #default> {{ option.title }} </template>
         </CaSideMenuOption>
