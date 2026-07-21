@@ -1,15 +1,22 @@
 import type { StorybookConfig } from '@storybook/vue3-vite';
+import vue from '@vitejs/plugin-vue';
 
 const config: StorybookConfig = {
-  "stories": [
-    "../src/**/*.mdx",
-    "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
+  'stories': [
+    '../**/*.mdx',
+    '../**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
-  "addons": [
-    "@storybook/addon-a11y",
-    "@storybook/addon-docs",
-    "@storybook/addon-onboarding"
+  'addons': [
+    '@storybook/addon-a11y',
+    '@storybook/addon-docs',
+    '@storybook/addon-onboarding',
   ],
-  "framework": "@storybook/vue3-vite",
+  'framework': '@storybook/vue3-vite',
+  async viteFinal(config) {
+    const { mergeConfig } = await import('vite');
+    return mergeConfig(config, {
+      plugins: [vue()],
+    });
+  },
 };
 export default config;
