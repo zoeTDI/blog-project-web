@@ -1,0 +1,168 @@
+
+/* 默认变量（浅色模式） */
+:root {
+  --app-accent-color: unset;
+  /*单列布局页面的宽度和内间距*/
+  --content-max-width-S: 800px;
+  --content-max-width-M: 1000px;
+  --content-max-width-L: 1200px;
+  --content-padding-S: 20px 10px;
+  --content-padding-M: 40px 20px;
+  --content-padding-L: 60px 40px;
+
+  /*三列布局页面的宽度和内间距*/
+  --layout-3col-max-width: 1600px;
+  --layout-3col-sidebar-basis: 25%;
+  --layout-3col-sidebar-min-w: 260px;
+  --layout-3col-sidebar-max-w: 380px;
+
+  --font-text: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-h: "Source Serif 4", "Noto Serif SC", "Georgia", serif;
+
+  --color-text-primary: #6b6375;
+
+  --color-text-h: #08060d;
+  --color-root-bg: #ffffff;
+  --color-container-bg: #ffffff;
+  --color-context-bg: #eaeaea;
+  --color-border: #e5e4e7;
+  --color-accent: var(--app-accent-color);
+  --color-border-accent: var(--app-accent-color);
+  --color-bg-accent: var(--app-accent-color);
+  --color-bg: rgba(244, 243, 236, 0.5);
+  --color-text-hover-accent: var(--app-accent-color);
+  --color-bg-hover-accent: rgba(164, 41, 255, 0.24);
+  --color-border-hover-accent: rgba(170, 59, 255, 0.5);
+  --color-bg-hover: rgba(244, 243, 236, 0.5);
+
+  color-scheme: light dark;
+  color: var(--color-text-primary);
+  background: var(--color-root-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --color-callout-text: #1F2937;
+
+  /*地图*/
+  /*!*地区背景色*!*/
+  --color-map-bg: #f4f1f8;
+  /*!*地区轮廓线*!*/
+  --color-map-border: #cbd5e1;
+  /*!*鼠标悬浮时地区背景色*!*/
+  --color-map-bg-hover: color-mix(in srgb, var(--color-accent) 15%, transparent);
+
+  --color-map-border-hover: var(--color-accent);
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+/* 深色模式变量 - 当包含 .dark 类时激活 */
+.dark {
+  --color-text-primary: #a19ba8;
+
+  --color-text-h: #f5f5f5;
+  --color-root-bg: #1a1a1a;
+  --color-container-bg: #1a1a1a;
+  --color-context-bg: #2f2f2f;
+  --color-border: #a19ba8;
+  --color-accent: #bd6dff;
+  --color-border-accent: #bd6dff;
+  --color-bg-accent: #bd6dff;
+  --color-bg: rgba(38, 37, 34, 0.5);
+  --color-text-hover-accent: #bd6dff;
+  --color-bg-hover-accent: rgba(171, 74, 255, 0.45);
+  --color-border-hover-accent: rgba(189, 109, 255, 0.5);
+  --color-bg-hover: rgba(38, 37, 34, 0.5);
+
+  --color-callout-text: #F3F4F6;
+
+  /*地图*/
+  /*!*地区背景色*!*/
+  --color-map-bg: #f4f1f8;
+  /*!*地区轮廓线*!*/
+  --color-map-border: #cbd5e1;
+  /*!*鼠标悬浮时地区背景色*!*/
+  --color-map-bg-hover: color-mix(in srgb, var(--color-accent) 15%, transparent);
+
+  --color-map-border-hover: #aa3bff;
+}
+
+/* 基础重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/*全局滚动条样式*/
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 3px;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit; /* 链接颜色随父级 */
+  transition: opacity 0.2s;
+}
+
+a:hover {
+  opacity: 0.7;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  scrollbar-width: none;
+  background: var(--color-root-bg);
+  color: var(--color-text-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-h);
+  font-weight: 500;
+  color: var(--color-text-h);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+}
+
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+}
