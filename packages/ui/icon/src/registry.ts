@@ -1,6 +1,6 @@
 import type { Component } from 'vue';
-import { CaHeroIcon, CaSimpleIcon } from '@/icon';
-import type { IconType } from '@/icon';
+import { CaHeroIcon, CaSimpleIcon } from '../index.ts';
+import type { IconType } from '../index.ts';
 
 const iconRegistry = new Map<string, Component>();
 
