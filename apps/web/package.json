@@ -12,6 +12,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@caldm/core": "workspace:*",
     "@caldm/hook": "workspace:*",
     "@caldm/request": "workspace:*",
     "@caldm/ui": "workspace:*",
