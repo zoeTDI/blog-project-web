@@ -1,9 +1,8 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { CaRow, CaCol } from '@caldm/ui';
+  import { CaRow, CaCol, CaList, CaListItem } from '@caldm/ui';
   import { CaSection } from '@/components/ca/caSection';
   import { type Tag, TagCloud } from '@/components/tagCloud';
-  import { CaList, CaListItem } from '@/components/ca/caList';
   import { CaTimeline } from '@/components/ca/caTimeline';
   import { useRouter } from 'vue-router';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';

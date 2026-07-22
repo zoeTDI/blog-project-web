@@ -12,8 +12,8 @@
   import { CaSearch } from '@/components/ca/caSearch';
   import { preferences } from '@/core/preferences';
   import { siBilibili, siGithub, siGmail, siTiktok } from 'simple-icons';
+  import { CaList, CaListItem } from '@caldm/ui';
 
-  import { CaList, CaListItem } from '@/components/ca/caList';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import Calendar from '@/components/calendar/src/Calendar.vue';
   import { DataBoard } from '@/components/dataBoard';
