@@ -5,6 +5,8 @@
 
   const ns = useCSSNamespace('base-layout-footer');
 
+  const { copyright } = preferences;
+
   const classes = computed(() => {
     const cls: string[] = [ns.b()];
     return cls;
@@ -25,99 +27,179 @@
 </script>
 
 <template>
-  <div
+  <footer
     :class="classes"
     :style="styles">
-    <div :class="ns.e('left')">
-      <div :class="ns.e('copyright')">
-        © {{ new Date().getFullYear() }} BY YOURNAME
+    <div :class="ns.e('container')">
+      <div :class="ns.e('main')">
+        <div :class="ns.e('copyright')">
+          <span>© {{ copyright.date || new Date().getFullYear() }}</span>
+          <span v-if="copyright.companyName || copyright.owner">
+            {{ copyright.companyName || copyright.owner }}
+          </span>
+          <span v-if="copyright.rightsText">
+            {{ copyright.rightsText }}
+          </span>
+        </div>
+
+        <div
+          v-if="copyright.termsLink || copyright.privacyPolicyLink"
+          :class="ns.e('links')">
+          <a
+            v-if="copyright.termsLink"
+            :href="copyright.termsLink"
+            target="_blank"
+            rel="noopener noreferrer"
+            :class="ns.e('link')">
+            服务条款
+          </a>
+          <span
+            v-if="copyright.termsLink && copyright.privacyPolicyLink"
+            :class="ns.e('divider')">
+            |
+          </span>
+          <a
+            v-if="copyright.privacyPolicyLink"
+            :href="copyright.privacyPolicyLink"
+            target="_blank"
+            rel="noopener noreferrer"
+            :class="ns.e('link')">
+            隐私政策
+          </a>
+        </div>
       </div>
-    </div>
-    <div :class="ns.e('right')">
-      <div :class="[ns.e('beian'), ns.s('container')]">
+
+      <div
+        v-if="
+          copyright.gonganRecordNumber ||
+          copyright.icpRecordNumber ||
+          copyright.beianExtra
+        "
+        :class="ns.e('beian')">
         <a
-          :href="preferences.copyright.gonganRecordNumberLink"
+          v-if="copyright.gonganRecordNumber"
+          :href="
+            copyright.gonganRecordNumberLink || 'https://beian.mps.gov.cn/'
+          "
           target="_blank"
+          rel="noopener noreferrer"
           :class="ns.e('item')">
           <img
             src="@/assets/备案编号图标.png"
             alt="公安备案图标"
             :class="ns.e('gongan-icon')" />
-          <span>{{ preferences.copyright.gonganRecordNumber }}</span>
+          <span>{{ copyright.gonganRecordNumber }}</span>
         </a>
 
         <a
-          :href="preferences.copyright.icpRecordNumberLink"
+          v-if="copyright.icpRecordNumber"
+          :href="copyright.icpRecordNumberLink || 'https://beian.miit.gov.cn/'"
           target="_blank"
+          rel="noopener noreferrer"
           :class="ns.e('item')">
-          <span>{{ preferences.copyright.icpRecordNumber }}</span>
+          <span>{{ copyright.icpRecordNumber }}</span>
         </a>
+
+        <span
+          v-if="copyright.beianExtra"
+          :class="ns.e('extra')">
+          {{ copyright.beianExtra }}
+        </span>
       </div>
     </div>
-  </div>
+  </footer>
 </template>
 
 <style scoped>
+  /* 根容器基类 */
   .ca-base-layout-footer {
+    width: 100%;
     height: var(--ca-base-layout-footer-height, auto);
+    padding: 24px 16px;
+    box-sizing: border-box;
+    font-size: 13px;
+    color: var(--color-text-primary, #666666);
+    background-color: transparent;
+    transition: opacity 0.3s ease;
+  }
+
+  .ca-base-layout-footer__container {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* 主区域：版权 + 法律条款 */
+  .ca-base-layout-footer__main {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    opacity: 0.6;
-    transition: opacity 0.3s;
+    justify-content: space-between;
+    gap: 12px 24px;
   }
 
-  .ca-base-layout-footer:hover {
-    opacity: 1; /* 鼠标悬停时清晰显示，符合极简互动感 */
-  }
-
-  .ca-base-layout-footer__left {
-  }
+  /* 版权文本组合 */
   .ca-base-layout-footer__copyright {
-  }
-  .ca-base-layout-footer__right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
   }
 
-  /* 备案容器：横向排列 */
-  .ca-base-layout-footer__beian {
+  /* 法律条款链接 */
+  .ca-base-layout-footer__links {
     display: flex;
     align-items: center;
-    gap: 24px; /* 两个备案信息之间的间距 */
+    gap: 8px;
+  }
+
+  .ca-base-layout-footer__link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .ca-base-layout-footer__link:hover {
+    color: var(--color-text-primary, #409eff);
+  }
+
+  .ca-base-layout-footer__divider {
+    opacity: 0.4;
+    font-size: 12px;
+  }
+
+  /* 备案信息栏 */
+  .ca-base-layout-footer__beian {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    font-size: 12px;
+    opacity: 0.85;
   }
 
   .ca-base-layout-footer__item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px; /* 图片与文字之间的微小间距 */
+    gap: 6px;
     color: inherit;
     text-decoration: none;
+    transition: color 0.2s ease;
   }
 
   .ca-base-layout-footer__item:hover {
-    color: var(--color-text-hover-accent);
+    color: var(--color-text-primary, #409eff);
   }
 
-  /* 公安图片大小与文字对齐的关键 */
   .ca-base-layout-footer__gongan-icon {
-    height: 1.2em; /* 略大于 1em 以视觉抵消图标边距，确保感官上与文字对齐 */
-    width: auto;
-    vertical-align: middle;
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
   }
 
-  /* 响应式调整 */
-  @media (max-width: 768px) {
-    .ca-base-layout-footer {
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
-    }
-
-    .ca-base-layout-footer__beian {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
+  .ca-base-layout-footer__extra {
+    opacity: 0.75;
   }
 </style>
