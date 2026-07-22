@@ -24,11 +24,15 @@
 
   const visible = ref<boolean>(false);
   const displayLabel = ref<string>('');
+  const placement = ref<'bottom' | 'top'>('bottom');
+  const selectWidth = ref<number>(0);
+  let resizeObserver: ResizeObserver | null = null;
 
-  const selectWidth = computed(() => {
-    if (!selectRef.value) return 0;
-    return (selectRef.value as HTMLInputElement).offsetWidth;
-  });
+  const updateWidth = () => {
+    if (selectRef.value) {
+      selectWidth.value = selectRef.value.offsetWidth;
+    }
+  };
 
   const classes = computed(() => {
     const cls: string[] = [
@@ -45,11 +49,29 @@
     visible.value = false;
   };
 
+  const adjustPlacement = () => {
+    if (!selectRef.value) return;
+
+    const rect = selectRef.value.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    const dropdownMaxHeight = 240;
+    const spaceBelow = windowHeight - rect.bottom;
+
+    if (spaceBelow < dropdownMaxHeight && rect.top > spaceBelow) {
+      placement.value = 'top';
+    } else {
+      placement.value = 'bottom';
+    }
+  };
+
   provide(caSelectKey, { selectOption, selectedValue: model });
-  provide(caSelectStyleKey, { selectWidth });
+  provide(caSelectStyleKey, { selectWidth, placement });
 
   const handleInputClick = () => {
     if (props.disabled) return;
+    adjustPlacement();
+    updateWidth();
     visible.value = true;
   };
 
@@ -66,10 +88,25 @@
 
   onMounted(() => {
     window.addEventListener('click', dropdownVisibleControl, true);
+    window.addEventListener('resize', adjustPlacement);
+
+    if (selectRef.value) {
+      updateWidth();
+      resizeObserver = new ResizeObserver(() => {
+        updateWidth();
+      });
+      resizeObserver.observe(selectRef.value);
+    }
   });
 
   onUnmounted(() => {
     window.removeEventListener('click', dropdownVisibleControl, true);
+    window.removeEventListener('resize', adjustPlacement);
+
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+      resizeObserver = null;
+    }
   });
 </script>
 

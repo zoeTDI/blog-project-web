@@ -1,16 +1,17 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@caldm/hook';
-  import { computed, inject } from 'vue';
+  import { computed, inject, ref } from 'vue';
   import { caSelectStyleKey } from '@/components/ca/caSelect';
 
   const ns = useCSSNamespace('select-dropdown');
 
-  const { selectWidth } = inject(caSelectStyleKey, {
+  const { selectWidth, placement } = inject(caSelectStyleKey, {
     selectWidth: computed(() => 0),
+    placement: ref<'bottom' | 'top'>('bottom'),
   });
 
   const classes = computed(() => {
-    const cls: string[] = [ns.b()];
+    const cls: string[] = [ns.b(), ns.m(placement.value)];
     return cls;
   });
 
@@ -33,7 +34,6 @@
   .ca-select-dropdown {
     position: absolute;
     overflow-y: auto;
-    top: calc(100% + 4px);
     left: 0;
 
     min-height: 20px;
@@ -47,5 +47,15 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-border) transparent;
     transition: all 0.2s ease-in-out;
+  }
+
+  .ca-select-dropdown--bottom {
+    top: calc(100% + 4px);
+    bottom: auto;
+  }
+
+  .ca-select-dropdown--top {
+    bottom: calc(100% + 4px);
+    top: auto;
   }
 </style>

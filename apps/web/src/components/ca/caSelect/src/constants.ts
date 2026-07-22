@@ -1,12 +1,13 @@
-import type { ComputedRef, InjectionKey, Ref } from 'vue';
+import type { InjectionKey, Ref } from 'vue';
 
 interface CaSelect {
-  selectedValue: Ref<any>;
+  selectedValue: Ref<string | number | boolean | undefined>;
   selectOption: (value: any, label: string) => void;
 }
 
 interface CaSelectStyle {
-  selectWidth: ComputedRef<number>;
+  selectWidth: Ref<number>;
+  placement: Ref<'bottom' | 'top'>;
 }
 
 export const caSelectKey: InjectionKey<CaSelect> = Symbol('caSelectKey');
