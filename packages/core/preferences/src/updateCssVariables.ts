@@ -2,6 +2,7 @@ import type { ThemeModeOptions, ThemePreferences } from '../types';
 import type { DeepPartial } from '@caldm/utils';
 
 export const updateThemeColor = (color: string) => {
+  if (typeof document === 'undefined') return;
   const els = document.getElementsByTagName('html');
   if (els.length > 0) {
     const el = els[0];
@@ -9,7 +10,11 @@ export const updateThemeColor = (color: string) => {
   }
 };
 
-export const updateThemeMode = (themePreferences: DeepPartial<ThemePreferences>) => {
+export const updateThemeMode = (
+  themePreferences: DeepPartial<ThemePreferences>,
+) => {
+  if (typeof document === 'undefined') return;
+
   if ('mode' in themePreferences && themePreferences.mode) {
     const themeModeOption: ThemeModeOptions | undefined = themePreferences.mode;
     if (themeModeOption === undefined) return;
