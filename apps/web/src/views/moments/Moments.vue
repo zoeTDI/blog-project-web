@@ -213,7 +213,7 @@
   }
 
   .sidebar-left .sidebar-left-item {
-    width: 40%;
+    width: 60%;
     margin-left: 10%;
   }
 
