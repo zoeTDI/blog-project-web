@@ -1,11 +1,13 @@
 import { PreferenceManager } from '@caldm/core';
 import { defaultPreferences } from '@/core/preferences/src/config.ts';
-import { defaultCustomPreference } from '@/core/preferences/src/curtomConfig.ts';
+import { type CustomPreferencesType, defaultCustomPreference } from '@/core/preferences/src/curtomConfig.ts';
 
-const preferenceManager = await PreferenceManager.create({
-  defaultPreferences: defaultPreferences,
-  defaultCustomPreferences: defaultCustomPreference,
-});
+const preferenceManager = await PreferenceManager.create<CustomPreferencesType>(
+  {
+    defaultPreferences: defaultPreferences,
+    defaultCustomPreferences: defaultCustomPreference,
+  }
+);
 
 /**
  * 导出当前用户偏好的只读引用

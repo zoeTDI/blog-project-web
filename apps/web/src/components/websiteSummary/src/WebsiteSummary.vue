@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { preferences } from '@/core/preferences';
+  import { customPreferences, preferences } from '@/core/preferences';
   import { getDynamicText } from '@/utils/translate.ts';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import { useRouter } from 'vue-router';
@@ -40,8 +40,8 @@
       <div class="site-slogan">
         {{
           getDynamicText({
-            'zh-CN': preferences.app.websiteSubName_zh_CN,
-            'en-US': preferences.app.websiteName_en_US,
+            'zh-CN': customPreferences.websiteSubName_zh_CN,
+            'en-US': customPreferences.websiteSubName_en_US,
           })
         }}
       </div>

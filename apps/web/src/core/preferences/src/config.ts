@@ -7,16 +7,8 @@ export const defaultPreferences: Preferences = {
     defaultHomePath: '/analysis/dashboard',
     locale: 'zh-CN',
     timezone: TIMEZONE_OPTIONS.UTC,
-    watermark: true,
-    watermarkContent: 'caldm.cn',
-    websiteMaster: 'Your Name',
     websiteName_zh_CN: '电子灭虫录',
     websiteName_en_US: 'dian zi mie chong lu',
-    websiteSubName_zh_CN: '记录、探索与生活的极简志',
-    websiteSubName_en_US:
-      'A minimalist journal of recording, exploring, and life',
-    signature_zh_CN: '',
-    signature_en_US: '',
   },
   breadcrumb: {
     enable: true,

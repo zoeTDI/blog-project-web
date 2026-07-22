@@ -1,12 +1,12 @@
 <script setup lang="ts">
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
-  import { preferences } from '@/core/preferences';
+  import { customPreferences } from '@/core/preferences';
 </script>
 
 <template>
   <div class="home-map">
     <section class="intro-section">
-      <h1 class="owner-name">{{ preferences.app.websiteMaster || '未知' }}</h1>
+      <h1 class="owner-name">{{ customPreferences.websiteMaster || '未知' }}</h1>
       <div class="contact-info">
         <span class="info-item"
           >EMAIL: <a href="mailto:example@mail.com">example@mail.com</a></span

@@ -53,15 +53,8 @@
       defaultHomePath: '',
       locale: 'zh-CN',
       timezone: TIMEZONE_OPTIONS.UTC,
-      watermark: false,
-      watermarkContent: '',
-      websiteMaster: '',
       websiteName_zh_CN: '',
       websiteName_en_US: '',
-      websiteSubName_zh_CN: '',
-      websiteSubName_en_US: '',
-      signature_zh_CN: '',
-      signature_en_US: '',
     },
     breadcrumb: {
       enable: false,
@@ -242,56 +235,6 @@
 
                   <ca-col :span="12">
                     <div class="form-item">
-                      <label>网站副标题（中文）：</label>
-                      <input
-                        type="text"
-                        v-model="formState.app.websiteSubName_zh_CN"
-                        placeholder="请输入网站副标题" />
-                    </div>
-                  </ca-col>
-
-                  <ca-col :span="12">
-                    <div class="form-item">
-                      <label>网站副标题（英文）：</label>
-                      <input
-                        type="text"
-                        v-model="formState.app.websiteSubName_en_US"
-                        placeholder="请输入网站副标题" />
-                    </div>
-                  </ca-col>
-
-                  <ca-col :span="12">
-                    <div class="form-item">
-                      <label>站长名称：</label>
-                      <input
-                        type="text"
-                        v-model="formState.app.websiteMaster"
-                        placeholder="请输入站长名称" />
-                    </div>
-                  </ca-col>
-
-                  <ca-col :span="12">
-                    <div class="form-item">
-                      <label>站长个性签名（中文）：</label>
-                      <input
-                        type="text"
-                        v-model="formState.app.signature_zh_CN"
-                        placeholder="请输入个性签名" />
-                    </div>
-                  </ca-col>
-
-                  <ca-col :span="12">
-                    <div class="form-item">
-                      <label>站长个性签名（英文）：</label>
-                      <input
-                        type="text"
-                        v-model="formState.app.signature_en_US"
-                        placeholder="请输入个型签名" />
-                    </div>
-                  </ca-col>
-
-                  <ca-col :span="12">
-                    <div class="form-item">
                       <label>默认主页路径：</label>
                       <select v-model="formState.app.defaultHomePath">
                         <option value="">请选择默认主页</option>
@@ -339,27 +282,6 @@
                     </div>
                   </ca-col>
 
-                  <ca-col :span="24">
-                    <div class="form-item checkbox-item">
-                      <input
-                        type="checkbox"
-                        id="app-watermark"
-                        v-model="formState.app.watermark" />
-                      <label for="app-watermark">开启全站水印</label>
-                    </div>
-                  </ca-col>
-
-                  <ca-col
-                    :span="24"
-                    v-if="formState.app.watermark">
-                    <div class="form-item row">
-                      <label>水印文案：</label>
-                      <input
-                        type="text"
-                        v-model="formState.app.watermarkContent"
-                        placeholder="请输入水印文案" />
-                    </div>
-                  </ca-col>
                 </ca-row>
               </div>
             </section>
