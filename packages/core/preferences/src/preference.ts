@@ -134,14 +134,42 @@ export class PreferenceManager<
   }
 
   /**
-   * 重置偏好配置为默认值（包括扩展偏好配置）
+   * 仅重置主偏好配置为默认值
    */
-  public async resetPreferences() {
-    Object.assign(this.state, deepMerge({}, this.initialPreferences));
-    Object.assign(this.customState, deepMerge({}, this.initialCustomPreferences));
+  public async resetMainPreferences() {
+    // 深度克隆初始默认值，先清空响应式对象属性再合并，确保无旧属性残存
+    const defaultMain = deepMerge({}, this.initialPreferences);
+    Object.keys(this.state).forEach((key) => {
+      delete (this.state as Record<string, any>)[key];
+    });
+    Object.assign(this.state, defaultMain);
+
     this.applyAllStyles();
     this.updateDocumentTitle();
     await this.saveToCache();
+  }
+
+  /**
+   * 仅重置自定义偏好配置为默认值
+   */
+  public async resetCustomPreferences() {
+    const defaultCustom = deepMerge({}, this.initialCustomPreferences);
+    Object.keys(this.customState).forEach((key) => {
+      delete (this.customState as Record<string, any>)[key];
+    });
+    Object.assign(this.customState, defaultCustom);
+
+    await this.saveToCache();
+  }
+
+  /**
+   * 重置偏好配置为默认值（包括扩展偏好配置）
+   */
+  public async resetPreferences() {
+    await Promise.all([
+      this.resetMainPreferences(),
+      this.resetCustomPreferences(),
+    ]);
   }
 
   private updateDocumentTitle() {
