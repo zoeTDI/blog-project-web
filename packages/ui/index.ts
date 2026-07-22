@@ -8,3 +8,4 @@ export * from './ca/button';
 export * from './ca/row';
 export * from './ca/col';
 export * from './icon';
+export * from './ca/select';
