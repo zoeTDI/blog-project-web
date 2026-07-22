@@ -3,10 +3,15 @@
     "@vue/tsconfig/tsconfig.dom.json",
     "../../tsconfig.json"
   ],
-  "include": ["env.d.ts", "index.ts", "*.ts", "*.vue"],
+  "include": [
+    "env.d.ts",
+    "index.ts",
+    "*.ts",
+    "*.d.ts"
+  ],
   "compilerOptions": {
     "composite": true,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": true
   }
 }
