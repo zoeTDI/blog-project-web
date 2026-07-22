@@ -7,15 +7,17 @@
   import {
     customPreferences,
     customPreferencesExtension,
-    type CustomPreferencesRecord,
     preferenceManager,
     preferences,
-    type Preferences,
-    TIMEZONE_OPTIONS,
   } from '@/core/preferences';
   import { type RouteRecordNormalized, useRouter } from 'vue-router';
   import { CaRow, CaCol } from '@caldm/ui';
   import { CaButton } from '@/components/ca/caButton';
+  import {
+    type CustomPreferencesRecord,
+    type Preferences,
+    TIMEZONE_OPTIONS,
+  } from '@caldm/core';
 
   withDefaults(defineProps<ButtonProps>(), {
     shape: 'rounded',
@@ -142,9 +144,12 @@
     preferenceManager.updatePreferences(formState.value);
     preferenceManager.updateCustomPreferences(customFormState.value);
   };
+
   const resetFormState = () => {
     preferenceManager.resetPreferences();
-    preferenceManager.resetCustomPreferences();
+
+    formState.value = JSON.parse(JSON.stringify(preferences));
+    customFormState.value = JSON.parse(JSON.stringify(customPreferences));
   };
 
   watch(curTab, (newVal, oldVal) => {

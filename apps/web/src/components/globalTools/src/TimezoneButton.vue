@@ -2,12 +2,9 @@
   import { GlobeAltIcon } from '@heroicons/vue/24/outline';
   import { type ButtonProps, MenuPopover } from '@/components/globalTools';
   import { computed, ref } from 'vue';
-  import {
-    preferenceManager,
-    preferences,
-    TIMEZONE_OPTIONS,
-    type TimezoneOption,
-  } from '@/core/preferences';
+  import { preferenceManager, preferences } from '@/core/preferences';
+  import { TIMEZONE_OPTIONS } from '@caldm/core';
+  import type { TimezoneOption } from '@caldm/core';
 
   withDefaults(defineProps<ButtonProps>(), {
     shape: 'rounded',

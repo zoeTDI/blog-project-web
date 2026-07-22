@@ -2,11 +2,9 @@ import type { RouteLocationNormalized, Router } from 'vue-router';
 import { useLoadingStore } from '@/store/useLoadingStore.ts';
 import { ROUTER_NAMES } from '@/router/routerNames.ts';
 import { useUserStore } from '@/store/useUserStore.ts';
-import { preferenceManager, preferences } from '@/core/preferences';
+import { preferences, defaultPreferences } from '@/core/preferences';
 import { i18n, ROUTER_PREFIX } from '@/plugins/i18n.ts';
 import { getDynamicText } from '@/utils/translate.ts';
-
-const defaultPreferences = preferenceManager.getInitialPreferences();
 
 const getWebsiteName = () => {
   return getDynamicText({

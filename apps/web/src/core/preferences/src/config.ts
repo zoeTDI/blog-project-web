@@ -1,6 +1,7 @@
-import { type Preferences, TIMEZONE_OPTIONS } from '@/core/preferences';
+import type { Preferences } from '@caldm/core';
+import { TIMEZONE_OPTIONS } from '@caldm/core';
 
-const defaultPreferences: Preferences = {
+export const defaultPreferences: Preferences = {
   app: {
     defaultAvatar: '',
     defaultHomePath: '/analysis/dashboard',
@@ -71,5 +72,3 @@ const defaultPreferences: Preferences = {
     timezoneToggle: false,
   },
 };
-
-export { defaultPreferences };

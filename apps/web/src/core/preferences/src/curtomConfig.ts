@@ -1,7 +1,7 @@
 import type {
   CustomPreferencesRecord,
   PreferencesExtension,
-} from '@/core/preferences';
+} from '@caldm/core';
 
 const defaultCustomPreference: CustomPreferencesRecord = {
   showAnnouncement: true, // 对应 switch

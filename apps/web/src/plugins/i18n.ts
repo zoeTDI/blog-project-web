@@ -1,11 +1,11 @@
 import { createI18n } from 'vue-i18n';
 import { messages } from '@/locales';
 import type { App } from 'vue';
+import { preferences } from '@/core/preferences';
 import {
-  preferences,
   SUPPORT_LANGUAGE_OPTIONS,
   type SupportLanguageOption,
-} from '@/core/preferences';
+} from '@caldm/core';
 
 const ROUTER_PREFIX = 'router.';
 const DEFAULT_MESSAGE: SupportLanguageOption = 'zh-CN';

@@ -2,12 +2,9 @@
   import { LanguageIcon } from '@heroicons/vue/24/outline';
   import { type ButtonProps, MenuPopover } from '@/components/globalTools';
   import { computed, ref } from 'vue';
-  import {
-    preferenceManager,
-    preferences,
-    SUPPORT_LANGUAGE_OPTIONS,
-    type SupportLanguageOption,
-  } from '@/core/preferences';
+  import { preferenceManager, preferences } from '@/core/preferences';
+  import { SUPPORT_LANGUAGE_OPTIONS } from '@caldm/core';
+  import type { SupportLanguageOption } from '@caldm/core';
   import { useI18n } from 'vue-i18n';
 
   withDefaults(defineProps<ButtonProps>(), {
