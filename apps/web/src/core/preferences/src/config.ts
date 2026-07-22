@@ -18,10 +18,10 @@ export const defaultPreferences: Preferences = {
     styleType: 'normal',
   },
   copyright: {
-    gonganRecordNumber: '',
-    gonganRecordNumberLink: '',
-    icpRecordNumber: '',
-    icpRecordNumberLink: '',
+    gonganRecordNumber: 'X公网安备XXXXXXXXXXX号',
+    gonganRecordNumberLink: 'https://beian.mps.gov.cn/#/',
+    icpRecordNumber: 'XICP备XXXXXXXXXX号',
+    icpRecordNumberLink: 'https://beian.miit.gov.cn/',
     beianExtra:
       '部分地区额外要求的备案警示文字（如“贵公网安备...”有时需补充“非经营性网站备案”）',
     companyName: '网站的公司名称，适用于非个人网站',
@@ -39,7 +39,7 @@ export const defaultPreferences: Preferences = {
   header: {
     enable: true,
     fixed: false,
-    height: 200,
+    height: 40,
   },
   logo: {
     enable: false,
@@ -60,7 +60,7 @@ export const defaultPreferences: Preferences = {
   },
   widgetPreferences: {
     themeToggle: true,
-    languageToggle: false,
+    languageToggle: true,
     timezoneToggle: false,
   },
 };
