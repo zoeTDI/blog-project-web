@@ -3,7 +3,7 @@
     "@vue/tsconfig/tsconfig.dom.json",
     "../../tsconfig.json"
   ],
-  "include": ["env.d.ts", "index.ts", "*.ts", , "src/**/*.ts"],
+  "include": ["env.d.ts", "index.ts", "*.ts", "src/**/*.ts"],
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["ESNext", "DOM"],
