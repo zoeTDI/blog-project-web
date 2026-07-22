@@ -14,7 +14,9 @@
     size: 'M',
   });
 
-  const model = defineModel({ default: '' });
+  const model = defineModel<string | number | boolean | undefined>({
+    default: '',
+  });
   const ns = useCSSNamespace('select');
 
   const selectRef = ref<HTMLElement | null>(null);
@@ -46,25 +48,28 @@
   provide(caSelectKey, { selectOption, selectedValue: model });
   provide(caSelectStyleKey, { selectWidth });
 
+  const handleInputClick = () => {
+    if (props.disabled) return;
+    visible.value = true;
+  };
+
   const dropdownVisibleControl = (e: Event) => {
     const targetEl = e.target as HTMLElement;
     if (!targetEl || !selectRef.value) return;
+
+    // 如果点击的位置不在当前 select 内部，则关闭下拉框
     const isClickInside = selectRef.value.contains(targetEl);
-    if (isClickInside) {
-      if (targetEl.classList.contains(ns.e('input'))) {
-        visible.value = true;
-      }
-    } else {
+    if (!isClickInside) {
       visible.value = false;
     }
   };
 
   onMounted(() => {
-    window.addEventListener('click', dropdownVisibleControl);
+    window.addEventListener('click', dropdownVisibleControl, true);
   });
 
   onUnmounted(() => {
-    window.removeEventListener('click', dropdownVisibleControl);
+    window.removeEventListener('click', dropdownVisibleControl, true);
   });
 </script>
 
@@ -78,7 +83,8 @@
       type="text"
       :class="[ns.e('input')]"
       v-bind:value="model"
-      :placeholder="props.placeholder" />
+      :placeholder="props.placeholder"
+      @click="handleInputClick" />
     <CaSelectDropdown v-show="visible && !props.disabled">
       <slot />
     </CaSelectDropdown>
