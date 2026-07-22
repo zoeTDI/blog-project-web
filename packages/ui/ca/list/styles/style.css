@@ -1,0 +1,31 @@
+.ca-list {
+  width: 100%;
+}
+
+.ca-list__title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: var(--color-text-h);
+}
+
+.ca-list__container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 1. 有序列表模式 */
+.is-mode-ordered {
+  list-style: decimal inside; /* 数字显示在内部以保持对齐 */
+  color: var(--color-text-primary);
+}
+
+/* 2. 无序有标识符模式 (如小圆点) */
+.is-mode-bullet {
+  list-style: none;
+}
+
+/* 3. 无标识符模式 */
+.is-mode-plain {
+  list-style: none;
+}
