@@ -18,6 +18,7 @@
     type Preferences,
     TIMEZONE_OPTIONS,
   } from '@caldm/core';
+  import { CaSelect, CaSelectOption } from '@/components/ca/caSelect';
 
   withDefaults(defineProps<ButtonProps>(), {
     shape: 'rounded',
@@ -281,7 +282,6 @@
                       </select>
                     </div>
                   </ca-col>
-
                 </ca-row>
               </div>
             </section>
@@ -799,14 +799,13 @@
                     </template>
 
                     <template v-else-if="field.component === 'select'">
-                      <select v-model="customFormState[field.key]">
-                        <option
+                      <ca-select v-model="customFormState[field.key]">
+                        <ca-select-option
                           v-for="opt in field.options"
                           :key="opt.value"
-                          :value="opt.value">
-                          {{ opt.label }}
-                        </option>
-                      </select>
+                          :label="opt.label"
+                          :value="opt.value" />
+                      </ca-select>
                     </template>
 
                     <template v-else-if="field.component === 'number'">
