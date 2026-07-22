@@ -12,6 +12,12 @@
     },
     // Packages 公共包（新增）
     {
+      "path": "./packages/cache"
+    },
+    {
+      "path": "./packages/core"
+    },
+    {
       "path": "./packages/hook"
     },
     {
@@ -19,6 +25,9 @@
     },
     {
       "path": "./packages/ui"
+    },
+    {
+      "path": "./packages/utils"
     }
   ],
   "compilerOptions": {

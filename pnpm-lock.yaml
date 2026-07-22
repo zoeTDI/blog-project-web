@@ -399,6 +399,9 @@ importers:
       '@caldm/cache':
         specifier: workspace:*
         version: link:../cache
+      '@caldm/utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       '@vue/tsconfig':
         specifier: ^0.9.1
@@ -427,15 +430,6 @@ importers:
       axios:
         specifier: ^1.18.1
         version: 1.18.1
-
-  packages/store:
-    dependencies:
-      pinia:
-        specifier: ^3.0.4
-        version: 3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3))
-      pinia-plugin-persistedstate:
-        specifier: ^4.7.1
-        version: 4.7.1(pinia@3.0.4(typescript@6.0.3)(vue@3.5.40(typescript@6.0.3)))
 
   packages/ui:
     dependencies:
