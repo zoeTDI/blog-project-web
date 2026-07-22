@@ -18,7 +18,7 @@
     type Preferences,
     TIMEZONE_OPTIONS,
   } from '@caldm/core';
-  import { CaSelect, CaSelectOption } from '@/components/ca/caSelect';
+  import { CaSelect, CaSelectOption } from '@caldm/ui';
 
   withDefaults(defineProps<ButtonProps>(), {
     shape: 'rounded',
