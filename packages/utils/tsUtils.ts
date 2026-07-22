@@ -14,9 +14,9 @@ export type KeyOf<T> = keyof T;
  * 深度递归可选类型
  * T: 传入的对象类型
  */
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
+export type DeepPartial<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial<T[P]> }
+  : T;
 
 /**
  * 强制非空类型
