@@ -8,4 +8,4 @@ export * from './runtime';
 export * from './safeFu';
 export * from './TimezoneUtils';
 export * from './translate';
-export * from './utils';
+export * from './tsUtils';
