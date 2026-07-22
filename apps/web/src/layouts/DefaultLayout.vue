@@ -65,6 +65,7 @@
     transition:
       background-color 0.4s ease,
       color 0.4s ease;
+    padding: var(--content-padding-M);
   }
 
   .app-wrapper {
@@ -80,7 +81,6 @@
   }
 
   .layout-header {
-    padding: 40px 60px;
     z-index: 100;
   }
 
@@ -90,7 +90,6 @@
   }
 
   .layout-footer {
-    padding: 40px 60px;
     font-family: var(--font-text);
     font-size: 12px;
     letter-spacing: 1px;
