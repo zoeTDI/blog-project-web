@@ -2,6 +2,7 @@ import type { InjectionKey, Ref } from 'vue';
 
 interface CaSelect {
   selectedValue: Ref<string | number | boolean | undefined>;
+  registerOption: (value: any, label: string) => void
   selectOption: (value: any, label: string) => void;
 }
 

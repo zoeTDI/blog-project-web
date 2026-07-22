@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@caldm/hook';
-  import { computed, inject } from 'vue';
+  import { computed, inject, onMounted, watch } from 'vue';
   import {
     caSelectKey,
     type CaSelectOptionProps,
@@ -25,6 +25,23 @@
     if (!selectContext) return;
     selectContext.selectOption(props.value, props.label);
   };
+
+  const register = () => {
+    if (selectContext && selectContext.registerOption) {
+      selectContext.registerOption(props.value, props.label);
+    }
+  };
+
+  watch(
+    () => [props.value, props.label],
+    () => {
+      register();
+    }
+  );
+
+  onMounted(() => {
+    register();
+  });
 </script>
 
 <template>

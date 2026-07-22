@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, onMounted, onUnmounted, provide, ref } from 'vue';
+  import { computed, onMounted, onUnmounted, provide, ref, watch } from 'vue';
   import { useCSSNamespace } from '@caldm/hook';
   import {
     CaSelectDropdown,
@@ -27,6 +27,7 @@
   const placement = ref<'bottom' | 'top'>('bottom');
   const selectWidth = ref<number>(0);
   let resizeObserver: ResizeObserver | null = null;
+  const optionsMap = ref<Map<any, string>>(new Map());
 
   const updateWidth = () => {
     if (selectRef.value) {
@@ -49,6 +50,13 @@
     visible.value = false;
   };
 
+  const registerOption = (value: any, label: string) => {
+    optionsMap.value.set(value, label);
+    if (model.value === value) {
+      displayLabel.value = label;
+    }
+  };
+
   const adjustPlacement = () => {
     if (!selectRef.value) return;
 
@@ -65,7 +73,7 @@
     }
   };
 
-  provide(caSelectKey, { selectOption, selectedValue: model });
+  provide(caSelectKey, { selectOption, registerOption, selectedValue: model });
   provide(caSelectStyleKey, { selectWidth, placement });
 
   const handleInputClick = () => {
@@ -85,6 +93,18 @@
       visible.value = false;
     }
   };
+
+  watch(
+    () => model.value,
+    (newVal) => {
+      if (optionsMap.value.has(newVal)) {
+        displayLabel.value = optionsMap.value.get(newVal) || '';
+      } else {
+        displayLabel.value = (newVal ?? '') as string;
+      }
+    },
+    { immediate: true }
+  );
 
   onMounted(() => {
     window.addEventListener('click', dropdownVisibleControl, true);
@@ -119,7 +139,7 @@
       ref="inputRef"
       type="text"
       :class="[ns.e('input')]"
-      v-bind:value="model"
+      :value="displayLabel"
       :placeholder="props.placeholder"
       @click="handleInputClick" />
     <CaSelectDropdown v-show="visible && !props.disabled">
