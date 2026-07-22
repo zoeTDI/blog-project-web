@@ -134,7 +134,7 @@ export class PreferenceManager<
   }
 
   /**
-   * 重置主偏好配置为默认值
+   * 重置偏好配置为默认值（包括扩展偏好配置）
    */
   public async resetPreferences() {
     Object.assign(this.state, deepMerge({}, this.initialPreferences));
