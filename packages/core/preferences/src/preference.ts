@@ -42,7 +42,7 @@ export class PreferenceManager<
   // 核心响应式状态
   private readonly state: Preferences;
   // 自定义偏好设置状态
-  private readonly customState: CustomPreferencesRecord;
+  private readonly customState: TCustom;
 
   /**
    * 私有构造函数，防止外部直接通过 new 实例化
@@ -111,7 +111,7 @@ export class PreferenceManager<
   /**
    * 获取只读的个性化配置状态
    */
-  get customPreferences(): DeepReadonly<UnwrapNestedRefs<CustomPreferencesRecord>> {
+  get customPreferences(): DeepReadonly<UnwrapNestedRefs<TCustom>> {
     return readonly(this.customState);
   }
 

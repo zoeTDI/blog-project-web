@@ -9,15 +9,8 @@ export interface AppPreferences {
   defaultAvatar: string;
   defaultHomePath: string;
   locale: SupportLanguageOption;
-  watermark: boolean;
-  watermarkContent: string;
   websiteName_zh_CN: string;
   websiteName_en_US: string;
-  websiteSubName_zh_CN: string;
-  websiteSubName_en_US: string;
-  websiteMaster: string;
-  signature_zh_CN: string;
-  signature_en_US: string;
   timezone: TimezoneOption;
 }
 
