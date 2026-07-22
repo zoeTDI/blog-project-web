@@ -399,6 +399,9 @@ importers:
       '@caldm/cache':
         specifier: workspace:*
         version: link:../cache
+      '@caldm/hook':
+        specifier: workspace:*
+        version: link:../hook
       '@caldm/utils':
         specifier: workspace:*
         version: link:../utils
