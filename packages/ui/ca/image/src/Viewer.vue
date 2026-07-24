@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { CaImageViewEmits, CaImageViewerExpose, CaImageViewProps } from './types.ts';
-  import { onUnmounted, ref, watch } from 'vue';
+  import { nextTick, onUnmounted, ref, watch } from 'vue';
   import { useCSSNamespace } from '@caldm/hook';
   import { XMarkIcon } from '@heroicons/vue/24/outline';
   import CaIcon from '../../../icon/src/icon.vue';
@@ -26,6 +26,14 @@
   const isScaling = ref(false);
   let scaleTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  const isAnimating = ref(false);
+  let animationTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  let initialPinchDistance = 0;
+  let initialScaleForPinch = 1;
+  let lastTouchEndTime = 0;
+  const DOUBLE_TAP_DELAY = 300;
+
   const open = () => {
     visible.value = true;
   };
@@ -35,27 +43,59 @@
     emits('close');
   };
 
-  const handleWheel = (e: WheelEvent) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    scale.value = Math.min(Math.max(scale.value + delta, 0.1), 6);
-
+  const triggerScaleIndicator = () => {
     isScaling.value = true;
     if (scaleTimeout) clearTimeout(scaleTimeout);
-
     scaleTimeout = setTimeout(() => {
       isScaling.value = false;
     }, 500);
   };
 
+  const executeDoubleTapAction = () => {
+    if (isAnimating.value) return;
+
+    isAnimating.value = true;
+
+    nextTick(() => {
+      if (scale.value === 1) {
+        scale.value = 1.5;
+      } else {
+        scale.value = 1;
+      }
+      translateX.value = 0;
+      translateY.value = 0;
+      triggerScaleIndicator();
+    });
+
+    if (animationTimeout) clearTimeout(animationTimeout);
+    animationTimeout = setTimeout(() => {
+      isAnimating.value = false;
+      animationTimeout = null;
+    }, 300);
+  };
+
+  const handleDblClick = () => {
+    executeDoubleTapAction();
+  };
+
+  const handleWheel = (e: WheelEvent) => {
+    if (isAnimating.value) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale.value = Math.min(Math.max(scale.value + delta, 0.1), 6);
+
+    triggerScaleIndicator();
+  };
+
   const handleMouseDown = (e: MouseEvent) => {
+    if (isAnimating.value) return;
     isDragging.value = true;
     startX.value = e.clientX - translateX.value * scale.value;
     startY.value = e.clientY - translateY.value * scale.value;
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging.value) return;
+    if (!isDragging.value || isAnimating.value) return;
     translateX.value = (e.clientX - startX.value) / scale.value;
     translateY.value = (e.clientY - startY.value) / scale.value;
   };
@@ -64,16 +104,65 @@
     isDragging.value = false;
   };
 
-  const resetTransform = () => {
-    scale.value = 1;
-    translateX.value = 0;
-    translateY.value = 0;
+  const getPinchDistance = (touches: TouchList) => {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
 
-    isScaling.value = true;
-    if (scaleTimeout) clearTimeout(scaleTimeout);
-    scaleTimeout = setTimeout(() => {
-      isScaling.value = false;
-    }, 500);
+  const handleTouchStart = (e: TouchEvent) => {
+    if (isAnimating.value) return;
+    if (e.touches.length === 1) {
+      isDragging.value = true;
+      const touch = e.touches[0];
+      startX.value = touch.clientX - translateX.value * scale.value;
+      startY.value = touch.clientY - translateY.value * scale.value;
+    } else if (e.touches.length === 2) {
+      isDragging.value = false;
+      initialPinchDistance = getPinchDistance(e.touches);
+      initialScaleForPinch = scale.value;
+    }
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (isAnimating.value) return;
+    if (e.touches.length === 1 && isDragging.value) {
+      const touch = e.touches[0];
+      translateX.value = (touch.clientX - startX.value) / scale.value;
+      translateY.value = (touch.clientY - startY.value) / scale.value;
+    } else if (e.touches.length === 2 && initialPinchDistance > 0) {
+      const currentDistance = getPinchDistance(e.touches);
+      const zoomFactor = currentDistance / initialPinchDistance;
+      const newScale = Math.min(Math.max(initialScaleForPinch * zoomFactor, 0.1), 6);
+
+      scale.value = newScale;
+      triggerScaleIndicator();
+    }
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    if (e.touches.length < 2) {
+      initialPinchDistance = 0;
+    }
+    if (e.touches.length === 0) {
+      // 如果之前处于单指拖拽状态，结束拖拽
+      if (isDragging.value) {
+        isDragging.value = false;
+      } else {
+        if (isAnimating.value) return;
+        // 移动端点击/轻触结束判定
+        const currentTime = Date.now();
+        const timeDiff = currentTime - lastTouchEndTime;
+
+        // 如果两次点击间隔在 DOUBLE_TAP_DELAY 以内，且没有发生双指缩放，则判定为移动端双击
+        if (timeDiff < DOUBLE_TAP_DELAY && timeDiff > 0) {
+          executeDoubleTapAction();
+          lastTouchEndTime = 0; // 重置防止三连击触发
+          return;
+        }
+        lastTouchEndTime = currentTime;
+      }
+    }
   };
 
   // 仅在 visible 变化时响应式控制 body 滚动
@@ -100,6 +189,8 @@
       @mousemove="handleMouseMove"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
+      @touchmove.prevent="handleTouchMove"
+      @touchend="handleTouchEnd"
     >
       <div v-if="isScaling" :class="ns.e('scale-indicator')">
         {{ (scale * 100).toFixed(0) }}%
@@ -115,11 +206,13 @@
         :class="ns.e('img')"
         :style="{
           transform: `scale(${scale}) translate(${translateX}px, ${translateY}px)`,
+          transition: isAnimating ? 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
           cursor: isDragging ? 'grabbing' : 'grab',
         }"
         @wheel="handleWheel"
         @mousedown="handleMouseDown"
-        @dblclick="resetTransform"
+        @touchstart="handleTouchStart"
+        @dblclick="handleDblClick"
         @dragstart.prevent
       />
     </div>
