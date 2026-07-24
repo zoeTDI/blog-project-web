@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import type { ButtonProps } from '@/components/globalTools';
   import { computed, onMounted, ref, watch } from 'vue';
-  import { CaDrawer } from '@/components/ca/caDrawer';
   import { Cog8ToothIcon } from '@heroicons/vue/24/outline';
   import CaSwitch, { type SwitchOption } from '@/components/ca/caSwitch';
   import {
@@ -11,7 +10,7 @@
     preferences,
   } from '@/core/preferences';
   import { type RouteRecordNormalized, useRouter } from 'vue-router';
-  import { CaRow, CaCol, CaButton } from '@caldm/ui';
+  import { CaRow, CaCol, CaButton, CaDrawer } from '@caldm/ui';
   import {
     type CustomPreferencesRecord,
     type Preferences,

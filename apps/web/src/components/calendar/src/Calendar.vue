@@ -11,7 +11,7 @@
   import { caMessage } from '@/components/ca/caMessage';
   import { mockApiFetch } from '@/utils/mock.ts';
   import { useDebounceFn } from '@caldm/hook';
-  import { CaDrawer } from '@/components/ca/caDrawer';
+  import { CaDrawer } from '@caldm/ui';
 
   const mockData: TodoData = {
     2026: {
