@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { CaCard } from '@/components/ca/caCard';
+  import { CaCard } from '@caldm/ui';
 </script>
 
 <template>

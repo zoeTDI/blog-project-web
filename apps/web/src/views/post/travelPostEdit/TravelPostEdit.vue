@@ -1,12 +1,11 @@
 <script setup lang="ts">
-  import { CaCard } from '@/components/ca/caCard';
   import {
     MapContainer,
     type MarkedCityGroup,
   } from '@/components/mapComponent';
   import { CaCascader } from '@/components/ca/caCascader';
   import { computed, ref } from 'vue';
-  import { CaButton } from '@caldm/ui';
+  import { CaButton, CaCard } from '@caldm/ui';
   import { MarkdownRender } from '@/components/markdownRender';
   import { useI18n } from 'vue-i18n';
 

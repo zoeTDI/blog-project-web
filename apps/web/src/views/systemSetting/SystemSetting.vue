@@ -2,14 +2,13 @@
   import { computed, onMounted, ref } from 'vue';
   import {
     customPreferences,
-    type CustomPreferencesRecord,
     preferenceManager,
     preferences,
-    type Preferences,
   } from '@/core/preferences';
-  import { TIMEZONE_OPTIONS } from '@/core/preferences';
+  import type { CustomPreferencesType } from '@/core/preferences';
   import { type RouteRecordNormalized, useRouter } from 'vue-router';
-  import { CaCard } from '@/components/ca/caCard';
+  import { CaCard } from '@caldm/ui';
+  import { type Preferences, TIMEZONE_OPTIONS } from '@caldm/core';
 
   const router = useRouter();
 
@@ -31,15 +30,8 @@
       defaultHomePath: '',
       locale: 'zh-CN',
       timezone: TIMEZONE_OPTIONS.UTC,
-      watermark: false,
-      watermarkContent: '',
-      websiteMaster: '',
       websiteName_zh_CN: '',
       websiteName_en_US: '',
-      websiteSubName_zh_CN: '',
-      websiteSubName_en_US: '',
-      signature_zh_CN: '',
-      signature_en_US: '',
     },
     breadcrumb: {
       enable: false,
@@ -95,7 +87,25 @@
     },
   });
 
-  const customFormState = ref<CustomPreferencesRecord>({});
+  const customFormState = ref<CustomPreferencesType>({
+    announcementText: '',
+    contentGravity: '',
+    maxMomentsCount: 0,
+    showAnnouncement: false,
+    signature_en_US: '',
+    signature_zh_CN: '',
+    watermark: false,
+    watermarkContent: '',
+    websiteMaster: '',
+    websiteSubName_en_US: '',
+    websiteSubName_zh_CN: '',
+  });
+
+  const customKeys = computed(() => {
+    return Object.keys(customFormState.value) as Array<
+      keyof CustomPreferencesType
+    >;
+  });
 
   /**
    * 偏好设置更新保存
@@ -171,41 +181,6 @@
                 placeholder="请输入网站名称" />
             </div>
             <div class="form-item">
-              <label>网站副标题（中文）：</label>
-              <input
-                type="text"
-                v-model="formState.app.websiteSubName_zh_CN"
-                placeholder="请输入网站副标题" />
-            </div>
-            <div class="form-item">
-              <label>网站副标题（英文）：</label>
-              <input
-                type="text"
-                v-model="formState.app.websiteSubName_en_US"
-                placeholder="请输入网站副标题" />
-            </div>
-            <div class="form-item">
-              <label>站长名称：</label>
-              <input
-                type="text"
-                v-model="formState.app.websiteMaster"
-                placeholder="请输入站长名称" />
-            </div>
-            <div class="form-item">
-              <label>站长个性签名（中文）：</label>
-              <input
-                type="text"
-                v-model="formState.app.signature_zh_CN"
-                placeholder="请输入个性签名" />
-            </div>
-            <div class="form-item">
-              <label>站长个性签名（英文）：</label>
-              <input
-                type="text"
-                v-model="formState.app.signature_en_US"
-                placeholder="请输入个型签名" />
-            </div>
-            <div class="form-item">
               <label>默认主页路径：</label>
               <select v-model="formState.app.defaultHomePath">
                 <option value="">请选择默认主页</option>
@@ -241,22 +216,6 @@
                   {{ tz }}
                 </option>
               </select>
-            </div>
-            <div class="form-item checkbox-item">
-              <input
-                type="checkbox"
-                id="app-watermark"
-                v-model="formState.app.watermark" />
-              <label for="app-watermark">开启全站水印</label>
-            </div>
-            <div
-              class="form-item"
-              v-if="formState.app.watermark">
-              <label>水印文案：</label>
-              <input
-                type="text"
-                v-model="formState.app.watermarkContent"
-                placeholder="请输入水印文案" />
             </div>
           </fieldset>
 
@@ -600,7 +559,7 @@
           <fieldset class="form-section">
             <legend>自定义参数配置</legend>
             <div
-              v-for="key in Object.keys(customFormState)"
+              v-for="key in customKeys"
               :key="key"
               class="form-item">
               <label>{{ String(key) }}：</label>

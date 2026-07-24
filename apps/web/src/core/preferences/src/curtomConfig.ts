@@ -4,7 +4,7 @@ import type {
 } from '@caldm/core';
 
 const defaultCustomPreference = {
-  watermark: false,
+  watermark: false as boolean,
   watermarkContent: 'caldm.cn',
   websiteSubName_zh_CN: '记录、探索与生活的极简志',
   websiteSubName_en_US:
@@ -12,7 +12,7 @@ const defaultCustomPreference = {
   signature_zh_CN: '',
   signature_en_US: '',
   websiteMaster: 'Caldm',
-  showAnnouncement: true, // 对应 switch
+  showAnnouncement: true as boolean, // 对应 switch
   announcementText: '欢迎访问电子灭虫录！', // 对应 input
   maxMomentsCount: 10, // 对应 number
   contentGravity: 'left', // 对应 select
