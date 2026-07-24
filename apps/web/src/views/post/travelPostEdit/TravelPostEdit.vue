@@ -6,7 +6,7 @@
   } from '@/components/mapComponent';
   import { CaCascader } from '@/components/ca/caCascader';
   import { computed, ref } from 'vue';
-  import { CaButton } from '@/components/ca/caButton';
+  import { CaButton } from '@caldm/ui';
   import { MarkdownRender } from '@/components/markdownRender';
   import { useI18n } from 'vue-i18n';
 

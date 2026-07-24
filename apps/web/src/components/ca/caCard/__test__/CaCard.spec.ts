@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi } from 'vitest';
-import { CaButton } from '@/components/ca/caButton';
+import { CaButton } from '@caldm/ui';
 import { CaCard } from '@/components/ca/caCard';
 
 describe('CaCard.vue', () => {

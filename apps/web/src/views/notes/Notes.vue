@@ -2,7 +2,7 @@
   import { nextTick, onMounted, ref } from 'vue';
   import { ArticleRenderer, ViewSwitcher } from '@/components/viewSwitcher';
   import type { Article } from '#/article.ts';
-  import { CaButton } from '@/components/ca/caButton';
+  import { CaButton } from '@caldm/ui';
 
   // 1. 网页公告数据
   const announcement = {

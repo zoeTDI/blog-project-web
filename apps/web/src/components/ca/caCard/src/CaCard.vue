@@ -2,7 +2,7 @@
   import { computed, onUnmounted, useSlots } from 'vue';
   import type { CaCardFooterAction } from '@/components/ca/caCard';
   import { useDebounceFn } from '@caldm/hook';
-  import { CaButton } from '@/components/ca/caButton';
+  import { CaButton } from '@caldm/ui';
 
   interface Props {
     showHeader?: boolean;

@@ -11,8 +11,7 @@
     preferences,
   } from '@/core/preferences';
   import { type RouteRecordNormalized, useRouter } from 'vue-router';
-  import { CaRow, CaCol } from '@caldm/ui';
-  import { CaButton } from '@/components/ca/caButton';
+  import { CaRow, CaCol, CaButton } from '@caldm/ui';
   import {
     type CustomPreferencesRecord,
     type Preferences,
