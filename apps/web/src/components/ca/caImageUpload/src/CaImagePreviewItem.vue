@@ -8,7 +8,7 @@
     EyeIcon,
     XMarkIcon,
   } from '@heroicons/vue/24/outline';
-  import { CaImage, CaImageViewer } from '@/components/ca/caImage';
+  import { CaImage, CaImageViewer } from '@caldm/ui';
   import { ref } from 'vue';
 
   defineProps<CaImagePreviewItemProps>();

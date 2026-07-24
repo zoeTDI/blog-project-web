@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import { CaRow, CaCol, CaAvatar } from '@caldm/ui';
-  import { CaImage } from '@/components/ca/caImage';
+  import { CaRow, CaCol, CaAvatar, CaImage } from '@caldm/ui';
   import { MarkdownRender } from '@/components/markdownRender';
   import { computed, ref } from 'vue';
   import { caMessage } from '@/components/ca/caMessage';
