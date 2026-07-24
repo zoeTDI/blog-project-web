@@ -225,6 +225,9 @@ importers:
       '@caldm/hook':
         specifier: workspace:*
         version: link:../../packages/hook
+      '@caldm/markdown':
+        specifier: workspace:*
+        version: link:../../packages/markdown
       '@caldm/request':
         specifier: workspace:*
         version: link:../../packages/request
