@@ -5,22 +5,70 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useTabStore } from '@/store/useTabStore.ts';
   import { preferences } from '@/core/preferences';
-  import { CaBreadcrumb } from '@/components/ca/caBreadcrumb';
+  import { CaBreadcrumb } from '@caldm/ui';
+  import type { CaBreadcrumbItem, CaBreadcrumbPreferences } from '@caldm/ui';
   import { GlobalTools } from '@/components/globalTools';
   import { UserBox } from '@/components/userBox';
   import {
     ChevronDoubleRightIcon,
     ChevronDoubleLeftIcon,
   } from '@heroicons/vue/24/outline';
+  import { defaultPreferences } from '@/core/preferences';
+  import { useI18n } from 'vue-i18n';
+  import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
   const route = useRoute();
   const router = useRouter();
   const tabStore = useTabStore();
+  const { t } = useI18n();
 
   const defaultHomePath = preferences.app.defaultHomePath;
 
   const sideMenuRef = ref<VNodeRef | null>(null);
+
   const isMenuFold = computed(() => sideMenuRef.value?.isFold ?? false);
+  const breadcrumbPreference = computed<CaBreadcrumbPreferences>(() => ({
+    enable:
+      preferences.breadcrumb.enable ?? defaultPreferences.breadcrumb.enable,
+    showIcon:
+      preferences.breadcrumb.showIcon ?? defaultPreferences.breadcrumb.showIcon,
+    styleType:
+      preferences.breadcrumb.styleType ??
+      defaultPreferences.breadcrumb.styleType,
+  }));
+  const breadcrumbItems = computed<CaBreadcrumbItem[]>(() => {
+    const matchedRoutes = route.matched.filter(
+      (item) => item.meta && item.meta.title
+    );
+
+    return matchedRoutes.map((matchedItem) => {
+      const rawTitle =
+        (matchedItem.meta.title as string) ||
+        (matchedItem.name ? String(matchedItem.name) : '');
+      const translatedTitle = translateString(rawTitle);
+      return {
+        label: translatedTitle,
+        to: matchedItem.path,
+        prefixIcon: matchedItem.meta.prefixIcon,
+        suffixIcon: matchedItem.meta.suffixIcon,
+      };
+    });
+  });
+
+  const translateString = (str?: string): string => {
+    if (!str) return '';
+    if (str.startsWith(ROUTER_PREFIX)) {
+      return t(str);
+    }
+    return str;
+  };
+
+  const handleBreadcrumbClick = (item: CaBreadcrumbItem) => {
+    if (item.to && item.to !== route.path) {
+      router.push(item.to);
+    }
+  };
+
   const handleMenu = () => {
     if (!sideMenuRef.value) {
       return;
@@ -61,7 +109,11 @@
             <ChevronDoubleRightIcon v-show="isMenuFold" />
             <ChevronDoubleLeftIcon v-show="!isMenuFold" />
           </button>
-          <ca-breadcrumb style="margin-right: auto" />
+          <ca-breadcrumb
+            style="margin-right: auto"
+            :items="breadcrumbItems"
+            :preferences="breadcrumbPreference"
+            @click="handleBreadcrumbClick" />
           <global-tools class="global-tools-container" />
           <user-box />
         </header>
