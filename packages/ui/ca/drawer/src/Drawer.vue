@@ -23,6 +23,7 @@
   const visible = ref<boolean>(false);
 
   const handleOverlayClick = () => {
+    if (!props.closeOnClickOverlay) return;
     close();
   };
   const open = () => {
@@ -139,28 +140,28 @@
   }
 
   /* 修饰符状态 (Modifiers): 方向控制 */
-  .ca-drawer__container--right {
+  .ca-drawer--right {
     top: 0;
     right: 0;
     height: 100svh;
     border-left: 1px solid var(--color-border);
   }
 
-  .ca-drawer__container--left {
+  .ca-drawer--left {
     top: 0;
     left: 0;
     height: 100svh;
     border-right: 1px solid var(--color-border);
   }
 
-  .ca-drawer__container--top {
+  .ca-drawer--top {
     top: 0;
     left: 0;
     width: 100vw;
     border-bottom: 1px solid var(--color-border);
   }
 
-  .ca-drawer__container--bottom {
+  .ca-drawer--bottom {
     bottom: 0;
     left: 0;
     width: 100vw;
