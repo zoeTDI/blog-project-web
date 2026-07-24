@@ -4,7 +4,7 @@
     CaDrawerProps,
   } from './types';
   import { XMarkIcon } from '@heroicons/vue/24/outline';
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
   import { useCSSNamespace } from '@caldm/hook';
 
   defineOptions({
@@ -21,6 +21,30 @@
   const ns = useCSSNamespace('drawer');
 
   const visible = ref<boolean>(false);
+
+  const drawerStyle = computed(() => {
+    const { customSize, placement } = props;
+
+    if (customSize === undefined || customSize <= 0) {
+      return {};
+    }
+
+    const isVertical = placement === 'top' || placement === 'bottom';
+
+    let sizeValue = '';
+    if (customSize > 1) {
+      sizeValue = `${customSize}px`;
+    } else {
+      // 0 < customSize <= 1 映射为百分比，结合移动端 svh/svw
+      const percentage = customSize * 100;
+      sizeValue = isVertical ? `${percentage}svh` : `${percentage}svw`;
+    }
+
+    // 生成 `--ca-drawer-custom-size`: sizeValue
+    return ns.cssVarBlock({
+      'custom-size': sizeValue,
+    });
+  });
 
   const handleOverlayClick = () => {
     if (!props.closeOnClickOverlay) return;
@@ -58,6 +82,7 @@
             ns.m(props.placement),
             ns.is('full', props.size === 'full'),
           ]"
+          :style="drawerStyle"
           @click.stop>
           <section :class="ns.e('header-wrapper')">
             <div :class="ns.e('header')">
@@ -143,6 +168,7 @@
   .ca-drawer--right {
     top: 0;
     right: 0;
+    width: var(--ca-drawer-custom-size, auto);
     height: 100svh;
     border-left: 1px solid var(--color-border);
   }
@@ -150,6 +176,7 @@
   .ca-drawer--left {
     top: 0;
     left: 0;
+    width: var(--ca-drawer-custom-size, auto);
     height: 100svh;
     border-right: 1px solid var(--color-border);
   }
@@ -158,6 +185,7 @@
     top: 0;
     left: 0;
     width: 100vw;
+    height: var(--ca-drawer-custom-size, auto);
     border-bottom: 1px solid var(--color-border);
   }
 
@@ -165,6 +193,7 @@
     bottom: 0;
     left: 0;
     width: 100vw;
+    height: var(--ca-drawer-custom-size, auto);
     border-top: 1px solid var(--color-border);
   }
 

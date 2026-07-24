@@ -18,6 +18,13 @@ interface CaDrawerProps {
   size?: DrawerSize;
   /** 点击遮罩层是否允许关闭，默认为 true */
   closeOnClickOverlay?: boolean;
+  /**
+   * 自定义抽屉大小：
+   * > 1 时单位为 px；
+   * 0 < customSize <= 1 时为视口尺寸的比例（百分比）；
+   * <= 0 时忽略该字段。
+   */
+  customSize?: number;
 }
 
 /**
