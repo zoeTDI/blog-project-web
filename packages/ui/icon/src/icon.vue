@@ -1,12 +1,17 @@
 <script setup lang="ts">
   import type { CaIconProps } from './types.ts';
-  import { computed, type CSSProperties } from 'vue';
+  import { computed, type CSSProperties, markRaw, toRaw } from 'vue';
 
   defineOptions({
     name: 'CaIcon',
   });
   const props = withDefaults(defineProps<CaIconProps>(), {
     size: '1em',
+  });
+
+  const renderIcon = computed(() => {
+    if (!props.icon) return null;
+    return typeof props.icon === 'object' ? markRaw(toRaw(props.icon)) : props.icon;
   });
 
   const style = computed<CSSProperties>(() => {
@@ -21,8 +26,8 @@
 
 <template>
   <component
-    :is="icon"
-    v-if="icon"
+    :is="renderIcon"
+    v-if="renderIcon"
     class="ca-icon"
     :style="style"
     aria-hidden="true"
