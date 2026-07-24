@@ -4,7 +4,7 @@ import { fn } from 'storybook/test';
 import { ArrowRightIcon } from '@heroicons/vue/24/outline';
 
 const meta = {
-  title: 'Ca/Button',
+  title: 'Component/Button',
   component: CaButton,
   tags: ['autodocs'],
   argTypes: {
