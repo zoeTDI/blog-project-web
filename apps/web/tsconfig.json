@@ -3,7 +3,23 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" },
-    { "path": "../../packages/hook" },
-    { "path": "../../packages/request" }
+    {
+      "path": "../../packages/core"
+    },
+    {
+      "path": "../../packages/hook"
+    },
+    {
+      "path": "../../packages/markdown"
+    },
+    {
+      "path": "../../packages/request"
+    },
+    {
+      "path": "../../packages/ui"
+    },
+    {
+      "path": "../../packages/utils"
+    }
   ]
 }

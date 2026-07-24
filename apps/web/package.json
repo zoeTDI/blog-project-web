@@ -14,6 +14,7 @@
   "dependencies": {
     "@caldm/core": "workspace:*",
     "@caldm/hook": "workspace:*",
+    "@caldm/markdown": "workspace:*",
     "@caldm/request": "workspace:*",
     "@caldm/ui": "workspace:*",
     "@caldm/utils": "workspace:*",
