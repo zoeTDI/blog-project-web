@@ -14,7 +14,7 @@
   import { useUserStore } from '@/store/useUserStore.ts';
   import { useRoute, useRouter } from 'vue-router';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
-  import { CaAvatar } from '@/components/ca/caAvatar';
+  import { CaAvatar } from '@caldm/ui';
 
   const mockMessages: MessageItem[] = [
     {

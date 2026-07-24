@@ -4,8 +4,7 @@
   import { useUserStore } from '@/store/useUserStore.ts';
   import { ref, watchEffect } from 'vue';
   import type { UserInfo } from '@/store/useUserStore.ts';
-  import { preferences } from '@/core/preferences';
-  import { CaAvatar } from '@/components/ca/caAvatar';
+  import { CaAvatar } from '@caldm/ui';
 
   defineEmits(['logout', 'lock']);
 
