@@ -132,4 +132,33 @@ describe('CaAvatar Component', () => {
 
     expect(wrapper.find('img').attributes('alt')).toBe('用户头像');
   });
+
+  it('当 showDot 为 false 时不展示任何角标', () => {
+    const wrapper = mount(CaAvatar, { props: defaultProps });
+    expect(wrapper.find('.dot').exists()).toBe(false);
+  });
+
+  it('hideLargeNumber 临界点与非数字测试', () => {
+    // 刚好 99，不显示加号
+    const wrapper1 = mount(CaAvatar, {
+      props: { ...defaultProps, showDot: true, hideLargeNumber: true, dots: { content: 99 } },
+    });
+    expect(wrapper1.find('.dot-content').text()).toBe('99');
+    expect(wrapper1.find('.plus-sign').exists()).toBe(false);
+
+    // 字符串类型的 "100"，不触发数字截断
+    const wrapper2 = mount(CaAvatar, {
+      props: { ...defaultProps, showDot: true, hideLargeNumber: true, dots: { content: '100' } },
+    });
+    expect(wrapper2.find('.dot-content').text()).toBe('100');
+    expect(wrapper2.find('.plus-sign').exists()).toBe(false);
+  });
+
+  it('当传入未知颜色时降级为默认绿色', () => {
+    const wrapper = mount(CaAvatar, {
+      props: { ...defaultProps, showDot: true, dots: { color: 'invalid-color' } },
+    });
+    const dotEl = wrapper.find('.dot').element as HTMLElement;
+    expect(dotEl.style.backgroundColor).toBe('rgb(52, 211, 153)'); // #34d399 绿色
+  });
 });
