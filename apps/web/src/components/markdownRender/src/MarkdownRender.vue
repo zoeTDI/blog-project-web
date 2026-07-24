@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue';
-  import md from '@/plugins/markdownIt.ts';
+  import { baseBenderer } from '@/plugins/markdownIt.ts';
+
   const props = withDefaults(
     defineProps<{
       content: string;
@@ -15,7 +16,7 @@
   );
 
   const renderedHtml = computed(() => {
-    return md.render(props.content);
+    return baseBenderer.render(props.content);
   });
 
   const containerClasses = computed(() => {
