@@ -10,6 +10,7 @@ export * from './ca/button';
 export * from './ca/card';
 export * from './ca/row';
 export * from './ca/col';
+export * from './ca/drawer';
 export * from './icon';
 export * from './ca/select';
 export * from './ca/list';
