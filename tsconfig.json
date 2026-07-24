@@ -21,6 +21,9 @@
       "path": "./packages/hook"
     },
     {
+      "path": "./packages/markdown"
+    },
+    {
       "path": "./packages/request"
     },
     {

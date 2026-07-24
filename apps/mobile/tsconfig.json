@@ -8,10 +8,19 @@
       "path": "./tsconfig.app.json"
     },
     {
+      "path": "../../packages/core"
+    },
+    {
       "path": "../../packages/hook"
     },
     {
       "path": "../../packages/request"
+    },
+    {
+      "path": "../../packages/ui"
+    },
+    {
+      "path": "../../packages/utils"
     }
   ]
 }
