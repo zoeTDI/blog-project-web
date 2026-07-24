@@ -16,25 +16,31 @@
     "@caldm/hook": "workspace:*",
     "@caldm/request": "workspace:*",
     "@caldm/ui": "workspace:*",
+    "@caldm/utils": "workspace:*",
+    "@heroicons/vue": "^2.2.0",
+    "simple-icons": "^16.24.1",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "vue": "^3.5.40",
+    "vue-i18n": "^11.4.5",
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
-    "@tsconfig/node24": "^24.0.4",
-    "@types/jsdom": "^28.0.3",
-    "@types/node": "^24.13.2",
-    "@vitejs/plugin-vue": "^6.0.7",
+    "@storybook/addon-a11y": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/addon-onboarding": "^10.4.6",
+    "@storybook/vue3-vite": "^10.4.6",
+    "@types/geojson": "^7946.0.16",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^24.12.2",
+    "@vitejs/plugin-vue": "^6.0.6",
     "@vue/test-utils": "^2.4.11",
     "@vue/tsconfig": "^0.9.1",
+    "autoprefixer": "^10.5.0",
     "jsdom": "^29.1.1",
-    "npm-run-all2": "^9.0.2",
-    "vite": "^8.0.16",
-    "vite-plugin-vue-devtools": "^8.1.2",
-    "vitest": "^4.1.9"
-  },
-  "engines": {
-    "node": "^22.18.0 || >=24.12.0"
+    "prettier": "^3.8.4",
+    "storybook": "^10.4.6",
+    "vite": "^8.0.9",
+    "vitest": "^4.1.8"
   }
 }
