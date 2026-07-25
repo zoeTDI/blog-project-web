@@ -14,7 +14,7 @@ export interface CaMarqueeProps {
   /** 滚动速度（单位px/s）。默认50 */
   speed?: number;
   /** 指定挂载的 HTML 节点，设置为 false 或 undefined 则不开启 Teleport */
-  teleportTo?: string | HTMLElement | false;
+  appendTo?: string | HTMLElement | false;
 }
 
 export type CaMarqueeEmits = {

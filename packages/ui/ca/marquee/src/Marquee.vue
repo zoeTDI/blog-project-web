@@ -17,7 +17,7 @@
     duration: 10000,
     scrollable: true,
     speed: 50,
-    teleportTo: 'body',
+    appendTo: 'body',
   });
 
   const emit = defineEmits<CaMarqueeEmits>();
@@ -34,12 +34,22 @@
   let timer: ReturnType<typeof setTimeout> | null = null;
   const ns = useCSSNamespace('marquee');
 
+  const isGlobal = computed(() => {
+    if (props.appendTo === 'body' || props.appendTo === undefined) return true;
+    return typeof props.appendTo === 'string' && props.appendTo === 'body';
+  });
+
   const icon = computed(() => {
     return caMarqueeIconMap[props.icon];
   });
 
   const classes = computed(() => {
-    return [ns.b(), ns.is('closeable', props.closeable), ns.m(props.icon)];
+    return [
+      ns.b(),
+      ns.is('closeable', props.closeable),
+      ns.m(props.icon),
+      ns.is('local', !isGlobal.value)
+    ];
   });
 
   const animationDuration = computed(() => {
@@ -103,8 +113,7 @@
 
 <template>
   <Teleport
-    :to="props.teleportTo || 'body'"
-    :disabled="!props.teleportTo">
+    :to="props.appendTo || 'body'">
     <div
       v-if="visible"
       :class="classes">
@@ -156,6 +165,9 @@
     justify-content: center;
 
     box-sizing: border-box;
+  }
+  .ca-marquee.is-local {
+    width: 100%;
   }
 
   .ca-marquee.ca-marquee--info {
