@@ -1,47 +1,47 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@caldm/hook';
-  import { computed, inject, ref } from 'vue';
-  import { caSelectStyleKey } from './constants.ts';
+  import { computed } from 'vue';
+  import type { CaSelectDropdownProps } from './types.ts';
 
   defineOptions({
     name: 'CaSelectDropdown',
   });
 
+  const props = defineProps<CaSelectDropdownProps>()
+
   const ns = useCSSNamespace('select-dropdown');
 
-  const { selectWidth, placement } = inject(caSelectStyleKey, {
-    selectWidth: computed(() => 0),
-    placement: ref<'bottom' | 'top'>('bottom'),
-  });
-
   const classes = computed(() => {
-    const cls: string[] = [ns.b(), ns.m(placement.value)];
+    const cls: string[] = [
+      ns.b(),
+      ns.m(props.placement)
+    ];
     return cls;
   });
 
-  const styles = computed(() => {
-    return {
-      width: `${selectWidth.value}px`,
-    };
-  });
+  const styles = computed(() => ({
+    top: props.top + 'px',
+    left: props.left + 'px',
+    minWidth: props.minWidth + 'px',
+    maxHeight: props.maxHeight + 'px',
+  }));
 </script>
 
 <template>
-  <div
-    :class="classes"
-    :style="styles">
-    <slot />
-  </div>
+  <Teleport to="body">
+    <div
+      :class="classes"
+      :style="styles"
+    >
+      <slot />
+    </div>
+  </Teleport>
 </template>
 
 <style scoped>
   .ca-select-dropdown {
-    position: absolute;
+    position: fixed;
     overflow-y: auto;
-    left: 0;
-
-    min-height: 20px;
-    max-height: 240px;
     background-color: var(--color-container-bg);
     border: 1px solid var(--color-border);
     border-radius: 8px;
@@ -51,15 +51,6 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-border) transparent;
     transition: all 0.2s ease-in-out;
-  }
-
-  .ca-select-dropdown--bottom {
-    top: calc(100% + 4px);
-    bottom: auto;
-  }
-
-  .ca-select-dropdown--top {
-    bottom: calc(100% + 4px);
-    top: auto;
+    /* top, left, minWidth, maxHeight 由 JavaScript 动态设置 */
   }
 </style>
