@@ -16,13 +16,6 @@ const withInstall = <T>(comp: T): WithInstall<T> => {
 
 export const CaMarqueeWithInstall = withInstall(CaMarquee);
 
-// 整体导出的 Vue 插件对象 (支持 app.use(CaMarqueePlugin))
-export const CaMarqueePlugin: Plugin = {
-  install(app: App) {
-    app.component('CaMarquee', CaMarquee);
-  },
-};
-
 export { CaMarquee };
 export * from './src/types';
 export * from './src/constants';

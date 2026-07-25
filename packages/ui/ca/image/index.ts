@@ -17,14 +17,6 @@ const withInstall = <T>(comp: T): WithInstall<T> => {
 export const CaImageWithInstall = withInstall(CaImage);
 export const CaImageViewerWithInstall = withInstall(CaImageViewer);
 
-// 整体导出的 Vue 插件对象 (支持 app.use(CaImagePlugin))
-export const CaImagePlugin: Plugin = {
-  install(app: App) {
-    app.component('CaImage', CaImage);
-    app.component('CaImageViewer', CaImageViewer);
-  },
-};
-
 export { CaImage, CaImageViewer };
 export * from './src/types.ts';
 export default CaImageWithInstall;
