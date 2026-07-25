@@ -4,6 +4,10 @@
 export interface CaImageViewProps {
   /** 预览图片的 URL 地址 */
   url: string;
+  /**
+   * 组件挂载位置
+   */
+  appendTo?: string | HTMLElement;
 }
 
 /**
@@ -33,4 +37,8 @@ export interface CaImageProps {
   alt?: string;
   /** 是否开启点击预览功能，默认为 true */
   preview?: boolean;
+  /**
+   * 图片预览器挂载到哪里（默认：body）
+   */
+  previewAppendTo?: string | HTMLElement;
 }

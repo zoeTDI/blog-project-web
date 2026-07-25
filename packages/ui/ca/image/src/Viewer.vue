@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { CaImageViewEmits, CaImageViewerExpose, CaImageViewProps } from './types.ts';
-  import { nextTick, onUnmounted, ref, watch } from 'vue';
+  import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
   import { useCSSNamespace } from '@caldm/hook';
   import { XMarkIcon } from '@heroicons/vue/24/outline';
   import CaIcon from '../../../icon/src/icon.vue';
@@ -9,7 +9,9 @@
     name: 'CaImageViewer',
   });
 
-  withDefaults(defineProps<CaImageViewProps>(), {});
+  const props = withDefaults(defineProps<CaImageViewProps>(), {
+    appendTo: 'body',
+  });
 
   const emits = defineEmits<CaImageViewEmits>();
 
@@ -33,6 +35,10 @@
   let initialScaleForPinch = 1;
   let lastTouchEndTime = 0;
   const DOUBLE_TAP_DELAY = 300;
+
+  const isGlobal = computed(() => {
+    return props.appendTo === 'body' || (typeof props.appendTo !== 'string' && props.appendTo === document.body);
+  });
 
   const open = () => {
     visible.value = true;
@@ -167,11 +173,15 @@
 
   // 仅在 visible 变化时响应式控制 body 滚动
   watch(visible, (val) => {
-    document.body.style.overflow = val ? 'hidden' : '';
+    if (isGlobal.value) {
+      document.body.style.overflow = val ? 'hidden' : '';
+    }
   });
 
   onUnmounted(() => {
-    document.body.style.overflow = '';
+    if (isGlobal.value) {
+      document.body.style.overflow = '';
+    }
     if (scaleTimeout) clearTimeout(scaleTimeout);
   });
 
@@ -182,10 +192,10 @@
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport :to="props.appendTo || 'body'">
     <div
       v-if="visible"
-      :class="ns.b()"
+      :class="[ns.b(), ns.is('local', !isGlobal)]"
       @mousemove="handleMouseMove"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
@@ -235,6 +245,14 @@
     overflow: hidden;
   }
 
+  .ca-image-viewer.is-local {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
   .ca-image-viewer__scale-indicator {
     position: absolute;
     top: 50%;
@@ -268,6 +286,8 @@
     user-select: none;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    /*防止图片盖住关闭按钮*/
+    z-index: 10000;
   }
 
   .ca-image-viewer__close:hover {

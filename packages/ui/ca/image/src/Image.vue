@@ -11,6 +11,7 @@
   const props = withDefaults(defineProps<CaImageProps>(), {
     alt: '',
     preview: true,
+    previewAppendTo: 'body',
   });
 
   const ns = useCSSNamespace('image');
@@ -47,6 +48,7 @@
     <CaImageViewer
       ref="viewerRef"
       :url="src"
+      :append-to="previewAppendTo"
     />
   </div>
 </template>
