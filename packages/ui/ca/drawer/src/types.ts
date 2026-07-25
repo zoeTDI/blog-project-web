@@ -25,6 +25,11 @@ interface CaDrawerProps {
    * <= 0 时忽略该字段。
    */
   customSize?: number;
+  /**
+   * 挂载目标元素，接受 CSS 选择器或 HTMLElement。
+   * 默认为 'body'（全局模式），若指定其他元素则切换为局部模式。
+   */
+  appendTo?: string | HTMLElement;
 }
 
 /**

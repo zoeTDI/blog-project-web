@@ -15,12 +15,17 @@
     placement: 'right',
     size: 'auto',
     closeOnClickOverlay: true,
+    appendTo: 'body',
   });
   const emits = defineEmits<CaDrawerEmits>();
 
   const ns = useCSSNamespace('drawer');
 
   const visible = ref<boolean>(false);
+
+  const isGlobal = computed(() => {
+    return props.appendTo === 'body' || (typeof props.appendTo !== 'string' && props.appendTo === document.body);
+  });
 
   const drawerStyle = computed(() => {
     const { customSize, placement } = props;
@@ -37,7 +42,11 @@
     } else {
       // 0 < customSize <= 1 映射为百分比，结合移动端 svh/svw
       const percentage = customSize * 100;
-      sizeValue = isVertical ? `${percentage}svh` : `${percentage}svw`;
+      if (isGlobal.value) {
+        sizeValue = isVertical ? `${percentage}svh` : `${percentage}svw`;
+      } else {
+        sizeValue = `${percentage}%`;
+      }
     }
 
     // 生成 `--ca-drawer-custom-size`: sizeValue
@@ -67,10 +76,10 @@
 </script>
 
 <template>
-  <teleport to="body">
+  <teleport :to="props.appendTo || 'body'">
     <div
       v-show="visible"
-      :class="[ns.b(), ns.e('overlay')]"
+      :class="[ns.b(), ns.e('overlay'), ns.is('local', !isGlobal)]"
       @click="handleOverlayClick">
       <transition
         :name="`${ns.b()}-slide-${props.placement}`"
@@ -81,6 +90,7 @@
             ns.e('container'),
             ns.m(props.placement),
             ns.is('full', props.size === 'full'),
+            ns.is('local', !isGlobal)
           ]"
           :style="drawerStyle"
           @click.stop>
@@ -110,6 +120,13 @@
     width: 100svw;
     height: 100svh;
     z-index: 2000;
+  }
+  .ca-drawer__overlay.is-local {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
   }
 
   /* 容器: .ca-drawer__container */
@@ -172,6 +189,9 @@
     height: 100svh;
     border-left: 1px solid var(--color-border);
   }
+  .ca-drawer--right.is-local {
+    height: 100%;
+  }
 
   .ca-drawer--left {
     top: 0;
@@ -179,6 +199,9 @@
     width: var(--ca-drawer-custom-size, auto);
     height: 100svh;
     border-right: 1px solid var(--color-border);
+  }
+  .ca-drawer--left.is-local {
+    height: 100%;
   }
 
   .ca-drawer--top {
@@ -188,6 +211,9 @@
     height: var(--ca-drawer-custom-size, auto);
     border-bottom: 1px solid var(--color-border);
   }
+  .ca-drawer--top.is-local {
+    width: 100%;
+  }
 
   .ca-drawer--bottom {
     bottom: 0;
@@ -196,12 +222,19 @@
     height: var(--ca-drawer-custom-size, auto);
     border-top: 1px solid var(--color-border);
   }
+  .ca-drawer--bottom.is-local {
+    width: 100%;
+  }
 
   /* 状态 (State): 是否全屏 .is-full */
   .ca-drawer__container.is-full {
     width: 100vw;
     height: 100vh;
     border: none;
+  }
+  .ca-drawer__container.is-full.is-local {
+    width: 100%;
+    height: 100%;
   }
 
   /* 动画类名 (Transition Slide) */
