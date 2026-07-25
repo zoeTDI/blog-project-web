@@ -8,7 +8,7 @@
     type TodoData,
     type TodoItem,
   } from '@/components/calendar';
-  import { caMessage } from '@/components/ca/caMessage';
+  import { CaMessage } from '@caldm/ui';
   import { mockApiFetch } from '@/utils/mock.ts';
   import { useDebounceFn } from '@caldm/hook';
   import { CaDrawer } from '@caldm/ui';
@@ -114,7 +114,7 @@
       return {} as TodoData;
     } catch (error) {
       // 消息组件，会在屏幕上弹出一个消息通知，3秒后消失
-      caMessage.error('获取数据失败');
+      CaMessage.error('获取数据失败');
       return null;
     }
   };

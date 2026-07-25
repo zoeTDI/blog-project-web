@@ -2,7 +2,7 @@
   import { CaRow, CaCol, CaButton } from '@caldm/ui';
   import { ref } from 'vue';
   import { CaImageUpload } from '@/components/ca/caImageUpload';
-  import { caMessage } from '@/components/ca/caMessage';
+  import { CaMessage } from '@caldm/ui';
   import {
     ArrowDownRightIcon,
     ArrowUpLeftIcon,
@@ -27,7 +27,7 @@
 
   const handlePublish = async () => {
     if (uploadedImages.value.length === 0) {
-      caMessage.warn('请至少选择一张图片');
+      CaMessage.warn('请至少选择一张图片');
       return;
     }
     const formData = new FormData();
@@ -40,9 +40,9 @@
       // 模拟异步请求延迟
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      caMessage.success('发布成功！');
+      CaMessage.success('发布成功！');
     } catch (error) {
-      caMessage.error('上传失败，请重试');
+      CaMessage.error('上传失败，请重试');
     }
   };
   const handleClear = () => {

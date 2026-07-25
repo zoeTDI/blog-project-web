@@ -3,7 +3,7 @@ import type {
   UseUploaderOptions,
 } from '@/components/ca/caImageUpload';
 import { ref } from 'vue';
-import { caMessage } from '@/components/ca/caMessage';
+import { CaMessage } from '@caldm/ui';
 
 const useUploader = (options: UseUploaderOptions = {}) => {
   const { maxCount = 9, maxSize = 5 } = options;
@@ -12,7 +12,7 @@ const useUploader = (options: UseUploaderOptions = {}) => {
   // 检验文件大小
   const validateFile = (file: File): boolean => {
     if (file.size > maxSize * 1024 * 1024) {
-      caMessage.error(`图片 ${file.name} 超过了 ${maxSize}MB 的限制`);
+      CaMessage.error(`图片 ${file.name} 超过了 ${maxSize}MB 的限制`);
       return false;
     }
     return true;
@@ -21,7 +21,7 @@ const useUploader = (options: UseUploaderOptions = {}) => {
   // 添加文件
   const addFiles = (newFiles: File[]) => {
     if (files.value.length + newFiles.length > maxCount) {
-      caMessage.error(`最多只能上传 ${maxCount} 张图片`);
+      CaMessage.error(`最多只能上传 ${maxCount} 张图片`);
       return;
     }
     const processedFiles = newFiles.filter(validateFile).map((file) => ({

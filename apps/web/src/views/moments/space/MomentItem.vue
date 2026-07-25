@@ -1,8 +1,7 @@
 <script setup lang="ts">
-  import { CaRow, CaCol, CaAvatar, CaImage } from '@caldm/ui';
+  import { CaRow, CaCol, CaAvatar, CaImage, CaMessage } from '@caldm/ui';
   import { MarkdownRender } from '@/components/markdownRender';
   import { computed, ref } from 'vue';
-  import { caMessage } from '@/components/ca/caMessage';
 
   export interface MomentItemData {
     id: string | number;
@@ -110,7 +109,7 @@
 
   const addLike = () => {
     setTimeout(() => {
-      caMessage.success('🎉🎉🎉点赞成功');
+      CaMessage.success('🎉🎉🎉点赞成功');
     }, 500);
   };
 </script>
