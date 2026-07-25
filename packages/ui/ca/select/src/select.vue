@@ -67,6 +67,20 @@
     dropdownMaxHeight.value = maxHeight;
   };
 
+  // ---------- 节流控制 ----------
+  let rafId: number | null = null;
+
+  /**
+   * 节流版位置更新，使用 requestAnimationFrame 合并高频触发
+   */
+  const updateDropdownPositionThrottled = () => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      updateDropdownPosition();
+      rafId = null;
+    });
+  };
+
   const classes = computed(() => {
     const cls: string[] = [
       ns.b(),
@@ -112,7 +126,7 @@
   // 窗口变化时重新定位
   const handleResizeOrScroll = () => {
     if (visible.value) {
-      updateDropdownPosition();
+      updateDropdownPositionThrottled();
     }
   };
 
@@ -148,6 +162,11 @@
     window.removeEventListener('click', handleOutsideClick, true);
     window.removeEventListener('resize', handleResizeOrScroll);
     window.removeEventListener('scroll', handleResizeOrScroll, true);
+    // 清理未执行的 raf
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
   });
 </script>
 
