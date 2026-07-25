@@ -1,3 +1,16 @@
+export interface LayoutParams {
+  rect: DOMRect;
+  windowHeight: number;
+  spaceBelow: number;
+  spaceAbove: number;
+}
+
+export interface PositionResult {
+  placement: 'bottom' | 'top';
+  top: number;
+  maxHeight: number;
+}
+
 export type CaSelectOption = {
   label: string;
   value: any;
