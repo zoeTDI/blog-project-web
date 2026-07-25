@@ -47,6 +47,10 @@ const meta = {
         type: { summary: 'number' },
       },
     },
+    appendTo: {
+      description: '自定义挂载位置，默认body',
+      control: 'text',
+    },
     closeOnClickOverlay: {
       description: '点击遮罩层是否允许关闭',
       control: 'boolean',
@@ -71,6 +75,7 @@ const meta = {
     placement: 'right',
     size: 'auto',
     closeOnClickOverlay: true,
+    appendTo: 'body',
   },
 } satisfies Meta<typeof CaDrawer>;
 
@@ -344,6 +349,138 @@ export const DisableOverlayClick: Story = {
             </button>
           </div>
         </CaDrawer>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * 挂载到局部元素
+ */
+export const AppendToDiv: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: '',
+      },
+    },
+  },
+  args: {},
+  render: (args) => ({
+    components: { CaDrawer },
+    setup() {
+      const box1 = ref<HTMLElement | null>(null);
+      const box2 = ref<HTMLElement | null>(null);
+      const box3 = ref<HTMLElement | null>(null);
+      const box4 = ref<HTMLElement | null>(null);
+      const box5 = ref<HTMLElement | null>(null);
+      const drawerRef1 = ref<InstanceType<typeof CaDrawer> | null>(null);
+      const drawerRef2 = ref<InstanceType<typeof CaDrawer> | null>(null);
+      const drawerRef3 = ref<InstanceType<typeof CaDrawer> | null>(null);
+      const drawerRef4 = ref<InstanceType<typeof CaDrawer> | null>(null);
+      const drawerRef5 = ref<InstanceType<typeof CaDrawer> | null>(null);
+
+      const handleOpen = (i: number) => {
+        switch (i) {
+          case 1: {
+            drawerRef1.value?.open();
+            break;
+          }
+          case 2: {
+            drawerRef2.value?.open();
+            break;
+          }
+          case 3: {
+            drawerRef3.value?.open();
+            break;
+          }
+          case 4: {
+            drawerRef4.value?.open();
+            break;
+          }
+          case 5: {
+            drawerRef5.value?.open();
+            break;
+          }
+        }
+      };
+
+      const handleClose = (i: number) => {
+        switch (i) {
+          case 1: {
+            drawerRef1.value?.close();
+            break;
+          }
+          case 2: {
+            drawerRef2.value?.close();
+            break;
+          }
+          case 3: {
+            drawerRef3.value?.close();
+            break;
+          }
+          case 4: {
+            drawerRef4.value?.close();
+            break;
+          }
+          case 5: {
+            drawerRef5.value?.close();
+            break;
+          }
+        }
+      };
+      return { args, box1, box2, box3, box4, box5, drawerRef1, drawerRef2, drawerRef3, drawerRef4, drawerRef5, handleOpen, handleClose };
+    },
+    template: `
+      <div style="display: flex; gap: 20px; width: 700px; justify-content: space-between">
+        <button v-for="i in 5" :key="i" @click="handleOpen(i)"
+                style="padding: 8px 10px; width: 140px; background-color: green; color: white">Open Drawer {{ i }}
+        </button>
+      </div>
+      <div
+        style="display: flex; gap: 20px; width: 700px; justify-content: space-between; margin-top: 20px; margin-bottom: 20px;">
+        <button v-for="i in 5" :key="i" @click="handleClose(i)"
+                style="padding: 8px 10px; width: 140px; background-color: red; color: white">Close Drawer {{ i }}
+        </button>
+      </div>
+      <div
+        style="display: flex; gap: 20px; width: 700px; justify-content: space-between; margin-top: 20px; margin-bottom: 20px;">
+        <div v-for="i in ['top', 'right', 'bottom', 'right', 'full']" :key="i"
+             style="padding: 8px 10px; width: 140px; background-color: #aaa; color: white; text-align: center">
+          Pos: {{ i }}
+        </div>
+      </div>
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; flex: 0 0 auto">
+        <div ref="box1"
+             style="width: 300px;height: 300px; outline: 1px dashed red; position: relative; overflow: hidden">
+          <CaDrawer ref="drawerRef1" :appendTo="box1" placement="top">
+            抽屉1
+          </CaDrawer>
+        </div>
+        <div ref="box2"
+             style="width: 300px;height: 300px; outline: 1px dashed blue; position: relative; overflow: hidden;">
+          <CaDrawer ref="drawerRef2" :appendTo="box2" placement="right">
+            抽屉2
+          </CaDrawer>
+        </div>
+        <div ref="box3"
+             style="width: 300px;height: 300px; outline: 1px dashed green; position: relative; overflow: hidden;">
+          <CaDrawer ref="drawerRef3" :appendTo="box3" placement="bottom">
+            抽屉3
+          </CaDrawer>
+        </div>
+        <div ref="box4"
+             style="width: 300px;height: 300px; outline: 1px dashed purple; position: relative; overflow: hidden;">
+          <CaDrawer ref="drawerRef4" :appendTo="box4" placement="left">
+            抽屉3
+          </CaDrawer>
+        </div>
+        <div ref="box5"
+             style="width: 300px;height: 300px; outline: 1px dashed green; position: relative; overflow: hidden;">
+          <CaDrawer ref="drawerRef5" :appendTo="box5" placement="left" size="full">
+            抽屉3
+          </CaDrawer>
+        </div>
       </div>
     `,
   }),
