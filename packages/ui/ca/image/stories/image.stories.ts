@@ -41,6 +41,13 @@ const meta = {
         defaultValue: { summary: 'true' },
       },
     },
+    previewAppendTo: {
+      description: '预览组件挂载目标，接受 CSS 选择器或 HTMLElement，默认 body',
+      control: 'text',
+      table: {
+        defaultValue: { summary: 'body' },
+      },
+    },
   },
   args: {
     src: 'https://picsum.photos/800/600',
@@ -172,6 +179,56 @@ export const StandaloneViewer: Story = {
         </button>
 
         <CaImageViewer ref="viewerRef" :url="imgUrl" />
+      </div>
+    `,
+  }),
+};
+
+/**
+ * 挂载到局部容器
+ */
+export const AppendToContainer: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: '通过设置 `previewAppendTo` 属性，将图片预览组件挂载到指定的父容器内，而非全局 `body`。父容器需要设置 `position: relative` 并具有明确的宽高，预览背景和图片将限定在该容器内。适用于需要在页面局部区域展示预览的场景，如卡片内、弹窗内等。',
+      },
+    },
+  },
+  render: () => ({
+    components: { CaImage },
+    setup() {
+      const containerRef = ref<HTMLElement | null>(null);
+      const imgSrc = 'https://picsum.photos/800/600';
+      return { containerRef, imgSrc };
+    },
+    template: `
+      <div>
+        <p style="margin-bottom: 12px; font-size: 14px; color: #666;">
+          点击下方图片，预览将在虚线框内展开，而不是全屏。
+        </p>
+        <div
+          ref="containerRef"
+          style="
+            position: relative;
+            width: 500px;
+            height: 400px;
+            border: 2px dashed #1677ff;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <CaImage
+            :src="imgSrc"
+            style="width: 200px; height: 150px; border-radius: 4px;"
+            :preview-append-to="containerRef"
+            preview
+          />
+        </div>
       </div>
     `,
   }),
