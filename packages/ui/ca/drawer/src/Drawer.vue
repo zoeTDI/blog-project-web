@@ -77,37 +77,39 @@
 
 <template>
   <teleport :to="props.appendTo || 'body'">
-    <div
-      v-show="visible"
-      :class="[ns.b(), ns.e('overlay'), ns.is('local', !isGlobal)]"
-      @click="handleOverlayClick">
-      <transition
-        :name="`${ns.b()}-slide-${props.placement}`"
-        appear>
-        <div
-          v-show="visible"
-          :class="[
+    <transition :name="`${ns.s('fade')}`" appear>
+      <div
+        v-if="visible"
+        :class="[ns.e('overlay'), { 'is-local': !isGlobal }]"
+        @click="handleOverlayClick"
+      />
+    </transition>
+    <transition
+      :name="`${ns.s(`slide-${props.placement}`)}`"
+      appear>
+      <div
+        v-show="visible"
+        :class="[
             ns.e('container'),
             ns.m(props.placement),
             ns.is('full', props.size === 'full'),
             ns.is('local', !isGlobal)
           ]"
-          :style="drawerStyle"
-          @click.stop>
-          <section :class="ns.e('header-wrapper')">
-            <div :class="ns.e('header')">
-              <slot name="header"></slot>
-            </div>
-            <button
-              :class="ns.e('close-btn')"
-              @click="close">
-              <x-mark-icon :class="ns.e('icon')" />
-            </button>
-          </section>
-          <slot></slot>
-        </div>
-      </transition>
-    </div>
+        :style="drawerStyle"
+        @click.stop>
+        <section :class="ns.e('header-wrapper')">
+          <div :class="ns.e('header')">
+            <slot name="header"></slot>
+          </div>
+          <button
+            :class="ns.e('close-btn')"
+            @click="close">
+            <x-mark-icon :class="ns.e('icon')" />
+          </button>
+        </section>
+        <slot></slot>
+      </div>
+    </transition>
   </teleport>
 </template>
 
@@ -120,6 +122,9 @@
     width: 100svw;
     height: 100svh;
     z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
   .ca-drawer__overlay.is-local {
     position: absolute;
@@ -127,6 +132,16 @@
     height: 100%;
     top: 0;
     left: 0;
+  }
+
+  /* 遮罩层淡入淡出过渡 */
+  .ca-drawer-fade-enter-active,
+  .ca-drawer-fade-leave-active {
+    transition: opacity 0.25s ease;
+  }
+  .ca-drawer-fade-enter-from,
+  .ca-drawer-fade-leave-to {
+    opacity: 0;
   }
 
   /* 容器: .ca-drawer__container */
