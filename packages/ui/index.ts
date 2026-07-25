@@ -14,5 +14,6 @@ export * from './ca/image';
 export * from './icon';
 export * from './ca/list';
 export * from './ca/marquee';
+export * from './ca/message';
 export * from './ca/row';
 export * from './ca/select';
