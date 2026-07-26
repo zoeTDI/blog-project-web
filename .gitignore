@@ -24,9 +24,7 @@ dist-ssr
 *.sw?
 
 # env
-.env
-.env.development
-.env.production
+.env.*.local
 
 .vitest/
 *storybook.log
