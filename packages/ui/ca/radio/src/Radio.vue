@@ -144,11 +144,11 @@
 
   .ca-radio--M {
     padding: 6px;
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .ca-radio--L {
     padding: 8px 6px;
-    font-size: 16px;
+    font-size: 20px;
   }
 </style>
