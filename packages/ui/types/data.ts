@@ -1,0 +1,1 @@
+export type BaseData = string | number | boolean | null | undefined | symbol;
