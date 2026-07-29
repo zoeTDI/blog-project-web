@@ -1,7 +1,8 @@
 <script setup lang="ts">
   import { Bars3Icon, Squares2X2Icon } from '@heroicons/vue/24/outline';
   import { computed } from 'vue';
-  import CaSwitch from '@/components/ca/caSwitch';
+  import { CaSwitch } from '@caldm/ui';
+  import type { CaSwitchOption } from '@caldm/ui';
 
   interface Props {
     modelValue: string;
@@ -17,10 +18,11 @@
     showCount: true,
     showBorder: true,
     cols: () => ({ desktop: 4, tablet: 2, mobile: 1 }),
-    options: () => [
-      { label: 'LIST', value: 'list', icon: Bars3Icon },
-      { label: 'CARD', value: 'card', icon: Squares2X2Icon },
-    ],
+    options: () =>
+      [
+        { label: 'LIST', value: 'list', icon: Bars3Icon },
+        { label: 'CARD', value: 'card', icon: Squares2X2Icon },
+      ] as CaSwitchOption[],
   });
 
   const emit = defineEmits(['update:modelValue']);

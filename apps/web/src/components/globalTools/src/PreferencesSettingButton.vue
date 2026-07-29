@@ -2,7 +2,6 @@
   import type { ButtonProps } from '@/components/globalTools';
   import { computed, onMounted, ref, watch } from 'vue';
   import { Cog8ToothIcon } from '@heroicons/vue/24/outline';
-  import CaSwitch, { type SwitchOption } from '@/components/ca/caSwitch';
   import {
     customPreferences,
     customPreferencesExtension,
@@ -10,19 +9,27 @@
     preferences,
   } from '@/core/preferences';
   import { type RouteRecordNormalized, useRouter } from 'vue-router';
-  import { CaRow, CaCol, CaButton, CaDrawer } from '@caldm/ui';
+  import {
+    CaRow,
+    CaCol,
+    CaButton,
+    CaDrawer,
+    CaSelect,
+    CaSelectOption,
+    CaSwitch,
+  } from '@caldm/ui';
+  import type { CaSwitchOption } from '@caldm/ui';
   import {
     type CustomPreferencesRecord,
     type Preferences,
     TIMEZONE_OPTIONS,
   } from '@caldm/core';
-  import { CaSelect, CaSelectOption } from '@caldm/ui';
 
   withDefaults(defineProps<ButtonProps>(), {
     shape: 'rounded',
   });
 
-  const TAB_OPTION: SwitchOption[] = [
+  const TAB_OPTION: CaSwitchOption[] = [
     { value: 'app', label: '网站设置' },
     { value: 'breadcrumb', label: '面包屑设置' },
     { value: 'copyright', label: '版权设置' },
@@ -35,7 +42,7 @@
     { value: 'widgetPreferences', label: '功能设置' },
     { value: 'custom', label: customPreferencesExtension.tabLabel },
   ] as const;
-  const THEME_OPTION: SwitchOption[] = [
+  const THEME_OPTION: CaSwitchOption[] = [
     { value: 'light', label: '明亮模式' },
     { value: 'dark', label: '暗黑模式' },
   ];
