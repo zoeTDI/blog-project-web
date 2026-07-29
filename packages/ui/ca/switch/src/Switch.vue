@@ -4,7 +4,7 @@
   import { computed, nextTick, onMounted, onUnmounted, type Ref, ref, watch } from 'vue';
   import type { BaseData } from '#/data.ts';
   import { useCSSNamespace } from '@caldm/hook';
-  import CaIcon from '../../../icon/src/icon.vue';
+  import CaIcon from '../../../icon/src/Icon.vue';
 
   const ICON_SIZE_MAP = {
     S: 14,

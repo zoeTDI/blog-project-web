@@ -3,7 +3,7 @@
   import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
   import { useCSSNamespace } from '@caldm/hook';
   import { XMarkIcon } from '@heroicons/vue/24/outline';
-  import CaIcon from '../../../icon/src/icon.vue';
+  import CaIcon from '../../../icon/src/Icon.vue';
 
   defineOptions({
     name: 'CaImageViewer',

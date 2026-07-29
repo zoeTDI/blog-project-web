@@ -3,7 +3,7 @@
   import { caRadioGroupKey } from './constants.ts';
   import type { CaRadioProps } from './types.ts';
   import { useCSSNamespace } from '@caldm/hook';
-  import CaIcon from '../../../icon/src/icon.vue';
+  import CaIcon from '../../../icon/src/Icon.vue';
 
   defineOptions({
     name: 'CaRadio',

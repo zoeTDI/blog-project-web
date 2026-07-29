@@ -8,7 +8,7 @@
     XCircleIcon, XMarkIcon,
   } from '@heroicons/vue/24/outline';
   import { useCSSNamespace } from '@caldm/hook';
-  import CaIcon from '../../../icon/src/icon.vue';
+  import CaIcon from '../../../icon/src/Icon.vue';
 
   defineOptions({
     name: 'CaMessageItem',

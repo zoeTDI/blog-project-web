@@ -1,4 +1,4 @@
-import CaIcon from './src/icon.vue';
+import CaIcon from './src/Icon.vue';
 
 export { CaIcon };
 export * from './src/types.ts';

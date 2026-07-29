@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import type { CaBreadcrumbEmits, CaBreadcrumbItem, CaBreadcrumbProps } from './types.ts';
   import { ChevronDoubleRightIcon } from '@heroicons/vue/24/outline';
-  import CaIcon from '../../../icon/src/icon.vue';
+  import CaIcon from '../../../icon/src/Icon.vue';
   import { useCSSNamespace } from '@caldm/hook';
   import { computed } from 'vue';
 
