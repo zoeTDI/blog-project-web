@@ -19,3 +19,4 @@ export * from './ca/message';
 export * from './ca/radio';
 export * from './ca/row';
 export * from './ca/select';
+export * from './ca/switch';
