@@ -22,7 +22,7 @@
   const props = withDefaults(defineProps<CaCalendarProps>(), {
     startDay: () => new Date(),
     firstDayOfWeek: 'Monday',
-    displayMode: 'default',
+    displayMode: undefined,
   });
 
   const emits = defineEmits<CaCalendarEmits>();
@@ -63,6 +63,12 @@
   const day = computed(() => currentDate.value.getDate());
   const drawerPlacement = computed(() => (isMobile.value ? 'bottom' : 'right'));
   const drawerCustomSize = computed(() => (isMobile.value ? 0.6 : 380));
+  const effectiveDisplayMode = computed(() => {
+    if (props.displayMode) {
+      return props.displayMode;
+    }
+    return isMobile.value ? 'dot' : 'default';
+  });
 
   const checkIsMobile = () => {
     isMobile.value = window.innerWidth <= 768;
@@ -189,7 +195,7 @@
                     ns.is('cur', !dayItem.isPrevMonth && !dayItem.isNextMonth),
                     ns.is('next', dayItem.isNextMonth),
                     ns.is('weekend', dayItem.isWeekend),
-                    ns.is('mode-dot', props.displayMode === 'dot')
+                    ns.is('mode-dot', effectiveDisplayMode === 'dot')
                   ]"
                  @click="handleViewTodo(dayItem.date)">
               <div :class="[
@@ -200,7 +206,7 @@
               </div>
               <CaCalendarTodo :items="getTodoList(dayItem.date)"
                               :max-visible="2"
-                              :mode="props.displayMode" />
+                              :mode="effectiveDisplayMode" />
             </div>
           </template>
         </section>
