@@ -52,10 +52,10 @@
   } = useCalendar(props, emits);
 
   const classes = computed(() => {
-    const cls: string[] = [
+    return [
       ns.b(),
+      ns.is('loading', props.loading),
     ];
-    return cls;
   });
 
   const year = computed(() => currentDate.value.getFullYear());
@@ -185,6 +185,11 @@
     <div :class="ns.e('body-wrapper')"
          @touchstart="handleTouchStart"
          @touchend="handleTouchEnd">
+      <Transition name="fade">
+        <div v-if="loading" :class="ns.e('loading-mask')">
+          <div :class="ns.e('spinner')"></div>
+        </div>
+      </Transition>
       <Transition :name="transitionName" mode="out-in">
         <section :class="ns.e('container')"
                  :key="`${year}-${month}`">
@@ -312,6 +317,46 @@
     width: 100%;
     overflow: hidden;
     touch-action: pan-y;
+  }
+
+
+  .ca-calendar__loading-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ca-calendar__spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid color-mix(in srgb, var(--color-accent, #3b82f6) 20%, transparent);
+    border-top-color: var(--color-accent, #3b82f6);
+    border-radius: 50%;
+    animation: ca-calendar-spin 0.8s linear infinite;
+  }
+
+  @keyframes ca-calendar-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.2s ease;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
   }
 
   .ca-calendar__container {

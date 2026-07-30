@@ -35,12 +35,20 @@ export interface CaCalendarProps {
   firstDayOfWeek?: DayOfWeek;
   todoData?: TodoData | null;
   displayMode?: DisplayMode;
+  loading?: boolean;
+}
+
+export interface PanelChangePayload {
+  year: number;
+  month: number; // 0 ~ 11
+  startDate: Date; // 42格网格的第一天
+  endDate: Date;   // 42格网格的最后一天
 }
 
 export interface CaCalendarEmits {
   (e: 'update:startDay', val: Date): void;
-
   (e: 'change', val: Date): void;
+  (e: 'panel-change', payload: PanelChangePayload): void;
 }
 
 export interface CaCalendarExpose {
@@ -55,8 +63,4 @@ export interface CaDayTodoProps {
   items: TodoItem[];
   maxVisible?: number;
   mode?: DisplayMode;
-}
-
-export interface CaDayTodoEmits {
-  (e: 'click-todo', event: MouseEvent): void;
 }
