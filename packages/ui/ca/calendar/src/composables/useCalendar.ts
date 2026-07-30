@@ -1,4 +1,4 @@
-import type { CaCalendarProps, CalendarDay } from '../types.ts';
+import type { CaCalendarProps, CalendarDay, TodoItem } from '../types.ts';
 import { computed, ref, watch } from 'vue';
 import { BASE_WEEK, DAY_OF_WEEK_MAP } from '../constants.ts';
 import { isSameDay } from '@caldm/utils';
@@ -55,7 +55,8 @@ export const useCalendar = (
 
   // 切换下一个月
   const nextMonth = () => {
-    const d = new Date(currentDate.value);const targetMonth = d.getMonth() + 1;
+    const d = new Date(currentDate.value);
+    const targetMonth = d.getMonth() + 1;
     d.setDate(1);
     d.setMonth(targetMonth);
     updateDate(d);
@@ -119,6 +120,14 @@ export const useCalendar = (
     return !!props.todoData[y]?.[m]?.[d]?.length;
   };
 
+  const getTodoList = (date: Date): TodoItem[] => {
+    if (!props.todoData) return [];
+    const y = date.getFullYear();
+    const m = date.getMonth(); // 注意：0 ~ 11[cite: 7]
+    const d = date.getDate();
+    return props.todoData[y]?.[m]?.[d] || [];
+  };
+
   return {
     currentDate,
     weekDays,
@@ -129,5 +138,6 @@ export const useCalendar = (
     prevMonth,
     nextMonth,
     goToday,
+    getTodoList,
   };
 };

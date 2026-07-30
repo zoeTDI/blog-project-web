@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@caldm/hook';
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
   import { useCalendar } from './composables/useCalendar.ts';
-  import type { CaCalendarEmits, CaCalendarExpose, CaCalendarProps } from './types.ts';
+  import type { CaCalendarEmits, CaCalendarExpose, CaCalendarProps, TodoItem, TransitionControl } from './types.ts';
   import CaIcon from '../../../icon/src/Icon.vue';
   import {
     ChevronDoubleLeftIcon,
@@ -10,6 +10,10 @@
     ChevronLeftIcon,
     ChevronRightIcon,
   } from '@heroicons/vue/24/outline';
+  import { WEEK_SHORT_MAP } from './constants.ts';
+  import CaCalendarTodo from './CalendarTodo.vue';
+  import type { CaDrawerExpose } from '../../drawer';
+  import CaDrawer from '../../drawer/src/Drawer.vue';
 
   defineOptions({
     name: 'CaCalendar',
@@ -22,6 +26,15 @@
 
   const emits = defineEmits<CaCalendarEmits>();
 
+  const drawerRef = ref<CaDrawerExpose | null>(null);
+
+  const activeDate = ref<Date | null>(null);
+  const activeTodoList = ref<TodoItem[]>([]);
+  const selectedTodoId = ref<number | null>(null);
+  const transitionName = ref<TransitionControl>('slide-next');
+  const touchStartX = ref(0);
+  const touchStartY = ref(0);
+
   const ns = useCSSNamespace('calendar');
 
   const {
@@ -33,6 +46,7 @@
     nextMonth,
     nextYear,
     goToday,
+    getTodoList,
   } = useCalendar(props, emits);
 
   const classes = computed(() => {
@@ -46,12 +60,78 @@
   const month = computed(() => currentDate.value.getMonth() + 1);
   const day = computed(() => currentDate.value.getDate());
 
+  const handlePrevMonth = () => {
+    transitionName.value = 'slide-prev';
+    prevMonth();
+  };
+
+  const handleNextMonth = () => {
+    transitionName.value = 'slide-next';
+    nextMonth();
+  };
+
+  const handlePrevYear = () => {
+    transitionName.value = 'slide-prev';
+    prevYear();
+  };
+
+  const handleNextYear = () => {
+    transitionName.value = 'slide-next';
+    nextYear();
+  };
+
+  const handleGoToday = () => {
+    const today = new Date();
+    if (today < currentDate.value) {
+      transitionName.value = 'slide-prev';
+    } else {
+      transitionName.value = 'slide-next';
+    }
+    goToday();
+  };
+
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartX.value = e.touches[0].clientX;
+    touchStartY.value = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX.value;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.value;
+
+    const threshold = 40;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > threshold) {
+      if (deltaX < 0) {
+        handleNextMonth();
+      } else {
+        handlePrevMonth();
+      }
+    }
+  };
+
+  const handleTodoClick = (item: TodoItem, dayDate: Date) => {
+    activeDate.value = dayDate;
+    activeTodoList.value = getTodoList(dayDate);
+    selectedTodoId.value = item.id;
+    // 打开右侧抽屉
+    drawerRef.value?.open();
+  };
+
+  const handleMoreTodoClick = (dayDate: Date) => {
+    activeDate.value = dayDate;
+    activeTodoList.value = getTodoList(dayDate);
+    selectedTodoId.value = null;
+    // 打开右侧抽屉
+    drawerRef.value?.open();
+  };
+
   defineExpose<CaCalendarExpose>({
-    prevYear,
-    nextYear,
-    prevMonth,
-    nextMonth,
-    goToday,
+    prevYear: handlePrevYear,
+    nextYear: handleNextYear,
+    prevMonth: handlePrevMonth,
+    nextMonth: handleNextMonth,
+    goToday: handleGoToday,
   });
 </script>
 
@@ -61,50 +141,88 @@
       <div :class="ns.e('left')">
         <CaIcon :icon="ChevronDoubleLeftIcon"
                 :size="24"
-                @click="prevYear" />
+                @click="handlePrevYear" />
         <CaIcon :icon="ChevronLeftIcon"
                 :size="24"
-                @click="prevMonth" />
+                @click="handlePrevMonth" />
       </div>
       <div :class="ns.e('center')"
-           @click="goToday">
+           @click="handleGoToday">
         {{ year }} / {{ month }} / {{ day }}
       </div>
       <div :class="ns.e('right')">
         <CaIcon :icon="ChevronRightIcon"
                 :size="24"
-                @click="nextMonth" />
+                @click="handleNextMonth" />
         <CaIcon :icon="ChevronDoubleRightIcon"
                 :size="24"
-                @click="nextYear" />
+                @click="handleNextYear" />
       </div>
     </div>
     <header :class="ns.e('header')">
       <div :class="ns.e('header-cell')"
            v-for="item in weekDays"
            :key="item">
-        {{ item }}
+        <span :class="ns.m('week-full')">{{ item }}</span>
+        <span :class="ns.m('week-short')">{{ WEEK_SHORT_MAP[item] }}</span>
       </div>
     </header>
-    <section :class="ns.e('container')">
-      <template v-for="day in daysList" :key="day.date">
-        <div
-          :class="[
-            ns.e('day'),
-            ns.is('last', day.isPrevMonth),
-            ns.is('cur', !day.isPrevMonth && !day.isNextMonth),
-            ns.is('next', day.isNextMonth),
-            ns.is('weekend', day.isWeekend),
-          ]">
-          <div :class="[
-            ns.e('label'),
-            ns.is('today', day.isToday),
-          ]">
-            {{ day.day }}
-          </div>
+    <div :class="ns.e('body-wrapper')"
+         @touchstart="handleTouchStart"
+         @touchend="handleTouchEnd">
+      <Transition :name="transitionName" mode="out-in">
+        <section :class="ns.e('container')"
+                 :key="`${year}-${month}`">
+          <template v-for="dayItem in daysList" :key="dayItem.date">
+            <div :class="[
+              ns.e('day'),
+              ns.is('last', dayItem.isPrevMonth),
+              ns.is('cur', !dayItem.isPrevMonth && !dayItem.isNextMonth),
+              ns.is('next', dayItem.isNextMonth),
+              ns.is('weekend', dayItem.isWeekend),
+            ]">
+              <div :class="[
+                ns.e('label'),
+                ns.is('today', dayItem.isToday),
+              ]">
+                {{ dayItem.day }}
+              </div>
+              <CaCalendarTodo :items="getTodoList(dayItem.date)"
+                              :max-visible="2"
+                              @click-item="(item) => handleTodoClick(item, dayItem.date)"
+                              @click-more="() => handleMoreTodoClick(dayItem.date)"
+              />
+            </div>
+          </template>
+        </section>
+      </Transition>
+    </div>
+
+    <CaDrawer ref="drawerRef"
+              placement="right"
+              :custom-size="380">
+      <template #header>
+        <div class="todo-drawer-title" v-if="activeDate">
+          <h3>{{ activeDate.getFullYear() }}年{{ activeDate.getMonth() + 1 }}月{{ activeDate.getDate() }}日</h3>
+          <span class="todo-count">共 {{ activeTodoList.length }} 项待办</span>
         </div>
       </template>
-    </section>
+      <div class="todo-drawer-content">
+        <div
+          v-for="todo in activeTodoList"
+          :key="todo.id"
+          :class="['todo-detail-card', { 'is-selected': todo.id === selectedTodoId }]"
+          :style="{ borderLeftColor: todo.color || 'var(--color-accent, #3b82f6)' }"
+        >
+          <div v-if="todo.title" class="todo-detail-title">
+            {{ todo.title }}
+          </div>
+          <div class="todo-detail-context">
+            {{ todo.context }}
+          </div>
+        </div>
+      </div>
+    </CaDrawer>
   </div>
 </template>
 
@@ -112,6 +230,7 @@
   .ca-calendar {
     width: 100%;
     border: 1px solid var(--color-border);
+    overflow: hidden;
   }
 
   .ca-calendar__control {
@@ -157,10 +276,28 @@
     flex: 1;
     border-right: 1px solid var(--color-border);
     text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
   }
 
   .ca-calendar__header-cell:last-child {
     border-right: unset;
+  }
+
+  .ca-calendar--week-full {
+    display: inline;
+  }
+
+  .ca-calendar--week-short {
+    display: none;
+  }
+
+  .ca-calendar__body-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    touch-action: pan-y;
   }
 
   .ca-calendar__container {
@@ -207,5 +344,104 @@
 
   .is-weekend {
     background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+
+  .todo-drawer-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .todo-drawer-title h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .todo-count {
+    font-size: 12px;
+    color: var(--color-text-secondary, #6b7280);
+  }
+
+  .todo-drawer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 12px;
+  }
+
+  .todo-detail-card {
+    padding: 12px;
+    background-color: var(--color-bg-hover, #f9fafb);
+    border-radius: 6px;
+    border-left: 4px solid var(--color-accent, #3b82f6);
+    transition: all 0.2s ease;
+  }
+
+  .todo-detail-card.is-selected {
+    box-shadow: 0 0 0 2px var(--color-accent, #3b82f6);
+    background-color: color-mix(in srgb, var(--color-accent, #3b82f6) 8%, transparent);
+  }
+
+  .todo-detail-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--color-text-primary);
+  }
+
+  .todo-detail-context {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--color-text-regular, #374151);
+    /* 允许完整展示文字并按需自动换行 */
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+
+  /* 下一个月 (向左滑入/滑出) */
+  .slide-next-enter-active,
+  .slide-next-leave-active,
+  .slide-prev-enter-active,
+  .slide-prev-leave-active {
+    transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
+  }
+
+  .slide-next-enter-from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  .slide-next-leave-to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  /* 上一个月 (向右滑入/滑出) */
+  .slide-prev-enter-from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  .slide-prev-leave-to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  @media screen and (max-width: 768px) {
+    .ca-calendar--week-full {
+      display: none;
+    }
+
+    .ca-calendar--week-short {
+      display: inline;
+      font-size: 14px; /* 移动端可按需微调字号 */
+    }
+
+    /* 缩小表头内边距适应窄屏 */
+    .ca-calendar__header-cell {
+      padding: 4px 0;
+      font-weight: 500;
+    }
   }
 </style>

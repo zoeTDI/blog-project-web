@@ -1,5 +1,7 @@
 import type { DAY_OF_WEEK_MAP } from './constants.ts';
 
+export type TransitionControl = 'slide-next' | 'slide-prev';
+
 export type DayOfWeek = keyof typeof DAY_OF_WEEK_MAP;
 
 export type TodoItem = { id: number; title?: string; context: string; color?: string };
@@ -44,4 +46,14 @@ export interface CaCalendarExpose {
   prevMonth: () => void;
   nextMonth: () => void;
   goToday: () => void;
+}
+
+export interface CaDayTodoProps {
+  items: TodoItem[];
+  maxVisible?: number;
+}
+
+export interface CaDayTodoEmits {
+  (e: 'click-item', item: TodoItem, event: MouseEvent): void;
+  (e: 'click-more', remainingItems: TodoItem[], event: MouseEvent): void;
 }

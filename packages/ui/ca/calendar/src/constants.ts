@@ -1,5 +1,15 @@
 export const BASE_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 
+export const WEEK_SHORT_MAP: Record<string, string> = {
+  Monday: 'Mon',
+  Tuesday: 'Tue',
+  Wednesday: 'Wed',
+  Thursday: 'Thu',
+  Friday: 'Fri',
+  Saturday: 'Sat',
+  Sunday: 'Sun',
+};
+
 const TODO_COLORS = [
   { name: 'Red', value: '#EF444433' }, // 红色系
   { name: 'Orange', value: '#F9731633' }, // 橙色系
