@@ -1,6 +1,7 @@
 export * from './deepFu';
 export * from './diff';
 export * from './escapeUtils';
+export * from './file.ts';
 export * from './isFu';
 export * from './NumberAnimation';
 export * from './parse';
