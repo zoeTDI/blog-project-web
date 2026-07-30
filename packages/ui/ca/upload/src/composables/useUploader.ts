@@ -103,51 +103,79 @@ export function useUploader(props: CaUploadProps, emits: CaUploadEmits) {
   };
 
   /**
+   * 执行 beforeUpload 拦截/转化逻辑
+   */
+  const processBeforeUpload = async (rawFile: File): Promise<File | null> => {
+    if (!props.beforeUpload) return rawFile;
+
+    try {
+      const processedFile = await props.beforeUpload(rawFile);
+      if (processedFile === false) return null;
+      return processedFile instanceof File ? processedFile : rawFile;
+    } catch {
+      return null;
+    }
+  };
+
+  /**
+   * 负责纯粹的 UploadFile 数据结构构造
+   */
+  const createUploadFile = (file: File): UploadFile => {
+    const fileId = generateId();
+    const isImg = matchFileType(file.name, file.type) === 'image';
+
+    return {
+      id: fileId,
+      name: file.name,
+      size: file.size,
+      raw: file,
+      status: 'ready',
+      percent: 0,
+      url: isImg ? createPreviewUrl(file, fileId) : undefined,
+    };
+  };
+
+  /**
+   * 真正将 UploadFile 插入列表并同步状态
+   */
+  const appendFile = (uploadFile: UploadFile) => {
+    fileList.value.push(uploadFile);
+    emits('change', uploadFile, fileList.value);
+    emitModelUpdate();
+  };
+
+  /**
+   * 单个文件的核心处理主流程
+   */
+  const processSingleFile = async (rawFile: File) => {
+    // 校验文件格式/大小
+    if (!validateFile(rawFile)) return;
+
+    // 执行 beforeUpload 钩子
+    const finalFile = await processBeforeUpload(rawFile);
+    if (!finalFile) return;
+
+    // 构建并插入文件列表
+    const uploadFile = createUploadFile(finalFile);
+    appendFile(uploadFile);
+  };
+
+  /**
    * 添加选中的原生文件，支持 beforeUpload 拦截/转化
    */
   const addFiles = async (rawFiles: File[]) => {
     if (props.disabled || props.readonly || !rawFiles.length) return;
 
-    // 校验数量上限
     const maxCount = props.maxCount ?? Infinity;
-    if (fileList.value.length + rawFiles.length > maxCount) {
-      emits('exceed', rawFiles);
-      return;
-    }
 
-    for (const rawFile of rawFiles) {
-      if (!validateFile(rawFile)) continue;
-
-      let processedFile: File | boolean = rawFile;
-
-      // 触发 beforeUpload 钩子处理
-      if (props.beforeUpload) {
-        try {
-          processedFile = await props.beforeUpload(rawFile);
-          if (processedFile === false) continue;
-        } catch {
-          continue;
-        }
+    for (let i = 0; i < rawFiles.length; i++) {
+      if (fileList.value.length >= maxCount) {
+        const exceededFiles = rawFiles.slice(i);
+        emits('exceed', exceededFiles);
+        break;
       }
 
-      const finalFile = processedFile instanceof File ? processedFile : rawFile;
-      const fileId = generateId();
-      const isImg = matchFileType(finalFile.name, finalFile.type) === 'image';
-
-      // 构造 UploadFile 状态对象
-      const uploadFile: UploadFile = {
-        id: fileId,
-        name: finalFile.name,
-        size: finalFile.size,
-        raw: finalFile,
-        status: 'ready',
-        percent: 0,
-        url: isImg ? createPreviewUrl(finalFile, fileId) : undefined,
-      };
-
-      fileList.value.push(uploadFile);
-      emits('change', uploadFile, fileList.value);
-      emitModelUpdate();
+      await processSingleFile(rawFiles[i]);
     }
   };
 
