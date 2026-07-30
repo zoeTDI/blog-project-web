@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
 import { ref } from 'vue';
-import { CaCalendar } from '../index.ts';
+import { CaCalendar, type PanelChangePayload } from '../index.ts';
 import type { CaCalendarExpose, TodoData, TodoItem } from '../index.ts';
+import { action } from 'storybook/actions';
 
 // Mock Data Generators & Helpers
 const MOCK_TASKS = [
@@ -86,6 +87,10 @@ const meta = {
       control: 'date',
       description: '初始显示的基准日期',
     },
+    loading: {
+      control: 'boolean',
+      description: '异步数据加载中状态遮罩',
+    },
     firstDayOfWeek: {
       control: 'select',
       options: ['Monday', 'Sunday', 'Saturday'],
@@ -103,6 +108,10 @@ const meta = {
     'onUpdate:startDay': {
       action: 'update:startDay',
       description: '当日期改变时触发（支持 v-model:startDay）',
+    },
+    'onPanel-change': {
+      action: 'panel-change',
+      description: '视图/月份切换时触发，包含当前网格起止日期与年月',
     },
     onChange: {
       action: 'change',
@@ -131,7 +140,8 @@ export const Default: Story = {
     setup() {
       return { args };
     },
-    template: `<CaCalendar v-bind="args" />`,
+    template: `
+      <CaCalendar v-bind="args" />`,
   }),
 };
 
@@ -155,7 +165,8 @@ export const DotMode: Story = {
     setup() {
       return { args };
     },
-    template: `<CaCalendar v-bind="args" />`,
+    template: `
+      <CaCalendar v-bind="args" />`,
   }),
 };
 
@@ -179,7 +190,8 @@ export const DetailedMode: Story = {
     setup() {
       return { args };
     },
-    template: `<CaCalendar v-bind="args" />`,
+    template: `
+      <CaCalendar v-bind="args" />`,
   }),
 };
 
@@ -202,7 +214,8 @@ export const DenseTodoData: Story = {
     setup() {
       return { args };
     },
-    template: `<CaCalendar v-bind="args" />`,
+    template: `
+      <CaCalendar v-bind="args" />`,
   }),
 };
 
@@ -226,7 +239,8 @@ export const SundayFirstDay: Story = {
     setup() {
       return { args };
     },
-    template: `<CaCalendar v-bind="args" />`,
+    template: `
+      <CaCalendar v-bind="args" />`,
   }),
 };
 
@@ -249,7 +263,8 @@ export const Empty: Story = {
     setup() {
       return { args };
     },
-    template: `<CaCalendar v-bind="args" />`,
+    template: `
+      <CaCalendar v-bind="args" />`,
   }),
 };
 
@@ -299,6 +314,125 @@ export const ExposedMethods: Story = {
           <button @click="handleNextYear">下一年</button>
         </div>
         <CaCalendar ref="calendarRef" v-bind="args" />
+      </div>
+    `,
+  }),
+};
+
+/**
+ * 演示：Loading 加载遮罩状态
+ */
+export const LoadingState: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: '通过设置 `loading="true"` 打开全局加载遮罩层，阻断网络请求期间的用户重复点击与手势切换。',
+      },
+    },
+  },
+  args: {
+    loading: true,
+    todoData: generateMockTodoData(FIXED_DATE, 7, 7),
+  },
+  render: (args) => ({
+    components: { CaCalendar },
+    setup() {
+      return { args };
+    },
+    template: `
+      <CaCalendar v-bind="args" />`,
+  }),
+};
+
+/**
+ * 演示：模拟真正的“按需加载 + 内存缓存”业务场景
+ * 点击翻页或跳转时触发 panel-change 事件，延迟模拟 API 请求，展示 Loading 遮罩并回填数据。
+ */
+export const AsyncFetchAndCache: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: '完整模拟真实业务场景：监听 `@panel-change` 事件，自动命中/不命中缓存。未命中时开启 `loading` 遮罩并模拟异步 API 请求。',
+      },
+    },
+  },
+  // 👈 注意：这里将原有的 args: { todoData: null } 移除或清空，防止干扰
+  render: () => ({
+    components: { CaCalendar },
+    setup() {
+      const loading = ref(false);
+      const todoData = ref<TodoData>({});
+      const loadedCache = new Set<string>();
+
+      // 模拟后端 API
+      const mockFetchApi = (year: number, month: number): Promise<TodoData> => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            // 生成该月份的随机 Todo 数据
+            const result = generateMockTodoData(new Date(year, month, 15), 15, 15);
+            resolve(result);
+          }, 800); // 模拟 800ms 网络延迟
+        });
+      };
+
+      const handlePanelChange = async (payload: PanelChangePayload) => {
+        // 触发 Storybook Actions 面板记录
+        action('panel-change')(payload);
+
+        const cacheKey = `${payload.year}-${payload.month}`;
+
+        // 1. 命中缓存判断
+        if (loadedCache.has(cacheKey)) {
+          console.info(
+            `%c[Cache Hit] 🎯 命中缓存: ${cacheKey}`,
+            'color: #22c55e; font-weight: bold; font-size: 14px;',
+          );
+          return;
+        }
+
+        // 2. 未命中缓存：发起网络请求
+        try {
+          console.info(
+            `%c[Cache Miss] 🚀 发起网络请求: ${cacheKey}`,
+            'color: #3b82f6; font-weight: bold; font-size: 14px;',
+          );
+          loading.value = true;
+
+          const newData = await mockFetchApi(payload.year, payload.month);
+
+          // 填充数据到响应式缓存中
+          if (!todoData.value[payload.year]) {
+            todoData.value[payload.year] = {};
+          }
+          todoData.value[payload.year][payload.month] =
+            newData[payload.year]?.[payload.month] || {};
+
+          // 标记该月份已缓存
+          loadedCache.add(cacheKey);
+        } finally {
+          loading.value = false;
+        }
+      };
+
+      return {
+        startDay: FIXED_DATE,
+        loading,
+        todoData,
+        handlePanelChange,
+      };
+    },
+    // 👈 关键点：不再使用 v-bind="args"，手动绑定需要的属性和事件，避免 args 里的 null 或 mock action 强行覆写
+    template: `
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 13px; color: #666; padding: 4px 8px; background: #f3f4f6; border-radius: 4px;">
+          💡 提示：按 <b>F12</b> 打开控制台。初次加载会提示 <b>[Cache Miss] 发起网络请求</b>；切换月份后再切换回来会提示 <b>[Cache Hit] 命中缓存</b>。
+        </div>
+        <CaCalendar
+          :start-day="startDay"
+          :loading="loading"
+          :todo-data="todoData"
+          @panel-change="handlePanelChange"
+        />
       </div>
     `,
   }),
