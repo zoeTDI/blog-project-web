@@ -4,7 +4,7 @@
     CaDrawerProps,
   } from './types';
   import { XMarkIcon } from '@heroicons/vue/24/outline';
-  import { computed, ref } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import { useCSSNamespace } from '@caldm/hook';
 
   defineOptions({
@@ -73,6 +73,16 @@
     open,
     close,
   });
+
+  watch(visible, (val) => {
+    if (isGlobal.value) {
+      if (val) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+  });
 </script>
 
 <template>
@@ -126,6 +136,7 @@
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
+
   .ca-drawer__overlay.is-local {
     position: absolute;
     width: 100%;
@@ -139,6 +150,7 @@
   .ca-drawer-fade-leave-active {
     transition: opacity 0.25s ease;
   }
+
   .ca-drawer-fade-enter-from,
   .ca-drawer-fade-leave-to {
     opacity: 0;
@@ -204,6 +216,7 @@
     height: 100svh;
     border-left: 1px solid var(--color-border);
   }
+
   .ca-drawer--right.is-local {
     height: 100%;
   }
@@ -215,6 +228,7 @@
     height: 100svh;
     border-right: 1px solid var(--color-border);
   }
+
   .ca-drawer--left.is-local {
     height: 100%;
   }
@@ -226,6 +240,7 @@
     height: var(--ca-drawer-custom-size, auto);
     border-bottom: 1px solid var(--color-border);
   }
+
   .ca-drawer--top.is-local {
     width: 100%;
   }
@@ -237,6 +252,7 @@
     height: var(--ca-drawer-custom-size, auto);
     border-top: 1px solid var(--color-border);
   }
+
   .ca-drawer--bottom.is-local {
     width: 100%;
   }
@@ -247,6 +263,7 @@
     height: 100vh;
     border: none;
   }
+
   .ca-drawer__container.is-full.is-local {
     width: 100%;
     height: 100%;
