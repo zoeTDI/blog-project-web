@@ -7,6 +7,7 @@ export * from './background/caInkTree';
 export * from './ca/avatar';
 export * from './ca/breadcrumb';
 export * from './ca/button';
+export * from './ca/calendar';
 export * from './ca/card';
 export * from './ca/checkbox';
 export * from './ca/col';
