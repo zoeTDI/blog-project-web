@@ -28,10 +28,13 @@ export interface CalendarDay {
   key: string;
 }
 
+export type DisplayMode = 'default' | 'dot';
+
 export interface CaCalendarProps {
   startDay?: Date;
   firstDayOfWeek?: DayOfWeek;
   todoData?: TodoData | null;
+  displayMode?: DisplayMode;
 }
 
 export interface CaCalendarEmits {
@@ -51,9 +54,9 @@ export interface CaCalendarExpose {
 export interface CaDayTodoProps {
   items: TodoItem[];
   maxVisible?: number;
+  mode?: DisplayMode;
 }
 
 export interface CaDayTodoEmits {
-  (e: 'click-item', item: TodoItem, event: MouseEvent): void;
-  (e: 'click-more', remainingItems: TodoItem[], event: MouseEvent): void;
+  (e: 'click-todo', event: MouseEvent): void;
 }

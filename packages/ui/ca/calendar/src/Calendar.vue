@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@caldm/hook';
-  import { computed, ref } from 'vue';
+  import { computed, onMounted, onUnmounted, ref } from 'vue';
   import { useCalendar } from './composables/useCalendar.ts';
   import type { CaCalendarEmits, CaCalendarExpose, CaCalendarProps, TodoItem, TransitionControl } from './types.ts';
   import CaIcon from '../../../icon/src/Icon.vue';
@@ -22,6 +22,7 @@
   const props = withDefaults(defineProps<CaCalendarProps>(), {
     startDay: () => new Date(),
     firstDayOfWeek: 'Monday',
+    displayMode: 'default',
   });
 
   const emits = defineEmits<CaCalendarEmits>();
@@ -34,6 +35,7 @@
   const transitionName = ref<TransitionControl>('slide-next');
   const touchStartX = ref(0);
   const touchStartY = ref(0);
+  const isMobile = ref(false);
 
   const ns = useCSSNamespace('calendar');
 
@@ -59,6 +61,12 @@
   const year = computed(() => currentDate.value.getFullYear());
   const month = computed(() => currentDate.value.getMonth() + 1);
   const day = computed(() => currentDate.value.getDate());
+  const drawerPlacement = computed(() => (isMobile.value ? 'bottom' : 'right'));
+  const drawerCustomSize = computed(() => (isMobile.value ? 0.6 : 380));
+
+  const checkIsMobile = () => {
+    isMobile.value = window.innerWidth <= 768;
+  };
 
   const handlePrevMonth = () => {
     transitionName.value = 'slide-prev';
@@ -110,19 +118,11 @@
     }
   };
 
-  const handleTodoClick = (item: TodoItem, dayDate: Date) => {
+  const handleViewTodo = (dayDate: Date) => {
+    const todos = getTodoList(dayDate);
+    if (!todos || todos.length === 0) return;
     activeDate.value = dayDate;
-    activeTodoList.value = getTodoList(dayDate);
-    selectedTodoId.value = item.id;
-    // 打开右侧抽屉
-    drawerRef.value?.open();
-  };
-
-  const handleMoreTodoClick = (dayDate: Date) => {
-    activeDate.value = dayDate;
-    activeTodoList.value = getTodoList(dayDate);
-    selectedTodoId.value = null;
-    // 打开右侧抽屉
+    activeTodoList.value = todos;
     drawerRef.value?.open();
   };
 
@@ -132,6 +132,15 @@
     prevMonth: handlePrevMonth,
     nextMonth: handleNextMonth,
     goToday: handleGoToday,
+  });
+
+  onMounted(() => {
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkIsMobile);
   });
 </script>
 
@@ -175,12 +184,14 @@
                  :key="`${year}-${month}`">
           <template v-for="dayItem in daysList" :key="dayItem.date">
             <div :class="[
-              ns.e('day'),
-              ns.is('last', dayItem.isPrevMonth),
-              ns.is('cur', !dayItem.isPrevMonth && !dayItem.isNextMonth),
-              ns.is('next', dayItem.isNextMonth),
-              ns.is('weekend', dayItem.isWeekend),
-            ]">
+                    ns.e('day'),
+                    ns.is('last', dayItem.isPrevMonth),
+                    ns.is('cur', !dayItem.isPrevMonth && !dayItem.isNextMonth),
+                    ns.is('next', dayItem.isNextMonth),
+                    ns.is('weekend', dayItem.isWeekend),
+                    ns.is('mode-dot', props.displayMode === 'dot')
+                  ]"
+                 @click="handleViewTodo(dayItem.date)">
               <div :class="[
                 ns.e('label'),
                 ns.is('today', dayItem.isToday),
@@ -189,41 +200,38 @@
               </div>
               <CaCalendarTodo :items="getTodoList(dayItem.date)"
                               :max-visible="2"
-                              @click-item="(item) => handleTodoClick(item, dayItem.date)"
-                              @click-more="() => handleMoreTodoClick(dayItem.date)"
-              />
+                              :mode="props.displayMode" />
             </div>
           </template>
         </section>
       </Transition>
     </div>
-
-    <CaDrawer ref="drawerRef"
-              placement="right"
-              :custom-size="380">
-      <template #header>
-        <div class="todo-drawer-title" v-if="activeDate">
-          <h3>{{ activeDate.getFullYear() }}年{{ activeDate.getMonth() + 1 }}月{{ activeDate.getDate() }}日</h3>
-          <span class="todo-count">共 {{ activeTodoList.length }} 项待办</span>
+  </div>
+  <CaDrawer ref="drawerRef"
+            :placement="drawerPlacement"
+            :custom-size="drawerCustomSize">
+    <template #header>
+      <div class="todo-drawer-title" v-if="activeDate">
+        <h3>{{ activeDate.getFullYear() }}年{{ activeDate.getMonth() + 1 }}月{{ activeDate.getDate() }}日</h3>
+        <span class="todo-count">共 {{ activeTodoList.length }} 项待办</span>
+      </div>
+    </template>
+    <div class="todo-drawer-content">
+      <div
+        v-for="todo in activeTodoList"
+        :key="todo.id"
+        :class="['todo-detail-card', { 'is-selected': todo.id === selectedTodoId }]"
+        :style="{ borderLeftColor: todo.color || 'var(--color-accent, #3b82f6)' }"
+      >
+        <div v-if="todo.title" class="todo-detail-title">
+          {{ todo.title }}
         </div>
-      </template>
-      <div class="todo-drawer-content">
-        <div
-          v-for="todo in activeTodoList"
-          :key="todo.id"
-          :class="['todo-detail-card', { 'is-selected': todo.id === selectedTodoId }]"
-          :style="{ borderLeftColor: todo.color || 'var(--color-accent, #3b82f6)' }"
-        >
-          <div v-if="todo.title" class="todo-detail-title">
-            {{ todo.title }}
-          </div>
-          <div class="todo-detail-context">
-            {{ todo.context }}
-          </div>
+        <div class="todo-detail-context">
+          {{ todo.context }}
         </div>
       </div>
-    </CaDrawer>
-  </div>
+    </div>
+  </CaDrawer>
 </template>
 
 <style scoped>
@@ -309,6 +317,7 @@
   }
 
   .ca-calendar__day {
+    position: relative;
     width: 100%;
     min-width: 0;
     padding: 4px 8px;
@@ -317,9 +326,13 @@
     flex-direction: column;
     align-items: start;
     will-change: background-color, color;
-    transition: background-color 150ms ease,
-    color 150ms ease;
+    transition: background-color 150ms ease, color 150ms ease;
     overflow: hidden;
+  }
+
+  .ca-calendar__day.is-mode-dot {
+    justify-content: center;
+    align-items: center;
   }
 
   .ca-calendar__day:hover {
@@ -331,6 +344,11 @@
     width: 100%;
     font-size: 20px;
     cursor: pointer;
+  }
+
+  .ca-calendar__day.is-mode-dot .ca-calendar__label {
+    width: auto;
+    text-align: center;
   }
 
   .is-last,
@@ -376,11 +394,6 @@
     border-radius: 6px;
     border-left: 4px solid var(--color-accent, #3b82f6);
     transition: all 0.2s ease;
-  }
-
-  .todo-detail-card.is-selected {
-    box-shadow: 0 0 0 2px var(--color-accent, #3b82f6);
-    background-color: color-mix(in srgb, var(--color-accent, #3b82f6) 8%, transparent);
   }
 
   .todo-detail-title {
@@ -442,6 +455,11 @@
     .ca-calendar__header-cell {
       padding: 4px 0;
       font-weight: 500;
+    }
+
+    .ca-calendar__day {
+      aspect-ratio: 1/1;
+      padding: 2px 4px;
     }
   }
 </style>
