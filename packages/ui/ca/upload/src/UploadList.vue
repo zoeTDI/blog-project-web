@@ -81,10 +81,7 @@
   }
 
   .ca-upload-list--picture-card {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
+    display: contents;
   }
 
   .ca-upload-list--text,
