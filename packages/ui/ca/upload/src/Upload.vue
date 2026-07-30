@@ -8,6 +8,8 @@
   import { PlusIcon, ArrowUpTrayIcon } from '@heroicons/vue/24/outline';
   import CaUploadList from './UploadList.vue';
   import CaImageViewer from '../../image/src/Viewer.vue';
+  import CaButton from '../../button/src/Button.vue';
+  import { matchFileType } from '../helper.ts';
 
   defineOptions({
     name: 'CaUpload',
@@ -34,7 +36,7 @@
 
   const { uploadFile, abort } = useUploadRequest(props, emits);
 
-  const { fileList, addFiles, removeFile, triggerUpdate } = useUploader(
+  const { fileList, addFiles, removeFile, triggerUpdate, clearFiles } = useUploader(
     props,
     emits,
   );
@@ -104,37 +106,23 @@
     uploadFile(file, fileList.value, triggerUpdate);
   };
 
-  const isImageFile = (mimeType: string) => mimeType.startsWith('image/');
-
-  const isVideoFile = (mimeType: string) => mimeType.startsWith('video/');
-
-  const isExcelFile = (mimeType: string) => {
-    return (
-      mimeType.includes('csv') ||
-      mimeType.includes('spreadsheet') ||
-      mimeType.includes('excel') ||
-      mimeType.includes('vnd.ms-excel') ||
-      mimeType.includes('vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    );
-  };
-
   // 预览事件触发
   const handlePreview = (file: UploadFile) => {
     const mimeType = file.mimeType || file.raw?.type || '';
     const urlToPreview = file.url || (file.raw ? URL.createObjectURL(file.raw) : '');
     // 图片类型
-    if (isImageFile(mimeType)) {
+    if (matchFileType(file.name, mimeType) === 'image') {
       if (urlToPreview) {
         previewUrl.value = urlToPreview;
         viewerRef.value?.open();
       }
     }
     // 视频类型
-    else if (isVideoFile(mimeType)) {
+    else if (matchFileType(file.name, mimeType) === 'video') {
       // TODO: videoViewerRef.value?.open(urlToPreview)
     }
     // Excel / CSV 类型
-    else if (isExcelFile(mimeType)) {
+    else if (matchFileType(file.name, mimeType) === 'document') {
       // TODO: excelViewerRef.value?.open(file)
     }
     // 其他类型：根据需要继续扩展...
@@ -154,9 +142,7 @@
   defineExpose({
     submit,
     abort,
-    clearFiles: () => {
-      fileList.value.forEach((f) => removeFile(f));
-    },
+    clearFiles,
     fileList,
   });
 </script>
@@ -226,10 +212,12 @@
               将文件拖到此处，或<em>点击上传</em>
             </div>
           </div>
-          <button v-else type="button" :class="e('btn')" :disabled="disabled">
-            <CaIcon :icon="ArrowUpTrayIcon" size="16px" />
-            <span>选择文件</span>
-          </button>
+          <CaButton v-else
+                    :class="e('btn')"
+                    :disabled="disabled"
+                    :icon="ArrowUpTrayIcon">
+            选择文件
+          </CaButton>
         </slot>
       </div>
 
@@ -274,25 +262,6 @@
   .ca-upload.is-disabled .ca-upload__trigger {
     cursor: not-allowed;
     opacity: 0.6;
-  }
-
-  .ca-upload__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    font-size: 14px;
-    border-radius: 6px;
-    border: 1px solid var(--color-border, #d1d5db);
-    background-color: var(--color-bg-button, #ffffff);
-    color: var(--color-text-main, #374151);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .ca-upload__btn:hover:not(:disabled) {
-    border-color: var(--color-primary, #3b82f6);
-    color: var(--color-primary, #3b82f6);
   }
 
   .ca-upload__trigger.is-drag {
