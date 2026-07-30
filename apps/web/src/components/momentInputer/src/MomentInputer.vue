@@ -1,21 +1,22 @@
 <script setup lang="ts">
-  import { CaRow, CaCol, CaButton } from '@caldm/ui';
+  import { CaRow, CaCol, CaButton, CaMessage, CaUpload } from '@caldm/ui';
+  import type { UploadFile, CustomRequestOptions } from '@caldm/ui';
   import { ref } from 'vue';
-  import { CaImageUpload } from '@/components/ca/caImageUpload';
-  import { CaMessage } from '@caldm/ui';
   import {
     ArrowDownRightIcon,
     ArrowUpLeftIcon,
   } from '@heroicons/vue/24/outline';
+  import { type FileUploadVo, uploadFile } from '@/api/testApi.ts';
 
   const DEFAULT_TEXTAREA_HEIGHT = 130;
   const EXPANDED_TEXTAREA_HEIGHT = 500;
 
-  const uploadRef = ref<InstanceType<typeof CaImageUpload> | null>(null);
+  const uploadRef = ref<InstanceType<typeof CaUpload> | null>(null);
 
   const textareaHeight = ref(DEFAULT_TEXTAREA_HEIGHT);
   const isExpanded = ref(false);
-  const uploadedImages = ref<File[]>([]);
+  const isPublishing = ref(false);
+  const imageFiles = ref<UploadFile[]>([]);
   const textareaContent = ref<string>('');
 
   const toggleExpand = () => {
@@ -25,30 +26,101 @@
       : DEFAULT_TEXTAREA_HEIGHT;
   };
 
-  const handlePublish = async () => {
-    if (uploadedImages.value.length === 0) {
-      CaMessage.warn('请至少选择一张图片');
-      return;
-    }
-    const formData = new FormData();
-    uploadedImages.value.forEach((file) => {
-      formData.append('images', file);
-    });
+  const handleCustomUpload = async (options: CustomRequestOptions) => {
     try {
-      console.log('正在上传以下文件:', uploadedImages.value);
-
-      // 模拟异步请求延迟
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      CaMessage.success('发布成功！');
+      const res = await uploadFile(options.file);
+      options.onSuccess(res);
     } catch (error) {
-      CaMessage.error('上传失败，请重试');
+      options.onError(error instanceof Error ? error : new Error('上传失败'));
     }
   };
-  const handleClear = () => {
-    if (uploadRef.value) {
-      uploadRef.value.clearFiles();
+
+  const handlePublish = async () => {
+    if (!textareaContent.value.trim() && imageFiles.value.length === 0) {
+      CaMessage.warn('请输入内容或选择图片');
+      return;
     }
+
+    isPublishing.value = true;
+
+    try {
+      if (imageFiles.value.length > 0) {
+        await executeUploadProcess();
+      }
+
+      const uploadedResults = imageFiles.value
+        .filter((f) => f.status === 'success' && f.response)
+        .map((f) => f.response as FileUploadVo);
+
+      const payload = {
+        content: textareaContent.value,
+        images: uploadedResults.map((item) => item.path),
+      };
+
+      console.log('提交发布的数据:', payload);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      CaMessage.success('发布成功！');
+      textareaContent.value = '';
+      handleClear();
+    } catch (error) {
+      CaMessage.error('发布失败，请重试');
+    } finally {
+      isPublishing.value = false;
+    }
+  };
+
+  /**
+   * 辅助方法：手动触发上传并等待上传完成的 Promise
+   */
+  const executeUploadProcess = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      // 获取尚未上传成功的文件[cite: 4]
+      const pendingFiles = imageFiles.value.filter(
+        (f) => f.status !== 'success'
+      );
+
+      // 若所有文件均已上传成功，直接通过
+      if (pendingFiles.length === 0) {
+        resolve();
+        return;
+      }
+
+      // 驱动 CaUpload 逐个触发 customRequest[cite: 4, 6]
+      uploadRef.value?.submit();
+
+      // 简单的状态轮询：检测 imageFiles 中未完成的文件状态
+      const checkInterval = setInterval(() => {
+        const hasError = imageFiles.value.some((f) => f.status === 'error');
+        if (hasError) {
+          clearInterval(checkInterval);
+          reject(new Error('部分图片上传失败，请重试'));
+          return;
+        }
+
+        const allFinished = imageFiles.value.every(
+          (f) => f.status === 'success'
+        );
+        if (allFinished) {
+          clearInterval(checkInterval);
+          resolve();
+        }
+      }, 200);
+    });
+  };
+
+  /**
+   * 清空上传图片
+   */
+  const handleClear = () => {
+    uploadRef.value?.clearFiles();
+  };
+
+  /**
+   * 处理上传图片超过限制
+   */
+  const handleExceed = () => {
+    CaMessage.warn('上传图片数量超过限制');
   };
 </script>
 
@@ -71,10 +143,15 @@
         </div>
       </div>
       <div class="action-container">
-        <ca-button @click="handlePublish">立即发布</ca-button>
         <ca-button
-          v-show="uploadedImages.length > 0"
+          @click="handlePublish"
+          :loading="isPublishing"
+          >立即发布</ca-button
+        >
+        <ca-button
+          v-show="imageFiles.length > 0"
           @click="handleClear"
+          :disabled="isPublishing"
           >清除图片</ca-button
         >
       </div>
@@ -83,11 +160,17 @@
     <div class="image-container">
       <ca-row :gap="10">
         <ca-col :span="24">
-          <ca-image-upload
+          <CaUpload
+            multiple
+            drag
             ref="uploadRef"
-            v-model="uploadedImages"
-            mode="multiple"
-            :max-count="9" />
+            v-model="imageFiles"
+            list-type="picture-card"
+            accept="image/*"
+            :max-count="1"
+            :auto-upload="false"
+            :custom-request="handleCustomUpload"
+            @exceed="handleExceed" />
         </ca-col>
       </ca-row>
     </div>
