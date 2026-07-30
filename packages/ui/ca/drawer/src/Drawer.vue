@@ -158,7 +158,7 @@
 
   /* 容器: .ca-drawer__container */
   .ca-drawer__container {
-    position: absolute;
+    position: fixed;
     background-color: var(--color-container-bg);
     color: var(--color-text-primary);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -166,6 +166,10 @@
     z-index: 2001;
     overflow-y: auto;
     padding: 24px clamp(24px, 24px, 5%);
+  }
+
+  .ca-drawer__container.is-local {
+    position: absolute;
   }
 
   /* 头部包裹器: .ca-drawer__header-wrapper */
