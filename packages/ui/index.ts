@@ -9,6 +9,7 @@ export * from './ca/breadcrumb';
 export * from './ca/button';
 export * from './ca/calendar';
 export * from './ca/card';
+export * from './ca/cascader';
 export * from './ca/checkbox';
 export * from './ca/col';
 export * from './ca/drawer';
