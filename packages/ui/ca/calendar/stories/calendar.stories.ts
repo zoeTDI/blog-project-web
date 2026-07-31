@@ -1,8 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import { ref } from 'vue';
-import { CaCalendar, type PanelChangePayload } from '../index.ts';
-import type { CaCalendarExpose, TodoData, TodoItem } from '../index.ts';
+import { type Component, ref } from 'vue';
+import { CaCalendar, type CaCalendarData } from '../index.ts';
+import type { PanelChangePayload } from '../index.ts';
+import type { CaCalendarExpose } from '../index.ts';
 import { action } from 'storybook/actions';
+
+interface TodoItem {
+  id: number;
+  title?: string;
+  context: string;
+  color?: string;
+}
+
+type TodoData = CaCalendarData<TodoItem[]>;
 
 // Mock Data Generators & Helpers
 const MOCK_TASKS = [
@@ -34,7 +44,7 @@ function generateMockTodoData(
   for (let time = startTime; time <= endTime; time += 24 * 60 * 60 * 1000) {
     const date = new Date(time);
     const year = date.getFullYear();
-    const month = date.getMonth();
+    const month = date.getMonth() + 1;
     const day = date.getDate();
 
     const chance = density === 'dense' ? 0.95 : density === 'sparse' ? 0.3 : 0.7;
@@ -57,9 +67,7 @@ function generateMockTodoData(
         });
       }
 
-      if (!todoData[year]) todoData[year] = {};
-      if (!todoData[year][month]) todoData[year][month] = {};
-      todoData[year][month][day] = dayTasks;
+      todoData[`${year}-${String(month).padStart(2, '0')}-${day}`] = dayTasks;
     }
   }
 
@@ -101,7 +109,7 @@ const meta = {
       options: [undefined, 'default', 'dot'],
       description: '展示模式：`default`（展开展示）、`dot`（指示点）、`undefined`（自动响应式）',
     },
-    todoData: {
+    data: {
       control: 'object',
       description: '按 `[year][month][day]` 层级组织的待办数据',
     },
@@ -133,15 +141,25 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: {
-    todoData: generateMockTodoData(FIXED_DATE, 15, 15, 'normal'),
+    data: generateMockTodoData(FIXED_DATE, 15, 15, 'normal'),
+
   },
   render: (args) => ({
     components: { CaCalendar },
     setup() {
-      return { args };
+      const c = (val: any) => {
+        console.log('🚀 ~ c ~ val: ', val);
+      };
+      return { args, c };
     },
     template: `
-      <CaCalendar v-bind="args" />`,
+      <CaCalendar v-bind="args" @click="c">
+        <template v-for="(list, date) in args.data"
+                  :key="date"
+                  #[date]="{ dataItem }">
+          {{ dataItem || '不存在数据' }}
+        </template>
+      </CaCalendar>`,
   }),
 };
 
@@ -158,7 +176,7 @@ export const DotMode: Story = {
   },
   args: {
     displayMode: 'dot',
-    todoData: generateMockTodoData(FIXED_DATE, 15, 15, 'normal'),
+    data: generateMockTodoData(FIXED_DATE, 15, 15, 'normal'),
   },
   render: (args) => ({
     components: { CaCalendar },
@@ -183,7 +201,7 @@ export const DetailedMode: Story = {
   },
   args: {
     displayMode: 'default',
-    todoData: generateMockTodoData(FIXED_DATE, 10, 10, 'normal'),
+    data: generateMockTodoData(FIXED_DATE, 10, 10, 'normal'),
   },
   render: (args) => ({
     components: { CaCalendar },
@@ -207,7 +225,7 @@ export const DenseTodoData: Story = {
     },
   },
   args: {
-    todoData: generateMockTodoData(FIXED_DATE, 20, 20, 'dense'),
+    data: generateMockTodoData(FIXED_DATE, 20, 20, 'dense'),
   },
   render: (args) => ({
     components: { CaCalendar },
@@ -232,7 +250,7 @@ export const SundayFirstDay: Story = {
   },
   args: {
     firstDayOfWeek: 'Sunday',
-    todoData: generateMockTodoData(FIXED_DATE, 10, 10, 'normal'),
+    data: generateMockTodoData(FIXED_DATE, 10, 10, 'normal'),
   },
   render: (args) => ({
     components: { CaCalendar },
@@ -251,12 +269,12 @@ export const Empty: Story = {
   parameters: {
     docs: {
       description: {
-        story: '当 `todoData` 为 `null` 或空对象时的展示效果。',
+        story: '当 `data` 为 `null` 或空对象时的展示效果。',
       },
     },
   },
   args: {
-    todoData: {},
+    data: {},
   },
   render: (args) => ({
     components: { CaCalendar },
@@ -281,7 +299,7 @@ export const ExposedMethods: Story = {
     },
   },
   args: {
-    todoData: generateMockTodoData(FIXED_DATE, 15, 15, 'normal'),
+    data: generateMockTodoData(FIXED_DATE, 15, 15, 'normal'),
   },
   render: (args) => ({
     components: { CaCalendar },
@@ -332,7 +350,7 @@ export const LoadingState: Story = {
   },
   args: {
     loading: true,
-    todoData: generateMockTodoData(FIXED_DATE, 7, 7),
+    data: generateMockTodoData(FIXED_DATE, 7, 7),
   },
   render: (args) => ({
     components: { CaCalendar },
@@ -356,12 +374,12 @@ export const AsyncFetchAndCache: Story = {
       },
     },
   },
-  // 👈 注意：这里将原有的 args: { todoData: null } 移除或清空，防止干扰
-  render: () => ({
+  // 👈 注意：这里将原有的 args: { data: null } 移除或清空，防止干扰
+  render: (args) => ({
     components: { CaCalendar },
     setup() {
       const loading = ref(false);
-      const todoData = ref<TodoData>({});
+      const data = ref<TodoData>({});
       const loadedCache = new Set<string>();
 
       // 模拟后端 API
@@ -379,6 +397,7 @@ export const AsyncFetchAndCache: Story = {
         // 触发 Storybook Actions 面板记录
         action('panel-change')(payload);
 
+        // 注意：假设此时 payload.month 已经回归 1 ~ 12
         const cacheKey = `${payload.year}-${payload.month}`;
 
         // 1. 命中缓存判断
@@ -387,6 +406,8 @@ export const AsyncFetchAndCache: Story = {
             `%c[Cache Hit] 🎯 命中缓存: ${cacheKey}`,
             'color: #22c55e; font-weight: bold; font-size: 14px;',
           );
+          console.log("🚀 ~ handlePanelChange ~ data: ", data.value);
+          console.log("🚀 ~ handlePanelChange ~ loadedCache: ", loadedCache);
           return;
         }
 
@@ -396,16 +417,18 @@ export const AsyncFetchAndCache: Story = {
             `%c[Cache Miss] 🚀 发起网络请求: ${cacheKey}`,
             'color: #3b82f6; font-weight: bold; font-size: 14px;',
           );
+          console.log("🚀 ~ handlePanelChange ~ data: ", data.value);
+          console.log("🚀 ~ handlePanelChange ~ loadedCache: ", loadedCache);
           loading.value = true;
 
+          // mockFetchApi 返回新的平铺格式 Record<string, T>，例如 { "2026-07-01": [...], ... }
           const newData = await mockFetchApi(payload.year, payload.month);
 
-          // 填充数据到响应式缓存中
-          if (!todoData.value[payload.year]) {
-            todoData.value[payload.year] = {};
-          }
-          todoData.value[payload.year][payload.month] =
-            newData[payload.year]?.[payload.month] || {};
+          // 直接把请求到的新日期数据合并到平铺的对象中
+          data.value = {
+            ...data.value,
+            ...newData,
+          };
 
           // 标记该月份已缓存
           loadedCache.add(cacheKey);
@@ -415,9 +438,10 @@ export const AsyncFetchAndCache: Story = {
       };
 
       return {
+        args,
         startDay: FIXED_DATE,
         loading,
-        todoData,
+        data,
         handlePanelChange,
       };
     },
@@ -425,12 +449,14 @@ export const AsyncFetchAndCache: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <div style="font-size: 13px; color: #666; padding: 4px 8px; background: #f3f4f6; border-radius: 4px;">
-          💡 提示：按 <b>F12</b> 打开控制台。初次加载会提示 <b>[Cache Miss] 发起网络请求</b>；切换月份后再切换回来会提示 <b>[Cache Hit] 命中缓存</b>。
+          💡 提示：按 <b>F12</b> 打开控制台。初次加载会提示 <b>[Cache Miss] 发起网络请求</b>；切换月份后再切换回来会提示 <b>[Cache
+          Hit] 命中缓存</b>。
         </div>
         <CaCalendar
           :start-day="startDay"
           :loading="loading"
-          :todo-data="todoData"
+          :data="data"
+          :display-mode="args.displayMode"
           @panel-change="handlePanelChange"
         />
       </div>
