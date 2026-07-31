@@ -11,7 +11,7 @@ export type CaCalendarData<T> = Record<string, T>;
 export interface CalendarDay {
   date: Date;
   year: number;
-  /* 0 ~ 11 */
+  /* 1 ~ 12 */
   month: number;
   day: number;
   isCurrentMonth: boolean;
@@ -34,7 +34,8 @@ export interface CaCalendarProps<T> {
 
 export interface PanelChangePayload {
   year: number;
-  month: number; // 0 ~ 11
+  /* 1 ~ 12 */
+  month: number;
   startDate: Date; // 42格网格的第一天
   endDate: Date;   // 42格网格的最后一天
 }

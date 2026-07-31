@@ -27,7 +27,7 @@ export const useCalendar = <T = any>(
 
     const payload: PanelChangePayload = {
       year: currentDate.value.getFullYear(),
-      month: currentDate.value.getMonth(),
+      month: currentDate.value.getMonth() + 1,
       startDate: list[0].date,
       endDate: list[list.length - 1].date,
     };
@@ -96,7 +96,7 @@ export const useCalendar = <T = any>(
 
   const daysList = computed<CalendarDay[]>(() => {
     const year = currentDate.value.getFullYear();
-    const month = currentDate.value.getMonth();
+    const month = currentDate.value.getMonth() + 1;
 
     const firstDayOfWeek = props.firstDayOfWeek ? props.firstDayOfWeek : BASE_WEEK[0];
     const firstDayOfMonth = new Date(year, month, 1);
