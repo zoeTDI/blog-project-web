@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import Calendar from '@/components/calendar/src/Calendar.vue';
+  import { CaCalendar } from '@caldm/ui';
 </script>
 
 <template>
   <div class="stroke">
-    <calendar />
+    <CaCalendar />
   </div>
 </template>
 
