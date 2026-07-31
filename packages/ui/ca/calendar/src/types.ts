@@ -4,15 +4,9 @@ export type TransitionControl = 'slide-next' | 'slide-prev';
 
 export type DayOfWeek = keyof typeof DAY_OF_WEEK_MAP;
 
-export type TodoItem = { id: number; title?: string; context: string; color?: string };
 
-export type TodoData = {
-  [year: number]: {
-    [month: number]: {
-      [day: number]: TodoItem[];
-    };
-  };
-};
+// YYYY-MM-DD: T
+export type CaCalendarData<T> = Record<string, T>;
 
 export interface CalendarDay {
   date: Date;
@@ -30,10 +24,10 @@ export interface CalendarDay {
 
 export type DisplayMode = 'default' | 'dot';
 
-export interface CaCalendarProps {
+export interface CaCalendarProps<T> {
   startDay?: Date;
   firstDayOfWeek?: DayOfWeek;
-  todoData?: TodoData | null;
+  data?: CaCalendarData<T>;
   displayMode?: DisplayMode;
   loading?: boolean;
 }
@@ -45,10 +39,14 @@ export interface PanelChangePayload {
   endDate: Date;   // 42格网格的最后一天
 }
 
-export interface CaCalendarEmits {
+export interface CaCalendarEmits<T> {
   (e: 'update:startDay', val: Date): void;
+
   (e: 'change', val: Date): void;
+
   (e: 'panel-change', payload: PanelChangePayload): void;
+
+  (e: 'click', d: T | undefined): void;
 }
 
 export interface CaCalendarExpose {
@@ -59,8 +57,3 @@ export interface CaCalendarExpose {
   goToday: () => void;
 }
 
-export interface CaDayTodoProps {
-  items: TodoItem[];
-  maxVisible?: number;
-  mode?: DisplayMode;
-}

@@ -1,10 +1,10 @@
-import type { CaCalendarProps, CalendarDay, PanelChangePayload, TodoItem } from '../types.ts';
+import type { CaCalendarProps, CalendarDay, PanelChangePayload } from '../types.ts';
 import { computed, onMounted, ref, watch } from 'vue';
 import { BASE_WEEK, DAY_OF_WEEK_MAP } from '../constants.ts';
 import { isSameDay } from '@caldm/utils';
 
-export const useCalendar = (
-  props: CaCalendarProps,
+export const useCalendar = <T = any>(
+  props: CaCalendarProps<T>,
   emits?: Function,
 ) => {
   const today = new Date();
@@ -33,7 +33,6 @@ export const useCalendar = (
     };
     emits('panel-change', payload);
   };
-
 
   const updateDate = (newDate: Date) => {
     currentDate.value = newDate;
@@ -132,33 +131,15 @@ export const useCalendar = (
     return result;
   });
 
-  const hasTodo = (date: Date): boolean => {
-    if (!props.todoData) return false;
-    const y = date.getFullYear();
-    const m = date.getMonth();
-    const d = date.getDate();
-    return !!props.todoData[y]?.[m]?.[d]?.length;
-  };
-
-  const getTodoList = (date: Date): TodoItem[] => {
-    if (!props.todoData) return [];
-    const y = date.getFullYear();
-    const m = date.getMonth(); // 注意：0 ~ 11[cite: 7]
-    const d = date.getDate();
-    return props.todoData[y]?.[m]?.[d] || [];
-  };
-
   return {
     currentDate,
     weekDays,
     daysList,
-    hasTodo,
     prevYear,
     nextYear,
     prevMonth,
     nextMonth,
     goToday,
-    getTodoList,
     emitPanelChange,
   };
 };
