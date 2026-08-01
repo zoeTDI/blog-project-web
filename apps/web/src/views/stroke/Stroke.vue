@@ -28,14 +28,10 @@
   };
 
   const handleClick = (datestamp: string, d: TodoItem[] | undefined) => {
-    if (!d || !drawerRef.value) return;
+    if (!d?.length || !drawerRef.value) return;
     drawerTitle.value = datestamp;
     drawerData.value = d;
     drawerRef.value.open();
-  };
-
-  const getDatestamp = (d: Date): string => {
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
   const getYMstamp = (d: Date): string => {
