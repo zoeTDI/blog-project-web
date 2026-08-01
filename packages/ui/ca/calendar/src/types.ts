@@ -47,7 +47,7 @@ export interface CaCalendarEmits {
 
   (e: 'panel-change', payload: PanelChangePayload): void;
 
-  (e: 'click', d: any | undefined): void;
+  (e: 'click', datestamp: string, d: any | undefined): void;
 }
 
 export interface CaCalendarExpose {

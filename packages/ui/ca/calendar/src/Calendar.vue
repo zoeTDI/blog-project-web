@@ -67,7 +67,7 @@
   });
 
   const getDayData = (dayItem: CalendarDay): any | undefined => {
-    const datestamp = `${dayItem.year}-${String(dayItem.month).padStart(2, '0')}-${dayItem.day}`;
+    const datestamp = `${dayItem.year}-${String(dayItem.month).padStart(2, '0')}-${String(dayItem.day).padStart(2, '0')}`;
     return props.data?.[datestamp];
   };
 
@@ -126,7 +126,10 @@
   };
 
   const handleClick = (dayItem: CalendarDay) => {
-    emits('click', getDayData(dayItem));
+    emits(
+      'click',
+      `${dayItem.year}-${String(dayItem.month).padStart(2, '0')}-${String(dayItem.day).padStart(2, '0')}`,
+      getDayData(dayItem));
   };
 
   defineExpose<CaCalendarExpose>({
@@ -136,7 +139,7 @@
     nextMonth: handleNextMonth,
     goToday: handleGoToday,
   });
-  
+
   onMounted(() => {
     checkIsMobile();
     window.addEventListener('resize', checkIsMobile);
@@ -191,7 +194,7 @@
         <section :class="ns.e('container')"
                  :key="`${year}-${month}`">
           <div v-for="dayItem in daysList"
-               :key="`${dayItem.year}-${dayItem.month}-${dayItem.day}`"
+               :key="`${dayItem.year}-${dayItem.month}-${String(dayItem.day).padStart(2, '0')}`"
                :class="[
                   ns.e('day'),
                   ns.is('last', dayItem.isPrevMonth),
@@ -209,7 +212,7 @@
             </div>
             <slot v-if="effectiveDisplayMode === 'default'
                         && getDayData(dayItem)"
-                  :name="`${dayItem.year}-${String(dayItem.month).padStart(2, '0')}-${dayItem.day}`"
+                  :name="`${dayItem.year}-${String(dayItem.month).padStart(2, '0')}-${String(dayItem.day).padStart(2, '0')}`"
                   :dataItem="getDayData(dayItem)">
               <slot name="day-cell">
               </slot>
