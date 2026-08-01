@@ -3,8 +3,8 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { BASE_WEEK, DAY_OF_WEEK_MAP } from '../constants.ts';
 import { isSameDay } from '@caldm/utils';
 
-export const useCalendar = <T = any>(
-  props: CaCalendarProps<T>,
+export const useCalendar = (
+  props: CaCalendarProps,
   emits?: Function,
 ) => {
   const today = new Date();

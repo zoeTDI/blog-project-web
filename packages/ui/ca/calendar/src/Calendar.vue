@@ -47,7 +47,7 @@
     nextMonth,
     nextYear,
     goToday,
-  } = useCalendar<T>(props, emits);
+  } = useCalendar(props, emits);
 
   const classes = computed(() => {
     return [
@@ -66,7 +66,7 @@
     return isMobile.value ? 'dot' : 'default';
   });
 
-  const getDayData = (dayItem: CalendarDay): T | undefined => {
+  const getDayData = (dayItem: CalendarDay): any | undefined => {
     const datestamp = `${dayItem.year}-${String(dayItem.month).padStart(2, '0')}-${dayItem.day}`;
     return props.data?.[datestamp];
   };
@@ -136,9 +136,7 @@
     nextMonth: handleNextMonth,
     goToday: handleGoToday,
   });
-
-  defineSlots<CaCalendarSlots>()
-
+  
   onMounted(() => {
     checkIsMobile();
     window.addEventListener('resize', checkIsMobile);
