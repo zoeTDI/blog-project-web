@@ -34,8 +34,12 @@
     drawerRef.value.open();
   };
 
-  const getDatestamp = (d: Date) => {
+  const getDatestamp = (d: Date): string => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  const getYMstamp = (d: Date): string => {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   };
 
   const handleChange = async (curDate: Date) => {
@@ -50,7 +54,7 @@
           month: curDate.getMonth() + 1,
         });
         todoData.value = { ...todoData.value, ...curMonthData };
-        cachedKey.add(curKey);
+        cachedKey.add(getYMstamp(curDate));
       } else {
         console.log('命中缓存：', curKey);
       }
@@ -64,7 +68,7 @@
           month: prevDate.getMonth() + 1,
         });
         todoData.value = { ...todoData.value, ...prevMonthData };
-        cachedKey.add(prevKey);
+        cachedKey.add(getYMstamp(prevDate));
       } else {
         console.log('命中缓存：', prevKey);
       }
@@ -78,7 +82,7 @@
           month: nextDate.getMonth() + 1,
         });
         todoData.value = { ...todoData.value, ...nextMonthData };
-        cachedKey.add(nextKey);
+        cachedKey.add(getYMstamp(nextDate));
       } else {
         console.log('命中缓存：', nextKey);
       }
