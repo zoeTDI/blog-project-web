@@ -1,5 +1,12 @@
 <script setup lang="ts">
-  import type { CaHeatmapProps, HeatmapValue } from './types.ts';
+  import type {
+    CaHeatmapProps,
+    ColumnDateRange, GridConfigResult,
+    HeatmapData,
+    HeatmapRect,
+    HeatmapValue, LabelItem, LabelResult,
+    LayoutMetrics,
+  } from './types.ts';
   import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
   import { useCSSNamespace } from '@caldm/hook';
   import CaHeatmapTip from './HeatmapTip.vue';
@@ -43,122 +50,13 @@
     return (dayOfWeek - props.firstDayOfWeek + 7) % 7;
   });
 
-  const gridConfig = computed(() => {
-    const gapRatio = 0.15;
-    const rows = 7;
-
-    const size = lineYCoordinate.value / (rows + rows * gapRatio);
-    const gap = size * gapRatio;
-
-    const cols = Math.floor((svgWidth.value + gap) / (size + gap));
-
-    if (cols < 1) {
-      return {
-        rects: [],
-        labels: [],
-        size: 0,
-        gap: 0,
-        earliestDate: new Date(),
-      };
-    }
-
-    const now = new Date();
-    const todayStart = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-    ).getTime();
-    const lastColFirstDayTime =
-      todayStart - todayGridIndex.value * 24 * 60 * 60 * 1000;
-
-    const rects: { id: string; x: number; y: number; size: number; data: HeatmapValue }[] = [];
-    let labels = [];
-    let lastDisplayedMonthKey = '';
-
-    const activeData = props.data;
-
-    for (let c = 0; c < cols; c++) {
-      const weeksAgo = cols - 1 - c;
-      const colFirstDay = new Date(
-        lastColFirstDayTime - weeksAgo * 7 * 24 * 60 * 60 * 1000,
-      );
-      const colLastDay = new Date(
-        colFirstDay.getTime() + 6 * 24 * 60 * 60 * 1000,
-      );
-
-      // 构造这一列的网格方格
-      for (let r = 0; r < rows; r++) {
-        const isLastColumn = c === cols - 1;
-        if (isLastColumn && r > todayGridIndex.value) {
-          continue;
-        }
-
-        const currentRectDate = new Date(
-          colFirstDay.getTime() + r * 24 * 60 * 60 * 1000,
-        );
-        const dateStr = formatDateString(currentRectDate);
-
-        const cellData: HeatmapValue = activeData[dateStr];
-
-        rects.push({
-          id: `${c}-${r}`,
-          x: c * (size + gap),
-          y: r * (size + gap),
-          size: size,
-          data: cellData,
-        });
-      }
-
-      // 计算底部的文本标签
-      let labelText = '';
-      const colXCenter = c * (size + gap) + size / 2;
-      const startYear = colFirstDay.getFullYear();
-      const startMonth = colFirstDay.getMonth() + 1;
-      const startLabelMonth = String(startMonth).padStart(2, '0');
-      const endYear = colLastDay.getFullYear();
-      const endMonth = colLastDay.getMonth() + 1;
-
-      if (startYear !== endYear) {
-        const endLabelMonth = String(endMonth).padStart(2, '0');
-        labelText = `${startYear}/${startLabelMonth}-${endYear}/${endLabelMonth}`;
-        lastDisplayedMonthKey = `${endYear}-${endMonth}`;
-      } else if (startMonth !== endMonth) {
-        const startDate = String(colFirstDay.getDate()).padStart(2, '0');
-        const endDate = String(colLastDay.getDate()).padStart(2, '0');
-        const endLabelMonth = String(endMonth).padStart(2, '0');
-        labelText = `${startLabelMonth}/${startDate}-${endLabelMonth}/${endDate}`;
-        lastDisplayedMonthKey = `${endYear}-${endMonth}`;
-      } else {
-        const currentMonthKey = `${startYear}-${startMonth}`;
-        if (currentMonthKey !== lastDisplayedMonthKey) {
-          labelText = `${startMonth}月`;
-          lastDisplayedMonthKey = currentMonthKey;
-        }
-      }
-
-      if (labelText) {
-        labels.push({
-          id: `label-${c}`,
-          text: labelText,
-          x: colXCenter,
-          y: lineYCoordinate.value + 16, // 日期文本纵向位置微调
-        });
-      }
-    }
-
-    // 删除间隔过近的label，防止文字重叠
-    const minLabelSpacing = (size + gap) * 1.8;
-    labels = filterCloseLabels(labels, minLabelSpacing);
-    return {
-      rects,
-      labels,
-      size,
-      gap,
-      earliestDate: new Date(
-        lastColFirstDayTime - (cols - 1) * 7 * 24 * 60 * 60 * 1000,
-      ),
-    };
-  });
+  const gridConfig = computed(() => computeGridConfig(
+    svgWidth.value,
+    lineYCoordinate.value,
+    todayGridIndex.value,
+    props.data,
+    props.firstDayOfWeek,
+  ));
 
   const legendConfig = computed(() => {
     const boxSize = 11; // 说明方块稍微小一点，显得精致
@@ -180,6 +78,180 @@
     };
   });
 
+  const calculateLayoutMetrics = (
+    svgWidth: number,
+    lineY: number,
+    rows: number = 7,
+    gapRatio: number = 0.15,
+  ): LayoutMetrics => {
+    const size = lineY / (rows + rows * gapRatio);
+    const gap = size * gapRatio;
+    const cols = Math.floor((svgWidth + gap) / (size + gap));
+    return { size, gap, cols: Math.max(cols, 0) };
+  };
+
+  const getDateRangeForColumn = (
+    colIndex: number,
+    totalCols: number,
+    lastColFirstDay: Date,
+  ): ColumnDateRange => {
+    const weeksAgo = totalCols - 1 - colIndex;
+    const colFirstDay = new Date(lastColFirstDay.getTime() - weeksAgo * 7 * 24 * 60 * 60 * 1000);
+    const colLastDay = new Date(colFirstDay.getTime() + 6 * 24 * 60 * 60 * 1000);
+    return {
+      colFirstDay,
+      colLastDay,
+      isLastCol: colIndex === totalCols - 1,
+    };
+  };
+
+  const buildRectsForColumn = (
+    colFirstDay: Date,
+    colIndex: number,
+    size: number,
+    gap: number,
+    todayGridIndex: number,
+    isLastCol: boolean,
+    data: HeatmapData,
+  ): HeatmapRect[] => {
+    const rects: HeatmapRect[] = [];
+    for (let r = 0; r < 7; r++) {
+      // 跳过未来的格子（最后一列中超过 todayGridIndex 的行）
+      if (isLastCol && r > todayGridIndex) continue;
+
+      const currentDate = new Date(colFirstDay.getTime() + r * 24 * 60 * 60 * 1000);
+      const dateStr = formatDateString(currentDate);
+      const cellData = data[dateStr];
+
+      rects.push({
+        id: `${colIndex}-${r}`,
+        x: colIndex * (size + gap),
+        y: r * (size + gap),
+        size: size,
+        data: cellData,
+      });
+    }
+    return rects;
+  };
+
+  const buildLabelForColumn = (
+    colFirstDay: Date,
+    colLastDay: Date,
+    lastDisplayedMonthKey: string | null,
+  ): LabelResult | null => {
+    const startYear = colFirstDay.getFullYear();
+    const startMonth = colFirstDay.getMonth() + 1;
+    const startDay = colFirstDay.getDate();
+    const endYear = colLastDay.getFullYear();
+    const endMonth = colLastDay.getMonth() + 1;
+    const endDay = colLastDay.getDate();
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    let text = '';
+    let monthKey = '';
+
+    if (startYear !== endYear) {
+      text = `${startYear}/${pad(startMonth)}-${endYear}/${pad(endMonth)}`;
+      monthKey = `${endYear}-${endMonth}`;
+    } else if (startMonth !== endMonth) {
+      text = `${pad(startMonth)}/${pad(startDay)}-${pad(endMonth)}/${pad(endDay)}`;
+      monthKey = `${endYear}-${endMonth}`;
+    } else {
+      monthKey = `${startYear}-${startMonth}`;
+      if (monthKey === lastDisplayedMonthKey) return null;
+      text = `${startMonth}月`;
+    }
+
+    return { text, monthKey };
+  };
+
+  const filterOverlappingLabels = (labels: LabelItem[], minSpacing: number): LabelItem[] => {
+    if (labels.length <= 1) return labels;
+    const result: LabelItem[] = [];
+    for (let i = 0; i < labels.length; i++) {
+      if (i === 0 || labels[i].x - labels[i - 1].x >= minSpacing) {
+        result.push(labels[i]);
+      }
+    }
+    return result;
+  };
+
+  const computeGridConfig = (
+    svgWidth: number,
+    lineY: number,
+    todayGridIndex: number,
+    data: HeatmapData,
+    // 可选参数，用于计算 lastColFirstDay
+    firstDayOfWeek: number = 1,
+  ): GridConfigResult => {
+    // 1. 计算布局指标
+    const { size, gap, cols } = calculateLayoutMetrics(svgWidth, lineY);
+    if (cols < 1) {
+      return {
+        rects: [],
+        labels: [],
+        size: 0,
+        gap: 0,
+        earliestDate: new Date(),
+      };
+    }
+
+    // 2. 基准日期：今天所在列的周日（以 firstDayOfWeek 为基准）
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const lastColFirstDay = getWeekStart(todayStart, firstDayOfWeek);
+
+    // 3. 遍历所有列生成 rects 和 labels
+    const allRects: HeatmapRect[] = [];
+    const allLabels: LabelItem[] = [];
+    let lastMonthKey: string | null = null;
+
+    for (let c = 0; c < cols; c++) {
+      const { colFirstDay, colLastDay, isLastCol } = getDateRangeForColumn(c, cols, lastColFirstDay);
+
+      // 生成该列的矩形
+      const rects = buildRectsForColumn(
+        colFirstDay,
+        c,
+        size,
+        gap,
+        todayGridIndex,
+        isLastCol,
+        data,
+      );
+      allRects.push(...rects);
+
+      // 生成该列的标签
+      const labelResult = buildLabelForColumn(colFirstDay, colLastDay, lastMonthKey);
+      if (labelResult) {
+        const x = c * (size + gap) + size / 2;
+        allLabels.push({
+          id: `label-${c}`,
+          text: labelResult.text,
+          x,
+          y: lineY + 16,
+        });
+        lastMonthKey = labelResult.monthKey;
+      }
+    }
+
+    // 4. 过滤重叠标签
+    const minSpacing = (size + gap) * 1.8;
+    const filteredLabels = filterOverlappingLabels(allLabels, minSpacing);
+
+    // 5. 计算最早日期
+    const earliestDate = new Date(lastColFirstDay.getTime() - (cols - 1) * 7 * 24 * 60 * 60 * 1000);
+
+    return {
+      rects: allRects,
+      labels: filteredLabels,
+      size,
+      gap,
+      earliestDate,
+    };
+  };
+
   function filterCloseLabels(
     labels: { id: string; text: string; x: number; y: number }[],
     minSpacing: number,
@@ -197,6 +269,15 @@
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
+  };
+
+  const getWeekStart = (date: Date, firstDayOfWeek: number): Date => {
+    const day = date.getDay();
+    const diff = (day - firstDayOfWeek + 7) % 7;
+    const result = new Date(date);
+    result.setDate(result.getDate() - diff);
+    result.setHours(0, 0, 0, 0);
+    return result;
   };
 
   const getLevelByCount = (count: number): number => {
