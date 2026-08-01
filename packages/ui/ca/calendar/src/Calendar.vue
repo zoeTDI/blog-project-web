@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T = any">
+<script setup lang="ts">
   import { useCSSNamespace } from '@caldm/hook';
   import { computed, onMounted, onUnmounted, ref } from 'vue';
   import { useCalendar } from './composables/useCalendar.ts';
@@ -22,14 +22,14 @@
     name: 'CaCalendar',
   });
 
-  const props = withDefaults(defineProps<CaCalendarProps<T>>(), {
+  const props = withDefaults(defineProps<CaCalendarProps>(), {
     startDay: () => new Date(),
     firstDayOfWeek: 'Monday',
     displayMode: undefined,
     data: () => ({}),
   });
 
-  const emits = defineEmits<CaCalendarEmits<T>>();
+  const emits = defineEmits<CaCalendarEmits>();
 
   const transitionName = ref<TransitionControl>('slide-next');
   const touchStartX = ref(0);
@@ -136,6 +136,8 @@
     nextMonth: handleNextMonth,
     goToday: handleGoToday,
   });
+
+  defineSlots<CaCalendarSlots>()
 
   onMounted(() => {
     checkIsMobile();

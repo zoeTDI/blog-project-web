@@ -6,7 +6,7 @@ export type DayOfWeek = keyof typeof DAY_OF_WEEK_MAP;
 
 
 // YYYY-MM-DD: T
-export type CaCalendarData<T> = Record<string, T>;
+export type CaCalendarData = Record<string, any>;
 
 export interface CalendarDay {
   date: Date;
@@ -24,10 +24,10 @@ export interface CalendarDay {
 
 export type DisplayMode = 'default' | 'dot';
 
-export interface CaCalendarProps<T> {
+export interface CaCalendarProps {
   startDay?: Date;
   firstDayOfWeek?: DayOfWeek;
-  data?: CaCalendarData<T>;
+  data?: CaCalendarData;
   displayMode?: DisplayMode;
   loading?: boolean;
 }
@@ -40,14 +40,14 @@ export interface PanelChangePayload {
   endDate: Date;   // 42格网格的最后一天
 }
 
-export interface CaCalendarEmits<T> {
+export interface CaCalendarEmits {
   (e: 'update:startDay', val: Date): void;
 
   (e: 'change', val: Date): void;
 
   (e: 'panel-change', payload: PanelChangePayload): void;
 
-  (e: 'click', d: T | undefined): void;
+  (e: 'click', d: any | undefined): void;
 }
 
 export interface CaCalendarExpose {
