@@ -1,17 +1,22 @@
 <script setup lang="ts">
+  import ChinaCityTree_zh_cn from '@/assets/data/ChinaCityTree_zh-cn.json';
+  import ChinaCityTree_en_us from '@/assets/data/ChinaCityTree_en-us.json';
   import {
     MapContainer,
     type MarkedCityGroup,
   } from '@/components/mapComponent';
-  import { CaCascader } from '@/components/ca/caCascader';
   import { computed, ref } from 'vue';
-  import { CaButton, CaCard } from '@caldm/ui';
+  import { CaButton, CaCard, CaCascader } from '@caldm/ui';
   import { MarkdownRender } from '@/components/markdownRender';
   import { useI18n } from 'vue-i18n';
 
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const fromCity = ref<number[]>([]);
   const toCity = ref<number[]>([]);
+  const noteTitle = ref<string>('');
+  const noteText = ref<string>('');
+  const noteStatus = ref<'code' | 'preview'>('code');
+
   const toPinnedGroup = computed<MarkedCityGroup[]>(() => {
     const group: MarkedCityGroup = { id: 0, nodes: {} };
     if (fromCity.value.length > 0) {
@@ -24,9 +29,15 @@
     }
     return [group];
   });
-  const noteTitle = ref<string>('');
-  const noteText = ref<string>('');
-  const noteStatus = ref<'code' | 'preview'>('code');
+
+  const cityData = computed(() => {
+    if (locale.value === 'zh-CN') {
+      return ChinaCityTree_zh_cn;
+    } else if (locale.value === 'en-US') {
+      return ChinaCityTree_en_us;
+    }
+    return ChinaCityTree_zh_cn;
+  });
 </script>
 
 <template>
@@ -45,15 +56,15 @@
         <section class="city">
           <div class="from">
             <span class="label">{{ t('travelPost.fromCity') }}</span>
-            <ca-cascader
-              type="city"
-              v-model="fromCity" />
+            <CaCascader
+              v-model="fromCity"
+              :options="cityData" />
           </div>
           <div class="to">
             <span class="label">{{ t('travelPost.toCity') }}</span>
-            <ca-cascader
-              type="city"
-              v-model="toCity" />
+            <CaCascader
+              v-model="toCity"
+              :options="cityData" />
           </div>
         </section>
         <section class="note-title">
