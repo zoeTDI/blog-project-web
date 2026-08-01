@@ -296,8 +296,16 @@
   const ns = useCSSNamespace('stroke');
 
   const todoData = ref<Record<string, TodoItem[]>>({});
-
+  const drawerTitle = ref<string>('');
+  const drawerData = ref<TodoItem[]>([]);
   const drawerRef = ref<CaDrawerExpose | null>(null);
+
+  const handleClick = (datestamp: string, d: TodoItem[] | undefined) => {
+    if (!d || !drawerRef.value) return;
+    drawerTitle.value = datestamp;
+    drawerData.value = d;
+    drawerRef.value.open();
+  };
 
   onMounted(async () => {
     todoData.value = await mockApiFetch(mockData, 1000);
@@ -306,7 +314,9 @@
 
 <template>
   <div :class="ns.b()">
-    <CaCalendar :data="todoData">
+    <CaCalendar
+      :data="todoData"
+      @click="handleClick">
       <template
         v-for="(dataContext, datestamp) in todoData"
         :key="datestamp"
@@ -316,7 +326,7 @@
           v-if="!!dataItem">
           <div
             :class="ns.e('todo-item')"
-            v-for="item in dataItem"
+            v-for="item in dataItem.slice(0, 3)"
             :key="item.id"
             :style="{ backgroundColor: item?.color ? item.color : 'unset' }">
             <span
@@ -326,10 +336,40 @@
             >
             <span :class="ns.e('todo-context')">{{ item.context }}</span>
           </div>
+          <div
+            :class="ns.e('more')"
+            v-if="dataItem.length - 2 > 0">
+            更多+ {{ dataItem.length - 2 }}
+          </div>
         </div>
       </template>
     </CaCalendar>
-    <CaDrawer ref="drawerRef" />
+    <CaDrawer
+      ref="drawerRef"
+      :custom-size="380"
+      :placement="'right'">
+      <template #header>
+        <div :class="ns.e('drawer-title')">
+          {{ drawerTitle }}
+        </div>
+      </template>
+      <template #default>
+        <div
+          :class="ns.e('todo-detail-item')"
+          v-for="item in drawerData"
+          :key="item.id"
+          :style="{ backgroundColor: item?.color ? item.color : 'unset' }">
+          <div
+            :class="ns.e('todo-detail-item-title')"
+            v-if="item?.title">
+            {{ item.title }}
+          </div>
+          <div :class="ns.e('todo-detail-item-context')">
+            {{ item.context }}
+          </div>
+        </div>
+      </template>
+    </CaDrawer>
   </div>
 </template>
 
@@ -343,12 +383,14 @@
   .ca-stroke__todo-info-box {
     padding: 8px;
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     row-gap: 4px;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
+    cursor: pointer;
   }
 
   .ca-stroke__todo-item {
@@ -369,5 +411,47 @@
 
   .ca-stroke__todo-context {
     color: var(--color-text-primary);
+  }
+
+  .ca-stroke__more {
+    font-size: 14px;
+    color: color-mix(in srgb, var(--color-text-primary) 80%, transparent);
+    cursor: pointer;
+  }
+
+  .ca-stroke__drawer-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #1a1a1a;
+    letter-spacing: 0.5px;
+  }
+
+  .ca-stroke__todo-detail-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 8px;
+    border-bottom: 1px solid #f5f5f5;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+
+  .ca-stroke__todo-detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .ca-stroke__todo-detail-item-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+
+  .ca-stroke__todo-detail-item-context {
+    font-size: 14px;
+    font-weight: 400;
+    color: #4a4a4a;
+    line-height: 1.6;
   }
 </style>
