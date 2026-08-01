@@ -38,6 +38,8 @@ export interface GridConfigResult {
   earliestDate: Date;
 }
 
+export type WeekdayFormat = 'full' | 'short' | 'numeric' | 'chinese';
+
 export interface HeatmapValue {
   id: number;
   date: string; // 日期字符串，格式统一为 "YYYY-MM-DD"
@@ -48,6 +50,7 @@ export interface HeatmapValue {
 export type HeatmapData = Record<string, HeatmapValue>;
 
 export interface CaHeatmapProps {
+  year?: number;
   data?: HeatmapData;
   rate?: number | null;
   height?: number;
@@ -56,6 +59,13 @@ export interface CaHeatmapProps {
   firstDayOfWeek?: number;
   levelBy?: [number, number, number, number];
   loading?: boolean;
+  weekdayFormat?: WeekdayFormat;
+  /* key: 1~7 (1=周一) */
+  customWeekdayLabels?: Record<number, string>;
+}
+
+export interface CaHeatmapEmits {
+  (e: 'update:year', year: number): void;
 }
 
 export interface CaHeatmapTipProps {
