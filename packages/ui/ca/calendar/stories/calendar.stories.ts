@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import { type Component, ref } from 'vue';
-import { CaCalendar, type CaCalendarData } from '../index.ts';
-import type { PanelChangePayload } from '../index.ts';
+import { ref } from 'vue';
+import { CaCalendar } from '../index.ts';
 import type { CaCalendarExpose } from '../index.ts';
 import { action } from 'storybook/actions';
 
@@ -12,7 +11,7 @@ interface TodoItem {
   color?: string;
 }
 
-type TodoData = CaCalendarData<TodoItem[]>;
+type TodoData = Record<string, TodoItem[]>
 
 // Mock Data Generators & Helpers
 const MOCK_TASKS = [
@@ -116,10 +115,6 @@ const meta = {
     'onUpdate:startDay': {
       action: 'update:startDay',
       description: '当日期改变时触发（支持 v-model:startDay）',
-    },
-    'onPanel-change': {
-      action: 'panel-change',
-      description: '视图/月份切换时触发，包含当前网格起止日期与年月',
     },
     onChange: {
       action: 'change',
@@ -359,107 +354,5 @@ export const LoadingState: Story = {
     },
     template: `
       <CaCalendar v-bind="args" />`,
-  }),
-};
-
-/**
- * 演示：模拟真正的“按需加载 + 内存缓存”业务场景
- * 点击翻页或跳转时触发 panel-change 事件，延迟模拟 API 请求，展示 Loading 遮罩并回填数据。
- */
-export const AsyncFetchAndCache: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: '完整模拟真实业务场景：监听 `@panel-change` 事件，自动命中/不命中缓存。未命中时开启 `loading` 遮罩并模拟异步 API 请求。',
-      },
-    },
-  },
-  // 👈 注意：这里将原有的 args: { data: null } 移除或清空，防止干扰
-  render: (args) => ({
-    components: { CaCalendar },
-    setup() {
-      const loading = ref(false);
-      const data = ref<TodoData>({});
-      const loadedCache = new Set<string>();
-
-      // 模拟后端 API
-      const mockFetchApi = (year: number, month: number): Promise<TodoData> => {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            // 生成该月份的随机 Todo 数据
-            const result = generateMockTodoData(new Date(year, month, 15), 15, 15);
-            resolve(result);
-          }, 800); // 模拟 800ms 网络延迟
-        });
-      };
-
-      const handlePanelChange = async (payload: PanelChangePayload) => {
-        // 触发 Storybook Actions 面板记录
-        action('panel-change')(payload);
-
-        // 注意：假设此时 payload.month 已经回归 1 ~ 12
-        const cacheKey = `${payload.year}-${payload.month}`;
-
-        // 1. 命中缓存判断
-        if (loadedCache.has(cacheKey)) {
-          console.info(
-            `%c[Cache Hit] 🎯 命中缓存: ${cacheKey}`,
-            'color: #22c55e; font-weight: bold; font-size: 14px;',
-          );
-          console.log("🚀 ~ handlePanelChange ~ data: ", data.value);
-          console.log("🚀 ~ handlePanelChange ~ loadedCache: ", loadedCache);
-          return;
-        }
-
-        // 2. 未命中缓存：发起网络请求
-        try {
-          console.info(
-            `%c[Cache Miss] 🚀 发起网络请求: ${cacheKey}`,
-            'color: #3b82f6; font-weight: bold; font-size: 14px;',
-          );
-          console.log("🚀 ~ handlePanelChange ~ data: ", data.value);
-          console.log("🚀 ~ handlePanelChange ~ loadedCache: ", loadedCache);
-          loading.value = true;
-
-          // mockFetchApi 返回新的平铺格式 Record<string, T>，例如 { "2026-07-01": [...], ... }
-          const newData = await mockFetchApi(payload.year, payload.month);
-
-          // 直接把请求到的新日期数据合并到平铺的对象中
-          data.value = {
-            ...data.value,
-            ...newData,
-          };
-
-          // 标记该月份已缓存
-          loadedCache.add(cacheKey);
-        } finally {
-          loading.value = false;
-        }
-      };
-
-      return {
-        args,
-        startDay: FIXED_DATE,
-        loading,
-        data,
-        handlePanelChange,
-      };
-    },
-    // 👈 关键点：不再使用 v-bind="args"，手动绑定需要的属性和事件，避免 args 里的 null 或 mock action 强行覆写
-    template: `
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div style="font-size: 13px; color: #666; padding: 4px 8px; background: #f3f4f6; border-radius: 4px;">
-          💡 提示：按 <b>F12</b> 打开控制台。初次加载会提示 <b>[Cache Miss] 发起网络请求</b>；切换月份后再切换回来会提示 <b>[Cache
-          Hit] 命中缓存</b>。
-        </div>
-        <CaCalendar
-          :start-day="startDay"
-          :loading="loading"
-          :data="data"
-          :display-mode="args.displayMode"
-          @panel-change="handlePanelChange"
-        />
-      </div>
-    `,
   }),
 };
