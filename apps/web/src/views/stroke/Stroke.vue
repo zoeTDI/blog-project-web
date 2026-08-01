@@ -46,45 +46,63 @@
     try {
       isLoading.value = true;
 
-      const curKey = getDatestamp(curDate);
+      // 预计算各月份日期
+      const curKey = getYMstamp(curDate);
+      const prevDate = new Date(curDate);
+      prevDate.setMonth(prevDate.getMonth() - 1);
+      const nextDate = new Date(curDate);
+      nextDate.setMonth(nextDate.getMonth() + 1);
+      const prevKey = getYMstamp(prevDate);
+      const nextKey = getYMstamp(nextDate);
+
+      // 收集需要请求的月份信息（保持原有缓存判断逻辑）
+      const monthsToFetch: { year: number; month: number; key: string }[] = [];
+
       if (!cachedKey.has(curKey)) {
         console.log('发起请求：', curKey);
-        const curMonthData = await fetchTodoData({
+        monthsToFetch.push({
           year: curDate.getFullYear(),
           month: curDate.getMonth() + 1,
+          key: curKey,
         });
-        todoData.value = { ...todoData.value, ...curMonthData };
-        cachedKey.add(getYMstamp(curDate));
       } else {
         console.log('命中缓存：', curKey);
       }
-      const prevDate = new Date(curDate);
-      prevDate.setMonth(prevDate.getMonth() - 1);
-      const prevKey = getDatestamp(prevDate);
+
       if (!cachedKey.has(prevKey)) {
         console.log('发起请求：', prevKey);
-        const prevMonthData = await fetchTodoData({
+        monthsToFetch.push({
           year: prevDate.getFullYear(),
           month: prevDate.getMonth() + 1,
+          key: prevKey,
         });
-        todoData.value = { ...todoData.value, ...prevMonthData };
-        cachedKey.add(getYMstamp(prevDate));
       } else {
         console.log('命中缓存：', prevKey);
       }
-      const nextDate = new Date(curDate);
-      nextDate.setMonth(nextDate.getMonth() + 1);
-      const nextKey = getDatestamp(nextDate);
+
       if (!cachedKey.has(nextKey)) {
         console.log('发起请求：', nextKey);
-        const nextMonthData = await fetchTodoData({
+        monthsToFetch.push({
           year: nextDate.getFullYear(),
           month: nextDate.getMonth() + 1,
+          key: nextKey,
         });
-        todoData.value = { ...todoData.value, ...nextMonthData };
-        cachedKey.add(getYMstamp(nextDate));
       } else {
         console.log('命中缓存：', nextKey);
+      }
+
+      // 并发请求所有未缓存的月份
+      if (monthsToFetch.length > 0) {
+        const promises = monthsToFetch.map(({ year, month }) =>
+          fetchTodoData({ year, month })
+        );
+        const results = await Promise.all(promises);
+        // 统一合并数据并更新缓存
+        results.forEach((data, index) => {
+          const key = monthsToFetch[index].key;
+          todoData.value = { ...todoData.value, ...data };
+          cachedKey.add(key);
+        });
       }
     } catch (e) {
       console.log('🚀 ~ handleChange ~ e: ', e);
