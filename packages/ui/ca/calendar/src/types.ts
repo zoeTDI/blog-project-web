@@ -32,20 +32,10 @@ export interface CaCalendarProps {
   loading?: boolean;
 }
 
-export interface PanelChangePayload {
-  year: number;
-  /* 1 ~ 12 */
-  month: number;
-  startDate: Date; // 42格网格的第一天
-  endDate: Date;   // 42格网格的最后一天
-}
-
 export interface CaCalendarEmits {
   (e: 'update:startDay', val: Date): void;
 
   (e: 'change', val: Date): void;
-
-  (e: 'panel-change', payload: PanelChangePayload): void;
 
   (e: 'click', datestamp: string, d: any | undefined): void;
 }

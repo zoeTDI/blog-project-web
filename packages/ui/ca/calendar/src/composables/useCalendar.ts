@@ -1,5 +1,5 @@
-import type { CaCalendarProps, CalendarDay, PanelChangePayload } from '../types.ts';
-import { computed, onMounted, ref, watch } from 'vue';
+import type { CaCalendarProps, CalendarDay } from '../types.ts';
+import { computed, ref, watch } from 'vue';
 import { BASE_WEEK, DAY_OF_WEEK_MAP } from '../constants.ts';
 import { isSameDay } from '@caldm/utils';
 
@@ -20,32 +20,13 @@ export const useCalendar = (
     },
   );
 
-  const emitPanelChange = () => {
-    if (!emits) return;
-    const list = daysList.value;
-    if (!list.length) return;
-
-    const payload: PanelChangePayload = {
-      year: currentDate.value.getFullYear(),
-      month: currentDate.value.getMonth() + 1,
-      startDate: list[0].date,
-      endDate: list[list.length - 1].date,
-    };
-    emits('panel-change', payload);
-  };
-
   const updateDate = (newDate: Date) => {
     currentDate.value = newDate;
     if (emits) {
       emits('update:startDay', newDate);
       emits('change', newDate);
-      emitPanelChange();
     }
   };
-
-  onMounted(() => {
-    emitPanelChange();
-  });
 
   // 切换上一年
   const prevYear = () => {
@@ -140,6 +121,5 @@ export const useCalendar = (
     prevMonth,
     nextMonth,
     goToday,
-    emitPanelChange,
   };
 };
