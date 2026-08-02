@@ -139,11 +139,9 @@
   .ca-card {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
-    height: 100%;
-    padding: var(--content-padding-M);
+    padding: 10px;
     background-color: var(--color-container-bg);
-    border: 2px dashed var(--color-border);
+    border: 1px solid var(--color-border);
   }
 
   .ca-card__body {
