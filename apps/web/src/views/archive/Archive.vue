@@ -1,8 +1,16 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { CaRow, CaCol, CaList, CaListItem } from '@caldm/ui';
-  import { CaSection } from '@/components/ca/caSection';
-  import { type Tag, TagCloud } from '@/components/tagCloud';
+  import {
+    CaRow,
+    CaCol,
+    CaList,
+    CaListItem,
+    CaCard,
+    CaSwitch,
+  } from '@caldm/ui';
+  import type { CaSwitchOption } from '@caldm/ui';
+  import { TagCloud } from '@/components/tagCloud';
+  import type { Tag } from '@/components/tagCloud';
   import { CaTimeline } from '@/components/ca/caTimeline';
   import { useRouter } from 'vue-router';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
@@ -128,6 +136,12 @@
   const height = 280;
 
   const router = useRouter();
+  const pageSize = ref<string>('10');
+  const pageSizeOptions = ref<CaSwitchOption[]>([
+    { value: '10', label: '10' },
+    { value: '20', label: '20' },
+    { value: '50', label: '50' },
+  ]);
   const handleTagClick = (value: Tag) => {
     console.log('🚀 ~ handleTagClick ~ value: ', value);
 
@@ -142,19 +156,25 @@
         <h2 class="page-title">文章归档 / ARCHIVES</h2>
       </ca-col>
     </ca-row>
-    <ca-row :gap="40">
+    <ca-row :gap="12">
       <ca-col :span="18">
-        <ca-section>
-          <template #title>所有标签 / ALL TAGS</template>
-          <tag-cloud
-            :tags="tags"
-            :height="height"
-            :on-tag-click="handleTagClick" />
-        </ca-section>
+        <CaCard style="height: 100%">
+          <template #header>
+            <div class="card-title">所有标签 / ALL TAGS</div>
+          </template>
+          <template #default>
+            <tag-cloud
+              :tags="tags"
+              :height="height"
+              :on-tag-click="handleTagClick" />
+          </template>
+        </CaCard>
       </ca-col>
       <ca-col :span="6">
-        <ca-section>
-          <template #title>所有分类 / ALL CATEGORIES</template>
+        <CaCard>
+          <template #header>
+            <div class="card-title">所有分类 / ALL CATEGORIES</div>
+          </template>
           <div
             class="category-scroll-container"
             :style="{ height: `${height}px` }">
@@ -175,15 +195,27 @@
               </ca-list-item>
             </ca-list>
           </div>
-        </ca-section>
+        </CaCard>
       </ca-col>
     </ca-row>
     <ca-row style="margin-top: 40px">
       <ca-col>
-        <ca-section>
-          <template #title>按月份 / BY MONTH</template>
-          <template #subtitle>ALL POSTS / 10</template>
-          <ca-timeline :data="year2024Data">
+        <ca-card>
+          <template #header>
+            <div class="card-header">
+              <div class="card-title">按月份 / BY MONTH</div>
+              <div class="card-subtitle">
+                <span>ALL POSTS / </span>
+                <ca-switch
+                  v-model="pageSize"
+                  :mode="'full'"
+                  :options="pageSizeOptions" />
+              </div>
+            </div>
+          </template>
+          <ca-timeline
+            :data="year2024Data"
+            style="margin: 14px 10px">
             <template #default="{ item }">
               <router-link
                 :to="item.to || {}"
@@ -202,7 +234,7 @@
               </router-link>
             </template>
           </ca-timeline>
-        </ca-section>
+        </ca-card>
       </ca-col>
     </ca-row>
   </div>
@@ -220,6 +252,28 @@
     text-align: center;
     font-weight: bold;
     margin-bottom: 55px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    margin: 0;
+    font-family: var(--font-h);
+    font-size: 14px;
+    color: var(--color-text-h);
+    letter-spacing: 0.5px;
+  }
+
+  .card-subtitle {
+    font-family: var(--font-text);
+    font-size: 14px;
+    color: var(--color-text-primary);
+    opacity: 0.5;
+    letter-spacing: 1px;
   }
 
   /* 在 Archive.vue 样式中处理分类的滚动 */
