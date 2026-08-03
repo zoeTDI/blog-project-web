@@ -10,9 +10,9 @@ export const useUserStore = defineStore(
     const username = ref<string | null>(null);
     const nickname = ref<string | null>(null);
     const avatar = ref<string | null>(null);
-    const token = ref<string | null>(null);
     const role = ref<string | null>(null);
     const menus = ref<string[] | null>(null);
+    const loggedIn = ref<boolean>(false);
 
     const getId = () => id.value;
     const setId = (val: number) => (id.value = val);
@@ -29,13 +29,6 @@ export const useUserStore = defineStore(
     const getAvatar = () => avatar.value;
     const setAvatar = (val: string) => (avatar.value = val);
 
-    const getToken = () => {
-      return token.value;
-    };
-    const setToken = (value: string) => {
-      token.value = value;
-    };
-
     const getRole = () => {
       return role.value;
     };
@@ -50,15 +43,20 @@ export const useUserStore = defineStore(
       menus.value = value;
     };
 
+    const getLoggedIn = () => loggedIn.value;
+    const setLoggedIn = (val: boolean) => (loggedIn.value = val);
+
+    const isLoggedIn = () => loggedIn.value;
+
     const login = (data: LoginRes) => {
       setId(data.id);
       setEmail(data.email);
       setUsername(data.username);
       setNickname(data.nickname);
       setAvatar(data.avatar);
-      setToken(data.token);
       setRole(data.role);
       setMenus(data.menus);
+      setLoggedIn(true);
     };
     const logout = () => {
       id.value = null;
@@ -66,9 +64,9 @@ export const useUserStore = defineStore(
       username.value = null;
       nickname.value = null;
       avatar.value = null;
-      token.value = null;
       role.value = null;
       menus.value = null;
+      loggedIn.value = false;
     };
     return {
       id,
@@ -76,9 +74,9 @@ export const useUserStore = defineStore(
       username,
       nickname,
       avatar,
-      token,
       role,
       menus,
+      loggedIn,
       getId,
       setId,
       getEmail,
@@ -89,12 +87,13 @@ export const useUserStore = defineStore(
       setNickname,
       getAvatar,
       setAvatar,
-      getToken,
-      setToken,
       getRole,
       setRole,
       getMenus,
       setMenus,
+      getLoggedIn,
+      setLoggedIn,
+      isLoggedIn,
       login,
       logout,
     };
@@ -107,9 +106,9 @@ export const useUserStore = defineStore(
         'username',
         'nickname',
         'avatar',
-        'token',
         'role',
         'menus',
+        'loggedIn',
       ],
     },
   }

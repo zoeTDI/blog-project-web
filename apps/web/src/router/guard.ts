@@ -67,8 +67,8 @@ const setupAccessGuard = (router: Router) => {
     if (Object.values(ROUTER_NAMES).includes(to.name as string)) {
       // 前往登录页
       if (to.name === ROUTER_NAMES.LOGIN) {
-        // 存在token
-        if (userStore.getToken() && userStore.getToken() !== '') {
+        // 已登录
+        if (userStore.isLoggedIn()) {
           // 存在重定向页面
           if (to.query?.to && to.query.to !== '') {
             // 前往重定向页面
@@ -76,10 +76,6 @@ const setupAccessGuard = (router: Router) => {
           } else {
             // 如果直接放行，就前往登录页了，这是不行的。
             // 前往默认首页
-            console.log(
-              "🚀 ~ setupAccessGuard ~ '前往默认首页': ",
-              '前往默认首页'
-            );
             return {
               path:
                 preferences.app.defaultHomePath &&
@@ -98,7 +94,7 @@ const setupAccessGuard = (router: Router) => {
       }
     }
 
-    if (!userStore.getToken() || userStore.getToken() === '') {
+    if (!userStore.isLoggedIn()) {
       // 访问权限检查
       // 明确忽略权限检查，直接放行
       if (to.meta?.ignoreAccess) {
