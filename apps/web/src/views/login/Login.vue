@@ -1,15 +1,14 @@
 <script setup lang="ts">
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
-  import { mockApiFetch } from '@/utils/mock.ts';
   import {
     LockClosedIcon,
     EnvelopeIcon,
     ArrowRightIcon,
   } from '@heroicons/vue/24/outline';
   import { BACKEND_ROUTER_NAME } from '@/router/modules/analysis.ts';
-  import { type UserInfo, useUserStore } from '@/store/useUserStore.ts';
-  import { preferences } from '@/core/preferences';
+  import { useUserStore } from '@/store/useUserStore.ts';
+  import { login } from '@/api/authApi.ts';
 
   const router = useRouter();
   const userStore = useUserStore();
@@ -27,23 +26,11 @@
     errorMessage.value = '';
 
     try {
-      // 模拟后端验证登录
-      const mockUserResponse = {
-        userInfo: {
-          email: '1234567890@123.com',
-          avatar:
-            'https://ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/20260530013432342.png',
-          nickname: 'Admin',
-        },
-        token: 'fake-jwt-token',
-        role: 'admin',
-      };
-      const res = await mockApiFetch(mockUserResponse, 1200);
-
-      userStore.setAuthToken(res.token);
-      userStore.setRole(res.role);
-      const userInfo: UserInfo = { ...res.userInfo };
-      userStore.setUserInfo(userInfo);
+      const res = await login({
+        username: email.value,
+        password: password.value,
+      });
+      userStore.login(res);
       await router.push({ name: BACKEND_ROUTER_NAME.DASHBOARD });
     } catch (error) {
       errorMessage.value = '认证失败，请检查账户信息 / AUTHENTICATION FAILED';

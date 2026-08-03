@@ -2,14 +2,12 @@
   import defaultAvatar from '@/assets/avatar.svg';
   import type { UserMenuOption } from '@/components/userBox';
   import { useUserStore } from '@/store/useUserStore.ts';
-  import { ref, watchEffect } from 'vue';
-  import type { UserInfo } from '@/store/useUserStore.ts';
+  import { unref, watchEffect } from 'vue';
   import { CaAvatar } from '@caldm/ui';
 
   defineEmits(['logout', 'lock']);
 
   const userStore = useUserStore();
-  const userInfo = ref<UserInfo | null>(userStore.getUserInfo());
 
   const props = withDefaults(
     defineProps<{
@@ -24,10 +22,11 @@
    * 获取头像
    */
   const getAvatarUrl = () => {
-    if (!userInfo.value?.avatar || userInfo.value.avatar.trim() == '') {
+    const userAvatarUrl = unref(userStore.getAvatar());
+    if (!userAvatarUrl) {
       return defaultAvatar;
     } else {
-      return userInfo.value.avatar;
+      return userAvatarUrl;
     }
   };
 
@@ -131,9 +130,9 @@
       </div>
       <div class="user-info">
         <div class="name-row">
-          <span class="name">{{ userInfo?.nickname || '' }}</span>
+          <span class="name">{{ userStore.getNickname() || '' }}</span>
         </div>
-        <span class="email">{{ userInfo?.email }}</span>
+        <span class="email">{{ userStore.getEmail() || '' }}</span>
       </div>
     </div>
 

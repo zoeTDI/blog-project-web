@@ -3,7 +3,7 @@
   import MessageList from './MessageList.vue';
   import UserMenu from './UserMenu.vue';
   import defaultAvatar from '@/assets/avatar.svg';
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, onMounted, ref, unref } from 'vue';
   import { useDebounceFn } from '@caldm/hook';
   import {
     type MessageItem,
@@ -76,7 +76,7 @@
   const router = useRouter();
   const route = useRoute();
   const userStore = useUserStore();
-  const userInfo = computed(() => userStore.getUserInfo());
+
   let hoverTimer: ReturnType<typeof setTimeout> | null = null;
   // 消息队列的显示状态
   const isMessageVisible = ref<boolean>(false);
@@ -113,10 +113,11 @@
    * 获取头像
    */
   const getAvatarUrl = () => {
-    if (!userInfo.value?.avatar || userInfo.value.avatar.trim() == '') {
+    const userAvatarUrl = unref(userStore.getAvatar());
+    if (!userAvatarUrl) {
       return defaultAvatar;
     } else {
-      return userInfo.value.avatar;
+      return userAvatarUrl;
     }
   };
 

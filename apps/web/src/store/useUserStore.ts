@@ -1,38 +1,48 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-
-export interface UserInfo {
-  email: string;
-  nickname: string;
-  avatar: string;
-}
+import type { LoginRes } from '@/api/authApi.ts';
 
 export const useUserStore = defineStore(
   'user',
   () => {
-    const userInfo = ref<UserInfo | null>(null);
-    const authToken = ref<string>('');
-    const role = ref<string>('');
-    const menus = ref<string[]>([]);
+    const id = ref<number | null>(null);
+    const email = ref<string | null>(null);
+    const username = ref<string | null>(null);
+    const nickname = ref<string | null>(null);
+    const avatar = ref<string | null>(null);
+    const token = ref<string | null>(null);
+    const role = ref<string | null>(null);
+    const menus = ref<string[] | null>(null);
 
-    const getUserInfo = (): UserInfo | null => {
-      return userInfo.value;
+    const getId = () => id.value;
+    const setId = (val: number) => (id.value = val);
+
+    const getEmail = () => email.value;
+    const setEmail = (val: string) => (email.value = val);
+
+    const getUsername = () => username.value;
+    const setUsername = (val: string) => (username.value = val);
+
+    const getNickname = () => nickname.value;
+    const setNickname = (val: string) => (nickname.value = val);
+
+    const getAvatar = () => avatar.value;
+    const setAvatar = (val: string) => (avatar.value = val);
+
+    const getToken = () => {
+      return token.value;
     };
-    const setUserInfo = (newVal: UserInfo): void => {
-      userInfo.value = newVal;
+    const setToken = (value: string) => {
+      token.value = value;
     };
-    const getAuthToken = () => {
-      return authToken.value;
-    };
-    const setAuthToken = (value: string) => {
-      authToken.value = value;
-    };
+
     const getRole = () => {
       return role.value;
     };
     const setRole = (value: string) => {
       role.value = value;
     };
+
     const getMenus = () => {
       return menus.value;
     };
@@ -40,31 +50,67 @@ export const useUserStore = defineStore(
       menus.value = value;
     };
 
+    const login = (data: LoginRes) => {
+      setId(data.id);
+      setEmail(data.email);
+      setUsername(data.username);
+      setNickname(data.nickname);
+      setAvatar(data.avatar);
+      setToken(data.token);
+      setRole(data.role);
+      setMenus(data.menus);
+    };
     const logout = () => {
-      authToken.value = '';
-      role.value = '';
-      menus.value = [];
-      userInfo.value = null;
+      id.value = null;
+      email.value = null;
+      username.value = null;
+      nickname.value = null;
+      avatar.value = null;
+      token.value = null;
+      role.value = null;
+      menus.value = null;
     };
     return {
-      userInfo,
-      authToken,
+      id,
+      email,
+      username,
+      nickname,
+      avatar,
+      token,
       role,
       menus,
-      getUserInfo,
-      setUserInfo,
-      getAuthToken,
-      setAuthToken,
+      getId,
+      setId,
+      getEmail,
+      setEmail,
+      getUsername,
+      setUsername,
+      getNickname,
+      setNickname,
+      getAvatar,
+      setAvatar,
+      getToken,
+      setToken,
       getRole,
       setRole,
       getMenus,
       setMenus,
+      login,
       logout,
     };
   },
   {
     persist: {
-      pick: ['userInfo', 'authToken', 'role', 'menus'],
+      pick: [
+        'id',
+        'email',
+        'username',
+        'nickname',
+        'avatar',
+        'token',
+        'role',
+        'menus',
+      ],
     },
   }
 );

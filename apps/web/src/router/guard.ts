@@ -68,7 +68,7 @@ const setupAccessGuard = (router: Router) => {
       // 前往登录页
       if (to.name === ROUTER_NAMES.LOGIN) {
         // 存在token
-        if (userStore.getAuthToken() && userStore.getAuthToken() !== '') {
+        if (userStore.getToken() && userStore.getToken() !== '') {
           // 存在重定向页面
           if (to.query?.to && to.query.to !== '') {
             // 前往重定向页面
@@ -98,7 +98,7 @@ const setupAccessGuard = (router: Router) => {
       }
     }
 
-    if (!userStore.getAuthToken() || userStore.getAuthToken() === '') {
+    if (!userStore.getToken() || userStore.getToken() === '') {
       // 访问权限检查
       // 明确忽略权限检查，直接放行
       if (to.meta?.ignoreAccess) {
