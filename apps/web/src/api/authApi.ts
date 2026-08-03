@@ -11,15 +11,24 @@ export interface LoginRes {
   username: string;
   nickname: string;
   avatar: string;
-  token: string;
   role: string;
   menus: string[];
 }
 
 const Api = {
   login: '/login',
+  refresh: '/secure/refresh',
+  logout: '/secure/logout',
 };
 
 export const login = (options: LoginReq): Promise<LoginRes> => {
   return defHttp.post(Api.login, options);
+};
+
+export const refreshToken = () => {
+  return defHttp.post(Api.refresh);
+};
+
+export const logout = () => {
+  return defHttp.post(Api.logout);
 };

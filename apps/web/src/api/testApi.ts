@@ -4,6 +4,7 @@ const Api = {
   testHello: '/dev-api/test/hello',
   switchMaster: '/dev-api/test/file/switch-master',
   uploadFile: '/dev-api/test/file/upload',
+  getUserInfo: '/secure/getUserInfo',
 };
 
 export const testHello = () => {
@@ -28,4 +29,8 @@ export const uploadFile = (file: File) => {
       'Content-Type': 'multipart/form-data',
     },
   });
+};
+
+export const getUserInfo = () => {
+  return defHttp.post(Api.getUserInfo, null, { withCredentials: true, });
 };
