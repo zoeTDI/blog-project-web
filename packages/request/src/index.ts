@@ -20,17 +20,12 @@ export function createHttp(options: HttpConfig) {
   const service = axios.create({
     baseURL: options.baseURL,
     timeout: options.timeout || 10000,
+    withCredentials: true,
   });
 
   // 请求拦截器
   service.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
-      if (options.getToken) {
-        const token = await options.getToken();
-        if (token && config.headers) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-      }
       return config;
     },
     (error) => Promise.reject(error),
