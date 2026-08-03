@@ -7,7 +7,7 @@ const handleUnauthorized = async () => {
 };
 
 export const defHttp = createHttp({
-  baseURL: 'http://localhost:18080/api',
+  baseURL: '/api',
   timeout: 10000,
   onErrorMessage: (msg) => {
     console.error(msg);
