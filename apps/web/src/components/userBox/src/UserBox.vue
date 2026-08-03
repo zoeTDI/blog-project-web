@@ -3,7 +3,7 @@
   import MessageList from './MessageList.vue';
   import UserMenu from './UserMenu.vue';
   import defaultAvatar from '@/assets/avatar.svg';
-  import { computed, onMounted, ref, unref } from 'vue';
+  import { onMounted, ref, unref } from 'vue';
   import { useDebounceFn } from '@caldm/hook';
   import {
     type MessageItem,
@@ -15,6 +15,7 @@
   import { useRoute, useRouter } from 'vue-router';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import { CaAvatar } from '@caldm/ui';
+  import { logout } from '@/api/authApi.ts';
 
   const mockMessages: MessageItem[] = [
     {
@@ -101,7 +102,8 @@
       {
         label: '退出登录',
         shortcut: 'Alt + Q',
-        onClick: () => {
+        onClick: async () => {
+          await logout();
           userStore.logout();
           router.push({ name: ROUTER_NAMES.LOGIN, query: { to: route.path } });
         },
