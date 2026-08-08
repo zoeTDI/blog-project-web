@@ -25,4 +25,5 @@ export * from './ca/row';
 export * from './ca/select';
 export * from './ca/swiper';
 export * from './ca/switch';
+export * from './ca/table';
 export * from './ca/upload';
