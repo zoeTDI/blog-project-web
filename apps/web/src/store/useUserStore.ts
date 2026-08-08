@@ -10,7 +10,7 @@ export const useUserStore = defineStore(
     const username = ref<string | null>(null);
     const nickname = ref<string | null>(null);
     const avatar = ref<string | null>(null);
-    const role = ref<string | null>(null);
+    const roles = ref<string[] | null>(null);
     const menus = ref<string[] | null>(null);
     const loggedIn = ref<boolean>(false);
 
@@ -29,11 +29,11 @@ export const useUserStore = defineStore(
     const getAvatar = () => avatar.value;
     const setAvatar = (val: string) => (avatar.value = val);
 
-    const getRole = () => {
-      return role.value;
+    const getRoles = () => {
+      return roles.value;
     };
-    const setRole = (value: string) => {
-      role.value = value;
+    const setRoles = (value: string[]) => {
+      roles.value = value;
     };
 
     const getMenus = () => {
@@ -54,7 +54,7 @@ export const useUserStore = defineStore(
       setUsername(data.username);
       setNickname(data.nickname);
       setAvatar(data.avatar);
-      setRole(data.role);
+      setRoles(data.roles);
       setMenus(data.menus);
       setLoggedIn(true);
     };
@@ -64,7 +64,7 @@ export const useUserStore = defineStore(
       username.value = null;
       nickname.value = null;
       avatar.value = null;
-      role.value = null;
+      roles.value = null;
       menus.value = null;
       loggedIn.value = false;
     };
@@ -74,7 +74,7 @@ export const useUserStore = defineStore(
       username,
       nickname,
       avatar,
-      role,
+      roles,
       menus,
       loggedIn,
       getId,
@@ -87,8 +87,8 @@ export const useUserStore = defineStore(
       setNickname,
       getAvatar,
       setAvatar,
-      getRole,
-      setRole,
+      getRoles,
+      setRoles,
       getMenus,
       setMenus,
       getLoggedIn,
@@ -106,7 +106,7 @@ export const useUserStore = defineStore(
         'username',
         'nickname',
         'avatar',
-        'role',
+        'roles',
         'menus',
         'loggedIn',
       ],

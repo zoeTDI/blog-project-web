@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import { useRouter } from 'vue-router';
   import {
     LockClosedIcon,
@@ -8,92 +8,255 @@
   } from '@heroicons/vue/24/outline';
   import { BACKEND_ROUTER_NAME } from '@/router/modules/analysis.ts';
   import { useUserStore } from '@/store/useUserStore.ts';
-  import { login } from '@/api/authApi.ts';
+  import {
+    loginUP,
+    loginEP,
+    loginEC,
+    sendLoginCode,
+    type LoginUPReq,
+    type LoginEPReq,
+    type LoginECReq,
+    type LoginCodeReq,
+  } from '@/api/authApi.ts';
+  import { CaButton, CaIcon, CaMessage } from '@caldm/ui';
+  import { isString } from '@caldm/utils';
+  import { useCSSNamespace } from '@caldm/hook';
 
   const router = useRouter();
   const userStore = useUserStore();
+  const ns = useCSSNamespace('login');
 
-  const email = ref('admin@caldm.cn');
-  const password = ref('123456');
-  const errorMessage = ref('');
+  const loginType = ref<'password' | 'code'>('password');
+  const loading = ref<boolean>(false);
+  const account = ref('');
+  const password = ref('');
+  const code = ref('');
+  let timer: ReturnType<typeof setInterval> | null = null;
+  const count = ref<number>(60);
+
+  function isEmail(email: string): boolean {
+    // 常见邮箱正则（支持字母、数字、点、下划线、百分号、加号、连字符）
+    // 域名部分至少包含一个点，顶级域名至少2个字符
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
+
+  const buildPayload = (): LoginUPReq | LoginEPReq | LoginECReq => {
+    if (loginType.value === 'password') {
+      if (isEmail(account.value)) {
+        return {
+          email: account.value,
+          password: password.value,
+        } as LoginEPReq;
+      } else {
+        return {
+          username: account.value,
+          password: password.value,
+        } as LoginUPReq;
+      }
+    } else {
+      return {
+        email: account.value,
+        code: code.value,
+      } as LoginECReq;
+    }
+  };
+
+  const handleSendCode = async () => {
+    const payload: LoginCodeReq = {
+      email: account.value,
+    };
+    try {
+      const res = await sendLoginCode(payload);
+      if (!res) {
+        CaMessage.success('发送成功');
+        timer = setInterval(() => {
+          count.value--;
+        }, 1000);
+      }
+    } catch (e) {
+      CaMessage.error('发送失败');
+    }
+  };
 
   const handleLogin = async () => {
-    if (!email.value || !password.value) {
-      errorMessage.value = '请输入邮箱和密码 / PLEASE FILL IN ALL FIELDS';
+    if (
+      loginType.value == 'password' &&
+      (!isString(account.value) ||
+        account.value.trim() == '' ||
+        !password.value ||
+        password.value.trim() == '')
+    ) {
+      CaMessage.warn('请输入邮箱或密码 / PLEASE FILL IN ALL FIELDS');
       return;
     }
-
-    errorMessage.value = '';
-
+    if (
+      loginType.value === 'code' &&
+      (!isString(account.value) ||
+        account.value.trim() == '' ||
+        !code.value ||
+        code.value.trim() == '')
+    ) {
+      CaMessage.warn('请输入邮箱或验证码 / PLEASE FILL IN ALL FIELDS');
+      return;
+    }
+    const payload = buildPayload();
     try {
-      const res = await login({
-        username: email.value,
-        password: password.value,
-      });
+      let res;
+      if (loginType.value === 'password') {
+        if (isEmail(account.value)) {
+          res = await loginEP(payload as LoginEPReq);
+        } else {
+          res = await loginUP(payload as LoginUPReq);
+        }
+      } else {
+        res = await loginEC(payload as LoginECReq);
+      }
       userStore.login(res);
       await router.push({ name: BACKEND_ROUTER_NAME.DASHBOARD });
     } catch (error) {
-      errorMessage.value = '认证失败，请检查账户信息 / AUTHENTICATION FAILED';
+      CaMessage.error('认证失败，请检查账户信息 / AUTHENTICATION FAILED');
     }
   };
+
+  watch(
+    () => count.value,
+    () => {
+      if (count.value <= 0) {
+        clearInterval(Number(timer));
+        timer = null;
+        count.value = 60;
+      }
+    }
+  );
 </script>
 
 <template>
-  <div class="login">
-    <div class="login-card">
-      <header class="login-header">
-        <h1 class="brand-title">SIGN IN</h1>
-        <p class="brand-subtitle">欢迎回来 / WELCOME BACK</p>
+  <div :class="ns.b()">
+    <div :class="ns.e('container')">
+      <header :class="ns.e('welcome')">
+        <h1 :class="ns.e('title')">SIGN IN</h1>
+        <p :class="ns.e('subtitle')">欢迎回来 / WELCOME BACK</p>
       </header>
 
-      <form
-        @submit.prevent="handleLogin"
-        class="login-form">
-        <div class="input-group">
-          <label class="input-label">邮箱 / EMAIL</label>
-          <div class="input-control-wrapper">
-            <envelope-icon class="field-icon" />
-            <input
-              v-model="email"
-              type="email"
-              placeholder="your-email@example.com"
-              class="form-input" />
+      <div
+        :class="ns.em('wrapper', 'password')"
+        v-show="loginType === 'password'">
+        <form
+          @submit.prevent="handleLogin"
+          :class="ns.e('form')">
+          <div :class="ns.e('form-item')">
+            <label :class="ns.e('label')">邮箱 / EMAIL</label>
+            <div :class="ns.e('control-wrapper')">
+              <div :class="ns.e('control')">
+                <CaIcon
+                  :icon="EnvelopeIcon"
+                  :size="18" />
+                <input
+                  v-model="account"
+                  type="text"
+                  placeholder="用户名或邮箱"
+                  class="form-input" />
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="input-group">
-          <label class="input-label">密码 / PASSWORD</label>
-          <div class="input-control-wrapper">
-            <lock-closed-icon class="field-icon" />
-            <input
-              v-model="password"
-              type="password"
-              placeholder="••••••••"
-              class="form-input" />
+          <div :class="ns.e('form-item')">
+            <label :class="ns.e('label')">密码 / PASSWORD</label>
+            <div :class="ns.e('control-wrapper')">
+              <div :class="ns.e('control')">
+                <CaIcon
+                  :icon="LockClosedIcon"
+                  :size="18" />
+                <input
+                  v-model="password"
+                  type="password"
+                  placeholder="密码"
+                  class="form-input" />
+              </div>
+            </div>
           </div>
-        </div>
 
-        <Transition name="fade">
+          <CaButton
+            :type="'primary'"
+            :loading="loading"
+            :icon="ArrowRightIcon"
+            @click="handleLogin">
+            进入空间 / ENTER SPACE
+          </CaButton>
           <div
-            v-if="errorMessage"
-            class="error-msg">
-            {{ errorMessage }}
+            :class="ns.e('more-login-method')"
+            @click="loginType = 'code'">
+            其他登录方式
           </div>
-        </Transition>
+        </form>
+      </div>
 
-        <button
-          type="submit"
-          class="submit-btn">
-          <span>进入空间 / ENTER SPACE</span>
-          <arrow-right-icon class="btn-icon" />
-        </button>
-      </form>
+      <div
+        :class="ns.m('code')"
+        v-show="loginType === 'code'">
+        <form
+          @submit.prevent="handleLogin"
+          :class="ns.e('form')">
+          <div :class="ns.e('form-item')">
+            <label :class="ns.e('label')">邮箱 / EMAIL</label>
+            <div :class="ns.e('control-wrapper')">
+              <div :class="ns.e('control')">
+                <CaIcon
+                  :icon="EnvelopeIcon"
+                  :size="18" />
+                <input
+                  v-model="account"
+                  type="email"
+                  placeholder="邮箱"
+                  class="form-input" />
+              </div>
+            </div>
+          </div>
+
+          <div :class="ns.e('form-item')">
+            <label :class="ns.e('label')">验证码 / CODE</label>
+            <div :class="ns.e('control-wrapper')">
+              <div :class="ns.e('control')">
+                <CaIcon
+                  :icon="LockClosedIcon"
+                  :size="18" />
+                <input
+                  v-model="code"
+                  type="text"
+                  placeholder="验证码"
+                  class="form-input" />
+              </div>
+              <CaButton
+                :type="'primary'"
+                :disabled="count < 60"
+                :class="ns.se('code', 'btn')"
+                @click="handleSendCode">
+                <span v-show="count == 60">获取验证码</span>
+                <span v-show="count < 60">{{ count }}</span>
+              </CaButton>
+            </div>
+          </div>
+          <CaButton
+            :type="'primary'"
+            :loading="loading"
+            :icon="ArrowRightIcon"
+            @click="handleLogin">
+            进入空间 / ENTER SPACE
+          </CaButton>
+          <div
+            :class="ns.e('more-login-method')"
+            @click="loginType = 'password'">
+            其他登录方式
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-  .login {
+  .ca-login {
     position: fixed;
     inset: 0;
     display: flex;
@@ -103,7 +266,7 @@
     z-index: 999;
   }
 
-  .login-card {
+  .ca-login__container {
     width: 100%;
     max-width: 420px;
     background-color: var(--color-bg);
@@ -113,133 +276,97 @@
     -webkit-backdrop-filter: blur(10px);
   }
 
-  .login-header {
+  .ca-login__welcome {
     text-align: center;
     margin-bottom: 36px;
   }
 
-  .brand-title {
-    font-family: var(--heading);
+  .ca-login__title {
+    font-family: var(--font-h);
     font-size: 32px;
-    color: var(--text-h);
+    color: var(--color-text-h);
     letter-spacing: 2px;
     margin-bottom: 6px;
   }
 
-  .brand-subtitle {
-    font-family: var(--sans);
+  .ca-login__subtitle {
+    font-family: var(--font-text);
     font-size: 13px;
-    color: var(--text);
+    color: var(--color-text-h);
     opacity: 0.7;
   }
 
-  /* 表单排版 */
-  .login-form {
+  .ca-login__wrapper--password {
+  }
+
+  .ca-login__form {
     display: flex;
     flex-direction: column;
     gap: 24px;
   }
 
-  .input-group {
+  .ca-login__form-item {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
-  .input-label {
-    font-family: var(--mono);
+  .ca-login__label {
+    font-family: var(--font-text);
     font-size: 11px;
     letter-spacing: 1px;
-    color: var(--text);
+    color: var(--color-text-primary);
     opacity: 0.8;
   }
 
-  .input-control-wrapper {
+  .ca-login__control-wrapper {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 8px;
+  }
+
+  .ca-login__control {
+    flex: 1 1 100%;
+    background-color: var(--color-bg);
+    padding-left: 8px;
+    box-shadow: 0 0 2px #aaa;
     position: relative;
     display: flex;
     align-items: center;
   }
 
-  .field-icon {
-    position: absolute;
-    left: 14px;
-    width: 18px;
-    height: 18px;
-    color: var(--text);
-    opacity: 0.5;
-    pointer-events: none;
-  }
-
   .form-input {
     width: 100%;
     height: 44px;
-    background: var(--bg);
-    border: 1px solid var(--border);
+    background: var(--color-bg);
+    border: 1px solid transparent;
     border-radius: 8px;
-    padding: 0 16px 0 44px;
-    font-family: var(--sans);
+    padding: 0 16px 0 14px;
+    font-family: var(--font-text);
     font-size: 14px;
-    color: var(--text-h);
+    color: var(--color-text-primary);
     outline: none;
     transition: all 0.3s ease;
   }
 
-  /* 高亮交互效果，沿用项目统一样式 */
-  .form-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-bg);
+  .ca-login-code__btn {
+    align-self: stretch;
+    height: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-width: 66px;
+    min-height: 46px;
   }
 
-  /* 错误提示 */
-  .error-msg {
-    font-family: var(--sans);
-    font-size: 12px;
-    color: #ff4d4f; /* 柔和红 */
-    text-align: center;
-    margin: -4px 0;
-  }
-
-  /* 极简提交按钮 */
-  .submit-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    height: 46px;
-    background: var(--text-h);
-    color: var(--bg);
-    border: none;
-    border-radius: 8px;
+  .ca-login__more-login-method {
+    text-align: right;
     font-family: var(--font-text);
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    color: var(--color-text-h);
+    opacity: 0.7;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .submit-btn:hover {
-    background: var(--accent);
-    transform: translateY(-1px);
-  }
-
-  .btn-icon {
-    width: 16px;
-    height: 16px;
-    transition: transform 0.3s;
-  }
-
-  .submit-btn:hover .btn-icon {
-    transform: translateX(4px);
-  }
-
-  /* 错误动画 */
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.2s ease;
-  }
-  .fade-enter-from,
-  .fade-leave-to {
-    opacity: 0;
   }
 </style>
