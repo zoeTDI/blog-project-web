@@ -1,0 +1,18 @@
+.custom-column-class-name .col-str {
+  background-color: rosybrown;
+  color: #ffffff;
+}
+
+.custom-column-class-name .fun-str {
+  background-color: #1ea7fd;
+  color: #ffffff;
+}
+
+.custom-row-class-name .row-str {
+  background-color: #40a9ff;
+  color: #fff;
+}
+
+.custom-cell-class-name .cell-even {
+  background-color: #d0d0d0;
+}
