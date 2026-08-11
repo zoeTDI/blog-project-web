@@ -18,7 +18,7 @@ const isString = (val: any): val is string => typeof val === 'string';
 const isUndefined = (val: any): val is undefined => val === undefined;
 const isBoolean = (val: any): val is boolean => typeof val === 'boolean';
 const isNumber = (val: any): val is number => typeof val === 'number';
-
+const isFunction = (val: any): val is Function => typeof val === 'function';
 const isEmpty = (val: unknown) =>
   (!val && val !== 0) ||
   (isArray(val) && (val as any[]).length === 0) ||
@@ -46,6 +46,7 @@ export {
   isUndefined,
   isBoolean,
   isNumber,
+  isFunction,
   isEmpty,
   isElement,
   isStringNumber,
