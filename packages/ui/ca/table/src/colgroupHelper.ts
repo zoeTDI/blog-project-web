@@ -1,6 +1,6 @@
 import { isString, isUndefined } from '@caldm/utils';
 import { h } from 'vue';
-import type { TableColumnProps } from './tableColumn';
+import type { RenderColumn } from './tableColumn';
 
 type Props = {
   tableLayout: 'fixed' | 'auto'
@@ -11,13 +11,7 @@ export function colgroupHelper(props: Props) {
   const isAuto = props.tableLayout === 'auto';
   let columns = props?.columns || [];
 
-  if (isAuto) {
-    if (columns.every(({ width }) => isUndefined(width))) {
-      columns = [];
-    }
-  }
-
-  const getPropsData = (column: TableColumnProps) => {
+  const getPropsData = (column: RenderColumn, i: number) => {
     const propsData = {
       key: `${props.tableLayout}_${column.prop}`,
       style: {},
@@ -25,18 +19,17 @@ export function colgroupHelper(props: Props) {
     };
     if (isAuto) {
       propsData.style = {
-        width: `${column.width}px`,
+        width: `${column.realWidth}px`,
       };
-    } else {
-      propsData.name = column.prop;
     }
+    propsData.name = `ca-table-column-${i}`;
     return propsData;
   };
 
   return h(
     'colgroup',
     {},
-    columns.map((column) => h('col', getPropsData(column))),
+    columns.map((column, i) => h('col', getPropsData(column, i))),
   );
 }
 

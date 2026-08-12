@@ -1,14 +1,14 @@
-import type { TableColumnProps } from './tableColumn';
+import type { RenderColumn } from './tableColumn';
 import { isFunction, isObject, isString } from '@caldm/utils';
 import type { CSSProperties } from 'vue';
 
-export const columnClassName = (column: TableColumnProps) => {
+export const columnClassName = (column: RenderColumn) => {
   if (!column) return;
   if (isString(column.columnClassName)) return column.columnClassName;
   else if (isFunction(column.columnClassName)) return column.columnClassName(column.prop);
 };
 
-export const columnStyle = (column: TableColumnProps) => {
+export const columnStyle = (column: RenderColumn) => {
   if (!column) return;
   if (isFunction(column.columnStyle)) return column.columnStyle(column.prop);
   else if (isObject(column.columnStyle)) return column.columnStyle;
