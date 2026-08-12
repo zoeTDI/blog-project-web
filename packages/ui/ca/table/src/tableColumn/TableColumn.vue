@@ -1,7 +1,8 @@
 <script setup lang="ts">
   import type { TableColumnProps } from './types.ts';
   import { CaTableContextKey } from '../constants.ts';
-  import { inject, onBeforeMount, onBeforeUnmount } from 'vue';
+  import { inject, onBeforeMount, onBeforeUnmount, useSlots } from 'vue';
+  import type { RenderCell } from '../types.ts';
 
   defineOptions({
     name: 'CaTableColumn',
@@ -10,10 +11,17 @@
   const { store } = inject(CaTableContextKey, { store: null });
 
   const props = withDefaults(defineProps<TableColumnProps>(), {});
+  const slots = useSlots();
 
   onBeforeMount(() => {
     if (store) {
-      store.registerColumn(props);
+      const renderCell: RenderCell | undefined = slots.default
+        ? (scope) => slots.default!(scope)
+        : undefined;
+      store.registerColumn({
+        ...props,
+        renderCell,
+      });
     }
   });
 

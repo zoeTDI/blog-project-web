@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'vue';
+import type { RenderCell } from '../types.ts';
 
-export interface TableColumnProps {
+export interface TableColumnProps<T = any> {
   prop: string;
   label: string;
   /**
@@ -12,7 +13,8 @@ export interface TableColumnProps {
    */
   minWidth?: number;
   columnClassName?: string | ((key: string) => string);
-  columnStyle?: CSSProperties | ((key: string) => CSSProperties)
+  columnStyle?: CSSProperties | ((key: string) => CSSProperties);
+  renderCell?: RenderCell<T>
 }
 
 export interface RenderColumn extends TableColumnProps{

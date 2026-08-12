@@ -8,6 +8,7 @@
   import { isNumber, isString } from '@caldm/utils';
   import { columnClassName, columnStyle, rowClassName, rowStyle, cellClassName, cellStyle } from './utils.ts';
   import { useDoLayout } from './doLayout.ts';
+  import { cellRender } from './cellRender.ts';
 
   defineOptions({
     name: 'CaTable',
@@ -70,7 +71,10 @@
       <tr>
         <td v-for="(col, index) in store.state.columns" :key="col.prop">
           <div :class="[ns.e('cell')]">
-            {{ col.label }}
+            <div :class="ns.e('label')">
+              {{ col.label }}
+            </div>
+            <div :class="ns.e('sort-control')" v-if="col.sortable"></div>
           </div>
         </td>
       </tr>
@@ -79,23 +83,25 @@
     <table :class="ns.e('body')">
       <colgroupHelper :tableLayout="tableLayout" :columns="store.state.columns" />
       <tbody>
-      <tr v-for="(rowVal, rowIndex) in data || []"
-          :key="rowIndex"
-          :class="rowClassName(rowVal, rowIndex, props.rowClassName)"
-          :style="rowStyle(rowVal, rowIndex, props.rowStyle)">
-        <td v-for="(col, colIndex) in store.state.columns"
-            :key="col.key"
-            :class="columnClassName(col)"
-            :style="columnStyle(col)">
-          <div :class="[
-              ns.e('cell'),
-              cellClassName(rowVal, col.key, rowIndex, colIndex, props.cellClassName)
-            ]"
-               :style="cellStyle(rowVal, col.key, rowIndex, colIndex, props.cellStyle)">
-            {{ rowVal[col.prop] }}
-          </div>
-        </td>
-      </tr>
+        <tr v-for="(rowVal, rowIndex) in data || []"
+            :key="rowIndex"
+            :class="rowClassName(rowVal, rowIndex, props.rowClassName)"
+            :style="rowStyle(rowVal, rowIndex, props.rowStyle)">
+          <td v-for="(col, colIndex) in store.state.columns"
+              :key="col.key"
+              :class="columnClassName(col)"
+              :style="columnStyle(col)">
+            <div :class="[
+                ns.e('cell'),
+                cellClassName(rowVal, col.key, rowIndex, colIndex, props.cellClassName)
+              ]"
+                 :style="cellStyle(rowVal, col.key, rowIndex, colIndex, props.cellStyle)">
+              <cellRender :col="col"
+                          :row="rowVal"
+                          :row-index="rowIndex" />
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>

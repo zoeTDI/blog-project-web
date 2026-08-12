@@ -1,9 +1,16 @@
 import type { TableColumnProps } from './tableColumn';
-import type { CSSProperties } from 'vue';
+import type { CSSProperties, VNode } from 'vue';
+
+export interface RenderCellScope<T = any> {
+  row: T;
+  $index: number;
+}
+
+export type RenderCell<T = any> = (scope: RenderCellScope<T>) => VNode[] | VNode | unknown;
 
 export interface Store {
   state: Record<string, any>;
-  registerColumn: (prop: TableColumnProps) => void;
+  registerColumn: (props: TableColumnProps) => void;
   unregisterColumn: (prop: string) => void;
 }
 
