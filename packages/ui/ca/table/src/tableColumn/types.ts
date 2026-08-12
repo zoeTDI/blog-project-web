@@ -14,7 +14,10 @@ export interface TableColumnProps<T = any> {
   minWidth?: number;
   columnClassName?: string | ((key: string) => string);
   columnStyle?: CSSProperties | ((key: string) => CSSProperties);
-  renderCell?: RenderCell<T>
+  renderCell?: RenderCell<T>;
+  sortable?: boolean;
+  sortBy?: string;
+  sortMethod?: (a: any, b: any) => number;
 }
 
 export interface RenderColumn extends TableColumnProps{

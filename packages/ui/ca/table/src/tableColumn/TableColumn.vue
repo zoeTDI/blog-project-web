@@ -10,7 +10,9 @@
 
   const { store } = inject(CaTableContextKey, { store: null });
 
-  const props = withDefaults(defineProps<TableColumnProps>(), {});
+  const props = withDefaults(defineProps<TableColumnProps>(), {
+    sortable: false,
+  });
   const slots = useSlots();
 
   onBeforeMount(() => {
