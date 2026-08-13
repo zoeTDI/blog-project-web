@@ -10,6 +10,19 @@ const meta: Meta<typeof CaTable> = {
     maxHeight: {
       control: 'number',
     },
+    stripe: {
+      control: 'boolean',
+    },
+    border: {
+      control: 'boolean',
+    },
+    highCurrent: {
+      control: 'boolean',
+    },
+    size: {
+      control: 'select',
+      options: ['S', 'M', 'L'],
+    },
   },
   args: {
     data: [
@@ -34,6 +47,10 @@ const meta: Meta<typeof CaTable> = {
         address: 'No. 189, Grove St, Los Angeles',
       },
     ],
+    stripe: false,
+    border: false,
+    highCurrent: false,
+    size: 'M',
   },
 };
 
@@ -51,9 +68,14 @@ export const Default: Story = {
       return { args };
     },
     template: `
-      <CaTable :data="args.data" :max-height="args.maxHeight">
-        <CaTableColumn prop="date" label="日期" :width="130" />
-        <CaTableColumn prop="name" label="姓名" :width="50" />
+      <CaTable :data="args.data"
+               :max-height="args.maxHeight"
+               :stripe="args.stripe"
+               :border="args.border"
+               :highCurrent="args.highCurrent"
+               :size="args.size">
+        <CaTableColumn prop="date" label="日期" />
+        <CaTableColumn prop="name" label="姓名" />
         <CaTableColumn prop="address" label="地址" />
       </CaTable>`,
   }),
@@ -237,8 +259,74 @@ export const MaxHeight: Story = {
     template: `
       <CaTable :data="args.data" :max-height="args.maxHeight">
         <CaTableColumn prop="date" label="日期" :width="130" />
-        <CaTableColumn prop="name" label="姓名" :width="50" />
+        <CaTableColumn prop="name" label="姓名" :minWidth="110" />
         <CaTableColumn prop="address" label="地址" />
+      </CaTable>`,
+  }),
+};
+
+export const Sort: Story = {
+  name: '排序表格',
+  args: {
+    data: [
+      {
+        name: 'Charlie',              // string
+        age: 32,                      // number
+        isVip: true,                  // boolean
+        scoreInfo: { rank: 3, score: 85.5 }, // object (用于嵌套/字段排序)
+      },
+      {
+        name: 'Alice',
+        age: 19,
+        isVip: false,
+        scoreInfo: { rank: 1, score: 98.0 },
+      },
+      {
+        name: 'Eve',
+        age: 45,
+        isVip: true,
+        scoreInfo: { rank: 5, score: 72.0 },
+      },
+      {
+        name: 'Bob',
+        age: 28,
+        isVip: false,
+        scoreInfo: { rank: 2, score: 91.5 },
+      },
+      {
+        name: 'David',
+        age: 37,
+        isVip: true,
+        scoreInfo: { rank: 4, score: 78.0 },
+      },
+    ],
+  },
+  render: (args) => ({
+    components: { CaTable, CaTableColumn },
+    setup() {
+      let data = args.data;
+      const sortByScore = (a: any, b: any) => a.score - b.score;
+      return { args, sortByScore };
+    },
+    template: `
+      <CaTable :data="args.data" :max-height="args.maxHeight">
+        <CaTableColumn prop="name" label="姓名" sortable :width="80" />
+        <CaTableColumn prop="age" label="年龄" sortable :width="80" />
+        <CaTableColumn prop="isVip" label="VIP会员" sortable>
+          <template #default="{ row }">
+            {{ row.isVip ? '是' : '否' }}
+          </template>
+        </CaTableColumn>
+        <CaTableColumn
+          prop="scoreInfo"
+          label="积分"
+          sortable
+          :sort-method="sortByScore"
+        >
+          <template #default="{ row }">
+            {{ row.scoreInfo.score }} (排名: {{ row.scoreInfo.rank }})
+          </template>
+        </CaTableColumn>
       </CaTable>`,
   }),
 };
