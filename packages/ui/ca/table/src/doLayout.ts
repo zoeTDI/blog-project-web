@@ -9,7 +9,7 @@ export const useDoLayout = (
 ) => {
   const resizeColumnsWidth = () => {
     if (!tableRef.value) return;
-    let availableWidth = Math.floor(tableRef.value.clientWidth);
+    let availableWidth = Math.floor(tableRef.value.clientWidth) - 1;
     let autoColumn: RenderColumn[] = [];
     store.state.columns.forEach((column: RenderColumn) => {
       if (isNumber(column?.width)) {
