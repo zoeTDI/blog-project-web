@@ -1,5 +1,6 @@
 import type { TableColumnProps } from './tableColumn';
 import type { CSSProperties, VNode } from 'vue';
+import type { ComponentSize } from '#/component.ts';
 
 export interface RenderCellScope<T = any> {
   row: T;
@@ -34,5 +35,7 @@ export interface CaTableProps {
    * 列边框
    */
   border?: boolean;
+  size?: ComponentSize;
+  highCurrent?: boolean;
 }
 

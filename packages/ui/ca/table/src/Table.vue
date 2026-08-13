@@ -19,6 +19,8 @@
     data: () => [],
     stripe: false,
     border: false,
+    size: 'M',
+    highCurrent: false,
   });
 
   const tableRef = ref<HTMLElement | null>(null);
@@ -94,8 +96,8 @@
 </script>
 
 <template>
-  <div :class="[ns.b()]"
-       :style="{maxHeight: maxHeight}"
+  <div :class="[ns.b(), ns.m(size)]"
+       :style="[{maxHeight: maxHeight}]"
        ref="tableRef">
     <div ref="hiddenColumns" class="hidden-columns">
       <slot />
@@ -103,9 +105,14 @@
     <table :class="ns.e('header')">
       <colgroupHelper :tableLayout="tableLayout" :columns="store.state.columns" />
       <thead>
-      <tr>
-        <td v-for="(col, index) in store.state.columns" :key="col.prop">
-          <div :class="[ns.e('cell')]">
+      <tr :class="ns.e('row')">
+        <td v-for="(col, index) in store.state.columns"
+            :key="col.prop"
+            :class="[
+              ns.e('cell'),
+              {[ns.m('border')]: border && (index + 1) != store.state.columns.length}
+              ]">
+          <div :class="[ns.e('cell-container')]">
             <div :class="ns.e('label')">
               {{ col.label }}
             </div>
@@ -132,16 +139,27 @@
       <tbody>
       <tr v-for="(rowVal, rowIndex) in tableData || []"
           :key="rowIndex"
-          :class="[rowClassName(rowVal, rowIndex, props.rowClassName), { [ns.m('stripe')]: (rowIndex + 1) % 2 === 0 && stripe }]"
+          :class="[
+            ns.e('row'),
+            rowClassName(rowVal, rowIndex, props.rowClassName),
+            {
+              [ns.m('stripe')]: (rowIndex + 1) % 2 === 0 && stripe,
+              [ns.m('high-current')]: highCurrent
+            }
+            ]"
           :style="rowStyle(rowVal, rowIndex, props.rowStyle)">
         <td v-for="(col, colIndex) in store.state.columns"
             :key="col.key"
-            :class="columnClassName(col)"
+            :class="[
+              ns.e('cell'),
+              columnClassName(col),
+              {[ns.m('border')]: border && (colIndex + 1) != store.state.columns.length}
+              ]"
             :style="columnStyle(col)">
           <div :class="[
-                ns.e('cell'),
-                cellClassName(rowVal, col.key, rowIndex, colIndex, props.cellClassName)
-              ]"
+                  ns.e('cell-container'),
+                  cellClassName(rowVal, col.key, rowIndex, colIndex, props.cellClassName)
+                ]"
                :style="cellStyle(rowVal, col.key, rowIndex, colIndex, props.cellStyle)">
             <cellRender :col="col"
                         :row="rowVal"
@@ -155,9 +173,28 @@
 </template>
 
 <style scoped>
+  .ca-table.ca-table--S {
+    --ca-table-font-size: 12px;
+    --ca-table-cell-padding-y: 4px;
+    --ca-table-cell-padding-x: 8px;
+  }
+
+  .ca-table.ca-table--M {
+    --ca-table-font-size: 14px;
+    --ca-table-cell-padding-y: 8px;
+    --ca-table-cell-padding-x: 12px;
+  }
+
+  .ca-table.ca-table--L {
+    --ca-table-font-size: 16px;
+    --ca-table-cell-padding-y: 12px;
+    --ca-table-cell-padding-x: 16px;
+  }
+
   .ca-table {
     overflow: auto;
-    border: 1px solid var(--color-border);
+    color: var(--ca-table-cell-text-color);
+    border: 1px solid var(--ca-table-border-color);
   }
 
   .hidden-columns {
@@ -171,25 +208,39 @@
     table-layout: fixed;
     border-collapse: collapse;
     border-spacing: 0;
-    background-color: #e1e1e1;
+    background-color: var(--ca-table-header-bg);
+    color: var(--ca-table-header-text-color);
+  }
+
+  .ca-table__header .ca-table__row {
+    border-bottom: 1px solid var(--ca-table-border-color);
   }
 
   .ca-table__header .ca-table__cell {
+    padding: var(--ca-table-cell-padding-y) var(--ca-table-cell-padding-x);
+    font-size: var(--ca-table-font-size);
+    border-right: 1px solid transparent;
+  }
+
+  .ca-table__header .ca-table__cell.ca-table--border {
+    border-right: 1px solid var(--ca-table-border-color);
+  }
+
+  .ca-table__header .ca-table__cell-container {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     overflow: hidden;
-    padding: 8px;
   }
 
-  .ca-table__header .ca-table__cell .ca-table__label {
+  .ca-table__header .ca-table__label {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .ca-table__header .ca-table__cell .ca-table__sort-control {
+  .ca-table__header .ca-table__sort-control {
     margin-left: 4px;
     flex-shrink: 0;
     display: flex;
@@ -199,14 +250,15 @@
     gap: 1px;
   }
 
-  .ca-table__header .ca-table__cell .ca-table__sort-control > div {
+  .ca-table__header .ca-table__sort-control > div {
     font-size: 8px;
     cursor: pointer;
+    color: var(--ca-table-border-color);
     will-change: color;
   }
 
-  .ca-table__header .ca-table__cell .ca-table__sort-control > div.is-active {
-    color: var(--color-accent);
+  .ca-table__header .ca-table__sort-control > div.is-active {
+    color: var(--ca-table-sort-active-color);
   }
 
   .ca-table__body {
@@ -216,7 +268,32 @@
     border-spacing: 0;
   }
 
-  .ca-table--stripe {
-    background-color: #e3e3e3;
+  .ca-table__body .ca-table__row {
+    border-bottom: 1px solid var(--ca-table-border-color);
+  }
+
+  .ca-table__body .ca-table__row:last-child {
+    border-bottom: 1px solid transparent;
+  }
+
+  .ca-table__body .ca-table__row.ca-table--stripe {
+    background-color: var(--ca-table-stripe-bg);
+  }
+
+  .ca-table__body .ca-table__row.ca-table--high-current:hover {
+    background-color: var(--ca-table-row-hover-bg);
+  }
+
+  .ca-table__body .ca-table__cell {
+    padding: var(--ca-table-cell-padding-y) var(--ca-table-cell-padding-x);
+    font-size: var(--ca-table-font-size);
+    border-right: 1px solid transparent;
+  }
+
+  .ca-table__body .ca-table__cell-container {
+  }
+
+  .ca-table__body .ca-table__cell.ca-table--border {
+    border-right: 1px solid var(--ca-table-border-color);
   }
 </style>

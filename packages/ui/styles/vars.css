@@ -55,6 +55,22 @@
 
   --color-map-border-hover: var(--color-accent);
 
+  /*表格*/
+  /* 表头背景 */
+  --ca-table-header-bg: #f0f0f0;
+  /* 表格边框颜色（包括单元格边框、行边框） */
+  --ca-table-border-color: #e5e4e7;
+  /* 条纹行背景（偶数行） */
+  --ca-table-stripe-bg: rgba(0, 0, 0, 0.02);
+  /* 行悬停背景 */
+  --ca-table-row-hover-bg: rgba(170, 59, 255, 0.06);
+  /* 排序激活颜色（复用强调色） */
+  --ca-table-sort-active-color: var(--color-accent);
+  /* 表头文字颜色（可继承全局文字色，但单独控制更灵活） */
+  --ca-table-header-text-color: var(--color-text-primary);
+  /* 单元格文字颜色（默认继承全局） */
+  --ca-table-cell-text-color: var(--color-text-primary);
+
   @media (max-width: 1024px) {
     font-size: 16px;
   }
@@ -89,6 +105,15 @@
   --color-map-bg-hover: color-mix(in srgb, var(--color-accent) 15%, transparent);
 
   --color-map-border-hover: #aa3bff;
+
+  /*表格*/
+  --ca-table-header-bg: #2a2a2a;
+  --ca-table-border-color: #3a3a3a;
+  --ca-table-stripe-bg: rgba(255, 255, 255, 0.03);
+  --ca-table-row-hover-bg: rgba(189, 109, 255, 0.12);
+  --ca-table-sort-active-color: var(--color-accent);
+  --ca-table-header-text-color: var(--color-text-primary);
+  --ca-table-cell-text-color: var(--color-text-primary);
 }
 
 /* 基础重置 */
