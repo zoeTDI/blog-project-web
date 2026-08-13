@@ -17,6 +17,8 @@
 
   const props = withDefaults(defineProps<CaTableProps>(), {
     data: () => [],
+    stripe: false,
+    border: false,
   });
 
   const tableRef = ref<HTMLElement | null>(null);
@@ -53,7 +55,7 @@
         method: curSort.value.sortMethod,
         state: curSort.value.sortState,
       },
-      props.data || []
+      props.data || [],
     );
   });
 
@@ -101,28 +103,28 @@
     <table :class="ns.e('header')">
       <colgroupHelper :tableLayout="tableLayout" :columns="store.state.columns" />
       <thead>
-        <tr>
-          <td v-for="(col, index) in store.state.columns" :key="col.prop">
-            <div :class="[ns.e('cell')]">
-              <div :class="ns.e('label')">
-                {{ col.label }}
+      <tr>
+        <td v-for="(col, index) in store.state.columns" :key="col.prop">
+          <div :class="[ns.e('cell')]">
+            <div :class="ns.e('label')">
+              {{ col.label }}
+            </div>
+            <div :class="ns.e('sort-control')"
+                 v-if="col.sortable">
+              <div
+                :class="[ns.e('up'), ns.is('active', col.prop === curSort.prop && 'ascending' === curSort.sortState)]"
+                @click="handleSortControlClick(col, 'ascending')">
+                ▲
               </div>
-              <div :class="ns.e('sort-control')"
-                   v-if="col.sortable">
-                <div
-                  :class="[ns.e('up'), ns.is('active', col.prop === curSort.prop && 'ascending' === curSort.sortState)]"
-                  @click="handleSortControlClick(col, 'ascending')">
-                  ▲
-                </div>
-                <div
-                  :class="[ns.e('up'), ns.is('active', col.prop === curSort.prop && 'descending' === curSort.sortState)]"
-                  @click="handleSortControlClick(col, 'descending')">
-                  ▼
-                </div>
+              <div
+                :class="[ns.e('up'), ns.is('active', col.prop === curSort.prop && 'descending' === curSort.sortState)]"
+                @click="handleSortControlClick(col, 'descending')">
+                ▼
               </div>
             </div>
-          </td>
-        </tr>
+          </div>
+        </td>
+      </tr>
       </thead>
     </table>
     <table :class="ns.e('body')">
@@ -130,7 +132,7 @@
       <tbody>
       <tr v-for="(rowVal, rowIndex) in tableData || []"
           :key="rowIndex"
-          :class="rowClassName(rowVal, rowIndex, props.rowClassName)"
+          :class="[rowClassName(rowVal, rowIndex, props.rowClassName), { [ns.m('stripe')]: (rowIndex + 1) % 2 === 0 && stripe }]"
           :style="rowStyle(rowVal, rowIndex, props.rowStyle)">
         <td v-for="(col, colIndex) in store.state.columns"
             :key="col.key"
@@ -212,5 +214,9 @@
     table-layout: fixed;
     border-collapse: collapse;
     border-spacing: 0;
+  }
+
+  .ca-table--stripe {
+    background-color: #e3e3e3;
   }
 </style>

@@ -26,5 +26,13 @@ export interface CaTableProps {
   rowStyle?: CSSProperties | ((row: any, index: number) => CSSProperties);
   cellClassName?: string | ((row: any, prop: string, rowIndex: number, columnIndex: number) => string);
   cellStyle?: CSSProperties | ((row: any, prop: string, rowIndex: number, columnIndex: number) => CSSProperties);
+  /**
+   * 斑马条纹
+   */
+  stripe?: boolean;
+  /**
+   * 列边框
+   */
+  border?: boolean;
 }
 
