@@ -9,7 +9,7 @@
   import { columnClassName, columnStyle, rowClassName, rowStyle, cellClassName, cellStyle } from './utils.ts';
   import { useDoLayout } from './doLayout.ts';
   import { cellRender } from './cellRender.ts';
-  import { filterCore } from './filterHelper.ts';
+  import { sortCore } from './helper/sortHelper.ts';
 
   defineOptions({
     name: 'CaTable',
@@ -50,7 +50,7 @@
   });
 
   const tableData = computed(() => {
-    return filterCore(
+    return sortCore(
       {
         prop: curSort.value.prop ?? '',
         by: curSort.value.sortBy,

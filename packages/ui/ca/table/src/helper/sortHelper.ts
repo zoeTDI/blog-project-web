@@ -1,6 +1,6 @@
 import { isFunction, isNumber, isObject, isString } from '@caldm/utils';
 
-export const filterCore = (
+export const sortCore = (
   sort: {
     prop: string, // 根据哪一列进行排序
     by: string | null, // 如果数据是对象，那么根据该字段进行排序
@@ -9,8 +9,6 @@ export const filterCore = (
   },
   data: any[],
 ) => {
-  console.log("🚀 ~ filterCore ~ sort: ", sort);
-  console.log("🚀 ~ filterCore ~ data: ", data);
   if (!sort) return data;
   // 数据量小于 2，无需进行排序
   if (data.length < 2) return data;
@@ -67,7 +65,6 @@ export const filterCore = (
     // 根据正序 (ascending) 或倒序 (descending) 返回排序结果
     return state === 'descending' ? -diff : diff;
   });
-  console.log("🚀 ~ filterCore ~ list: ", list);
   return list;
 };
 
