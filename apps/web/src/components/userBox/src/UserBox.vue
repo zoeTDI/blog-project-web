@@ -103,9 +103,15 @@
         label: '退出登录',
         shortcut: 'Alt + Q',
         onClick: async () => {
-          await logout();
-          userStore.logout();
-          router.push({ name: ROUTER_NAMES.LOGIN, query: { to: route.path } });
+          try {
+            await logout();
+          } finally {
+            userStore.logout();
+            router.push({
+              name: ROUTER_NAMES.LOGIN,
+              query: { to: route.path },
+            });
+          }
         },
       },
     ],
