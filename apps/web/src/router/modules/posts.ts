@@ -1,10 +1,11 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { DocumentIcon, DocumentDuplicateIcon } from '@heroicons/vue/24/outline';
+import { DocumentIcon, DocumentDuplicateIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { ROUTER_PREFIX } from '@/plugins/i18n.ts';
 
 export const POST_ROUTER_NAME: Record<string, string> = {
   POST_MANAGE: 'PostManage',
   POST_EDIT: 'PostEdit',
+  POST_NEW: 'PostNew',
   TRAVEL_POST_EDIT: 'TravelPostEdit',
 };
 
@@ -26,6 +27,16 @@ const postRouter: RouteRecordRaw[] = [
           requireLogin: true,
           prefixIcon: DocumentIcon,
         },
+      },
+      {
+        path: "/posts/new",
+        name: POST_ROUTER_NAME.POST_NEW,
+        component: () => import('@/views/post/postEdit/PostEdit.vue'),
+        meta: {
+          title: `${ROUTER_PREFIX}postNew`,
+          requrieLogin: true,
+          prefixIcon: PencilSquareIcon,
+        }
       },
       {
         path: '/posts/edit/:id?',
