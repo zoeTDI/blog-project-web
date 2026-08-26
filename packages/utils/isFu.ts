@@ -2,7 +2,7 @@ const isObject = (item: any): boolean => {
   return item && typeof item === 'object' && !Array.isArray(item);
 };
 
-const isArray = (item: any): boolean => {
+const isArray = (item: any): item is [] => {
   return Array.isArray(item);
 };
 
@@ -20,8 +20,9 @@ const isBoolean = (val: any): val is boolean => typeof val === 'boolean';
 const isNumber = (val: any): val is number => typeof val === 'number';
 const isFunction = (val: any): val is Function => typeof val === 'function';
 const isEmpty = (val: unknown) =>
+  (isString(val) && val.trim() === '') ||
   (!val && val !== 0) ||
-  (isArray(val) && (val as any[]).length === 0) ||
+  (isArray(val) && val.length === 0) ||
   (isObject(val) && !Object.keys(val).length);
 
 const isElement = (e: unknown): e is Element => {
@@ -36,8 +37,6 @@ const isStringNumber = (val: string): boolean => {
   return !Number.isNaN(Number(val));
 };
 
-const isWindow = (val: unknown): val is Window => val === window;
-
 export {
   isObject,
   isArray,
@@ -50,5 +49,4 @@ export {
   isEmpty,
   isElement,
   isStringNumber,
-  isWindow,
 };
