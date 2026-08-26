@@ -9,8 +9,8 @@ export interface CaSwitchOption<T = string> {
   icon?: Component;
 }
 
-export interface CaSwitchProps<T = string> {
-  options?: CaSwitchOption<T>[];
+export interface CaSwitchProps {
+  options?: CaSwitchOption[];
   prefix?: string;
   mode?: ValueOf<typeof CaSwitchMode>;
   size?: ComponentSize;
