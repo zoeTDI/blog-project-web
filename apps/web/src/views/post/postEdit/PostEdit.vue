@@ -1,153 +1,376 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+  import {
+    getAllCategoriesByAuthor,
+    getAllTagsByAuthor,
+    type CategoryTreeNode,
+    type Tag,
+    addBlogPost,
+    type BlogPostCreatePayload,
+  } from '@/api/postApi';
+  import { useCSSNamespace } from '@caldm/hook';
+  import {
+    CaButton,
+    CaCard,
+    CaCol,
+    CaRow,
+    CaCheckboxGroup,
+    CaCheckbox,
+    CaCascader,
+    CaSwitch,
+  } from '@caldm/ui';
+  import { computed, onMounted, ref, watch } from 'vue';
+  import { isEmpty } from '@caldm/utils';
+  import {
+    booleanOptions,
+    mdEditModeOptions,
+  } from '@/views/post/postEdit/constant.ts';
+  import { MarkdownRender } from '@/components/markdownRender';
 
-// 模拟表单数据
-const articleForm = ref({
-  title: '',
-  category: '',
-  tags: [] as string[],
-  content: '',
-  isDraft: false
-})
+  interface CategoryNode {
+    value: number;
+    label: string;
+    children: CategoryNode[];
+  }
 
-// 模拟提交事件
-const handlePublish = (type: 'draft' | 'publish') => {
-  articleForm.value.isDraft = type === 'draft'
-  alert(`触发操作：[${type === 'draft' ? '保存草稿' : '发布文章'}]。当前标题: "${articleForm.value.title || '未填写'}"（此为演示界面，暂无实际后端交互）`)
-}
+  const ns = useCSSNamespace('post-edit');
+
+  const articleForm = ref({
+    title: '',
+    subtitle: '',
+    contentMd: '',
+    contentHtml: '',
+    summary: '',
+    type: 1,
+    status: 0,
+    isTop: 'false',
+    isOriginal: 'true',
+    publishedTime: null,
+    slug: '',
+    seoKeywords: '',
+    seoDescription: '',
+    password: null,
+    allowComment: 'false',
+    reprintSource: null,
+    sortWeight: 0,
+    category: [] as number[],
+    tags: [] as number[],
+  });
+
+  const loading = ref<boolean>(false);
+  const tags = ref<Tag[]>([]);
+  const categories = ref<CategoryNode[]>([]);
+  const mdEditMode = ref<'code' | 'read' | 'preview'>('code');
+  const postContextWidth = ref<number>(18);
+
+  const classes = computed(() => {
+    const cls: string[] = [ns.b()];
+    return cls;
+  });
+
+  const styles = computed(() => {
+    return {};
+  });
+
+  const processCategory = (node: CategoryTreeNode): CategoryNode => {
+    const n = {
+      label: node.category.name,
+      value: node.category.id,
+      children: [] as CategoryNode[],
+    };
+    if (!isEmpty(node.children)) {
+      n.children = node.children.map((child) => processCategory(child));
+    }
+    return n;
+  };
+
+  const getSlug = () => {
+    return isEmpty(articleForm.value.slug)
+      ? articleForm.value.title + Date.now().toString()
+      : articleForm.value.slug;
+  };
+
+  const handleSave = async (status: 'draft' | 'publish') => {
+    if (loading.value) {
+      return;
+    }
+    loading.value = true;
+    try {
+      const payload: BlogPostCreatePayload = {
+        title: articleForm.value.title,
+        isTop: articleForm.value.isTop === 'true',
+        isOriginal: articleForm.value.isOriginal === 'true',
+        allowComment: articleForm.value.allowComment === 'true',
+        sortWeight: 0,
+        subtitle: articleForm.value.subtitle,
+        contentMd: articleForm.value.contentMd,
+        contentHtml: articleForm.value.contentHtml,
+        summary: articleForm.value.summary,
+        type: 1, // 普通文章
+        status: status === 'publish' ? 2 : 0, // 草稿状态
+        publishedTime: '',
+        slug: getSlug(),
+        seoKeywords: articleForm.value.seoKeywords,
+        seoDescription: articleForm.value.seoDescription,
+        password: articleForm.value.password,
+        reprintSource: articleForm.value.reprintSource,
+        tagIds: articleForm.value.tags,
+        categoryTrees: [articleForm.value.category],
+      };
+      console.log(
+        '🚀 ~ handleSave ~ JSON.stringify(payload, null, 2): ',
+        JSON.stringify(payload, null, 2)
+      );
+      await addBlogPost(payload);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  watch(
+    () => articleForm.value.isOriginal,
+    (newVal) => {
+      if (newVal === 'true') {
+        articleForm.value.reprintSource = null;
+      }
+    }
+  );
+
+  onMounted(async () => {
+    tags.value = await getAllTagsByAuthor();
+    const categoryData = await getAllCategoriesByAuthor();
+    if (categoryData) {
+      categories.value = categoryData.map((cate) => processCategory(cate));
+      console.log(
+        '🚀 ~  ~ JSON.stringify(categories.value, null, 2): ',
+        JSON.stringify(categories.value, null, 2)
+      );
+    }
+  });
 </script>
 
 <template>
-  <div class="page-container">
-    <div class="page-header">
-      <h2>✍️ 发布与编辑文章</h2>
-      <p class="sub-title">在这里撰写您的新博客文章，支持设置分类、标签以及内容编辑。</p>
-    </div>
-
-    <div class="form-card">
-      <div class="form-item">
-        <label>文章标题：</label>
-        <input v-model="articleForm.title" type="text" placeholder="请输入文章标题..." class="styled-input" />
+  <CaCard
+    :class="classes"
+    :style="styles">
+    <template #header>
+      <div :class="ns.e('title')">
+        <input
+          placeholder="请输入标题"
+          v-model="articleForm.title"
+          :class="ns.e('input')" />
       </div>
-
-      <div class="form-row">
-        <div class="form-item">
-          <label>所属分类：</label>
-          <select v-model="articleForm.category" class="styled-select">
-            <option value="">请选择分类</option>
-            <option value="tech">技术分享</option>
-            <option value="life">生活随笔</option>
-            <option value="game">游戏评测</option>
-          </select>
+    </template>
+    <template #footer>
+      <div :class="ns.e('action-container')">
+        <CaButton
+          @click="handleSave('draft')"
+          :loading="loading">
+          保存草稿
+        </CaButton>
+        <CaButton
+          @click="handleSave('publish')"
+          :loading="loading">
+          发布
+        </CaButton>
+      </div>
+    </template>
+    <CaRow
+      :class="ns.e('context-container')"
+      :gap="20">
+      <CaCol :span="postContextWidth">
+        <div :class="ns.e('textarea-container')">
+          <textarea
+            v-show="mdEditMode === 'code'"
+            v-model="articleForm.contentMd"
+            :class="ns.e('textarea')"></textarea>
+          <MarkdownRender
+            style="width: 100%; height: 100%"
+            v-show="mdEditMode === 'read'"
+            :content="articleForm.contentMd" />
+          <CaRow
+            v-show="mdEditMode === 'preview'"
+            style="width: 100%; height: 100%">
+            <CaCol :span="12">
+              <textarea
+                v-model="articleForm.contentMd"
+                :class="ns.e('textarea')"></textarea>
+            </CaCol>
+            <CaCol :span="12">
+              <MarkdownRender
+                style="width: 100%; height: 100%"
+                :content="articleForm.contentMd" />
+            </CaCol>
+          </CaRow>
         </div>
-
-        <div class="form-item">
-          <label>文章标签（多选）：</label>
-          <div class="checkbox-group">
-            <label><input type="checkbox" value="Vue3" v-model="articleForm.tags"> Vue3</label>
-            <label><input type="checkbox" value="TypeScript" v-model="articleForm.tags"> TypeScript</label>
-            <label><input type="checkbox" value="随笔" v-model="articleForm.tags"> 随笔</label>
-          </div>
+      </CaCol>
+      <CaCol :span="24 - postContextWidth">
+        <div :class="ns.e('meta-container')">
+          <CaRow
+            :align="'middle'"
+            justify="center">
+            <CaCol :span="12">
+              <CaSwitch
+                v-model="mdEditMode"
+                :mode="'full'"
+                :options="mdEditModeOptions"></CaSwitch>
+            </CaCol>
+          </CaRow>
+          <CaRow>
+            <CaCol :span="18">是否置顶</CaCol>
+            <CaCol :span="6">
+              <CaSwitch
+                :options="booleanOptions"
+                v-model="articleForm.isTop">
+              </CaSwitch
+            ></CaCol>
+          </CaRow>
+          <CaRow>
+            <CaCol :span="18">是否原创</CaCol>
+            <CaCol :span="6">
+              <CaSwitch
+                :options="booleanOptions"
+                v-model="articleForm.isOriginal">
+              </CaSwitch
+            ></CaCol>
+            <CaCol
+              :span="24"
+              v-show="articleForm.isOriginal === 'false'"
+              >原链接地址</CaCol
+            >
+            <CaCol
+              :span="24"
+              v-show="articleForm.isOriginal === 'false'">
+              <input v-model="articleForm.reprintSource" />
+            </CaCol>
+          </CaRow>
+          <CaRow>
+            <CaCol :span="18">是否允许评论</CaCol>
+            <CaCol :span="6">
+              <CaSwitch
+                :options="booleanOptions"
+                v-model="articleForm.allowComment" />
+            </CaCol>
+          </CaRow>
+          <CaRow>
+            <CaCol :span="24">友好链接</CaCol>
+            <CaCol :span="24">
+              <input v-model="articleForm.slug" />
+            </CaCol>
+          </CaRow>
+          <CaRow>
+            <CaCol :span="24">SEO关键字</CaCol>
+            <CaCol :span="24">
+              <input v-model="articleForm.seoKeywords" />
+            </CaCol>
+          </CaRow>
+          <CaRow>
+            <CaCol :span="24">SEO描述</CaCol>
+            <CaCol :span="24">
+              <textarea v-model="articleForm.seoDescription" />
+            </CaCol>
+          </CaRow>
+          <CaRow>
+            <CaCol :span="24">分类</CaCol>
+            <CaCol :span="24">
+              <CaCascader
+                v-model="articleForm.category"
+                :options="categories" />
+            </CaCol>
+          </CaRow>
+          <CaRow>
+            <CaCol :span="24">标签</CaCol>
+            <CaCol :span="24">
+              <CaCheckboxGroup v-model="articleForm.tags">
+                <CaCheckbox
+                  v-for="tag in tags"
+                  :key="tag.id"
+                  :label="tag.name"
+                  :value="tag.id" />
+              </CaCheckboxGroup>
+            </CaCol>
+          </CaRow>
         </div>
-      </div>
-
-      <div class="form-item">
-        <label>文章内容：</label>
-        <textarea v-model="articleForm.content" placeholder="请输入正文内容（此处未来可集成 Markdown 编辑器）..." class="styled-textarea" rows="8"></textarea>
-      </div>
-
-      <div class="form-actions">
-        <button class="btn btn-secondary" @click="handlePublish('draft')">保存草稿</button>
-        <button class="btn btn-primary" @click="handlePublish('publish')">发布文章</button>
-      </div>
-    </div>
-  </div>
+      </CaCol>
+    </CaRow>
+  </CaCard>
 </template>
 
 <style scoped>
-.page-container {
-  padding: 24px;
-  background-color: #f5f7fa;
-  min-height: 100vh;
-  font-family: sans-serif;
-}
-.page-header {
-  margin-bottom: 20px;
-}
-.page-header h2 {
-  margin: 0 0 8px 0;
-  color: #303133;
-}
-.sub-title {
-  margin: 0;
-  color: #909399;
-  font-size: 14px;
-}
-.form-card {
-  background: #fff;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.05);
-}
-.form-item {
-  margin-bottom: 20px;
-  flex: 1;
-}
-.form-item label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #606266;
-  font-size: 14px;
-}
-.form-row {
-  display: flex;
-  gap: 20px;
-}
-.styled-input, .styled-select, .styled-textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 14px;
-}
-.styled-input:focus, .styled-select:focus, .styled-textarea:focus {
-  border-color: #409eff;
-  outline: none;
-}
-.checkbox-group {
-  display: flex;
-  gap: 15px;
-  padding-top: 8px;
-}
-.checkbox-group label {
-  font-weight: normal;
-  cursor: pointer;
-}
-.form-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  border-top: 1px solid #f2f6fc;
-  padding-top: 20px;
-}
-.btn {
-  padding: 10px 20px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-}
-.btn-primary {
-  background-color: #409eff;
-  color: white;
-}
-.btn-primary:hover { background-color: #66b1ff; }
-.btn-secondary {
-  background-color: #fff;
-  border: 1px solid #dcdfe6;
-  color: #606266;
-}
-.btn-secondary:hover { color: #409eff; border-color: #c6e2ff; background-color: #ecf5ff; }
+  .ca-post-edit {
+    height: 100%;
+  }
+
+  .ca-post-edit input,
+  .ca-post-edit textarea {
+    width: 100%;
+    box-sizing: border-box;
+    color: var(--color-text-h);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-right: 6px;
+    padding: 8px 12px;
+    font-family: var(--font-text);
+    font-size: 14px;
+    line-height: 1;
+    outline: none;
+  }
+
+  .ca-post-edit__title {
+    margin-bottom: 4px;
+  }
+
+  .ca-post-edit__input {
+    font-size: 24px;
+    font-weight: 600;
+    font-family: var(--font-h);
+    border: 1px solid transparent;
+    background-color: transparent;
+    padding: 8px 0;
+    border-radius: 0;
+  }
+
+  .ca-post-edit__action-container {
+    padding-top: 8px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    column-gap: 8px;
+  }
+
+  .ca-post-edit__context-container {
+    width: 100%;
+    height: 100%;
+    padding: 10px 0;
+  }
+
+  .ca-post-edit__textarea-container {
+    height: 100%;
+    background-color: var(--color-bg);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+  }
+
+  .ca-post-edit__textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    border: 1px solid transparent;
+    outline: 1px solid transparent;
+    background-color: var(--color-bg);
+    font-family: var(--md-font-text);
+    font-size: 16px;
+  }
+
+  .ca-post-edit__meta-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ca-post-edit__meta-container textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
 </style>
