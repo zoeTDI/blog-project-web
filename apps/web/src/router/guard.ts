@@ -5,6 +5,9 @@ import { useUserStore } from '@/store/useUserStore.ts';
 import { preferences, defaultPreferences } from '@/core/preferences';
 import { i18n, ROUTER_PREFIX } from '@/plugins/i18n.ts';
 import { getDynamicText } from '@/utils/translate.ts';
+import { isEmpty, isString } from '@caldm/utils';
+
+const WHITE_LIST = Object.values(ROUTER_NAMES);
 
 const getWebsiteName = () => {
   return getDynamicText({
@@ -36,7 +39,7 @@ const processDocumentTitle = (pageName: string) => {
 const setupCommonGuard = (router: Router) => {
   const loadedPaths = new Set<string>();
 
-  router.beforeEach((to) => {
+  router.beforeEach((to: RouteLocationNormalized) => {
     // 获取页面是否已经加载
     to.meta.loaded = loadedPaths.has(to.path);
 
@@ -59,33 +62,24 @@ const setupCommonGuard = (router: Router) => {
 };
 
 const setupAccessGuard = (router: Router) => {
-  const getPathString = (val: any): string =>
-    Array.isArray(val) ? val[0] : (val as string);
   router.beforeEach((to: RouteLocationNormalized) => {
     const userStore = useUserStore();
     // 无需检查权限
-    if (Object.values(ROUTER_NAMES).includes(to.name as string)) {
+    if (WHITE_LIST.includes(to.name as string)) {
       // 前往登录页
       if (to.name === ROUTER_NAMES.LOGIN) {
         // 已登录
         if (userStore.isLoggedIn()) {
-          // 存在重定向页面
-          if (to.query?.to && to.query.to !== '') {
-            // 前往重定向页面
-            return { path: getPathString(to.query.to) };
-          } else {
-            // 如果直接放行，就前往登录页了，这是不行的。
-            // 前往默认首页
-            return {
-              path:
-                preferences.app.defaultHomePath &&
-                preferences.app.defaultHomePath !== ''
-                  ? preferences.app.defaultHomePath
-                  : defaultPreferences.app.defaultHomePath,
-            };
-          }
+          // 已登录用户不允许前往登录页，重定向到默认首页
+          return {
+            path:
+              isString(preferences.app.defaultHomePath) &&
+              !isEmpty(preferences.app.defaultHomePath)
+                ? preferences.app.defaultHomePath
+                : defaultPreferences.app.defaultHomePath,
+          };
         } else {
-          // 去往登录页，且没有token，放行
+          // 用户未登录，前往默认页
           return true;
         }
       } else {
@@ -93,27 +87,17 @@ const setupAccessGuard = (router: Router) => {
         return true;
       }
     }
-
+    // 登录校验
     if (!userStore.isLoggedIn()) {
       // 访问权限检查
       // 明确忽略权限检查，直接放行
       if (to.meta?.ignoreAccess) {
         return true;
-      } else if (to.name !== ROUTER_NAMES.LOGIN) {
-        // 没有访问权限，且去往的不是登录页
-        // 返回登录页，添加重定向路径
-        return {
-          name: ROUTER_NAMES.LOGIN,
-          query:
-            to.fullPath === preferences.app.defaultHomePath
-              ? {}
-              : { to: to.fullPath },
-          replace: true,
-        };
       }
-      // 没有登录，不是去往登录页，阻止
-      return { name: ROUTER_NAMES.HOME };
+      // 没有登录并且去往需要权限校验的页面，直接跳转到登录页，并添加重定向。
+      return { name: ROUTER_NAMES.HOME, query: { to: to.path } };
     }
+    // 可在此处进一步添加角色校验和权限校验
     return true;
   });
 };

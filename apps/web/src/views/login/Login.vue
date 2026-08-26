@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue';
-  import { useRouter } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import {
     LockClosedIcon,
     EnvelopeIcon,
@@ -19,17 +19,19 @@
     type LoginCodeReq,
   } from '@/api/authApi.ts';
   import { CaButton, CaIcon, CaMessage } from '@caldm/ui';
-  import { isString } from '@caldm/utils';
+  import { isEmpty, isString } from '@caldm/utils';
   import { useCSSNamespace } from '@caldm/hook';
+  import { defaultPreferences, preferences } from '@/core/preferences';
 
   const router = useRouter();
+  const route = useRoute();
   const userStore = useUserStore();
   const ns = useCSSNamespace('login');
 
   const loginType = ref<'password' | 'code'>('password');
   const loading = ref<boolean>(false);
-  const account = ref('');
-  const password = ref('');
+  const account = ref('admin');
+  const password = ref('123456789');
   const code = ref('');
   let timer: ReturnType<typeof setInterval> | null = null;
   const count = ref<number>(60);
@@ -113,7 +115,17 @@
         res = await loginEC(payload as LoginECReq);
       }
       userStore.login(res);
-      await router.push({ name: BACKEND_ROUTER_NAME.DASHBOARD });
+      const redirectPath =
+        isString(route.query?.to) && !isEmpty(route.query.to)
+          ? { path: route.query.to }
+          : {
+              path:
+                isString(preferences.app.defaultHomePath) &&
+                !isEmpty(preferences.app.defaultHomePath)
+                  ? preferences.app.defaultHomePath
+                  : defaultPreferences.app.defaultHomePath,
+            };
+      await router.push(redirectPath);
     } catch (error) {
       CaMessage.error('认证失败，请检查账户信息 / AUTHENTICATION FAILED');
     }
