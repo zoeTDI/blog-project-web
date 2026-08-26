@@ -16,6 +16,7 @@
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import { CaAvatar } from '@caldm/ui';
   import { logout } from '@/api/authApi.ts';
+  import { useTabStore } from '@/store/useTabStore.ts';
 
   const mockMessages: MessageItem[] = [
     {
@@ -77,6 +78,7 @@
   const router = useRouter();
   const route = useRoute();
   const userStore = useUserStore();
+  const tabStore = useTabStore();
 
   let hoverTimer: ReturnType<typeof setTimeout> | null = null;
   // 消息队列的显示状态
@@ -103,15 +105,13 @@
         label: '退出登录',
         shortcut: 'Alt + Q',
         onClick: async () => {
-          try {
-            await logout();
-          } finally {
-            userStore.logout();
-            router.push({
-              name: ROUTER_NAMES.LOGIN,
-              query: { to: route.path },
-            });
-          }
+          await logout();
+          userStore.logout();
+          tabStore.clearTabs();
+          router.push({
+            name: ROUTER_NAMES.LOGIN,
+            query: { to: route.path },
+          });
         },
       },
     ],
@@ -239,6 +239,7 @@
     align-items: center;
     gap: 16px;
   }
+
   .action-item {
     position: relative;
     cursor: pointer;
@@ -246,6 +247,7 @@
     align-items: center;
     justify-content: center;
   }
+
   .icon {
     width: 20px;
     height: 20px;

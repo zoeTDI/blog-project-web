@@ -211,6 +211,14 @@ export const useTabStore = defineStore(
       tabs.value = tabs.value.filter((tab) => tab.pinned);
     };
 
+    /**
+     * 功能：清除标签页数据
+     * 逻辑：清除所有标签页（包括固定页）
+     */
+    const clearTabs = () => {
+      tabs.value = [];
+    };
+
     return {
       tabs,
       addTab,
@@ -222,6 +230,7 @@ export const useTabStore = defineStore(
       closeRightTabs,
       closeOtherTabs,
       closeAllTabs,
+      clearTabs,
     };
   },
   {
