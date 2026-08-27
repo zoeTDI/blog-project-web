@@ -25,6 +25,8 @@
     booleanOptions,
     mdEditModeOptions,
   } from '@/views/post/postEdit/constant.ts';
+  import { normalizeCategoryTrees } from '@/views/post/postEdit/category.ts';
+  import { resolvePostSlug } from '@/views/post/postEdit/slug.ts';
   import { MarkdownRender } from '@/components/markdownRender';
 
   interface CategoryNode {
@@ -46,14 +48,14 @@
     isTop: 'false',
     isOriginal: 'true',
     publishedTime: null,
-    slug: '',
+    slug: resolvePostSlug('', '', false),
     seoKeywords: '',
     seoDescription: '',
     password: null,
     allowComment: 'false',
     reprintSource: null,
     sortWeight: 0,
-    category: [] as number[],
+    category: [] as number[][],
     tags: [] as number[],
   });
 
@@ -62,6 +64,7 @@
   const categories = ref<CategoryNode[]>([]);
   const mdEditMode = ref<'code' | 'read' | 'preview'>('code');
   const postContextWidth = ref<number>(18);
+  const slugManuallyModified = ref(false);
 
   const classes = computed(() => {
     const cls: string[] = [ns.b()];
@@ -84,10 +87,8 @@
     return n;
   };
 
-  const getSlug = () => {
-    return isEmpty(articleForm.value.slug)
-      ? articleForm.value.title + Date.now().toString()
-      : articleForm.value.slug;
+  const handleSlugInput = () => {
+    slugManuallyModified.value = true;
   };
 
   const handleSave = async (status: 'draft' | 'publish') => {
@@ -109,13 +110,13 @@
         type: 1, // 普通文章
         status: status === 'publish' ? 2 : 0, // 草稿状态
         publishedTime: '',
-        slug: getSlug(),
+        slug: articleForm.value.slug,
         seoKeywords: articleForm.value.seoKeywords,
         seoDescription: articleForm.value.seoDescription,
         password: articleForm.value.password,
         reprintSource: articleForm.value.reprintSource,
         tagIds: articleForm.value.tags,
-        categoryTrees: [articleForm.value.category],
+        categoryTrees: normalizeCategoryTrees(articleForm.value.category),
       };
       console.log(
         '🚀 ~ handleSave ~ JSON.stringify(payload, null, 2): ',
@@ -132,6 +133,15 @@
     (newVal) => {
       if (newVal === 'true') {
         articleForm.value.reprintSource = null;
+      }
+    }
+  );
+
+  watch(
+    () => articleForm.value.title,
+    (title) => {
+      if (!slugManuallyModified.value) {
+        articleForm.value.slug = resolvePostSlug(title, '', false);
       }
     }
   );
@@ -185,6 +195,7 @@
             v-model="articleForm.contentMd"
             :width="'100%'"
             :height="'100%'"
+            :border="false"
             :class="ns.e('textarea')" />
           <!-- <textarea -->
           <!--   v-show="mdEditMode === 'code'" -->
@@ -202,6 +213,7 @@
                 v-model="articleForm.contentMd"
                 :width="'100%'"
                 :height="'100%'"
+                :border="false"
                 :class="ns.e('textarea')" />
             </CaCol>
             <CaCol :span="12">
@@ -263,7 +275,9 @@
           <CaRow>
             <CaCol :span="24">友好链接</CaCol>
             <CaCol :span="24">
-              <input v-model="articleForm.slug" />
+              <input
+                v-model="articleForm.slug"
+                @input="handleSlugInput" />
             </CaCol>
           </CaRow>
           <CaRow>
@@ -283,7 +297,11 @@
             <CaCol :span="24">
               <CaCascader
                 v-model="articleForm.category"
-                :options="categories" />
+                :options="categories"
+                multiple
+                clearable
+                collapse-tags
+                :max-collapse-tags="2" />
             </CaCol>
           </CaRow>
           <CaRow>
@@ -315,17 +333,28 @@
     box-sizing: border-box;
     color: var(--color-text-h);
     background-color: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-right: 6px;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: 0;
     padding: 8px 12px;
     font-family: var(--font-text);
     font-size: 14px;
     line-height: 1;
     outline: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .ca-post-edit input:focus,
+  .ca-post-edit textarea:focus {
+    border-bottom-color: var(--color-accent);
   }
 
   .ca-post-edit__title {
     margin-bottom: 4px;
+  }
+
+  .ca-post-edit :deep(.ca-card__header) {
+    border-bottom: none;
   }
 
   .ca-post-edit__input {
@@ -363,8 +392,6 @@
 
   .ca-post-edit__textarea {
     resize: none;
-    border: 1px solid transparent;
-    outline: 1px solid transparent;
     background-color: var(--color-bg);
     font-family: var(--md-font-text);
     font-size: 16px;
@@ -379,5 +406,11 @@
   .ca-post-edit__meta-container textarea {
     min-height: 80px;
     resize: vertical;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  .ca-post-edit__meta-container textarea:focus {
+    border-color: var(--color-accent);
   }
 </style>
