@@ -2,6 +2,15 @@ import type { ComponentSize } from '#/component.ts';
 
 export type CascaderValue = string | number;
 
+/** 单个选项的完整值路径 */
+export type CascaderPath = CascaderValue[];
+
+/** 多选模式下的值路径集合 */
+export type CascaderMultipleValue = CascaderPath[];
+
+/** Cascader 支持的双向绑定值 */
+export type CascaderModelValue = CascaderPath | CascaderMultipleValue;
+
 export interface CascadeFieldName {
   label: string;
   value: string;
@@ -10,6 +19,9 @@ export interface CascadeFieldName {
 }
 
 export type CascaderOption = Record<string, any>;
+
+/** change 事件返回的选项路径 */
+export type CascaderSelectedOptions = CascaderOption[] | CascaderOption[][];
 
 export interface CascaderProps {/** 尺寸 */
   size?: ComponentSize;
@@ -29,9 +41,17 @@ export interface CascaderProps {/** 尺寸 */
   disabled?: boolean;
   /** 是否允许一键清空 */
   clearable?: boolean;
+  /** 是否启用多选模式 */
+  multiple?: boolean;
+  /** 多选时父子节点是否相互独立 */
+  checkStrictly?: boolean;
+  /** 多选时是否折叠已选标签 */
+  collapseTags?: boolean;
+  /** 折叠前最多展示的标签数量 */
+  maxCollapseTags?: number;
 }
 
 export interface CascaderEmits {
-  (e: 'change', value: CascaderValue[], selectedOptions: CascaderOption[]): void;
+  (e: 'change', value: CascaderModelValue, selectedOptions: CascaderSelectedOptions): void;
   (e: 'clear'): void;
 }

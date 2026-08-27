@@ -13,7 +13,7 @@ const mockOptions = [
         label: '杭州市',
         children: [
           { value: 'xihu', label: '西湖区' },
-          { value: 'yuhang', label: '余杭区' },
+          { value: 'yuhang', label: '余杭区', disabled: true },
         ],
       },
       {
@@ -71,6 +71,7 @@ const meta = {
 - **Teleport 挂载**：弹窗自动 Teleport 至 \`body\` 下，不受父级容器 \`overflow: hidden\` 截断。
 - **防越界响应**：自动识别视口边距，灵活切换展开方向。
 - **灵活的选择模式**：支持默认的“单选叶子节点”以及 \`changeOnSelect\`（选择任意一级）。
+- **多选模式**：支持父子联动、节点独立选择、标签折叠与单项删除。
 - **字段自定义**：支持通过 \`fieldNames\` 映射非标准结构的后台数据。
 `,
       },
@@ -81,7 +82,7 @@ const meta = {
       control: 'object',
       description: '双向绑定的选中值（节点 key/value 的数组路径）',
       table: {
-        type: { summary: 'CascaderValue[]' },
+        type: { summary: 'CascaderPath | CascaderMultipleValue' },
         defaultValue: { summary: '[]' },
       },
     },
@@ -134,6 +135,38 @@ const meta = {
         defaultValue: { summary: 'false' },
       },
     },
+    multiple: {
+      control: 'boolean',
+      description: '是否开启多选模式',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    checkStrictly: {
+      control: 'boolean',
+      description: '多选时父子节点是否相互独立',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    collapseTags: {
+      control: 'boolean',
+      description: '多选时是否折叠已选标签',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    maxCollapseTags: {
+      control: { type: 'number', min: 0, step: 1 },
+      description: '折叠前最多展示的标签数量',
+      table: {
+        type: { summary: 'number' },
+        defaultValue: { summary: '1' },
+      },
+    },
     clearable: {
       control: 'boolean',
       description: '是否显示一键清空图标按钮',
@@ -168,6 +201,10 @@ const meta = {
     changeOnSelect: false,
     disabled: false,
     clearable: true,
+    multiple: false,
+    checkStrictly: false,
+    collapseTags: false,
+    maxCollapseTags: 1,
   },
 } satisfies Meta<typeof CaCascader>;
 
@@ -336,6 +373,173 @@ export const Disabled: Story = {
     },
     template: `
       <CaCascader v-bind="args" v-model="value" />
+    `,
+  }),
+};
+
+/**
+ * **基础多选**
+ * 选择叶子节点后面板保持打开，可连续选择多个路径。
+ */
+export const Multiple: Story = {
+  args: {
+    multiple: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '开启 `multiple` 后以标签展示已选叶子节点，支持连续选择和单项删除。',
+      },
+    },
+  },
+  render: (args) => ({
+    components: { CaCascader },
+    setup() {
+      const value = ref<Array<Array<string | number>>>([
+        ['zhejiang', 'hangzhou', 'xihu'],
+        ['jiangsu', 'nanjing', 'gulou'],
+      ]);
+      return { args, value };
+    },
+    template: `
+      <div style="padding-bottom: 220px;">
+        <CaCascader v-bind="args" v-model="value" />
+        <pre style="margin-top: 16px;">{{ value }}</pre>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * **父子节点联动**
+ * 勾选父节点时选择其全部可用叶子，禁用节点不参与联动。
+ */
+export const ParentChildSelection: Story = {
+  args: {
+    multiple: true,
+  },
+  render: (args) => ({
+    components: { CaCascader },
+    setup() {
+      const value = ref<Array<Array<string | number>>>([]);
+      return { args, value };
+    },
+    template: `
+      <div style="padding-bottom: 220px;">
+        <CaCascader v-bind="args" v-model="value" />
+        <pre style="margin-top: 16px;">{{ value }}</pre>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * **节点独立选择**
+ * 每个节点独立勾选，不进行父子联动。
+ */
+export const CheckStrictly: Story = {
+  args: {
+    multiple: true,
+    checkStrictly: true,
+  },
+  render: (args) => ({
+    components: { CaCascader },
+    setup() {
+      const value = ref<Array<Array<string | number>>>([
+        ['zhejiang'],
+        ['jiangsu', 'nanjing'],
+      ]);
+      return { args, value };
+    },
+    template: `
+      <div style="padding-bottom: 220px;">
+        <CaCascader v-bind="args" v-model="value" />
+        <pre style="margin-top: 16px;">{{ value }}</pre>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * **标签折叠**
+ */
+export const CollapsedTags: Story = {
+  args: {
+    multiple: true,
+    collapseTags: true,
+    maxCollapseTags: 1,
+  },
+  render: (args) => ({
+    components: { CaCascader },
+    setup() {
+      const value = ref<Array<Array<string | number>>>([
+        ['zhejiang', 'hangzhou', 'xihu'],
+        ['zhejiang', 'ningbo', 'haishu'],
+        ['jiangsu', 'nanjing', 'gulou'],
+      ]);
+      return { args, value };
+    },
+    template: `
+      <div style="padding-bottom: 220px;">
+        <CaCascader v-bind="args" v-model="value" />
+        <pre style="margin-top: 16px;">{{ value }}</pre>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * **包含禁用节点的多选**
+ */
+export const MultipleWithDisabled: Story = {
+  args: {
+    multiple: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: '余杭区为禁用节点；勾选浙江省时不会将该节点加入结果。',
+      },
+    },
+  },
+  render: (args) => ({
+    components: { CaCascader },
+    setup() {
+      const value = ref<Array<Array<string | number>>>([]);
+      return { args, value };
+    },
+    template: `
+      <div style="padding-bottom: 220px;">
+        <CaCascader v-bind="args" v-model="value" />
+        <pre style="margin-top: 16px;">{{ value }}</pre>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * **暗色主题多选**
+ */
+export const DarkMultiple: Story = {
+  args: {
+    multiple: true,
+    collapseTags: true,
+    maxCollapseTags: 1,
+  },
+  render: (args) => ({
+    components: { CaCascader },
+    setup() {
+      const value = ref<Array<Array<string | number>>>([
+        ['zhejiang', 'hangzhou', 'xihu'],
+        ['jiangsu', 'nanjing', 'gulou'],
+      ]);
+      return { args, value };
+    },
+    template: `
+      <div class="dark" style="min-height: 280px; padding: 24px; color: #d8d4dc; background: #1a1a1a;">
+        <CaCascader v-bind="args" v-model="value" />
+        <pre style="margin-top: 16px;">{{ value }}</pre>
+      </div>
     `,
   }),
 };

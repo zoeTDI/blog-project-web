@@ -1,16 +1,38 @@
 <script setup lang="ts">
   import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
   import type { CSSProperties } from 'vue';
-  import { ChevronDownIcon, XCircleIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
-  import type { CascaderProps, CascaderEmits, CascaderOption, CascaderValue } from './types';
+  import { ChevronDownIcon, ChevronRightIcon, XCircleIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+  import type {
+    CascaderEmits,
+    CascaderModelValue,
+    CascaderMultipleValue,
+    CascaderOption,
+    CascaderPath,
+    CascaderProps,
+    CascaderValue,
+  } from './types';
   import { DEFAULT_FIELD_NAMES, DEFAULT_SPLIT_CHAR } from './constants';
+  import {
+    addPaths,
+    collectSelectableLeafPaths,
+    dedupePaths,
+    findOptionPath,
+    getOptionChildren,
+    getOptionCheckState,
+    getOptionLabel,
+    getOptionValue,
+    getPathValues,
+    hasPath,
+    isOptionDisabled,
+    removePaths,
+  } from './tree';
   import { useCSSNamespace } from '@caldm/hook';
 
   defineOptions({
     name: 'CaCascader',
   });
 
-  const modelValue = defineModel<CascaderValue[]>({ default: () => [] });
+  const modelValue = defineModel<CascaderModelValue>({ default: () => [] });
 
   const props = withDefaults(defineProps<CascaderProps>(), {
     size: 'M',
@@ -21,6 +43,10 @@
     changeOnSelect: false,
     disabled: false,
     clearable: false,
+    multiple: false,
+    checkStrictly: false,
+    collapseTags: false,
+    maxCollapseTags: 1,
   });
 
   const emit = defineEmits<CascaderEmits>();
@@ -32,7 +58,9 @@
   const panelRef = ref<HTMLElement | null>(null);
 
   const visible = ref(false); // 下拉框显隐
-  const activePath = ref<CascaderOption[]>([]); // 当前选中的节点链表
+  // 面板导航路径与已提交的选择状态相互独立。
+  const navigationPath = ref<CascaderOption[]>([]);
+  const selectedPaths = ref<CascaderPath[]>([]);
   const panelDirection = ref<'left' | 'right'>('right');
 
   const dropdownStyle = ref<CSSProperties>({});
@@ -44,7 +72,7 @@
 
   const panels = computed<CascaderOption[][]>(() => {
     const result: CascaderOption[][] = [props.options];
-    for (const node of activePath.value) {
+    for (const node of navigationPath.value) {
       const children = getChildren(node);
       if (children && children.length > 0) {
         result.push(children);
@@ -56,34 +84,83 @@
   });
 
   const displayLabel = computed(() => {
-    return activePath.value.map(getLabel).filter(Boolean).join(props.splitChar);
+    return navigationPath.value.map(getLabel).filter(Boolean).join(props.splitChar);
   });
 
-  const findPathByValues = (
-    options: CascaderOption[],
-    values: CascaderValue[],
-    depth = 0,
-  ): CascaderOption[] => {
-    if (!values || values.length === 0 || depth >= values.length) return [];
+  const isMultipleModelValue = (
+    value: CascaderModelValue,
+  ): value is CascaderMultipleValue => value.length > 0 && Array.isArray(value[0]);
 
-    const targetValue = values[depth];
-    const foundNode = options.find((opt) => getValue(opt) === targetValue);
+  const normalizeModelValue = (value: CascaderModelValue): CascaderPath[] => {
+    if (value.length === 0) return [];
 
-    if (!foundNode) return [];
-
-    const children = getChildren(foundNode);
-    if (children && children.length > 0 && depth + 1 < values.length) {
-      return [foundNode, ...findPathByValues(children, values, depth + 1)];
+    if (props.multiple) {
+      return isMultipleModelValue(value)
+        ? dedupePaths(value)
+        : [[...value]];
     }
-    return [foundNode];
+
+    const path = isMultipleModelValue(value) ? value[0] : value;
+    return path?.length ? [[...path]] : [];
   };
 
-  const syncPathFromModel = () => {
-    if (!modelValue.value || modelValue.value.length === 0) {
-      activePath.value = [];
-      return;
+  interface SelectedItem {
+    values: CascaderPath;
+    options: CascaderOption[];
+    label: string;
+    fullLabel: string;
+  }
+
+  const selectedItems = computed<SelectedItem[]>(() => {
+    const result: SelectedItem[] = [];
+    for (const values of selectedPaths.value) {
+      const optionPath = findOptionPath(props.options, values, fieldNames.value);
+      if (optionPath.length === 0) continue;
+
+      const labels = optionPath.map(getLabel).filter(Boolean);
+      result.push({
+        values,
+        options: optionPath,
+        label: labels.at(-1) ?? '',
+        fullLabel: labels.join(props.splitChar),
+      });
     }
-    activePath.value = findPathByValues(props.options, modelValue.value);
+    return result;
+  });
+
+  const selectedOptionPaths = computed<CascaderOption[][]>(() => (
+    selectedItems.value.map((item) => item.options)
+  ));
+
+  const visibleSelectedItems = computed(() => {
+    if (!props.collapseTags) return selectedItems.value;
+    const limit = Math.max(0, Math.floor(props.maxCollapseTags));
+    return selectedItems.value.slice(0, limit);
+  });
+
+  const collapsedCount = computed(() => (
+    Math.max(0, selectedItems.value.length - visibleSelectedItems.value.length)
+  ));
+
+  const collapsedTitle = computed(() => (
+    selectedItems.value
+      .slice(visibleSelectedItems.value.length)
+      .map((item) => item.fullLabel)
+      .join('\n')
+  ));
+
+  const hasSelection = computed(() => (
+    props.multiple ? selectedItems.value.length > 0 : !!displayLabel.value
+  ));
+
+  const syncSelectedPathsFromModel = () => {
+    selectedPaths.value = normalizeModelValue(modelValue.value);
+  };
+
+  const syncNavigationFromSelection = () => {
+    navigationPath.value = selectedOptionPaths.value[0]
+      ? [...selectedOptionPaths.value[0]]
+      : [];
   };
 
   const updateDropdownPosition = async () => {
@@ -124,23 +201,19 @@
   };
 
   const getLabel = (node?: CascaderOption): string => {
-    if (!node) return '';
-    return node[fieldNames.value.label] ?? '';
+    return getOptionLabel(node, fieldNames.value);
   };
 
   const getValue = (node?: CascaderOption): CascaderValue | undefined => {
-    if (!node) return undefined;
-    return node[fieldNames.value.value];
+    return getOptionValue(node, fieldNames.value);
   };
 
   const getChildren = (node?: CascaderOption): CascaderOption[] | undefined => {
-    if (!node) return undefined;
-    return node[fieldNames.value.children];
+    return getOptionChildren(node, fieldNames.value);
   };
 
   const getDisabled = (node?: CascaderOption): boolean => {
-    if (!node) return false;
-    return !!node[fieldNames.value.disabled];
+    return isOptionDisabled(node, fieldNames.value);
   };
 
   const toggleMenu = () => {
@@ -160,24 +233,88 @@
 
   const closeMenu = () => {
     visible.value = false;
-    syncPathFromModel();
+    syncNavigationFromSelection();
     removeScrollResizeListeners();
+  };
+
+  const commitSingleSelection = (optionPath: CascaderOption[]) => {
+    const selectedValues = getPathValues(optionPath, fieldNames.value);
+    selectedPaths.value = [selectedValues];
+    modelValue.value = selectedValues;
+    emit('change', selectedValues, optionPath);
+  };
+
+  const commitMultipleSelection = (paths: CascaderPath[]) => {
+    const nextPaths = dedupePaths(paths);
+    const selectedOptions = nextPaths
+      .map((path) => findOptionPath(props.options, path, fieldNames.value))
+      .filter((path) => path.length > 0);
+
+    selectedPaths.value = nextPaths;
+    modelValue.value = nextPaths;
+    emit('change', nextPaths, selectedOptions);
+  };
+
+  const handleOptionCheck = (node: CascaderOption, level: number) => {
+    if (getDisabled(node)) return;
+
+    const parentPath = getPathValues(
+      navigationPath.value.slice(0, level),
+      fieldNames.value,
+    );
+    const value = getValue(node);
+    if (value === undefined) return;
+
+    const affectedPaths = props.checkStrictly
+      ? [[...parentPath, value]]
+      : collectSelectableLeafPaths(node, parentPath, fieldNames.value);
+    if (affectedPaths.length === 0) return;
+
+    const allSelected = affectedPaths.every((path) => hasPath(selectedPaths.value, path));
+    const nextPaths = allSelected
+      ? removePaths(selectedPaths.value, affectedPaths)
+      : addPaths(selectedPaths.value, affectedPaths);
+
+    commitMultipleSelection(nextPaths);
+  };
+
+  const handleOptionNavigate = (node: CascaderOption, level: number) => {
+    if (getDisabled(node)) return;
+
+    const newPath = navigationPath.value.slice(0, level);
+    newPath.push(node);
+    navigationPath.value = newPath;
+  };
+
+  const getCheckState = (node: CascaderOption, level: number) => {
+    const parentPath = getPathValues(
+      navigationPath.value.slice(0, level),
+      fieldNames.value,
+    );
+    return getOptionCheckState(
+      node,
+      parentPath,
+      selectedPaths.value,
+      fieldNames.value,
+      props.checkStrictly,
+    );
   };
 
   const handleOptionClick = (node: CascaderOption, level: number) => {
     if (getDisabled(node)) return;
 
-    const newPath = activePath.value.slice(0, level);
-    newPath.push(node);
-    activePath.value = newPath;
+    if (props.multiple) {
+      handleOptionCheck(node, level);
+      return;
+    }
+
+    handleOptionNavigate(node, level);
 
     const children = getChildren(node);
     const hasChildren = children && children.length > 0;
 
     if (!hasChildren || props.changeOnSelect) {
-      const selectedValues = newPath.map((item) => getValue(item)!);
-      modelValue.value = selectedValues;
-      emit('change', selectedValues, newPath);
+      commitSingleSelection(navigationPath.value);
     }
 
     if (!hasChildren) {
@@ -185,9 +322,22 @@
     }
   };
 
+  const handleMoreClick = (e: Event, node: CascaderOption, level: number) => {
+    if (!props.multiple) return;
+    e.stopPropagation();
+    handleOptionNavigate(node, level);
+  };
+
+  const handleTagRemove = (e: Event, path: CascaderPath) => {
+    e.stopPropagation();
+    commitMultipleSelection(removePaths(selectedPaths.value, [path]));
+    if (!visible.value) syncNavigationFromSelection();
+  };
+
   const handleClear = (e: Event) => {
     e.stopPropagation();
-    activePath.value = [];
+    navigationPath.value = [];
+    selectedPaths.value = [];
     modelValue.value = [];
     emit('change', [], []);
     emit('clear');
@@ -223,14 +373,20 @@
   };
 
   watch(
-    [modelValue, () => props.options],
+    [
+      modelValue,
+      () => props.options,
+      () => props.fieldNames,
+      () => props.multiple,
+    ],
     () => {
-      syncPathFromModel();
+      syncSelectedPathsFromModel();
+      if (!visible.value) syncNavigationFromSelection();
     },
     { immediate: true, deep: true },
   );
 
-  watch(activePath, () => {
+  watch(navigationPath, () => {
     if (visible.value) {
       updateDropdownPosition();
     }
@@ -259,7 +415,40 @@
   >
     <!-- 输入框/触发框 -->
     <div :class="ns.e('trigger')" @click="toggleMenu">
+      <div v-if="props.multiple" :class="ns.e('tags')">
+        <span
+          v-if="selectedItems.length === 0"
+          :class="ns.e('placeholder')"
+        >
+          {{ props.placeholder }}
+        </span>
+        <span
+          v-for="item in visibleSelectedItems"
+          :key="item.values.join('-')"
+          :class="ns.e('tag')"
+          :title="item.fullLabel"
+        >
+          <span :class="ns.em('tag', 'label')">{{ item.label }}</span>
+          <button
+            type="button"
+            :class="ns.em('tag', 'remove')"
+            :aria-label="`移除 ${item.fullLabel}`"
+            :disabled="props.disabled"
+            @click="handleTagRemove($event, item.values)"
+          >
+            <XMarkIcon />
+          </button>
+        </span>
+        <span
+          v-if="collapsedCount > 0"
+          :class="[ns.e('tag'), ns.em('tag', 'collapsed')]"
+          :title="collapsedTitle"
+        >
+          +{{ collapsedCount }}
+        </span>
+      </div>
       <input
+        v-else
         type="text"
         readonly
         :placeholder="props.placeholder"
@@ -269,7 +458,7 @@
 
       <span :class="ns.e('suffix')">
         <XCircleIcon
-          v-if="props.clearable && displayLabel && !props.disabled"
+          v-if="props.clearable && hasSelection && !props.disabled"
           :class="[ns.e('icon'), ns.em('icon', 'clear')]"
           @click="handleClear"
         />
@@ -308,15 +497,29 @@
                 :key="getValue(item)"
                 :class="[
                   ns.e('option'),
-                  ns.is('active', !!(activePath[level] && getValue(activePath[level]) === getValue(item))),
+                  ns.is('active', !!(navigationPath[level] && getValue(navigationPath[level]) === getValue(item))),
+                  ns.is('selected', props.multiple && getCheckState(item, level).checked),
+                  ns.is('indeterminate', props.multiple && getCheckState(item, level).indeterminate),
                   ns.is('disabled', getDisabled(item))
                 ]"
                 @click="handleOptionClick(item, level)"
               >
+                <input
+                  v-if="props.multiple"
+                  type="checkbox"
+                  :class="ns.e('checkbox')"
+                  :checked="getCheckState(item, level).checked"
+                  :indeterminate="getCheckState(item, level).indeterminate"
+                  :disabled="getDisabled(item)"
+                  :aria-label="`选择 ${getLabel(item)}`"
+                  @click.stop
+                  @change.stop="handleOptionCheck(item, level)"
+                />
                 <span :class="ns.e('label')">{{ getLabel(item) }}</span>
                 <ChevronRightIcon
                   v-if="getChildren(item)?.length"
                   :class="[ns.e('icon'), ns.em('icon', 'more')]"
+                  @click="handleMoreClick($event, item, level)"
                 />
               </li>
             </ul>
@@ -333,7 +536,7 @@
     display: inline-block;
     width: 220px;
     font-size: 14px;
-    color: var(--color-text-primary, #333);
+    color: var(--ca-cascader-text);
   }
 
   /* S 尺寸 */
@@ -353,6 +556,11 @@
 
   .ca-cascader--size-S .ca-cascader__option {
     padding: 5px 8px;
+  }
+
+  .ca-cascader--size-S .ca-cascader__checkbox {
+    width: 12px;
+    height: 12px;
   }
 
   /* M 尺寸 (默认) */
@@ -393,35 +601,46 @@
     padding: 10px 14px;
   }
 
+  .ca-cascader--size-L .ca-cascader__checkbox {
+    width: 16px;
+    height: 16px;
+  }
+
   .ca-cascader__trigger {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid var(--color-border, #dcdfe6);
+    gap: 6px;
+    overflow: hidden;
+    color: var(--ca-cascader-text);
+    border: 1px solid var(--ca-cascader-border);
     border-radius: 4px;
-    background-color: #fff;
+    background-color: var(--ca-cascader-bg);
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
   }
 
   .ca-cascader__trigger:hover {
-    border-color: var(--color-accent, #409eff);
+    border-color: var(--ca-cascader-accent);
   }
 
-  .ca-cascader.is-active .ca-cascader__trigger {
-    border-color: var(--color-accent, #409eff);
+  .ca-cascader.is-active .ca-cascader__trigger,
+  .ca-cascader__trigger:focus-within {
+    border-color: var(--ca-cascader-accent);
   }
 
   .ca-cascader.is-disabled .ca-cascader__trigger {
-    background-color: #f5f7fa;
+    background-color: var(--ca-cascader-disabled-bg);
     cursor: not-allowed;
-    border-color: #e4e7ed;
+    border-color: var(--ca-cascader-disabled-border);
   }
 
   .ca-cascader__trigger input {
     width: 100%;
+    min-width: 0;
     border: none;
     outline: none;
+    color: var(--ca-cascader-text);
     background: transparent;
     cursor: pointer;
     font-size: inherit;
@@ -430,16 +649,21 @@
     white-space: nowrap;
   }
 
+  .ca-cascader__trigger input::placeholder {
+    color: var(--ca-cascader-placeholder);
+  }
+
   .ca-cascader.is-disabled input {
     cursor: not-allowed;
-    color: #a8abb2;
+    color: var(--ca-cascader-disabled-text);
   }
 
   .ca-cascader__suffix {
     display: flex;
+    flex: none;
     align-items: center;
     gap: 4px;
-    color: #a8abb2;
+    color: var(--ca-cascader-icon);
   }
 
   .ca-cascader__icon {
@@ -453,23 +677,103 @@
   }
 
   .ca-cascader__icon--clear:hover {
-    color: #606266;
+    color: var(--ca-cascader-text);
+  }
+
+  .ca-cascader__tags {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .ca-cascader__placeholder {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--ca-cascader-placeholder);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ca-cascader__tag {
+    display: inline-flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+    max-width: 120px;
+    padding: 2px 5px;
+    color: var(--ca-cascader-text);
+    background-color: var(--ca-cascader-tag-bg);
+    border: 1px solid var(--ca-cascader-tag-border);
+    border-radius: 3px;
+    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+  }
+
+  .ca-cascader__tag--label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ca-cascader__tag--remove {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .ca-cascader__tag--remove:hover {
+    color: var(--ca-cascader-accent);
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  .ca-cascader__tag--remove svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .ca-cascader__tag--remove:focus-visible {
+    outline: 1px solid var(--ca-cascader-accent);
+  }
+
+  .ca-cascader.is-disabled .ca-cascader__tag {
+    color: var(--ca-cascader-disabled-text);
+    background-color: var(--ca-cascader-disabled-bg);
+    border-color: var(--ca-cascader-disabled-border);
+  }
+
+  .ca-cascader__tag--collapsed {
+    flex: none;
   }
 
   /* 全局 Teleport 弹出面板控制 */
   .ca-cascader__dropdown {
     display: flex;
-    background: #fff;
-    border: 1px solid var(--color-border, #e4e7ed);
+    color: var(--ca-cascader-text);
+    background: var(--ca-cascader-bg);
+    border: 1px solid var(--ca-cascader-border);
     border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--ca-cascader-shadow);
     overflow: hidden;
+    transition: background-color 0.2s, border-color 0.2s;
   }
 
   .ca-cascader__panel {
     height: 200px;
     overflow-y: auto;
-    border-right: 1px solid var(--color-border, #e4e7ed);
+    border-right: 1px solid var(--ca-cascader-border);
   }
 
   .ca-cascader__panel:last-child {
@@ -486,28 +790,60 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
     cursor: pointer;
     transition: background-color 0.15s;
   }
 
   .ca-cascader__option:hover {
-    background-color: var(--color-bg-hover, #f5f7fa);
+    background-color: var(--ca-cascader-hover-bg);
   }
 
   .ca-cascader__option.is-active {
-    color: var(--color-accent, #409eff);
+    color: var(--ca-cascader-accent);
     font-weight: 600;
-    background-color: #ecf5ff;
+    background-color: var(--ca-cascader-selected-bg);
+  }
+
+  .ca-cascader__option.is-selected {
+    color: var(--ca-cascader-accent);
+    background-color: var(--ca-cascader-selected-bg);
+  }
+
+  .ca-cascader__option.is-indeterminate {
+    color: var(--ca-cascader-accent);
   }
 
   .ca-cascader__option.is-disabled {
-    color: #c0c4cc;
+    color: var(--ca-cascader-disabled-text);
     cursor: not-allowed;
-    background-color: #fff;
+    background-color: var(--ca-cascader-bg);
   }
 
   .ca-cascader__icon--more {
-    color: #a8abb2;
+    flex: none;
+    color: var(--ca-cascader-icon);
+  }
+
+  .ca-cascader__checkbox {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    accent-color: var(--ca-cascader-accent);
+    cursor: pointer;
+  }
+
+  .ca-cascader__option.is-disabled .ca-cascader__checkbox {
+    cursor: not-allowed;
+  }
+
+  .ca-cascader__label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .ca-fade-enter-active,
