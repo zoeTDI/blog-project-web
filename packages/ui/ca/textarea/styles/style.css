@@ -1,0 +1,90 @@
+
+.ca-field {
+  display: inline-block;
+  background-color: var(--color-container-bg);
+  position: relative;
+  border: 1px solid transparent;
+  outline: 1px solid transparent;
+  transition: outline-color 300ms ease, box-shadow 300ms ease, background-color 300ms ease;
+}
+
+.ca-field.ca-field--size-S {
+  padding: var(--padding-field-S);
+}
+
+.ca-field.ca-field--size-M {
+  padding: var(--padding-field-M);
+}
+
+.ca-field.ca-field--size-L {
+  padding: var(--padding-field-L);
+}
+
+.ca-field.is-radius {
+  border-radius: var(--ca-radius);
+}
+
+.ca-field.is-focus {
+  outline: var(--outline-field-focus);
+  box-shadow: var(--shadow-field-focus);
+}
+
+.ca-field.is-disabled {
+  background-color: var(--bg-field-disabled);
+}
+
+.ca-field.is-border {
+  border: var(--field-border);
+}
+
+.ca-field:has(.ca-field__count) {
+  padding-bottom: 24px;
+}
+
+.ca-field__container {
+  width: var(--ca-inner-width, 100%);
+  height: var(--ca-inner-height, 100%);
+}
+
+.ca-field__inner {
+  width: var(--ca-inner-width);
+  height: var(--ca-inner-height);
+  font-size: var(--size-field-font);
+  border: 1px solid transparent;
+  outline: 1px solid transparent;
+  resize: unset;
+}
+
+.is-horizontal .ca-field__inner {
+  resize: horizontal;
+}
+
+.is-vertical .ca-field__inner {
+  resize: vertical;
+}
+
+.is-horizontal.is-vertical .ca-field__inner,
+.is-resize .ca-field__inner {
+  resize: both;
+}
+
+.is-disabled .ca-field__inner {
+  background-color: transparent;
+}
+
+.ca-field__count {
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-text-placeholder, #909399);
+  user-select: none;
+  pointer-events: none;
+  background-color: transparent;
+}
+
+.is-length-error .ca-field__count {
+  color: var(--color-field-length-error);
+  font-weight: bold;
+}
