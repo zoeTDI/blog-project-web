@@ -63,16 +63,14 @@
       sty[ns.cssVarName('inner-width')] = `${innerSize.value.w}px`;
     }
     // 否则，如果设置了 props.width，使用初始 props.width
-    else if (props.width) {
+    else if (isString(props.width) || isNumber(props.width)) {
       if (isString(props.width)) {
         sty['width'] = props.width;
       } else if (isNumber(props.width)) {
         sty['width'] = `${props.width}px`;
       }
-      let innerWidth = getInnerWidth(props.width);
-      if (isString(innerWidth)) {
-        sty[ns.cssVarName('inner-width')] = innerWidth;
-      }
+      // field 使用 border-box，padding 已从内容区中扣除，内部元素填满父级即可
+      sty[ns.cssVarName('inner-width')] = '100%';
     }
     // 否则使用 100% 默认兜底
     else {
@@ -90,16 +88,13 @@
       sty[ns.cssVarName('inner-height')] = `${innerSize.value.h}px`;
     }
     // 否则，如果设置了 props.height，使用初始 props.height
-    else if (props.height) {
+    else if (isString(props.height) || isNumber(props.height)) {
       if (isString(props.height)) {
         sty['height'] = props.height;
       } else if (isNumber(props.height)) {
         sty['height'] = `${props.height}px`;
       }
-      let innerHeight = getInnerHeight(props.height);
-      if (isString(innerHeight)) {
-        sty[ns.cssVarName('inner-height')] = innerHeight;
-      }
+      sty[ns.cssVarName('inner-height')] = '100%';
     }
     // 否则使用 100% 默认兜底
     else {
@@ -149,44 +144,6 @@
     }
     if (!type || type === 'height') {
       innerRef.value.style.height = '';
-    }
-  };
-  const getInnerWidth = (w: number | string): string | void => {
-    if (isNumber(w)) {
-      if (props.size === 'S') {
-        return `${w - 10}px`;
-      } else if (props.size === 'M') {
-        return `${w - 14}px`;
-      } else if (props.size === 'L') {
-        return `${w - 24}px`;
-      }
-    } else if (isString(w)) {
-      if (props.size === 'S') {
-        return `calc(${w} - 10px)`;
-      } else if (props.size === 'M') {
-        return `calc(${w} - 14px)`;
-      } else if (props.size === 'L') {
-        return `calc(${w} - 24px)`;
-      }
-    }
-  };
-  const getInnerHeight = (h: number | string): string | void => {
-    if (isNumber(h)) {
-      if (props.size === 'S') {
-        return `${h - 6}px`;
-      } else if (props.size === 'M') {
-        return `${h - 10}px`;
-      } else if (props.size === 'L') {
-        return `${h - 16}px`;
-      }
-    } else if (isString(h)) {
-      if (props.size === 'S') {
-        return `calc(${h} - 6px)`;
-      } else if (props.size === 'M') {
-        return `calc(${h} - 10px)`;
-      } else if (props.size === 'L') {
-        return `calc(${h} - 16px)`;
-      }
     }
   };
   const getWidth = (w: number): number => {

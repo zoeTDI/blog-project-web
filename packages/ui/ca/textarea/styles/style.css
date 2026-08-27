@@ -1,7 +1,8 @@
 
 .ca-field {
   display: inline-block;
-  background-color: var(--color-container-bg);
+  box-sizing: border-box;
+  background-color: var(--bg-field);
   position: relative;
   border: 1px solid transparent;
   outline: 1px solid transparent;
@@ -42,13 +43,17 @@
 }
 
 .ca-field__container {
-  width: var(--ca-inner-width, 100%);
-  height: var(--ca-inner-height, 100%);
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 }
 
 .ca-field__inner {
-  width: var(--ca-inner-width);
-  height: var(--ca-inner-height);
+  box-sizing: border-box;
+  width: var(--ca-inner-width, auto);
+  height: var(--ca-inner-height, auto);
+  color: var(--color-field-text);
+  background-color: transparent;
   font-size: var(--size-field-font);
   border: 1px solid transparent;
   outline: 1px solid transparent;
@@ -69,7 +74,12 @@
 }
 
 .is-disabled .ca-field__inner {
+  color: var(--color-field-disabled-text);
   background-color: transparent;
+}
+
+.ca-field__inner::placeholder {
+  color: var(--color-field-placeholder);
 }
 
 .ca-field__count {
@@ -78,7 +88,7 @@
   bottom: 4px;
   font-size: 12px;
   line-height: 1;
-  color: var(--color-text-placeholder, #909399);
+  color: var(--color-field-placeholder);
   user-select: none;
   pointer-events: none;
   background-color: transparent;
