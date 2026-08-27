@@ -21,7 +21,7 @@
   });
   const model = defineModel({ default: '' });
 
-  const ns = useCSSNamespace('input');
+  const ns = useCSSNamespace('field');
 
   const inputRef = ref<HTMLInputElement | null>(null);
   const active = ref<boolean>(false);
@@ -121,7 +121,7 @@
       <div :class="ns.e('wrapper')">
         <input ref="inputRef"
                v-model="model"
-               :class="ns.e('input')"
+               :class="ns.e('inner')"
                :type="type"
                :readonly="readonly"
                :disabled="disabled"
@@ -156,42 +156,43 @@
 </template>
 
 <style scoped>
-  .ca-input {
+  .ca-field {
+    display: inline-block;
     outline: 1px solid transparent;
     border: 1px solid transparent;
-    transition: all 300ms ease;
+    transition: outline-color 300ms ease, box-shadow 300ms ease, background-color 300ms ease;
   }
 
-  .ca-input.ca-input--size-S {
-    padding: 3px 5px;
+  .ca-field.ca-field--size-S {
+    padding: var(--padding-field-S);
   }
 
-  .ca-input.ca-input--size-M {
-    padding: 5px 7px;
+  .ca-field.ca-field--size-M {
+    padding: var(--padding-field-M);
   }
 
-  .ca-input.ca-input--size-L {
-    padding: 8px 12px;
+  .ca-field.ca-field--size-L {
+    padding: var(--padding-field-L);
   }
 
-  .ca-input.is-focus {
-    outline: 1px solid var(--color-accent);
-    box-shadow: 0 0 4px var(--color-accent);
+  .ca-field.is-focus {
+    outline: var(--outline-field-focus);
+    box-shadow: var(--shadow-field-focus);
   }
 
-  .ca-input.is-disabled {
-    background-color: #fafafa;
+  .ca-field.is-disabled {
+    background-color: var(--bg-field-disabled);
   }
 
-  .ca-input.is-radius {
+  .ca-field.is-radius {
     border-radius: var(--ca-radius);
   }
 
-  .ca-input.is-border {
-    border: 1px solid var(--color-border);
+  .ca-field.is-border {
+    border: var(--field-border);
   }
 
-  .ca-input__container {
+  .ca-field__container {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -199,7 +200,7 @@
     column-gap: 8px;
   }
 
-  .ca-input__wrapper {
+  .ca-field__wrapper {
     width: 100%;
     height: 100%;
     flex: 1 1 auto;
@@ -209,36 +210,37 @@
     column-gap: 6px;
   }
 
-  .ca-input__input {
+  .ca-field__inner {
     flex: 1 0 auto;
     line-height: 1.5;
-    font-family: var(--font-text);
-    color: var(--color-text-primary);
+    font-family: var(--field-font-family);
+    font-size: var(--size-field-font);
+    color: var(--color-field-text);
     border: 1px solid transparent;
     outline: 1px solid transparent;
   }
 
-  .ca-input__input:focus {
+  .ca-field__inner:focus {
     outline: 1px solid transparent;
     border: 1px solid transparent;
   }
 
-  .ca-input__input:disabled {
+  .ca-field__inner:disabled {
     background-color: transparent;
   }
 
-  .ca-input__input:read-only {
+  .ca-field__inner:read-only {
     background-color: transparent;
   }
 
 
-  .ca-input--size-S .ca-input__input,
-  .ca-input--size-M .ca-input__input,
-  .ca-input--size-L .ca-input__input {
+  .ca-field--size-S .ca-field__inner,
+  .ca-field--size-M .ca-field__inner,
+  .ca-field--size-L .ca-field__inner {
     font-size: 16px;
   }
 
-  .ca-input__clear-btn {
+  .ca-field__clear-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -246,21 +248,21 @@
     transition: color 300ms ease;
   }
 
-  .ca-input__clear-btn:hover {
+  .ca-field__clear-btn:hover {
     color: var(--color-accent);
   }
 
-  .ca-input__counter {
+  .ca-field__counter {
     flex-shrink: 0;
     margin-left: 6px;
     font-size: 12px;
-    color: var(--color-text-primary);
+    color: var(--color-field-text);
     user-select: none;
     line-height: 1;
   }
 
-  .ca-input.is-limit .ca-input__counter {
-    color: #f56c6c;
+  .ca-field.is-limit .ca-field__counter {
+    color: var(--color-field-length-error);
     font-weight: bold;
   }
 </style>
