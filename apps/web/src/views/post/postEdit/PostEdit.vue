@@ -17,6 +17,7 @@
     CaCheckbox,
     CaCascader,
     CaSwitch,
+    CaTextarea,
   } from '@caldm/ui';
   import { computed, onMounted, ref, watch } from 'vue';
   import { isEmpty } from '@caldm/utils';
@@ -179,10 +180,16 @@
       :gap="20">
       <CaCol :span="postContextWidth">
         <div :class="ns.e('textarea-container')">
-          <textarea
+          <CaTextarea
             v-show="mdEditMode === 'code'"
             v-model="articleForm.contentMd"
-            :class="ns.e('textarea')"></textarea>
+            :width="'100%'"
+            :height="'100%'"
+            :class="ns.e('textarea')" />
+          <!-- <textarea -->
+          <!--   v-show="mdEditMode === 'code'" -->
+          <!--   v-model="articleForm.contentMd" -->
+          <!--   :class="ns.e('textarea')"></textarea> -->
           <MarkdownRender
             style="width: 100%; height: 100%"
             v-show="mdEditMode === 'read'"
@@ -191,9 +198,11 @@
             v-show="mdEditMode === 'preview'"
             style="width: 100%; height: 100%">
             <CaCol :span="12">
-              <textarea
+              <CaTextarea
                 v-model="articleForm.contentMd"
-                :class="ns.e('textarea')"></textarea>
+                :width="'100%'"
+                :height="'100%'"
+                :class="ns.e('textarea')" />
             </CaCol>
             <CaCol :span="12">
               <MarkdownRender
@@ -353,8 +362,6 @@
   }
 
   .ca-post-edit__textarea {
-    width: 100%;
-    height: 100%;
     resize: none;
     border: 1px solid transparent;
     outline: 1px solid transparent;
