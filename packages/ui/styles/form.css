@@ -1,0 +1,13 @@
+.ca-field {
+  --color-field-length-error: #f56c6c;
+  --shadow-field-focus: 0 0 4px var(--color-accent);
+  --outline-field-focus: 1px solid var(--color-accent);
+  --field-border: 1px solid var(--color-border);
+  --field-font-family: var(--font-text);
+  --color-field-text: var(--color-text-primary);
+  --padding-field-S: 3px 5px;
+  --padding-field-M: 5px 7px;
+  --padding-field-L: 8px 12px;
+  --bg-field-disabled: #fafafa;
+  --size-field-font: 16px;
+}

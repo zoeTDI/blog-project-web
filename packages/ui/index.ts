@@ -1,4 +1,5 @@
 import './styles/vars.css';
+import './styles/form.css';
 
 export * from 'simple-icons';
 export * as HeroOutline24Icons from '@heroicons/vue/24/outline';
