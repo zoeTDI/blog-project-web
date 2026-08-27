@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useCSSNamespace } from '@caldm/hook';
-  import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+  import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
   import type { CaTextareaEmits, CaTextareaProps } from './types.ts';
   import { isNumber, isString } from '@caldm/utils';
 
@@ -221,7 +221,7 @@
       resizeObserver.observe(innerRef.value);
     }
   });
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     if (resizeObserver && innerRef.value) {
       resizeObserver.unobserve(innerRef.value);
       resizeObserver.disconnect();
