@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/vue3-vite';
 import '../styles/vars.css';
+import '../styles/form.css';
 
 const preview: Preview = {
   parameters: {
