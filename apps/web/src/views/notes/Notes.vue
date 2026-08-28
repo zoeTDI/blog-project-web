@@ -1,8 +1,22 @@
 <script setup lang="ts">
   import { nextTick, onMounted, ref } from 'vue';
   import { ArticleRenderer, ViewSwitcher } from '@/components/viewSwitcher';
-  import type { Article } from '#/article.ts';
   import { CaButton } from '@caldm/ui';
+
+  interface BlogPost {
+    id: number;
+    title: string;
+    summary: string;
+    date: string;
+    tags: string[];
+    cover?: string;
+    views?: number;
+    likes?: number;
+    comments?: number;
+    favorites?: number;
+    author?: string;
+    updatedDate?: string;
+  }
 
   // 1. 网页公告数据
   const announcement = {
@@ -43,10 +57,10 @@
   const currentPage = ref<number>(1);
   const isLoading = ref<boolean>(false);
   const noMore = ref<boolean>(false);
-  const allArticles = ref<Article[]>([]);
+  const allArticles = ref<BlogPost[]>([]);
   // mock api func
   const fetchArticlesApi = async (page: number) => {
-    return new Promise<Article[]>((resolve) => {
+    return new Promise<BlogPost[]>((resolve) => {
       setTimeout(() => {
         const newBatch = Array.from({ length: pageSize }).map((_, i) => ({
           id: (page - 1) * pageSize + i,

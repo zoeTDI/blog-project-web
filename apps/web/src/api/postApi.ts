@@ -1,4 +1,7 @@
 import { defHttp } from "@/utils/request";
+import type {
+  BlogPostSummaryDTO,
+} from '#/blogPost.ts';
 
 const Api = {
   allTagsByAuthor: '/post/getAllTagsByAuthor',
@@ -7,8 +10,9 @@ const Api = {
   currentUserBlogPosts: '/post/blogPost/mine',
 };
 
+// 过期时间
 const BLOG_POST_PAGE_CACHE_TTL = 5 * 60 * 1000;
-
+// 缓存实体
 interface BlogPostPageCacheEntry {
   expiresAt: number;
   value: PageResult<BlogPostSummaryDTO>;
@@ -94,34 +98,9 @@ export interface BlogPostCreatePayload {
   categoryTrees?: number[][];
 }
 
-export type BlogPostType = '普通文章' | '技术笔记' | '生活随笔' | '其他';
-
-export type BlogPostStatus = '草稿' | '已发布' | '审核中' | '回收站' | '私密';
-
 export interface BlogPostPageQueryDTO {
   page: number;
-  size: 10 | 20 | 50;
-}
-
-export interface BlogPostSummaryDTO {
-  id: number;
-  title: string;
-  subtitle: string | null;
-  summary: string | null;
-  type: BlogPostType;
-  status: BlogPostStatus;
-  isTop: boolean;
-  isOriginal: boolean;
-  createTime: string;
-  updateTime: string;
-  publishedTime: string | null;
-  views: number;
-  likes: number;
-  collects: number;
-  commentCount: number;
-  slug: string | null;
-  allowComment: boolean;
-  sortWeight: number;
+  size: number;
 }
 
 export interface PageResult<T> {
@@ -131,10 +110,6 @@ export interface PageResult<T> {
   size: number;
   pages: number;
 }
-
-export type BlogPostPageQuery = BlogPostPageQueryDTO;
-export type BlogPostSummary = BlogPostSummaryDTO;
-
 
 export const getAllTagsByAuthor = (): Promise<Tag[]> => {
   return defHttp.get(Api.allTagsByAuthor);
@@ -162,7 +137,11 @@ export const getCurrentUserPosts = (
   const cacheKey = `${query.page}:${query.size}`;
   const cached = blogPostPageCache.get(cacheKey);
 
-  if (!forceRefresh && cached && cached.expiresAt > Date.now()) {
+  if (!forceRefresh // 不刷新缓存
+    && cached // 存在缓存
+    && cached.expiresAt > Date.now() // 缓存没有过期
+  ) {
+    // 返回缓存
     return Promise.resolve(cached.value);
   }
 
@@ -190,4 +169,3 @@ export const getCurrentUserPosts = (
   return request;
 };
 
-export const getCurrentUserBlogPosts = getCurrentUserPosts;

@@ -1,12 +1,37 @@
 <script setup lang="ts">
   import { computed } from 'vue';
-  import type { Article, MetaConfig } from '#/article.ts';
   import { useRouter } from 'vue-router';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
 
+  interface BlogPost {
+    id: number;
+    title: string;
+    summary: string;
+    date: string;
+    tags: string[];
+    cover?: string;
+    views?: number;
+    likes?: number;
+    comments?: number;
+    favorites?: number;
+    author?: string;
+    updatedDate?: string;
+  }
+
+  interface MetaConfig {
+    showDate?: boolean;
+    showTags?: boolean;
+    showViews?: boolean;
+    showLikes?: boolean;
+    showComments?: boolean;
+    showFavorites?: boolean;
+    showAuthor?: boolean;
+    showUpdatedDate?: boolean;
+  }
+
   const router = useRouter();
   const props = defineProps<{
-    article: Article;
+    article: BlogPost;
     mode: 'list' | 'card';
     // 默认配置：仅显示日期和标签
     metaConfig?: MetaConfig;
@@ -81,7 +106,7 @@
 </script>
 
 <template>
-  <article
+  <blog-post
     class="article-renderer-item"
     :class="[`is-${mode}`]">
     <div
@@ -134,7 +159,7 @@
         </div>
       </footer>
     </div>
-  </article>
+  </blog-post>
 </template>
 
 <style scoped>
