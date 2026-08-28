@@ -1,6 +1,8 @@
-import { defHttp } from "@/utils/request";
+import { defHttp } from '@/utils/request';
 import type {
+  BlogPostStatus,
   BlogPostSummaryDTO,
+  BlogPostType,
 } from '#/blogPost.ts';
 
 const Api = {
@@ -8,6 +10,7 @@ const Api = {
   allCategoriesByAuthor: '/post/getAllCategoriesByAuthor',
   addBlogPost: '/post/blogPost/add',
   currentUserBlogPosts: '/post/blogPost/mine',
+  getBlogPostById: '/post/blogPost',
 };
 
 // 过期时间
@@ -19,7 +22,10 @@ interface BlogPostPageCacheEntry {
 }
 
 const blogPostPageCache = new Map<string, BlogPostPageCacheEntry>();
-const blogPostPageRequests = new Map<string, Promise<PageResult<BlogPostSummaryDTO>>>();
+const blogPostPageRequests = new Map<
+  string,
+  Promise<PageResult<BlogPostSummaryDTO>>
+>();
 
 export interface Tag {
   id: number;
@@ -111,20 +117,48 @@ export interface PageResult<T> {
   pages: number;
 }
 
+export interface BlogPostEditDTO {
+  id: number;
+  authorId: number;
+  creator: string;
+  updater: string;
+  title: string;
+  subtitle: string;
+  contentMd: string;
+  contentHtml: string;
+  summary: string;
+  tags: number[];
+  categories: number[][];
+  type: BlogPostType;
+  status: BlogPostStatus;
+  isTop: boolean;
+  isOriginal: boolean;
+  createTime: string;
+  updateTime: string;
+  publishedTime: string;
+  slug: string;
+  seoKeywords: string;
+  seoDescription: string;
+  password: string;
+  allowComment: boolean;
+  reprintSource: string;
+  sortWeight: number;
+}
+
 export const getAllTagsByAuthor = (): Promise<Tag[]> => {
   return defHttp.get(Api.allTagsByAuthor);
-}
+};
 
 export const getAllCategoriesByAuthor = (): Promise<CategoryTreeNode[]> => {
   return defHttp.get(Api.allCategoriesByAuthor);
-}
+};
 
 export const addBlogPost = (payload: BlogPostCreatePayload) => {
   return defHttp.post<number>(Api.addBlogPost, payload).then((postId) => {
     clearCurrentUserBlogPostCache();
     return postId;
   });
-}
+};
 
 export const clearCurrentUserBlogPostCache = () => {
   blogPostPageCache.clear();
@@ -132,14 +166,15 @@ export const clearCurrentUserBlogPostCache = () => {
 
 export const getCurrentUserPosts = (
   query: BlogPostPageQueryDTO,
-  forceRefresh = false,
+  forceRefresh = false
 ): Promise<PageResult<BlogPostSummaryDTO>> => {
   const cacheKey = `${query.page}:${query.size}`;
   const cached = blogPostPageCache.get(cacheKey);
 
-  if (!forceRefresh // 不刷新缓存
-    && cached // 存在缓存
-    && cached.expiresAt > Date.now() // 缓存没有过期
+  if (
+    !forceRefresh && // 不刷新缓存
+    cached && // 存在缓存
+    cached.expiresAt > Date.now() // 缓存没有过期
   ) {
     // 返回缓存
     return Promise.resolve(cached.value);
@@ -169,3 +204,6 @@ export const getCurrentUserPosts = (
   return request;
 };
 
+export const getPostById = (payload: { id: number }): Promise<BlogPostEditDTO> => {
+  return defHttp.get(Api.getBlogPostById + `/${payload.id}`);
+};
