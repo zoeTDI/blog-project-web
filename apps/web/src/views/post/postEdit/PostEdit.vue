@@ -6,6 +6,7 @@
     type Tag,
     addBlogPost,
     type BlogPostCreatePayload,
+    getPostById,
   } from '@/api/postApi';
   import { useCSSNamespace } from '@caldm/hook';
   import {
@@ -20,7 +21,7 @@
     CaTextarea,
   } from '@caldm/ui';
   import { computed, onMounted, ref, watch } from 'vue';
-  import { isEmpty } from '@caldm/utils';
+  import { isEmpty, isNumber } from '@caldm/utils';
   import {
     booleanOptions,
     mdEditModeOptions,
@@ -28,6 +29,8 @@
   import { normalizeCategoryTrees } from '@/views/post/postEdit/category.ts';
   import { resolvePostSlug } from '@/views/post/postEdit/slug.ts';
   import { MarkdownRender } from '@/components/markdownRender';
+  import { useRoute } from 'vue-router';
+  import { useUserStore } from '@/store/useUserStore.ts';
 
   interface CategoryNode {
     value: number;
@@ -35,9 +38,15 @@
     children: CategoryNode[];
   }
 
+  const route = useRoute();
+  const userStore = useUserStore();
   const ns = useCSSNamespace('post-edit');
 
   const articleForm = ref({
+    id: null as number | null,
+    authorId: userStore.getId(),
+    creator: '',
+    updater: '',
     title: '',
     subtitle: '',
     contentMd: '',
@@ -47,6 +56,8 @@
     status: 0,
     isTop: 'false',
     isOriginal: 'true',
+    createTime: '',
+    updateTime: '',
     publishedTime: null,
     slug: resolvePostSlug('', '', false),
     seoKeywords: '',
@@ -147,14 +158,41 @@
   );
 
   onMounted(async () => {
+    let id = Number(route.params?.id);
+    if (isNumber(id)) {
+      const data = await getPostById({ id });
+      if (data) {
+        articleForm.value.id = data.id;
+        articleForm.value.authorId = data.authorId;
+        articleForm.value.creator = data.creator;
+        articleForm.value.updater = data.updater;
+        articleForm.value.title = data.title;
+        articleForm.value.subtitle = data.subtitle;
+        articleForm.value.contentMd = data.contentMd;
+        articleForm.value.contentHtml = data.contentHtml;
+        articleForm.value.summary = data.summary;
+        articleForm.value.tags = data.tags || [];
+        articleForm.value.category = data.categories || [];
+        articleForm.value.type = data.type;
+        articleForm.value.status = data.status;
+        articleForm.value.isTop = data.isTop;
+        articleForm.value.isOriginal = data.isOriginal;
+        articleForm.value.createTime = data.createTime;
+        articleForm.value.updateTime = data.updateTime;
+        articleForm.value.publishedTime = data.publishedTime;
+        articleForm.value.slug = data.slug;
+        articleForm.value.seoKeywords = data.seoKeywords;
+        articleForm.value.seoDescription = data.seoDescription;
+        articleForm.value.password = data.password;
+        articleForm.value.allowComment = data.allowComment;
+        articleForm.value.reprintSource = data.reprintSource;
+        articleForm.value.sortWeight = data.sortWeight;
+      }
+    }
     tags.value = await getAllTagsByAuthor();
     const categoryData = await getAllCategoriesByAuthor();
     if (categoryData) {
       categories.value = categoryData.map((cate) => processCategory(cate));
-      console.log(
-        '🚀 ~  ~ JSON.stringify(categories.value, null, 2): ',
-        JSON.stringify(categories.value, null, 2)
-      );
     }
   });
 </script>
@@ -341,7 +379,9 @@
     font-size: 14px;
     line-height: 1;
     outline: none;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
   }
 
   .ca-post-edit input:focus,
