@@ -3,8 +3,19 @@ import { defHttp } from "@/utils/request";
 const Api = {
   allTagsByAuthor: '/post/getAllTagsByAuthor',
   allCategoriesByAuthor: '/post/getAllCategoriesByAuthor',
-  addBlogPost: '/post/blogPost/add'
+  addBlogPost: '/post/blogPost/add',
+  currentUserBlogPosts: '/post/blogPost/mine',
 };
+
+const BLOG_POST_PAGE_CACHE_TTL = 5 * 60 * 1000;
+
+interface BlogPostPageCacheEntry {
+  expiresAt: number;
+  value: PageResult<BlogPostSummaryDTO>;
+}
+
+const blogPostPageCache = new Map<string, BlogPostPageCacheEntry>();
+const blogPostPageRequests = new Map<string, Promise<PageResult<BlogPostSummaryDTO>>>();
 
 export interface Tag {
   id: number;
@@ -83,6 +94,47 @@ export interface BlogPostCreatePayload {
   categoryTrees?: number[][];
 }
 
+export type BlogPostType = '普通文章' | '技术笔记' | '生活随笔' | '其他';
+
+export type BlogPostStatus = '草稿' | '已发布' | '审核中' | '回收站' | '私密';
+
+export interface BlogPostPageQueryDTO {
+  page: number;
+  size: 10 | 20 | 50;
+}
+
+export interface BlogPostSummaryDTO {
+  id: number;
+  title: string;
+  subtitle: string | null;
+  summary: string | null;
+  type: BlogPostType;
+  status: BlogPostStatus;
+  isTop: boolean;
+  isOriginal: boolean;
+  createTime: string;
+  updateTime: string;
+  publishedTime: string | null;
+  views: number;
+  likes: number;
+  collects: number;
+  commentCount: number;
+  slug: string | null;
+  allowComment: boolean;
+  sortWeight: number;
+}
+
+export interface PageResult<T> {
+  records: T[];
+  total: number;
+  page: number;
+  size: number;
+  pages: number;
+}
+
+export type BlogPostPageQuery = BlogPostPageQueryDTO;
+export type BlogPostSummary = BlogPostSummaryDTO;
+
 
 export const getAllTagsByAuthor = (): Promise<Tag[]> => {
   return defHttp.get(Api.allTagsByAuthor);
@@ -93,5 +145,49 @@ export const getAllCategoriesByAuthor = (): Promise<CategoryTreeNode[]> => {
 }
 
 export const addBlogPost = (payload: BlogPostCreatePayload) => {
-  return defHttp.post(Api.addBlogPost, payload);
+  return defHttp.post<number>(Api.addBlogPost, payload).then((postId) => {
+    clearCurrentUserBlogPostCache();
+    return postId;
+  });
 }
+
+export const clearCurrentUserBlogPostCache = () => {
+  blogPostPageCache.clear();
+};
+
+export const getCurrentUserPosts = (
+  query: BlogPostPageQueryDTO,
+  forceRefresh = false,
+): Promise<PageResult<BlogPostSummaryDTO>> => {
+  const cacheKey = `${query.page}:${query.size}`;
+  const cached = blogPostPageCache.get(cacheKey);
+
+  if (!forceRefresh && cached && cached.expiresAt > Date.now()) {
+    return Promise.resolve(cached.value);
+  }
+
+  const pendingRequest = blogPostPageRequests.get(cacheKey);
+  if (pendingRequest) {
+    return pendingRequest;
+  }
+
+  const request = defHttp
+    .get<PageResult<BlogPostSummaryDTO>>(Api.currentUserBlogPosts, {
+      params: query,
+    })
+    .then((result) => {
+      blogPostPageCache.set(cacheKey, {
+        expiresAt: Date.now() + BLOG_POST_PAGE_CACHE_TTL,
+        value: result,
+      });
+      return result;
+    })
+    .finally(() => {
+      blogPostPageRequests.delete(cacheKey);
+    });
+
+  blogPostPageRequests.set(cacheKey, request);
+  return request;
+};
+
+export const getCurrentUserBlogPosts = getCurrentUserPosts;
