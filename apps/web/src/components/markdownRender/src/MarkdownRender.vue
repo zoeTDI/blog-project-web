@@ -1,19 +1,22 @@
 <script setup lang="ts">
-  import { computed  } from 'vue';
+  import { computed, watch } from 'vue';
   import { baseBenderer } from '@/plugins/markdownIt.ts';
+  import type {
+    MarkdownRenderEmits,
+    MarkdownRenderExpose,
+    MarkdownRenderProps,
+  } from '@/components/markdownRender';
+  import {
+    markdownCaptionMode,
+    markdownTheme,
+  } from '@/components/markdownRender/src/constants.ts';
 
-  const props = withDefaults(
-    defineProps<{
-      content: string;
-      theme?: 'default' | 'pink'; // 增加主题选项
-      captionMode?: 'none' | 'always';
-    }>(),
-    {
-      content: '',
-      theme: 'default',
-      captionMode: 'none',
-    }
-  );
+  const props = withDefaults(defineProps<MarkdownRenderProps>(), {
+    content: '',
+    theme: markdownTheme.default,
+    captionMode: markdownCaptionMode.none,
+  });
+  const emits = defineEmits<MarkdownRenderEmits>();
 
   const renderedHtml = computed(() => {
     return baseBenderer.render(props.content);
@@ -72,7 +75,21 @@
     }
   };
 
+  const getContextHtml = (): string => {
+    return renderedHtml.value || '';
+  };
 
+  defineExpose<MarkdownRenderExpose>({
+    contentHtml: getContextHtml,
+  });
+
+  watch(
+    () => props.content,
+    () => {
+      console.log('🚀 ~  ~ renderedHtml.value: ', renderedHtml.value);
+      console.log('🚀 ~  ~ props.content: ', props.content);
+    }
+  );
 </script>
 
 <template>
