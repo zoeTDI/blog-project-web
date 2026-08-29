@@ -17,7 +17,7 @@ const isSameDay = (d1: Date, d2: Date) => {
 const isString = (val: any): val is string => typeof val === 'string';
 const isUndefined = (val: any): val is undefined => val === undefined;
 const isBoolean = (val: any): val is boolean => typeof val === 'boolean';
-const isNumber = (val: any): val is number => typeof val === 'number';
+const isNumber = (val: any): val is number => typeof val === 'number' && !isNaN(val);
 const isFunction = (val: any): val is Function => typeof val === 'function';
 const isEmpty = (val: unknown) =>
   (isString(val) && val.trim() === '') ||
