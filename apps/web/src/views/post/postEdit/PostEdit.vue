@@ -1,9 +1,6 @@
 <script setup lang="ts">
   import type { Tag, BlogPostCreatePayload } from '@/api';
-  import {
-    addBlogPost,
-    getPostById,
-  } from '@/api';
+  import { createBlogPost, getPostById } from '@/api';
   import { useCSSNamespace } from '@caldm/hook';
   import {
     CaButton,
@@ -117,7 +114,7 @@
         '🚀 ~ handleSave ~ JSON.stringify(payload, null, 2): ',
         JSON.stringify(payload, null, 2)
       );
-      await addBlogPost(payload);
+      await createBlogPost(payload);
     } finally {
       loading.value = false;
     }

@@ -1,12 +1,14 @@
 import { defHttp } from '@/utils/request.ts';
 import type {
-  BlogPostStatus,
   BlogPostSummaryDTO,
-  BlogPostType,
 } from '#/blogPost.ts';
+import type {
+  BlogPostCreatePayload,
+  BlogPostUpdatePayload,
+} from '@/api/modules/postApi/types.ts';
 
 const Api = {
-  addBlogPost: '/post/blogPost/add',
+  createBlogPost: '/post/blogPost/create',
   currentUserBlogPosts: '/post/blogPost/mine',
   getBlogPostById: '/post/blogPost',
 };
@@ -25,50 +27,6 @@ const blogPostPageRequests = new Map<
   Promise<PageResult<BlogPostSummaryDTO>>
 >();
 
-
-
-export interface BlogPostCreatePayload {
-  /** 标题（长度 ≤ 200） */
-  title: string;
-  /** 置顶状态 */
-  isTop: boolean;
-  /** 原创状态 */
-  isOriginal: boolean;
-  /** 评论开关 */
-  allowComment: boolean;
-  /** 排序权重 */
-  sortWeight: number;
-
-  /** 副标题（长度 ≤ 200） */
-  subtitle?: string;
-  /** Markdown 内容 */
-  contentMd?: string;
-  /** HTML 内容 */
-  contentHtml?: string;
-  /** 摘要（长度 ≤ 500） */
-  summary?: string;
-  /** 文章类型 */
-  type?: number;
-  /** 文章状态 */
-  status?: number;
-  /** 发布时间（ISO 8601 格式，如 "2026-08-26T10:30:00"） */
-  publishedTime?: string;
-  /** URL 别名 */
-  slug?: string;
-  /** SEO 关键词 */
-  seoKeywords?: string;
-  /** SEO 描述 */
-  seoDescription?: string;
-  /** 访问密码 */
-  password?: string | null;
-  /** 转载来源 */
-  reprintSource?: string | null;
-  /** 关联标签 ID 列表 */
-  tagIds?: number[];
-  /** 分类树结构 */
-  categoryTrees?: number[][];
-}
-
 export interface BlogPostPageQueryDTO {
   page: number;
   size: number;
@@ -82,36 +40,8 @@ export interface PageResult<T> {
   pages: number;
 }
 
-export interface BlogPostEditDTO {
-  id: number;
-  authorId: number;
-  creator: string;
-  updater: string;
-  title: string;
-  subtitle: string;
-  contentMd: string;
-  contentHtml: string;
-  summary: string;
-  tags: number[];
-  categories: number[][];
-  type: BlogPostType;
-  status: BlogPostStatus;
-  isTop: boolean;
-  isOriginal: boolean;
-  createTime: string;
-  updateTime: string;
-  publishedTime: string;
-  slug: string;
-  seoKeywords: string;
-  seoDescription: string;
-  password: string;
-  allowComment: boolean;
-  reprintSource: string;
-  sortWeight: number;
-}
-
-export const addBlogPost = (payload: BlogPostCreatePayload) => {
-  return defHttp.post<number>(Api.addBlogPost, payload).then((postId) => {
+export const createBlogPost = (payload: BlogPostCreatePayload): Promise<number> => {
+  return defHttp.post<number>(Api.createBlogPost, payload).then((postId) => {
     clearCurrentUserBlogPostCache();
     return postId;
   });
@@ -161,6 +91,8 @@ export const getCurrentUserPosts = (
   return request;
 };
 
-export const getPostById = (payload: { id: number }): Promise<BlogPostEditDTO> => {
+export const getPostById = (payload: {
+  id: number;
+}): Promise<BlogPostUpdatePayload> => {
   return defHttp.get(Api.getBlogPostById + `/${payload.id}`);
 };

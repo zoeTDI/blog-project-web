@@ -1,6 +1,4 @@
-export type BlogPostType = '普通文章' | '技术笔记' | '生活随笔' | '其他';
-
-export type BlogPostStatus = '草稿' | '已发布' | '审核中' | '回收站' | '私密';
+import type { BlogPostStatus, BlogPostType } from '@/api/modules/postApi';
 
 export interface BlogPostSummaryDTO {
   id: number;
