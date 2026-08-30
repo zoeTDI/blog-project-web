@@ -1,8 +1,6 @@
 <script setup lang="ts">
-  import type { CategoryTreeNode, Tag, BlogPostCreatePayload } from '@/api';
+  import type { Tag, BlogPostCreatePayload } from '@/api';
   import {
-    getAllCategoriesByAuthor,
-    getAllTagsByAuthor,
     addBlogPost,
     getPostById,
   } from '@/api';
@@ -19,7 +17,7 @@
     CaTextarea,
   } from '@caldm/ui';
   import { computed, onMounted, ref, watch } from 'vue';
-  import { isEmpty, isNumber } from '@caldm/utils';
+  import { isNumber } from '@caldm/utils';
   import {
     booleanOptions,
     mdEditModeOptions,
@@ -29,12 +27,12 @@
   import { MarkdownRender } from '@/components/markdownRender';
   import { useRoute } from 'vue-router';
   import { useUserStore } from '@/store/useUserStore.ts';
-
-  interface CategoryNode {
-    value: number;
-    label: string;
-    children: CategoryNode[];
-  }
+  import {
+    getCategories,
+    getTags,
+    processCategory,
+  } from '@/views/post/postEdit/utils.ts';
+  import type { _CategoryNode } from '@/views/post/postEdit/type.ts';
 
   const route = useRoute();
   const userStore = useUserStore();
@@ -70,7 +68,7 @@
 
   const loading = ref<boolean>(false);
   const tags = ref<Tag[]>([]);
-  const categories = ref<CategoryNode[]>([]);
+  const categories = ref<_CategoryNode[]>([]);
   const mdEditMode = ref<'code' | 'read' | 'preview'>('code');
   const postContextWidth = ref<number>(18);
   const slugManuallyModified = ref(false);
@@ -83,18 +81,6 @@
   const styles = computed(() => {
     return {};
   });
-
-  const processCategory = (node: CategoryTreeNode): CategoryNode => {
-    const n = {
-      label: node.category.name,
-      value: node.category.id,
-      children: [] as CategoryNode[],
-    };
-    if (!isEmpty(node.children)) {
-      n.children = node.children.map((child) => processCategory(child));
-    }
-    return n;
-  };
 
   const handleSlugInput = () => {
     slugManuallyModified.value = true;
@@ -187,11 +173,10 @@
         articleForm.value.sortWeight = data.sortWeight;
       }
     }
-    tags.value = await getAllTagsByAuthor();
-    const categoryData = await getAllCategoriesByAuthor();
-    if (categoryData) {
-      categories.value = categoryData.map((cate) => processCategory(cate));
-    }
+    Promise.all([getTags(), getCategories()]).then((resolves) => {
+      tags.value = resolves[0];
+      categories.value = resolves[1].map((node) => processCategory(node));
+    });
   });
 </script>
 
