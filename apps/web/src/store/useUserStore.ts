@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { LoginRes } from '@/api/authApi.ts';
+import type { LoginRes } from '@/api';
+
 
 export const useUserStore = defineStore(
   'user',

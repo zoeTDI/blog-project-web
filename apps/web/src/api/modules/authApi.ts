@@ -1,16 +1,16 @@
 import { defHttp } from '@/utils/request.ts';
 
-export interface LoginUPReq {
+export interface LoginUPCommand {
   username: string;
   password: string;
 }
 
-export interface LoginEPReq {
+export interface LoginEPCommand {
   email: string;
   password: string;
 }
 
-export interface LoginECReq {
+export interface LoginECCommand {
   email: string;
   code: string;
 }
@@ -25,7 +25,7 @@ export interface LoginRes {
   menus: string[];
 }
 
-export interface LoginCodeReq {
+export interface LoginCodeCommand {
   email: string;
 }
 
@@ -42,19 +42,19 @@ const Api = {
   logout: '/auth/logout',
 };
 
-export const loginUP = (payload: LoginUPReq): Promise<LoginRes> => {
+export const loginUP = (payload: LoginUPCommand): Promise<LoginRes> => {
   return defHttp.post(Api.loginUP, payload);
 };
 
-export const loginEP = (payload: LoginEPReq): Promise<LoginRes> => {
+export const loginEP = (payload: LoginEPCommand): Promise<LoginRes> => {
   return defHttp.post(Api.loginEP, payload);
 };
 
-export const loginEC = (payload: LoginECReq): Promise<LoginRes> => {
+export const loginEC = (payload: LoginECCommand): Promise<LoginRes> => {
   return defHttp.post(Api.loginEC, payload);
 };
 
-export const sendLoginCode = (payload: LoginCodeReq): Promise<boolean> => {
+export const sendLoginCode = (payload: LoginCodeCommand): Promise<boolean> => {
   return defHttp.post(Api.sendLoginCode, payload);
 };
 

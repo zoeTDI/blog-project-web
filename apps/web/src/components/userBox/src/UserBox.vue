@@ -15,7 +15,7 @@
   import { useRoute, useRouter } from 'vue-router';
   import { ROUTER_NAMES } from '@/router/routerNames.ts';
   import { CaAvatar } from '@caldm/ui';
-  import { logout } from '@/api/authApi.ts';
+  import { logout } from '@/api';
   import { useTabStore } from '@/store/useTabStore.ts';
 
   const mockMessages: MessageItem[] = [

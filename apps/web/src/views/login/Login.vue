@@ -6,22 +6,13 @@
     EnvelopeIcon,
     ArrowRightIcon,
   } from '@heroicons/vue/24/outline';
-  import { BACKEND_ROUTER_NAME } from '@/router/modules/analysis.ts';
   import { useUserStore } from '@/store/useUserStore.ts';
-  import {
-    loginUP,
-    loginEP,
-    loginEC,
-    sendLoginCode,
-    type LoginUPReq,
-    type LoginEPReq,
-    type LoginECReq,
-    type LoginCodeReq,
-  } from '@/api/authApi.ts';
   import { CaButton, CaIcon, CaMessage } from '@caldm/ui';
   import { isEmpty, isString } from '@caldm/utils';
   import { useCSSNamespace } from '@caldm/hook';
   import { defaultPreferences, preferences } from '@/core/preferences';
+  import type { LoginUPCommand, LoginEPCommand, LoginECCommand, LoginCodeCommand } from '@/api';
+  import { sendLoginCode, loginUP, loginEP, loginEC } from '@/api';
 
   const router = useRouter();
   const route = useRoute();
@@ -43,29 +34,29 @@
     return emailRegex.test(email);
   }
 
-  const buildPayload = (): LoginUPReq | LoginEPReq | LoginECReq => {
+  const buildPayload = (): LoginUPCommand | LoginEPCommand | LoginECCommand => {
     if (loginType.value === 'password') {
       if (isEmail(account.value)) {
         return {
           email: account.value,
           password: password.value,
-        } as LoginEPReq;
+        } as LoginEPCommand;
       } else {
         return {
           username: account.value,
           password: password.value,
-        } as LoginUPReq;
+        } as LoginUPCommand;
       }
     } else {
       return {
         email: account.value,
         code: code.value,
-      } as LoginECReq;
+      } as LoginECCommand;
     }
   };
 
   const handleSendCode = async () => {
-    const payload: LoginCodeReq = {
+    const payload: LoginCodeCommand = {
       email: account.value,
     };
     try {
@@ -107,12 +98,12 @@
       let res;
       if (loginType.value === 'password') {
         if (isEmail(account.value)) {
-          res = await loginEP(payload as LoginEPReq);
+          res = await loginEP(payload as LoginEPCommand);
         } else {
-          res = await loginUP(payload as LoginUPReq);
+          res = await loginUP(payload as LoginUPCommand);
         }
       } else {
-        res = await loginEC(payload as LoginECReq);
+        res = await loginEC(payload as LoginECCommand);
       }
       userStore.login(res);
       const redirectPath =

@@ -1,6 +1,6 @@
 import { createHttp } from '@caldm/request';
 import { useUserStore } from '@/store/useUserStore';
-import { refreshToken } from '@/api/authApi';
+import { refreshToken } from '@/api';
 import { CaMessage } from '@caldm/ui';
 import router from '@/plugins/vueRouter'
 import { ROUTER_NAMES } from '@/router/routerNames.ts';
