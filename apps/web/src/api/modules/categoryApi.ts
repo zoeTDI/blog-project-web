@@ -4,7 +4,7 @@ const Api = {
   allCategoriesByAuthor: '/post/getAllCategoriesByAuthor',
 } as const;
 
-export interface Category {
+export interface BaseCategory {
   id: number;
   userId: number;
   parentId: number;
@@ -22,7 +22,7 @@ export interface Category {
 }
 
 export interface CategoryTreeNode {
-  category: Category;
+  category: BaseCategory;
   children: CategoryTreeNode[];
 }
 
