@@ -67,7 +67,7 @@
     });
   };
 
-  const toggle = (val: string | number | symbol, target: HTMLElement) => {
+  const toggle = (val: NonNullable<BaseData>, target: HTMLElement) => {
     model.value = val;
     if (slideRef.value) {
       moveSlide(target, slideRef);
@@ -90,7 +90,7 @@
 
   const updateActiveSlide = async () => {
     await nextTick();
-    if (model.value && caSwitchRef.value) {
+    if (model.value != null && caSwitchRef.value) {
       const index = props.options.findIndex((o) => o.value === model.value);
       if (index === -1) return;
       const activeOption = caSwitchRef.value.querySelector(
@@ -168,7 +168,7 @@
     <div :class="ns.e('slide-shadow')"
          ref="slideShadowRef"></div>
     <div v-for="option in props.options"
-         :key="option.value"
+         :key="String(option.value)"
          :class="[
            ns.e('option'),
            ns.is('active', model === option.value)

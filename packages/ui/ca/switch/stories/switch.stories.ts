@@ -12,6 +12,8 @@ import {
   SunIcon,
   MoonIcon,
   ComputerDesktopIcon,
+  CheckIcon,
+  XMarkIcon,
 } from '@heroicons/vue/24/outline';
 
 /**
@@ -246,6 +248,47 @@ export const TextOnly: Story = {
     },
     template: `
       <CaSwitch v-bind="args" v-model="timeUnit" />
+    `,
+  }),
+};
+
+// ==========================================
+// 5. 布尔值 (Boolean Value)
+// ==========================================
+/**
+ * `options` 的 `value` 支持 `boolean` 类型，适用于开/关等二值场景。
+ * 初始值为 `false` 时滑块定位、resize 同步等高亮逻辑均正常。
+ */
+export const BooleanValue: Story = {
+  name: '布尔值 (Boolean Value)',
+  parameters: {
+    docs: {
+      description: {
+        story: '选项 `value` 为 `true` / `false` 时，选中 `false` 的滑块定位与高亮均正常。',
+      },
+    },
+  },
+  args: {
+    mode: CaSwitchMode.FULL,
+    options: [
+      { label: '开启', value: true, icon: CheckIcon },
+      { label: '关闭', value: false, icon: XMarkIcon },
+    ],
+  },
+  render: (args) => ({
+    components: { CaSwitch },
+    setup() {
+      // 初始为 false，用于验证 falsy 值下的滑块同步逻辑
+      const enabled = ref(false);
+      return { args, enabled };
+    },
+    template: `
+      <div>
+        <CaSwitch v-bind="args" v-model="enabled" />
+        <div style="font-size: 13px; color: #666; margin-top: 12px;">
+          当前状态: <strong>{{ enabled ? '开启' : '关闭' }}</strong>
+        </div>
+      </div>
     `,
   }),
 };
