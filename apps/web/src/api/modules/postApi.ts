@@ -1,4 +1,4 @@
-import { defHttp } from '@/utils/request';
+import { defHttp } from '@/utils/request.ts';
 import type {
   BlogPostStatus,
   BlogPostSummaryDTO,

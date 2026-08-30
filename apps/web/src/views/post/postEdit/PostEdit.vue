@@ -1,13 +1,11 @@
 <script setup lang="ts">
+  import type { CategoryTreeNode, Tag, BlogPostCreatePayload } from '@/api';
   import {
     getAllCategoriesByAuthor,
     getAllTagsByAuthor,
-    type CategoryTreeNode,
-    type Tag,
     addBlogPost,
-    type BlogPostCreatePayload,
     getPostById,
-  } from '@/api/postApi';
+  } from '@/api';
   import { useCSSNamespace } from '@caldm/hook';
   import {
     CaButton,

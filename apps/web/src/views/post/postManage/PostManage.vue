@@ -1,9 +1,6 @@
 <script setup lang="ts">
-  import {
-    getCurrentUserPosts,
-    type BlogPostPageQueryDTO,
-    type PageResult,
-  } from '@/api/postApi';
+  import type { BlogPostPageQueryDTO, PageResult } from '@/api';
+  import { getCurrentUserPosts } from '@/api';
   import { POST_ROUTER_NAME } from '@/router/modules/posts';
   import {
     CaButton,
@@ -38,11 +35,11 @@
   ];
 
   const statusClass: Record<BlogPostStatus, string> = {
-    '草稿': 'is-draft',
-    '已发布': 'is-published',
-    '审核中': 'is-reviewing',
-    '回收站': 'is-recycled',
-    '私密': 'is-private',
+    草稿: 'is-draft',
+    已发布: 'is-published',
+    审核中: 'is-reviewing',
+    回收站: 'is-recycled',
+    私密: 'is-private',
   };
 
   const formatDateTime = (value: string | null) => {
