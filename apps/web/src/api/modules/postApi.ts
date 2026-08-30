@@ -6,8 +6,6 @@ import type {
 } from '#/blogPost.ts';
 
 const Api = {
-  allTagsByAuthor: '/post/getAllTagsByAuthor',
-  allCategoriesByAuthor: '/post/getAllCategoriesByAuthor',
   addBlogPost: '/post/blogPost/add',
   currentUserBlogPosts: '/post/blogPost/mine',
   getBlogPostById: '/post/blogPost',
@@ -27,40 +25,7 @@ const blogPostPageRequests = new Map<
   Promise<PageResult<BlogPostSummaryDTO>>
 >();
 
-export interface Tag {
-  id: number;
-  authorId: number;
-  name: string;
-  postCount: number;
-  creator: string;
-  updater: string;
-  createTime: string;
-  updateTime: string;
-  /* true 删除 false 未删除 */
-  deleted: boolean;
-}
 
-export interface Category {
-  id: number;
-  userId: number;
-  parentId: number;
-  name: string;
-  slug: string;
-  description: string;
-  sortWeight: number;
-  status: 0 | 1;
-  creator: string;
-  createTime: string;
-  updater: string;
-  updateTime: string;
-  /* true 删除 false 未删除 */
-  deleted: boolean;
-}
-
-export interface CategoryTreeNode {
-  category: Category;
-  children: CategoryTreeNode[];
-}
 
 export interface BlogPostCreatePayload {
   /** 标题（长度 ≤ 200） */
@@ -144,14 +109,6 @@ export interface BlogPostEditDTO {
   reprintSource: string;
   sortWeight: number;
 }
-
-export const getAllTagsByAuthor = (): Promise<Tag[]> => {
-  return defHttp.get(Api.allTagsByAuthor);
-};
-
-export const getAllCategoriesByAuthor = (): Promise<CategoryTreeNode[]> => {
-  return defHttp.get(Api.allCategoriesByAuthor);
-};
 
 export const addBlogPost = (payload: BlogPostCreatePayload) => {
   return defHttp.post<number>(Api.addBlogPost, payload).then((postId) => {
