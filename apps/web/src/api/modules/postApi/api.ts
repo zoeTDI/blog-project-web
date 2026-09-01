@@ -1,16 +1,16 @@
 import { defHttp } from '@/utils/request.ts';
-import type {
-  BlogPostSummaryDTO,
-} from '#/blogPost.ts';
+import type { BlogPostSummaryDTO } from '#/blogPost.ts';
 import type {
   BlogPostCreatePayload,
+  BlogPostEditDTO,
   BlogPostUpdatePayload,
 } from '@/api/modules/postApi/types.ts';
 
 const Api = {
   createBlogPost: '/post/blogPost/create',
   currentUserBlogPosts: '/post/blogPost/mine',
-  getBlogPostById: '/post/blogPost',
+  getBlogPostById: '/post/blogPost/edit',
+  update: '/post/blogPost/update',
 };
 
 // 过期时间
@@ -40,7 +40,9 @@ export interface PageResult<T> {
   pages: number;
 }
 
-export const createBlogPost = (payload: BlogPostCreatePayload): Promise<number> => {
+export const createBlogPost = (
+  payload: BlogPostCreatePayload
+): Promise<number> => {
   return defHttp.post<number>(Api.createBlogPost, payload).then((postId) => {
     clearCurrentUserBlogPostCache();
     return postId;
@@ -93,6 +95,14 @@ export const getCurrentUserPosts = (
 
 export const getPostById = (payload: {
   id: number;
-}): Promise<BlogPostUpdatePayload> => {
-  return defHttp.get(Api.getBlogPostById + `/${payload.id}`);
+}): Promise<BlogPostEditDTO> => {
+  return defHttp.get(Api.getBlogPostById, { params: payload });
 };
+
+export const updatePost = (payload: BlogPostUpdatePayload) => {
+  return defHttp.post(Api.update, payload).then(resolve => {
+    clearCurrentUserBlogPostCache();
+    return resolve;
+  })
+}
+
