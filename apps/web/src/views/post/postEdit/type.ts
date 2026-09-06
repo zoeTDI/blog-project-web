@@ -1,5 +1,6 @@
 import type {
   BlogPostCreatePayload,
+  BlogPostEditDTO,
   BlogPostStatus,
   BlogPostType,
   BlogPostUpdatePayload,
@@ -29,8 +30,8 @@ export interface PostEditForm {
   allowComment: boolean;
   reprintSource: string;
   sortWeight: number;
-  category: number[][];
-  tags: number[]
+  categoryIds: number[][];
+  tagIds: number[]
 }
 
 export interface _CategoryNode {
@@ -41,3 +42,4 @@ export interface _CategoryNode {
 
 export type _NewPostPayload = BlogPostCreatePayload;
 export type _SavePostPayload = BlogPostUpdatePayload;
+export type _PostDetail = BlogPostEditDTO;

@@ -79,5 +79,44 @@ export interface BlogPostUpdatePayload {
   /** 关联标签 ID 列表 */
   tagIds?: number[];
   /** 分类树结构 */
-  categoryTrees?: number[][];
+  categoryIds?: number[][];
+}
+
+export interface BlogPostEditDTO {
+  id: number;
+  authorId: number;
+  creator: string;
+  updater: string;
+  /** 标题（长度 ≤ 200） */
+  title: string;
+  /** 副标题（长度 ≤ 200） */
+  subtitle: string;
+  contentMd: string;
+  contentHtml: string;
+  /** 摘要（长度 ≤ 500） */
+  summary: string;
+  tags: number[];
+  categories: number[][];
+  type: BlogPostType;
+  status: BlogPostStatus;
+  /** 置顶状态 */
+  isTop: boolean;
+  /** 原创状态 */
+  isOriginal: boolean;
+  createTime: string;
+  updateTime: string;
+  publishedTime: string;
+  /** URL 别名 */
+  slug: string;
+  /** SEO 关键词 */
+  seoKeywords: string;
+  /** SEO 描述 */
+  seoDescription: string;
+  password: string;
+  /** 评论开关 */
+  allowComment: boolean;
+  /** 转载来源 */
+  reprintSource: string;
+  /** 排序权重 */
+  sortWeight: number;
 }
