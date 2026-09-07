@@ -84,11 +84,11 @@ const showRoutes: InLinkItem[] = [
 const dataBoardData = [
   {
     label: '总浏览量',
-    value: 3200,
+    value: 42000,
   },
   {
-    label: '今日浏览量',
-    value: 32000,
+    label: '日浏览量',
+    value: 3200,
   },
   {
     label: '访客总数',
