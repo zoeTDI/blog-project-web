@@ -2,7 +2,7 @@ import { createHttp } from '@caldm/request';
 import { useUserStore } from '@/store/useUserStore';
 import { refreshToken } from '@/api';
 import { CaMessage } from '@caldm/ui';
-import router from '@/plugins/vueRouter'
+import router from '@/plugins/vueRouter';
 import { ROUTER_NAMES } from '@/router/routerNames.ts';
 
 const toLogin = async () => {
@@ -20,7 +20,6 @@ const handleUnauthorized = async (): Promise<void> => {
 
 const handleErrorMessage = async (errMsg: string) => {
   CaMessage.error(errMsg);
-  await toLogin();
 };
 
 const handleRefreshFailed = async () => {
