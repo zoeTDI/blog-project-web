@@ -1,5 +1,9 @@
-import axios from 'axios';
-import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios from "axios";
+import type {
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 
 interface ResponseData<T = any> {
   code: number;
@@ -42,7 +46,6 @@ export function createHttp(options: HttpConfig) {
   // 响应拦截器
   service.interceptors.response.use(
     (response: AxiosResponse) => {
-
       const res = response.data as ResponseData;
       if (res.code === 200) {
         return res.data;
@@ -53,7 +56,7 @@ export function createHttp(options: HttpConfig) {
         options.onUnauthorized?.();
       }
 
-      const errorMsg = res.message || '系统开小差了。';
+      const errorMsg = res.message || "系统开小差了。";
       options.onErrorMessage?.(errorMsg);
 
       return Promise.reject(new Error(errorMsg));
@@ -63,7 +66,7 @@ export function createHttp(options: HttpConfig) {
         const originalRequest = error.config;
 
         // 身份验证失败，尝试刷新token
-        if (error.response.status === 401) {
+        if (error.response.status === 403) {
           // 自定义特殊状态码，表示刷新token失败
           if (error.response.data.code === 486) {
             isRefreshing = false;
@@ -74,8 +77,12 @@ export function createHttp(options: HttpConfig) {
           // 已经在刷新token中了，将请求加入队列，等待重发。
           if (isRefreshing) {
             return new Promise((resolve, reject) => {
-              failedRequestsQueue.push({ resolve, reject, config: originalRequest });
-            })
+              failedRequestsQueue.push({
+                resolve,
+                reject,
+                config: originalRequest,
+              });
+            });
           }
           // 还没有刷新token，加锁，尝试刷新token
           isRefreshing = true;
@@ -86,7 +93,7 @@ export function createHttp(options: HttpConfig) {
             failedRequestsQueue = [];
             queueCopy.forEach(({ resolve, reject, config }) => {
               service(config).then(resolve).catch(reject);
-            })
+            });
             return service(originalRequest);
           } catch (err) {
             failedRequestsQueue.forEach(({ reject }) => reject(err));
@@ -96,12 +103,14 @@ export function createHttp(options: HttpConfig) {
             isRefreshing = false;
           }
         }
-        const msg = error.response.data?.message || `网络请求错误 (${error.response.status})`;
+        const msg =
+          error.response.data?.message ||
+          `网络请求错误 (${error.response.status})`;
         options.onErrorMessage?.(msg);
-      } else if (error.message.includes('timeout')) {
-        options.onErrorMessage?.('网络请求超时，请稍后重试');
+      } else if (error.message.includes("timeout")) {
+        options.onErrorMessage?.("网络请求超时，请稍后重试");
       } else {
-        options.onErrorMessage?.('网络错误，请检查网络连接');
+        options.onErrorMessage?.("网络错误，请检查网络连接");
       }
       return Promise.reject(error);
     },
@@ -113,11 +122,19 @@ export function createHttp(options: HttpConfig) {
       return service.get(url, config) as unknown as Promise<T>;
     },
 
-    post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    post<T = any>(
+      url: string,
+      data?: any,
+      config?: AxiosRequestConfig,
+    ): Promise<T> {
       return service.post(url, data, config) as unknown as Promise<T>;
     },
 
-    put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    put<T = any>(
+      url: string,
+      data?: any,
+      config?: AxiosRequestConfig,
+    ): Promise<T> {
       return service.put(url, data, config) as unknown as Promise<T>;
     },
 
@@ -126,4 +143,3 @@ export function createHttp(options: HttpConfig) {
     },
   };
 }
-
