@@ -16,6 +16,7 @@ export * from './ca/col';
 export * from './ca/drawer';
 export * from './ca/heatmap';
 export * from './ca/image';
+export * from './ca/input';
 export * from './icon';
 export * from './ca/list';
 export * from './ca/marquee';
