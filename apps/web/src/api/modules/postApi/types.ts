@@ -142,3 +142,16 @@ export interface CategoryTreeNode {
   category: BaseCategory;
   children: CategoryTreeNode[];
 }
+
+export interface Tag {
+  id: number;
+  authorId: number;
+  name: string;
+  postCount: number;
+  creator: string;
+  updater: string;
+  createTime: string;
+  updateTime: string;
+  /* true 删除 false 未删除 */
+  deleted: boolean;
+}

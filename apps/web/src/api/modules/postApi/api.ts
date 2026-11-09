@@ -5,6 +5,7 @@ import type {
   BlogPostEditDTO,
   BlogPostUpdatePayload,
   CategoryTreeNode,
+  Tag,
 } from '@/api/modules/postApi/types.ts';
 
 const Api = {
@@ -13,6 +14,7 @@ const Api = {
   getBlogPostById: '/post/blogPost/edit',
   update: '/post/blogPost/update',
   allCategoriesByAuthor: '/post/getAllCategoriesByAuthor',
+  allTagsByAuthor: '/post/getAllTagsByAuthor',
 };
 
 // 过期时间
@@ -110,4 +112,8 @@ export const updatePost = (payload: BlogPostUpdatePayload) => {
 
 export const getAllCategoriesByAuthor = (): Promise<CategoryTreeNode[]> => {
   return defHttp.get(Api.allCategoriesByAuthor);
+};
+
+export const getAllTagsByAuthor = (): Promise<Tag[]> => {
+  return defHttp.get(Api.allTagsByAuthor);
 };
