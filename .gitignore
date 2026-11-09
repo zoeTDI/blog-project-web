@@ -32,3 +32,12 @@ storybook-static
 
 *.tsbuildinfo
 *.map
+
+# TypeScript 编译产物(tsc -b / TS Server 项目引用自动构建时生成在 .ts 源码旁)
+/packages/*/*.js
+/packages/*/*.d.ts
+/packages/*/src/**/*.js
+/packages/*/src/**/*.d.ts
+# 手写声明文件例外(如 packages/ui/env.d.ts)
+!/packages/*/env.d.ts
+!/packages/*/src/**/env.d.ts
