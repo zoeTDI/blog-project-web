@@ -120,3 +120,25 @@ export interface BlogPostEditDTO {
   /** 排序权重 */
   sortWeight: number;
 }
+
+export interface BaseCategory {
+  id: number;
+  userId: number;
+  parentId: number;
+  name: string;
+  slug: string;
+  description: string;
+  sortWeight: number;
+  status: 0 | 1;
+  creator: string;
+  createTime: string;
+  updater: string;
+  updateTime: string;
+  /* true 删除 false 未删除 */
+  deleted: boolean;
+}
+
+export interface CategoryTreeNode {
+  category: BaseCategory;
+  children: CategoryTreeNode[];
+}
