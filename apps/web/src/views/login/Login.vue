@@ -12,7 +12,7 @@
   import { useCSSNamespace } from '@caldm/hook';
   import { defaultPreferences, preferences } from '@/core/preferences';
   import type { LoginUPCommand, LoginEPCommand, LoginECCommand, LoginCodeCommand } from '@/api';
-  import { sendLoginCode, loginUP, loginEP, loginEC } from '@/api';
+  import { sendLoginCode, loginUP, loginEP, loginEC } from '@/api/modules/authApi';
 
   const router = useRouter();
   const route = useRoute();
