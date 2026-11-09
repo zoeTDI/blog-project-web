@@ -76,9 +76,6 @@
   .ca-list-item__suffix {
   }
 
-  .ca-list-plain {
-  }
-
   .ca-list-item-ordered {
     display: list-item;
   }

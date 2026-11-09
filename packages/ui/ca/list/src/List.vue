@@ -15,18 +15,18 @@
 
   const ns = useCSSNamespace('list');
 
-  const classes = computed(() => {
-    const cls: string[] = [ns.b(), ns.s(mode.value)];
-    return cls;
-  });
-
   const mode = computed(() => props.mode);
 
   provide(caListKey, { mode });
+
+  const containerClasses = computed(() => [
+    ns.e('container'),
+    ns.is(`mode-${mode.value}`),
+  ]);
 </script>
 
 <template>
-  <div :class="classes">
+  <div :class="ns.b()">
     <div
       :class="ns.e('title')"
       v-if="title">
@@ -34,7 +34,7 @@
     </div>
     <component
       :is="mode === 'ordered' ? 'ol' : 'ul'"
-      :class="ns.e('container')">
+      :class="containerClasses">
       <slot></slot>
     </component>
   </div>
