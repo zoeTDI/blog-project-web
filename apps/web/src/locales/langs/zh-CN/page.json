@@ -9,7 +9,7 @@
     "unknownRegion": "未知地区"
   },
   "components": {
-    "caCascader": {
+    "cascader": {
       "placeholder": "请选择数据"
     },
     "tabsBar": {
@@ -36,6 +36,9 @@
     "travelPostEdit": "编辑旅行文章",
     "settings": "系统配置",
     "systemSetting": "系统设置",
-    "profileSetting": "个人设置"
+    "profileSetting": "个人设置",
+    "userManage": "用户管理",
+    "userList": "用户列表",
+    "newUser": "创建新用户"
   }
 }
