@@ -9,10 +9,10 @@
     "unknownRegion": "Unknown Region"
   },
   "components": {
-    "caCascader": {
+    "cascader": {
       "placeholder": "Please select..."
     },
-    "caTabsBar": {
+    "tabsBar": {
       "close": "Close",
       "pin": "Pin",
       "unpin": "Unpin",
@@ -36,6 +36,9 @@
     "travelPostEdit": "Edit Travel Post",
     "settings": "System Config",
     "systemSetting": "System Settings",
-    "profileSetting": "Profile Settings"
+    "profileSetting": "Profile Settings",
+    "userManage": "User Management",
+    "userList": "User List",
+    "newUser": "New User"
   }
 }
