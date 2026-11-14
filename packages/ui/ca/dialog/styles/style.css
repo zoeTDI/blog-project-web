@@ -1,0 +1,24 @@
+/* 弹窗主题变量（浅色模式） */
+.ca-dialog {
+  --ca-dialog-overlay-bg: rgba(0, 0, 0, 0.2);
+  --ca-dialog-bg: var(--color-container-bg, #ffffff);
+  --ca-dialog-text: var(--color-text-primary, #6b6375);
+  --ca-dialog-title: var(--color-text-h, #08060d);
+  --ca-dialog-border: var(--color-border, #e5e4e7);
+  --ca-dialog-hover-bg: var(--color-bg-hover, rgba(244, 243, 236, 0.5));
+  --ca-dialog-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  --ca-dialog-radius: 12px;
+  color-scheme: light;
+}
+
+/* 弹窗主题变量（深色模式） */
+.dark .ca-dialog {
+  --ca-dialog-overlay-bg: rgba(0, 0, 0, 0.6);
+  --ca-dialog-bg: var(--color-container-bg, #1a1a1a);
+  --ca-dialog-text: var(--color-text-primary, #a19ba8);
+  --ca-dialog-title: var(--color-text-h, #f5f5f5);
+  --ca-dialog-border: var(--color-border, #a19ba8);
+  --ca-dialog-hover-bg: var(--color-bg-hover, rgba(38, 37, 34, 0.5));
+  --ca-dialog-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}

@@ -13,6 +13,7 @@ export * from './ca/card';
 export * from './ca/cascader';
 export * from './ca/checkbox';
 export * from './ca/col';
+export * from './ca/dialog';
 export * from './ca/drawer';
 export * from './ca/heatmap';
 export * from './ca/image';
