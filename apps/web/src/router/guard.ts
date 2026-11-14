@@ -94,8 +94,9 @@ const setupAccessGuard = (router: Router) => {
       if (to.meta?.ignoreAccess) {
         return true;
       }
-      // 没有登录并且去往需要权限校验的页面，直接跳转到登录页，并添加重定向。
-      return { name: ROUTER_NAMES.HOME, query: { to: to.path } };
+      // 未登录访问受保护页面时，静默回落到前台首页。
+      // 不携带 ?to= 参数：登录页只对管理员/审核/作者公开，不能通过地址栏残留的目标路径反推登录入口。
+      return { name: ROUTER_NAMES.HOME };
     }
     // 可在此处进一步添加角色校验和权限校验
     return true;
