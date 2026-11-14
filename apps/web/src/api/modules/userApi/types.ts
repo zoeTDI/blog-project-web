@@ -1,6 +1,30 @@
 import type { ValueOf } from '@caldm/utils';
 import { sysUserStatus } from '@/api/modules/userApi/constants.ts';
 
+export interface UserPageItem {
+  id: number,
+  username: string,
+  nickname: string,
+  email: string,
+  avatar: string,
+  status: SysUserStatusEnum,
+  roles: UserRole[],
+  createTime: string
+}
+
+export interface UserPageResponse {
+  page: number,
+  pages: number,
+  size: number,
+  total: number,
+  records: UserPageItem[]
+};
+
+export interface PagePayload {
+  page: number,
+  size: number
+}
+
 export interface CreateUserPayload {
   /** 角色 ID 列表 */
   roleIds: number[];

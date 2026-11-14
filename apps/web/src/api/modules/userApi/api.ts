@@ -3,14 +3,21 @@ import type {
   BanUserPayload,
   CreateUserPayload,
   CreateUserResponse,
+  PagePayload,
   SoftDeletePayload,
+  UserPageResponse,
 } from '@/api/modules/userApi/types.ts';
 
 const Api = {
+  page: '/user/page',
   create: '/user/create',
   ban: '/user/ban',
   softDelete: '/user/softDelete',
 };
+
+export const page = (payload: PagePayload = { page: 1, size: 10 }): Promise<UserPageResponse> => {
+  return defHttp.get(Api.page, { params: payload });
+}
 
 export const createUser = (
   payload: CreateUserPayload

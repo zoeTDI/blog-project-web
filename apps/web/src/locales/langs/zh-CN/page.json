@@ -38,7 +38,6 @@
     "systemSetting": "系统设置",
     "profileSetting": "个人设置",
     "userManage": "用户管理",
-    "userList": "用户列表",
-    "newUser": "创建新用户"
+    "userList": "用户列表"
   }
 }
