@@ -375,6 +375,13 @@
               <input
                 type="checkbox"
                 id="trans-enable"
+                v-model="formState.transition.splashScreen" />
+              <label for="trans-enable">开启网站启动动画</label>
+            </div>
+            <div class="form-item checkbox-item">
+              <input
+                type="checkbox"
+                id="trans-enable"
                 v-model="formState.transition.enable" />
               <label for="trans-enable">开启路由页面切换动画</label>
             </div>

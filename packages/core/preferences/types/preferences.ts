@@ -57,7 +57,7 @@ export interface LogoPreferences {
   sourceDark?: string;
 }
 
-export interface NavigationPreferences {}
+export interface NavigationPreferences { }
 
 export interface ThemePreferences {
   mode: ThemeModeOptions;
@@ -65,6 +65,7 @@ export interface ThemePreferences {
 }
 
 export interface TransitionPreferences {
+  splashScreen: boolean;
   enable: boolean;
   loading: boolean;
   name: PageTransitionType | string;

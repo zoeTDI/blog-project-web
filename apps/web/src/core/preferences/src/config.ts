@@ -53,6 +53,7 @@ export const defaultPreferences: Preferences = {
     colorPrimary: '#aa3bff',
   },
   transition: {
+    splashScreen: true,
     enable: false,
     loading: false,
     name: 'fade',
