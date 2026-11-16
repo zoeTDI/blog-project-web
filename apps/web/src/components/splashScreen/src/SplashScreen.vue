@@ -5,6 +5,10 @@
 
   const SITE_NAME_FALLBACK = "BLOG'S TITLE";
 
+  const SUBSITE_NAME_FALLBACK = 'BLOG\'S SUBTITLE';
+
+  const WEBSITE_MASTER_FALLBACK = 'WEBSITE MASTER';
+
   const siteName = computed(
     () =>
       getDynamicText({
@@ -12,6 +16,16 @@
         'en-US': preferences.app.websiteName_en_US,
       }) || SITE_NAME_FALLBACK
   );
+
+  const subsiteName = computed(
+    () => 
+      getDynamicText({
+        'zh-CN': customPreferences.websiteSubName_zh_CN,
+        'en-US': customPreferences.websiteSubName_en_US,
+      }) || SUBSITE_NAME_FALLBACK
+  )
+
+  const websiteMaster = computed(() => customPreferences.websiteMaster || WEBSITE_MASTER_FALLBACK);
 
   const siteSlogan = computed(() =>
     getDynamicText({
@@ -137,16 +151,16 @@
 
     <div class="beat beat--first">
       <span class="beat__mark">
-        <span class="beat__letter">C</span><span class="beat__letter">A</span>
+        <span class="beat__letter">{{ websiteMaster[0] }}</span><span class="beat__letter">{{ websiteMaster.substring(1) }}</span>
       </span>
-      <span class="beat__meta">CALDM</span>
+      <span class="beat__meta">{{ subsiteName }}</span>
     </div>
 
     <div class="beat beat--second">
       <span class="beat__mark">
-        <span class="beat__letter">C</span><span class="beat__letter">A</span>
+        <span class="beat__letter">{{ websiteMaster[0] }}</span><span class="beat__letter">{{ websiteMaster.substring(1) }}</span>
       </span>
-      <span class="beat__meta">CALDM</span>
+      <span class="beat__meta">{{ subsiteName }}</span>
     </div>
 
     <div class="splash__core">
