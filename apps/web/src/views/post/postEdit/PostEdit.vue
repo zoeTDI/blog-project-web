@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { blogPostType, blogPostStatus } from '@/api';
+import { blogPostType, blogPostStatus, review } from '@/api';
 import type { Tag } from '@/api';
 import { useCSSNamespace } from '@caldm/hook';
 import {
@@ -37,9 +37,7 @@ import {
 } from '@/views/post/postEdit/utils.ts';
 import type {
   _CategoryNode,
-  _NewPostPayload,
   _PostDetail,
-  _SavePostPayload,
   PostEditForm,
 } from '@/views/post/postEdit/type.ts';
 
@@ -75,7 +73,6 @@ const articleForm = ref<PostEditForm>({
   tagIds: [] as number[],
 });
 
-const loading = ref<boolean>(false);
 const tags = ref<Tag[]>([]);
 const categories = ref<_CategoryNode[]>([]);
 const mdEditMode = ref<'code' | 'read' | 'preview'>('code');
@@ -85,10 +82,6 @@ const slugManuallyModified = ref(false);
 const classes = computed(() => {
   const cls: string[] = [ns.b()];
   return cls;
-});
-
-const styles = computed(() => {
-  return {};
 });
 
 const codeWidth = computed(() => {
@@ -114,25 +107,88 @@ const handleSlugInput = () => {
   slugManuallyModified.value = true;
 };
 
-const handleSave = async (status: 'draft' | 'publish') => {
-  if (loading.value) {
+const handleSave = () => {
+  return runSubmit(async () => {
+    await persist();
+    CaMessage.success('保存成功');
+  });
+};
+
+const handleReview = () => {
+  return runSubmit(async () => {
+    if (!validate()) {
+      return;
+    }
+    const id = await persist();
+
+    try {
+      await review({ postId: id });
+    } catch {
+      CaMessage.warn('内容已保存，提交审核失败，请重试');
+      return;
+    }
+    articleForm.value.status = blogPostStatus.reviewing;
+    CaMessage.success('已提交审核');
+  });
+};
+
+const isNil = (value: unknown): value is null | undefined => value === null || value === undefined;
+
+/**
+ * 标题/正文/分类等前置校验
+ */
+const validate = (): boolean => {
+  const form = articleForm.value;
+
+  if (!form.title?.trim()) {
+    CaMessage.warn('请输入文章标题');
+    return false;
+  }
+
+  const requiredFields: Array<[keyof PostEditForm, string]> = [
+    ['isTop', '是否置顶'],
+    ['isOriginal', '是否原创'],
+    ['allowComment', '是否允许评论'],
+    ['sortWeight', '排序权重'],
+    ['tagIds', '标签'],
+    ['categoryIds', '分类'],
+  ];
+
+  const missing = requiredFields.find(([key]) => isNil(form[key]));
+
+  if (missing) {
+    CaMessage.warn(`${missing[1]}不能为空`);
+    return false;
+  }
+
+  return true;
+};
+
+const persist = async (): Promise<number> => {
+  if (articleForm.value.id) {
+    await savePost(toSavePostPayload(unref(articleForm)));
+    return articleForm.value.id;
+  }
+  const id = await newPost(toNewPostPayload(unref(articleForm)));
+  articleForm.value.id = id;
+  return id;
+}
+
+const submitting = ref<boolean>(false);
+
+const runSubmit = async (action: () => Promise<void>) => {
+  if (submitting.value) {
     return;
   }
-  loading.value = true;
+  submitting.value = true;
   try {
-    if (articleForm.value.id) {
-      const payload: _SavePostPayload = toSavePostPayload(unref(articleForm));
-      await savePost(payload);
-
-    } else {
-      const payload: _NewPostPayload = toNewPostPayload(unref(articleForm));
-      articleForm.value.id = await newPost(payload);
-    }
-    CaMessage.success('保存成功！');
+    await action();
+  } catch {
+    // 错误提示已由 defHttp 拦截器统一处理
   } finally {
-    loading.value = false;
+    submitting.value = false;
   }
-};
+}
 
 watch(
   () => articleForm.value.isOriginal,
@@ -153,7 +209,7 @@ watch(
 );
 
 onMounted(async () => {
-  let id = Number(route.params?.id);
+  const id = Number(route.params?.id);
   if (isNumber(id)) {
     const data: _PostDetail = await getPost({ id });
     if (data) {
@@ -168,7 +224,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <CaCard :class="classes" :style="styles">
+  <CaCard :class="classes">
     <template #header>
       <div :class="ns.e('title')">
         <input placeholder="请输入标题" v-model="articleForm.title" :class="ns.e('input')" />
@@ -176,10 +232,10 @@ onMounted(async () => {
     </template>
     <template #footer>
       <div :class="ns.e('action-container')">
-        <CaButton @click="handleSave('draft')" :loading="loading">
-          保存草稿
+        <CaButton @click="handleSave" :loading="submitting">
+          保存
         </CaButton>
-        <CaButton @click="handleSave('publish')" :loading="loading">
+        <CaButton @click="handleReview" :loading="submitting">
           发布
         </CaButton>
       </div>
