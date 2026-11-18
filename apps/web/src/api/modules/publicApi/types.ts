@@ -1,4 +1,4 @@
-import type { BlogPostStatus, BlogPostType, CategoryTreeNode, Tag } from "../postApi";
+import type { BlogPostType, CategoryTreeNode, Tag } from "../postApi";
 
 export interface PublishedPostPagePayload {
   page: number,
@@ -7,11 +7,14 @@ export interface PublishedPostPagePayload {
 
 export interface PublishPostSummary {
   id: number,
+  authorId: number,
+  author: string;
   title: string,
   subtitle: string,
+  contentMd: string,
+  contentHtml: string,
   summary: string,
   type: BlogPostType,
-  status: BlogPostStatus,
   isTop: boolean,
   isOriginal: boolean,
   createTime: string,
@@ -22,8 +25,12 @@ export interface PublishPostSummary {
   collects: number,
   commentCount: number,
   slug: string,
+  seoKeywords: string,
+  seoDescription: string,
   allowComment: boolean,
-  sortWeight: number,
+  reprintSource: string,
+  tags: Tag[],
+  categories: CategoryTreeNode[]
 }
 
 export interface PublishedPostPageResponse {
