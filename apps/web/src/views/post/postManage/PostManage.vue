@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import type { BlogPostPageQueryDTO, PageResult } from '@/api';
+  import type { BlogPostPageQueryDTO, BlogPostStatus, PageResult } from '@/api';
   import { getCurrentUserPosts } from '@/api';
   import { POST_ROUTER_NAME } from '@/router/modules/posts';
   import {
@@ -13,7 +13,7 @@
   import { PencilSquareIcon, PlusIcon } from '@heroicons/vue/24/outline';
   import { computed, onMounted, ref, watch } from 'vue';
   import { useRouter } from 'vue-router';
-  import type { BlogPostStatus, BlogPostSummaryDTO } from '#/blogPost.ts';
+  import type { BlogPostSummaryDTO } from '#/blogPost.ts';
 
   type PageSize = BlogPostPageQueryDTO['size'];
 
@@ -38,8 +38,6 @@
     草稿: 'is-draft',
     已发布: 'is-published',
     审核中: 'is-reviewing',
-    回收站: 'is-recycled',
-    私密: 'is-private',
   };
 
   const formatDateTime = (value: string | null) => {
