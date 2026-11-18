@@ -7,10 +7,12 @@ import type {
   CategoryTreeNode,
   Tag,
 } from '@/api/modules/postApi/types.ts';
+import type { PageResult } from '@/types/data';
 
 const Api = {
   createBlogPost: '/post/blogPost/create',
   currentUserBlogPosts: '/post/blogPost/mine',
+  getReviewingPosts: `/post/blogPost/reviewing`,
   getBlogPostById: '/post/blogPost/edit',
   update: '/post/blogPost/update',
   allCategoriesByAuthor: '/post/getAllCategoriesByAuthor',
@@ -34,14 +36,6 @@ const blogPostPageRequests = new Map<
 export interface BlogPostPageQueryDTO {
   page: number;
   size: number;
-}
-
-export interface PageResult<T> {
-  records: T[];
-  total: number;
-  page: number;
-  size: number;
-  pages: number;
 }
 
 export const createBlogPost = (
@@ -96,6 +90,10 @@ export const getCurrentUserPosts = (
   blogPostPageRequests.set(cacheKey, request);
   return request;
 };
+
+export const getReviewingPosts = (query: BlogPostPageQueryDTO): Promise<PageResult<BlogPostSummaryDTO>> => {
+  return defHttp.get(Api.getReviewingPosts, { params: query });
+}
 
 export const getPostById = (payload: {
   id: number;
