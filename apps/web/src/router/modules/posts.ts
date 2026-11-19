@@ -7,6 +7,7 @@ export const POST_ROUTER_NAME: Record<string, string> = {
   POST_EDIT: 'PostEdit',
   POST_NEW: 'PostNew',
   TRAVEL_POST_EDIT: 'TravelPostEdit',
+  POST_REVIEW_MANAGE: 'PostReviewManage',
 };
 
 const postRouter: RouteRecordRaw[] = [
@@ -59,6 +60,15 @@ const postRouter: RouteRecordRaw[] = [
           prefixIcon: DocumentDuplicateIcon,
         },
       },
+      {
+        path: '/posts/review_manage',
+        name: POST_ROUTER_NAME.POST_REVIEW_MANAGE,
+        component: () => import('@/views/post/postReviewManage/PostReviewManage.vue'),
+        meta: {
+          title: `${ROUTER_PREFIX}postReviewManage`,
+          requireLogin: true,
+        }
+      }
     ],
   },
 ];
