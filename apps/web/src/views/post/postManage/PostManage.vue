@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { BlogPostStatus } from '@/api';
 import { getCurrentUserPosts, review } from '@/api';
 import { POST_ROUTER_NAME } from '@/router/modules/posts';
 import {
@@ -13,7 +12,7 @@ import {
 import { PlusIcon } from '@heroicons/vue/24/outline';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import type { BlogPostSummaryDTO } from '#/blogPost.ts';
+import type { BlogPostStatus, BlogPostSummaryDTO } from '#/blogPost.ts';
 import type { PageQuery, PageResult } from '@/types/data';
 
 // TODO: 文章管理页尚未完成的功能

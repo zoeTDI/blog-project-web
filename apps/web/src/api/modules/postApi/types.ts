@@ -1,12 +1,4 @@
-import type { ValueOf } from '@caldm/utils';
-import {
-  blogPostStatus,
-  type blogPostType,
-} from '@/api/modules/postApi/constants.ts';
-
-export type BlogPostType = ValueOf<typeof blogPostType>;
-
-export type BlogPostStatus = ValueOf<typeof blogPostStatus>;
+import type { BlogPostStatus, BlogPostType } from "@/types/blogPost";
 
 export interface BlogPostCreatePayload {
   /** 标题（长度 ≤ 200） */

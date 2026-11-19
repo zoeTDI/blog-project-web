@@ -1,4 +1,5 @@
-import type { BlogPostType, CategoryTreeNode } from "../postApi";
+import type { BlogPostType } from "@/types/blogPost";
+import type { CategoryTreeNode } from "../postApi";
 
 export interface PublishedPostPagePayload {
   page: number,

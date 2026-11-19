@@ -1,4 +1,5 @@
-import type { BlogPostStatus, BlogPostType } from '@/api/modules/postApi';
+import type { blogPostStatus, blogPostType } from '@/api/modules/postApi';
+import type { ValueOf } from '@caldm/utils';
 
 export interface BlogPostSummaryDTO {
   id: number;
@@ -20,4 +21,7 @@ export interface BlogPostSummaryDTO {
   allowComment: boolean;
   sortWeight: number;
 }
+
+export type BlogPostType = ValueOf<typeof blogPostType>;
+export type BlogPostStatus = ValueOf<typeof blogPostStatus>;
 

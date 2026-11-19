@@ -1,10 +1,9 @@
 import type {
   BlogPostCreatePayload,
   BlogPostEditDTO,
-  BlogPostStatus,
-  BlogPostType,
   BlogPostUpdatePayload,
 } from '@/api';
+import type { BlogPostStatus, BlogPostType } from '#/blogPost.ts';
 
 export interface PostEditForm {
   id: number | null;
