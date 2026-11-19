@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { ROUTER_NAMES } from '@/router/routerNames.ts';
-import type { PublishPostSummary } from '@/api';
+import type { PublishPost } from '@/api';
 
 interface MetaConfig {
   showDate?: boolean;
@@ -17,7 +17,7 @@ interface MetaConfig {
 
 const router = useRouter();
 const props = defineProps<{
-  article: PublishPostSummary;
+  article: PublishPost;
   mode: 'list' | 'card';
   // 默认配置：仅显示日期和标签
   metaConfig?: MetaConfig;

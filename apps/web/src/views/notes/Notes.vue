@@ -2,7 +2,7 @@
 import { nextTick, onMounted, ref } from 'vue';
 import { ArticleRenderer, ViewSwitcher } from '@/components/viewSwitcher';
 import { CaButton } from '@caldm/ui';
-import { fetchPublishedPostPage, type PublishPostSummary } from '@/api';
+import { fetchPublishedPostPage, type PublishPost } from '@/api';
 
 
 
@@ -46,7 +46,7 @@ const viewMode = ref<'list' | 'card'>('list');
 
 const isLoading = ref<boolean>(false);
 const noMore = ref<boolean>(false);
-const allArticles = ref<PublishPostSummary[]>([]);
+const allArticles = ref<PublishPost[]>([]);
 
 const loadMore = () => {
   if (isLoading.value || noMore.value) return;
