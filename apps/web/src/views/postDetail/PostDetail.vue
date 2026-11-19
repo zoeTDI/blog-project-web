@@ -1,59 +1,48 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
-  import { useRoute } from 'vue-router';
-  import { mockApiFetch } from '@/utils/mock';
-  import { CaRow, CaCol } from '@caldm/ui';
-  import {
-    ExclamationTriangleIcon,
-    Squares2X2Icon,
-    TagIcon,
-  } from '@heroicons/vue/24/outline';
-  import { ROUTER_NAMES } from '@/router/routerNames.ts';
-  import { MarkdownRender } from '@/components/markdownRender';
-  import { PostActions } from '@/components/postActions';
-  const blogName = import.meta.env.VITE_WEB_SITE_NAME;
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { CaRow, CaCol, CaMessage, CaIcon } from '@caldm/ui';
+import {
+  ChatBubbleLeftEllipsisIcon,
+  ExclamationTriangleIcon,
+  FireIcon,
+  HeartIcon,
+  Squares2X2Icon,
+  StarIcon,
+  TagIcon,
+} from '@heroicons/vue/24/outline';
+import { ROUTER_NAMES } from '@/router/routerNames.ts';
+import { MarkdownRender } from '@/components/markdownRender';
+import { PostActions } from '@/components/postActions';
+import { fetchPublishedPostDetail } from '@/api';
+import type { PublishPost } from '@/api';
+const blogName = import.meta.env.VITE_WEB_SITE_NAME;
 
-  const route = useRoute();
-  const post = ref<any>(null);
+const route = useRoute();
+const post = ref<PublishPost | null>(null);
 
-  const metaOptions = ref([
-    { key: 'views', suffix: 'VIEWS', icon: '👁' },
-    { key: 'likes', suffix: 'LIKES', icon: '♥' },
-    { key: 'saved', suffix: 'SAVED', icon: '⭐' },
-    { key: 'comments', suffix: 'COMMENTS', icon: '💬' },
-  ]);
+const displaySuppleInfo = (): boolean => {
+  if (!post.value?.updateTime) return false;
+  const lastUpdate = new Date(post.value?.updateTime);
+  const now = new Date();
+  return now.getTime() - lastUpdate.getTime() > 2592000000; // 30*24*60*60*1000 30天未更新
+};
 
-  const handleMetaOptions = () => {
-    if (!Array.isArray(metaOptions.value)) {
-      metaOptions.value = [];
-    }
-    metaOptions.value = metaOptions.value.filter((item) => {
-      return !!post.value[item.key];
-    });
-  };
+// 版权说明文件
+const currentUrl = ref('');
+const authorName = ref('Caldm'); // 建议后续从文章数据中动态获取
 
-  const displaySuppleInfo = (): boolean => {
-    if (!post.value?.lastUpdate) return false;
-    const lastUpdate = new Date(post.value?.lastUpdate);
-    const now = new Date();
-    return now.getTime() - lastUpdate.getTime() > 2592000000; // 30*24*60*60*1000 30天未更新
-  };
+/**
+ * 拦截复制事件并追加版权信息
+ */
+const handleCopy = (event: ClipboardEvent) => {
+  // 1. 获取用户实际选中的文本
+  const selection = window.getSelection();
+  if (!selection) return;
+  const selectedText = selection.toString();
 
-  // 版权说明文件
-  const currentUrl = ref('');
-  const authorName = ref('Caldm'); // 建议后续从文章数据中动态获取
-
-  /**
-   * 拦截复制事件并追加版权信息
-   */
-  const handleCopy = (event: ClipboardEvent) => {
-    // 1. 获取用户实际选中的文本
-    const selection = window.getSelection();
-    if (!selection) return;
-    const selectedText = selection.toString();
-
-    // 2. 构建版权声明文本
-    const copyrightNotice = `
+  // 2. 构建版权声明文本
+  const copyrightNotice = `
   ------------------------------------------------
   作者：${authorName.value}
   链接：${currentUrl.value}
@@ -62,83 +51,45 @@
   ------------------------------------------------
   `;
 
-    // 3. 将原文与版权信息拼接
-    const clipboardData = selectedText + copyrightNotice;
+  // 3. 将原文与版权信息拼接
+  const clipboardData = selectedText + copyrightNotice;
 
-    // 4. 写入剪贴板
-    if (event.clipboardData) {
-      event.clipboardData.setData('text/plain', clipboardData);
-      // 阻止默认的复制行为，使用我们自定义的内容
-      event.preventDefault();
+  // 4. 写入剪贴板
+  if (event.clipboardData) {
+    event.clipboardData.setData('text/plain', clipboardData);
+    // 阻止默认的复制行为，使用我们自定义的内容
+    event.preventDefault();
+  }
+};
+
+const parseNumber = (val: any) => {
+  const parsed = Number(val);
+  if (isNaN(parsed)) {
+    return -1;
+  } else {
+    return parsed;
+  }
+}
+
+// 模拟获取数据
+onMounted(async () => {
+  const id = parseNumber(route.params.id);
+  if (id === -1) {
+    CaMessage.error('文章请求出错');
+    return;
+  }
+
+  fetchPublishedPostDetail({ id }).then(
+    (res) => {
+      post.value = res;
     }
-  };
-
-  // 模拟获取数据
-  onMounted(async () => {
-    // 模拟后端返回的数据结构
-    const data = {
-      id: route.query.id,
-      title: '文章标题',
-      content:
-        '# 一级标题\n' +
-        '## 二级标题\n' +
-        '### 三级标题\n' +
-        '#### 四级标题\n' +
-        '##### 五级标题\n' +
-        '**加粗内容**\n' +
-        '*斜体内容*\n' +
-        '> 引用内容\n\n' +
-        '::: note -\n' +
-        ' 内容 \n\n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        '::: tip Tip \n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        '::: important 标题 \n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        '::: warning 标题 \n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        '::: caution 标题 \n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        '::: abstract 标题 \n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        '::: todo 标题 \n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        '::: success 标题 \n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        '::: question 标题 \n' +
-        ' 内容 \n\n' +
-        ':::\n' +
-        ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://picsum.photos/seed/0.5412681759709166/800/450){class=left width=60%}\n\n' +
-        ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](ob-tc-caldm-1315806820.cos.ap-nanjing.myqcloud.com/img/2024-03-16%E5%82%8D%E6%99%9A%EF%BC%8C%E4%BD%A0%E5%92%8C%E5%A5%B9%E4%B8%80%E8%B5%B7%E9%80%83%E6%8E%89%E4%BA%86%E6%99%9A%E8%87%AA%E4%B9%A0%E6%9D%A5%E5%88%B0%E4%BA%86%E5%B2%B8%E8%BE%B9%E5%90%B9%E9%A3%8E.......jpg){class=center width=60%}\n\n' +
-        ' ![傍晚，你和她一起逃掉了晚自习来到了岸边吹风......](https://picsum.photos/seed/0.5412681759709166/800/450){class=right width=60%}\n\n' +
-        '```Js\n' +
-        'console.log("<>Hello World")\n' +
-        '\n',
-      views: 30,
-      likes: 12,
-      stars: 22,
-      comments: 23,
-      releaseDate: '2023-04-12',
-      lastUpdate: '2023-04-13',
-    };
-    post.value = await mockApiFetch(data, 500);
-    handleMetaOptions();
-    currentUrl.value = window.location.href;
-  });
+  )
+  currentUrl.value = window.location.href;
+});
 </script>
 
 <template>
-  <div
-    class="post-detail-container"
-    v-if="post">
+  <div class="post-detail-container" v-if="post">
     <ca-row :gap="40">
       <ca-col :span="17">
         <div class="main-content">
@@ -150,143 +101,86 @@
               <ca-col class="meta-categories">
                 <squares2-x2-icon class="icon" />
                 分类：
-                <router-link
-                  :to="{
-                    name: ROUTER_NAMES.CATEGORY_DETAIL,
-                    params: { id: 124, name: '技术/框架/Vue' },
-                  }"
-                  class="category"
-                  >技术/框架/Vue
-                </router-link>
-                <router-link
-                  :to="{
-                    name: ROUTER_NAMES.CATEGORY_DETAIL,
-                    params: { id: 123, name: '学习/编程' },
-                  }"
-                  class="category"
-                  >学习/编程
+                <router-link v-for="cate in post.categories" :key="cate.category.id"
+                  :to="{ name: ROUTER_NAMES.CATEGORY_DETAIL, params: { id: cate.category.id, name: cate.category.name } }">
+                  {{ cate.category.name }}
                 </router-link>
               </ca-col>
               <ca-col class="meta-tags">
                 <tag-icon class="icon" />
                 标签：
-                <router-link
-                  :to="{
-                    name: ROUTER_NAMES.TAG_DETAIL,
-                    params: { id: 123, name: '前端' },
-                  }"
-                  class="tag"
-                  >#前端
-                </router-link>
-                <router-link
-                  :to="{
-                    name: ROUTER_NAMES.TAG_DETAIL,
-                    params: { id: 124, name: '设计模式' },
-                  }"
-                  class="tag">
-                  #设计模式
-                </router-link>
-                <router-link
-                  :to="{
-                    name: ROUTER_NAMES.TAG_DETAIL,
-                    params: { id: 125, name: 'Vue3' },
-                  }"
-                  class="tag"
-                  >#Vue3
+                <router-link v-for="tag in post.tags" :key="tag.id" :to="{
+                  name: ROUTER_NAMES.TAG_DETAIL,
+                  params: { id: tag.id, name: tag.name }
+                }" class="tag">
+                  {{ tag.name }}
                 </router-link>
               </ca-col>
               <ca-col :span="18">
                 <ca-row class="meta-items">
-                  <ca-col
-                    class="meta-item"
-                    v-for="item in metaOptions"
-                    :key="item.key"
-                    :span="24 / metaOptions.length">
-                    {{ item.icon }}
-                    {{ post[item.key] || '暂无数据' }}
-                    {{ item.suffix }}
+                  <ca-col class="meta-item" :span="6">
+                    <ca-icon :icon="FireIcon" />
+                    {{ !!post.views ? post.views : '暂无数据' }}
+                  </ca-col>
+                  <ca-col class="meta-item" :span="6">
+                    <ca-icon :icon="HeartIcon" />
+                    {{ !!post.likes ? post.likes : '暂无数据' }}
+                  </ca-col>
+                  <ca-col class="meta-item" :span="6">
+                    <ca-icon :icon="StarIcon" />
+                    {{ !!post.collects ? post.collects : '暂无数据' }}
+                  </ca-col>
+                  <ca-col class="meta-item" :span="6">
+                    <ca-icon :icon="ChatBubbleLeftEllipsisIcon" />
+                    {{ !!post.commentCount ? post.commentCount : '暂无数据' }}
                   </ca-col>
                 </ca-row>
               </ca-col>
               <ca-col :span="6">
                 <ca-row class="meta-date">
-                  <ca-col class="release-date"
-                    >发布：{{ post.releaseDate }}</ca-col
-                  >
-                  <ca-col class="last-update"
-                    >最后更新：{{ post.lastUpdate }}</ca-col
-                  >
+                  <ca-col class="release-date">发布：{{ post.publishedTime.slice(0, 10) }}</ca-col>
+                  <ca-col class="last-update">最后更新：{{ post.updateTime.slice(0, 10) }}</ca-col>
                 </ca-row>
               </ca-col>
             </ca-row>
             <ca-row>
-              <ca-col
-                class="supple-info"
-                v-if="displaySuppleInfo()">
+              <ca-col class="supple-info" v-if="displaySuppleInfo()">
                 <exclamation-triangle-icon class="icon" />
                 补充说明 / WARNING：文章上次更新时间过于久远，信息可能失效。
               </ca-col>
             </ca-row>
           </header>
 
-          <article
-            class="article-body"
-            @copy="handleCopy">
-            <markdown-render
-              :content="post.content"
-              :caption-mode="'always'" />
-            <markdown-render
-              :content="post.content"
-              :caption-mode="'always'"
-              theme="pink" />
+          <article class="article-body" @copy="handleCopy">
+            <markdown-render :content="post.contentMd" :caption-mode="'always'" />
           </article>
 
           <footer class="article-footer">
             <post-actions />
             <post-actions :mode="'circle'" />
             <div class="prev-next-nav">
-              <router-link
-                :to="{ name: ROUTER_NAMES.POST_DETAIL, params: { id: 3 } }"
-                class="prev"
-                >上一篇</router-link
-              >
+              <router-link :to="{ name: ROUTER_NAMES.POST_DETAIL, params: { id: 3 } }" class="prev">上一篇</router-link>
               /
-              <router-link
-                :to="{ name: ROUTER_NAMES.POST_DETAIL, params: { id: 4 } }"
-                class="next"
-                >下一篇</router-link
-              >
+              <router-link :to="{ name: ROUTER_NAMES.POST_DETAIL, params: { id: 4 } }" class="next">下一篇</router-link>
             </div>
             <div class="copyright-info">
               <div class="copyright-item">
                 <span class="label">文章作者：</span>
-                <span class="value">Gemini</span>
+                <span class="value">{{ post.author }}</span>
                 <!-- 建议后续改为动态变量 -->
               </div>
               <div class="copyright-item">
                 <span class="label">文章链接：</span>
-                <a
-                  :href="currentUrl"
-                  class="value link"
-                  >{{ currentUrl }}</a
-                >
+                <a :href="currentUrl" class="value link">{{ currentUrl }}</a>
               </div>
               <div class="copyright-item">
                 <span class="label">版权声明：</span>
                 <span class="value">
                   本博客所有文章除特别声明外，均采用
-                  <a
-                    href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh"
-                    target="_blank"
-                    class="link"
-                    >CC BY-NC-ND 4.0</a
-                  >
+                  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" target="_blank" class="link">CC
+                    BY-NC-ND 4.0</a>
                   许可协议。转载请注明来自
-                  <router-link
-                    to="/"
-                    class="link"
-                    >{{ blogName }}</router-link
-                  >！
+                  <router-link to="/" class="link">{{ blogName }}</router-link>！
                 </span>
               </div>
             </div>
@@ -307,174 +201,176 @@
 </template>
 
 <style scoped>
-  .post-detail-container {
-    max-width: var(--content-max-width-M);
-    margin: 0 auto;
-    padding: var(--content-padding-M);
-  }
+.post-detail-container {
+  max-width: var(--content-max-width-M);
+  margin: 0 auto;
+  padding: var(--content-padding-M);
+}
 
-  .article-header {
-    border-bottom: 1px solid var(--color-border);
-  }
+.article-header {
+  border-bottom: 1px solid var(--color-border);
+}
 
-  .title-area {
-    font-family: var(--font-h);
-    line-height: 1;
-    font-size: 64px;
-    color: var(--color-text-h);
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
+.title-area {
+  font-family: var(--font-h);
+  line-height: 1;
+  font-size: 64px;
+  color: var(--color-text-h);
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 
-  .meta-categories {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 8px;
-    color: var(--color-text-h);
-    font-family: var(--font-text);
-    font-weight: bold;
-  }
+.meta-categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-h);
+  font-family: var(--font-text);
+  font-weight: bold;
+}
 
-  .meta-tags .icon,
-  .meta-categories .icon {
-    width: 24px;
-    height: 24px;
-    aspect-ratio: 1 / 1;
-    color: var(--color-text-h);
-  }
+.meta-tags .icon,
+.meta-categories .icon {
+  width: 24px;
+  height: 24px;
+  aspect-ratio: 1 / 1;
+  color: var(--color-text-h);
+}
 
-  .meta-tags .tag,
-  .meta-categories .category {
-    letter-spacing: 2px;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-  }
+.meta-tags .tag,
+.meta-categories .category {
+  letter-spacing: 2px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
 
-  .meta-tags .tag:hover,
-  .meta-categories .category:hover {
-    background-color: var(--color-bg-hover-accent);
-  }
+.meta-tags .tag:hover,
+.meta-categories .category:hover {
+  background-color: var(--color-bg-hover-accent);
+}
 
-  .meta-tags {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 8px;
-    color: var(--color-text-h);
-    font-family: var(--font-text);
-    font-weight: bold;
-  }
+.meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-h);
+  font-family: var(--font-text);
+  font-weight: bold;
+}
 
-  .meta-items {
-    height: 100%;
-  }
+.meta-items {
+  height: 100%;
+}
 
-  .meta-item {
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-  }
+.meta-item {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
 
-  .meta-date {
-    font-size: 14px;
-  }
+.meta-date {
+  font-size: 14px;
+}
 
-  .supple-info {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 16px;
-    background-color: var(--callout-warning-bg);
-    color: var(--color-callout-text);
-  }
+.supple-info {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 16px;
+  background-color: var(--callout-warning-bg);
+  color: var(--color-callout-text);
+}
 
-  .supple-info .icon {
-    width: 24px;
-    height: 24px;
-    aspect-ratio: 1 / 1;
-    color: var(--color-callout-text);
-    margin-right: 10px;
-  }
+.supple-info .icon {
+  width: 24px;
+  height: 24px;
+  aspect-ratio: 1 / 1;
+  color: var(--color-callout-text);
+  margin-right: 10px;
+}
 
-  .main-content,
-  .sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
+.main-content,
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
-  .article-header {
-    padding-bottom: 20px;
-  }
+.article-header {
+  padding-bottom: 20px;
+}
 
-  .article-body {
-    min-height: 600px; /* 模拟内容高度 */
-    padding: 20px 0;
-  }
+.article-body {
+  min-height: 600px;
+  /* 模拟内容高度 */
+  padding: 20px 0;
+}
 
-  .prev-next-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 16px;
-  }
+.prev-next-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+}
 
-  .prev-next-nav a {
-    transition: all 0.3s ease;
-  }
+.prev-next-nav a {
+  transition: all 0.3s ease;
+}
 
-  .prev-next-nav a:hover {
-    color: var(--color-text-hover-accent);
-  }
+.prev-next-nav a:hover {
+  color: var(--color-text-hover-accent);
+}
 
-  .copyright-info {
-    margin-top: 32px;
-    padding: 16px 20px;
-    border-left: 5px solid var(--color-border-accent);
-    background-color: var(--color-bg);
-    border-radius: 4px;
-    font-size: 14px;
-    color: var(--color-text-primary);
-    line-height: 1.8;
-  }
+.copyright-info {
+  margin-top: 32px;
+  padding: 16px 20px;
+  border-left: 5px solid var(--color-border-accent);
+  background-color: var(--color-bg);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  line-height: 1.8;
+}
 
-  .copyright-item {
-    margin-bottom: 4px;
-  }
+.copyright-item {
+  margin-bottom: 4px;
+}
 
-  .copyright-item:last-child {
-    margin-bottom: 0;
-  }
+.copyright-item:last-child {
+  margin-bottom: 0;
+}
 
-  .copyright-item .label {
-    font-weight: bold;
-    color: var(--color-text-h);
-  }
+.copyright-item .label {
+  font-weight: bold;
+  color: var(--color-text-h);
+}
 
-  .copyright-item .link {
-    color: var(--color-accent);
-    text-decoration: none;
-    transition: opacity 0.2s;
-    word-break: break-all;
-  }
+.copyright-item .link {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+  word-break: break-all;
+}
 
-  .copyright-item .link:hover {
-    opacity: 0.8;
-    text-decoration: underline;
-  }
+.copyright-item .link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
 
-  .sidebar > div {
-    padding: 20px;
-    min-height: 100px; /* 模拟侧边栏组件高度 */
-  }
+.sidebar>div {
+  padding: 20px;
+  min-height: 100px;
+  /* 模拟侧边栏组件高度 */
+}
 
-  /* 确保侧边栏在滚动时能部分固定（符合现代博客设计） */
-  .toc-wrapper {
-    position: sticky;
-    top: 100px;
-  }
+/* 确保侧边栏在滚动时能部分固定（符合现代博客设计） */
+.toc-wrapper {
+  position: sticky;
+  top: 100px;
+}
 </style>
