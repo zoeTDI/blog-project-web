@@ -1,5 +1,5 @@
 import { defHttp } from "@/utils/request";
-import type { PublishedPostDetailPayload, PublishedPostDetailResponse, PublishedPostPagePayload, PublishedPostPageResponse } from "./types";
+import type { PublishedPostDetailPayload, PublishedPostPagePayload, PublishedPostPageResponse, PublishPost } from "./types";
 
 const API_PREFIX = "/public/post"
 
@@ -12,6 +12,6 @@ export const fetchPublishedPostPage = (payload: PublishedPostPagePayload): Promi
   return defHttp.get(Api.getPublishedPostPage, { params: payload });
 }
 
-export const fetchPublishedPostDetail = (payload: PublishedPostDetailPayload): Promise<PublishedPostDetailResponse> => {
+export const fetchPublishedPostDetail = (payload: PublishedPostDetailPayload): Promise<PublishPost> => {
   return defHttp.get(Api.getPublishedPostDetail, { params: payload });
 }
