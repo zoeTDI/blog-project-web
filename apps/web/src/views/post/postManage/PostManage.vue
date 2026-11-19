@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BlogPostPageQueryDTO, BlogPostStatus } from '@/api';
+import type { BlogPostStatus } from '@/api';
 import { getCurrentUserPosts, review } from '@/api';
 import { POST_ROUTER_NAME } from '@/router/modules/posts';
 import {
@@ -10,11 +10,11 @@ import {
   CaTableColumn,
   type CaSwitchOption,
 } from '@caldm/ui';
-import { PencilSquareIcon, PlusIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon } from '@heroicons/vue/24/outline';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import type { BlogPostSummaryDTO } from '#/blogPost.ts';
-import type { PageResult } from '@/types/data';
+import type { PageQuery, PageResult } from '@/types/data';
 
 // TODO: 文章管理页尚未完成的功能
 // - 操作项不全：缺少删除、下架/撤回发布、预览或查看详情等入口，目前只有编辑和发布
@@ -26,7 +26,7 @@ import type { PageResult } from '@/types/data';
 // - 状态样式：statusClass 只覆盖草稿/已发布/审核中，CSS 中的 is-recycled/is-private 尚未接入
 // - 未使用的导入：PencilSquareIcon 尚未使用，待改为图标按钮或删除
 
-type PageSize = BlogPostPageQueryDTO['size'];
+type PageSize = PageQuery['size'];
 
 const router = useRouter();
 const currentPage = ref(1);

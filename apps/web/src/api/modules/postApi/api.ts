@@ -7,7 +7,7 @@ import type {
   CategoryTreeNode,
   Tag,
 } from '@/api/modules/postApi/types.ts';
-import type { PageResult } from '@/types/data';
+import type { PageQuery, PageResult } from '@/types/data';
 
 const Api = {
   createBlogPost: '/post/blogPost/create',
@@ -33,11 +33,6 @@ const blogPostPageRequests = new Map<
   Promise<PageResult<BlogPostSummaryDTO>>
 >();
 
-export interface BlogPostPageQueryDTO {
-  page: number;
-  size: number;
-}
-
 export const createBlogPost = (
   payload: BlogPostCreatePayload
 ): Promise<number> => {
@@ -52,7 +47,7 @@ export const clearCurrentUserBlogPostCache = () => {
 };
 
 export const getCurrentUserPosts = (
-  query: BlogPostPageQueryDTO,
+  query: PageQuery,
   forceRefresh = false
 ): Promise<PageResult<BlogPostSummaryDTO>> => {
   const cacheKey = `${query.page}:${query.size}`;
@@ -90,10 +85,6 @@ export const getCurrentUserPosts = (
   blogPostPageRequests.set(cacheKey, request);
   return request;
 };
-
-export const getReviewingPosts = (query: BlogPostPageQueryDTO): Promise<PageResult<BlogPostSummaryDTO>> => {
-  return defHttp.get(Api.getReviewingPosts, { params: query });
-}
 
 export const getPostById = (payload: {
   id: number;

@@ -5,3 +5,8 @@ export interface PageResult<T> {
   size: number;
   pages: number;
 }
+
+export interface PageQuery {
+  page: number,
+  size: number,
+}

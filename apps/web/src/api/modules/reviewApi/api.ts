@@ -1,6 +1,5 @@
 import { defHttp } from "@/utils/request"
-import type { BlogPostPageQueryDTO } from "../postApi";
-import type { PageResult } from "@/types/data";
+import type { PageQuery, PageResult } from "@/types/data";
 import type { BlogPostSummaryDTO } from "@/types/blogPost";
 
 const API_PREFIX = "/post/review"
@@ -10,6 +9,6 @@ const Api = {
   getReviewingDetail: `${API_PREFIX}/detail`,
 }
 
-export const fetchReviewingPostPage = (payload: BlogPostPageQueryDTO): Promise<PageResult<BlogPostSummaryDTO>> => {
+export const fetchReviewingPostPage = (payload: PageQuery): Promise<PageResult<BlogPostSummaryDTO>> => {
   return defHttp.get(Api.getReviewingPostPage, { params: payload });
 }
