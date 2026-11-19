@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { getReviewingPosts, reject, toPublished } from '@/api';
+import { fetchReviewingPostPage, reject, toPublished } from '@/api';
 import type { BlogPostSummaryDTO } from '@/types/blogPost';
 import { useCSSNamespace } from '@caldm/hook';
 import { CaButton, CaTable, CaTableColumn } from '@caldm/ui'
-import { CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { onMounted, ref } from 'vue';
 
 
@@ -56,7 +55,7 @@ const handleReject = async (data: BlogPostSummaryDTO) => {
 
 // TODO: 缺少 try/catch 与错误提示；分页参数写死为第 1 页 10 条，应改为响应式状态
 onMounted(async () => {
-  const res = await getReviewingPosts({ page: 1, size: 10 });
+  const res = await fetchReviewingPostPage({ page: 1, size: 10 });
   total.value = res.total;
   formData.value = res.records;
 })
