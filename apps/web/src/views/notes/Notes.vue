@@ -2,7 +2,8 @@
 import { nextTick, onMounted, ref } from 'vue';
 import { ArticleRenderer, ViewSwitcher } from '@/components/viewSwitcher';
 import { CaButton } from '@caldm/ui';
-import { fetchPublishedPostPage, type PublishPost } from '@/api';
+import { fetchPublishedPostPage } from '@/api';
+import type { PublishPost } from '#/blogPost';
 
 
 

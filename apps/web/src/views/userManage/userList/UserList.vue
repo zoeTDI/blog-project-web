@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import {
-  createUser,
-  getAllRoles,
-  page,
-  sysUserStatus,
-} from '@/api';
-import type {
-  CreateUserPayload,
-  RoleResponse,
-  SysUserStatusEnum,
-  UserPageItem,
-  UserPageResponse,
-} from '@/api';
+import { createUser, getAllRoles, page } from '@/api';
+import type { CreateUserPayload } from '@/api';
+import type { RoleResponse } from '#/permission';
+import { sysUserStatus } from '#/user';
+import type { SysUserStatusEnum, UserPageItem } from '#/user';
+import type { PageResult } from '#/data';
 import { useCSSNamespace } from '@caldm/hook';
 import { computed, onMounted, reactive, ref } from 'vue';
 import {
@@ -76,7 +69,7 @@ const handleDelete = (_user: UserPageItem) => {
   // TODO: 调用 softDeleteUser 接口
 };
 
-const onFetchUserPageSuccess = (res: UserPageResponse) => {
+const onFetchUserPageSuccess = (res: PageResult<UserPageItem>) => {
   users.value = res.records;
   curPage.value = res.page;
   pages.value = res.pages;

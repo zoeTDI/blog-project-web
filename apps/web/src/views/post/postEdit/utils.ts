@@ -4,7 +4,7 @@ import {
   getAllTagsByAuthor, getPostById,
   updatePost,
 } from '@/api';
-import type { CategoryTreeNode } from '@/api';
+import type { CategoryTreeNode } from '#/blogPost';
 import { isEmpty } from '@caldm/utils';
 import type {
   _CategoryNode,

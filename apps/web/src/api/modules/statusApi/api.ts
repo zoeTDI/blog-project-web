@@ -1,5 +1,5 @@
 import { defHttp } from "@/utils/request";
-import type { ReviewPayload, PublishedPayload, RejectPayload } from "./types";
+import type { PostIdPayload } from './contract';
 
 const API_PREFIX = '/post';
 
@@ -12,20 +12,20 @@ const Api = {
 /**
  * 文章审核
  */
-export const review = (payload: ReviewPayload) => {
+export const review = (payload: PostIdPayload): Promise<void> => {
   return defHttp.post(Api.review, null, { params: payload });
 }
 
 /**
  * 发布文章
  */
-export const toPublished = (payload: PublishedPayload): Promise<any> => {
+export const toPublished = (payload: PostIdPayload): Promise<void> => {
   return defHttp.post(Api.toPublished, null, { params: payload });
 }
 
 /**
  * 文章审核不通过
  */
-export const reject = (payload: RejectPayload): Promise<any> => {
+export const reject = (payload: PostIdPayload): Promise<void> => {
   return defHttp.post(Api.reject, null, { params: payload });
 }

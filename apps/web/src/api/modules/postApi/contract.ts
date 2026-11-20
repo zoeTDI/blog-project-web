@@ -1,4 +1,4 @@
-import type { BlogPostStatus, BlogPostType } from "@/types/blogPost";
+import type { BlogPostStatus, BlogPostType } from '#/blogPost';
 
 export interface BlogPostCreatePayload {
   /** 标题（长度 ≤ 200） */
@@ -72,78 +72,4 @@ export interface BlogPostUpdatePayload {
   tagIds?: number[];
   /** 分类树结构 */
   categoryIds?: number[][];
-}
-
-export interface BlogPostEditDTO {
-  id: number;
-  authorId: number;
-  creator: string;
-  updater: string;
-  /** 标题（长度 ≤ 200） */
-  title: string;
-  /** 副标题（长度 ≤ 200） */
-  subtitle: string;
-  contentMd: string;
-  contentHtml: string;
-  /** 摘要（长度 ≤ 500） */
-  summary: string;
-  tags: number[];
-  categories: number[][];
-  type: BlogPostType;
-  status: BlogPostStatus;
-  /** 置顶状态 */
-  isTop: boolean;
-  /** 原创状态 */
-  isOriginal: boolean;
-  createTime: string;
-  updateTime: string;
-  publishedTime: string;
-  /** URL 别名 */
-  slug: string;
-  /** SEO 关键词 */
-  seoKeywords: string;
-  /** SEO 描述 */
-  seoDescription: string;
-  password: string;
-  /** 评论开关 */
-  allowComment: boolean;
-  /** 转载来源 */
-  reprintSource: string;
-  /** 排序权重 */
-  sortWeight: number;
-}
-
-export interface BaseCategory {
-  id: number;
-  userId: number;
-  parentId: number;
-  name: string;
-  slug: string;
-  description: string;
-  sortWeight: number;
-  status: 0 | 1;
-  creator: string;
-  createTime: string;
-  updater: string;
-  updateTime: string;
-  /* true 删除 false 未删除 */
-  deleted: boolean;
-}
-
-export interface CategoryTreeNode {
-  category: BaseCategory;
-  children: CategoryTreeNode[];
-}
-
-export interface Tag {
-  id: number;
-  authorId: number;
-  name: string;
-  postCount: number;
-  creator: string;
-  updater: string;
-  createTime: string;
-  updateTime: string;
-  /* true 删除 false 未删除 */
-  deleted: boolean;
 }

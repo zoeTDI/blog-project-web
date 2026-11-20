@@ -1,12 +1,14 @@
 import { defHttp } from '@/utils/request.ts';
 import type {
-  CreateResourcePayload,
   MenuVO,
   ResourceNode,
   ResourceResponse,
   RoleResponse,
+} from '#/permission';
+import type {
+  CreateResourcePayload,
   UpdateResourcePayload,
-} from '@/api/modules/permissionApi/types.ts';
+} from './contract';
 
 const Api = {
   // 资源管理

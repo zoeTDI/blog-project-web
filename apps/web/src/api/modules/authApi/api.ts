@@ -1,5 +1,11 @@
 import { defHttp } from '@/utils/request.ts';
-import type { LoginUPCommand, LoginEPCommand, LoginECCommand, LoginCodeCommand, LoginRes } from './types';
+import type { LoginRes } from '#/user';
+import type {
+  LoginCodeCommand,
+  LoginECCommand,
+  LoginEPCommand,
+  LoginUPCommand,
+} from './contract';
 
 const Api = {
   // “用户名+密码”登录

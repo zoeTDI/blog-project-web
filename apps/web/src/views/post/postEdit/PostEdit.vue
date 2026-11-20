@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { blogPostType, blogPostStatus, review } from '@/api';
-import type { Tag } from '@/api';
+import { review } from '@/api';
+import { blogPostStatus, blogPostType, type Tag } from '#/blogPost';
 import { useCSSNamespace } from '@caldm/hook';
 import {
   CaButton,

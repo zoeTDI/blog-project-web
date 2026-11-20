@@ -1,12 +1,11 @@
 import { defHttp } from '@/utils/request.ts';
+import type { PageQuery, PageResult } from '@/types/data';
+import type { CreateUserResponse, UserPageItem } from '#/user';
 import type {
   BanUserPayload,
   CreateUserPayload,
-  CreateUserResponse,
-  PagePayload,
   SoftDeletePayload,
-  UserPageResponse,
-} from '@/api/modules/userApi/types.ts';
+} from './contract';
 
 const Api = {
   page: '/user/page',
@@ -15,7 +14,9 @@ const Api = {
   softDelete: '/user/softDelete',
 };
 
-export const page = (payload: PagePayload = { page: 1, size: 10 }): Promise<UserPageResponse> => {
+export const page = (
+  payload: PageQuery = { page: 1, size: 10 }
+): Promise<PageResult<UserPageItem>> => {
   return defHttp.get(Api.page, { params: payload });
 }
 

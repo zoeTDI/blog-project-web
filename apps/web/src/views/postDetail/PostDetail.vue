@@ -15,7 +15,7 @@ import { ROUTER_NAMES } from '@/router/routerNames.ts';
 import { MarkdownRender } from '@/components/markdownRender';
 import { PostActions } from '@/components/postActions';
 import { fetchPublishedPostDetail } from '@/api';
-import type { PublishPost } from '@/api';
+import type { PublishPost } from '#/blogPost';
 const blogName = import.meta.env.VITE_WEB_SITE_NAME;
 
 const route = useRoute();

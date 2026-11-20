@@ -1,12 +1,14 @@
 import { defHttp } from '@/utils/request.ts';
-import type { BlogPostSummaryDTO } from '#/blogPost.ts';
 import type {
-  BlogPostCreatePayload,
   BlogPostEditDTO,
-  BlogPostUpdatePayload,
+  BlogPostSummaryDTO,
   CategoryTreeNode,
   Tag,
-} from '@/api/modules/postApi/types.ts';
+} from '#/blogPost.ts';
+import type {
+  BlogPostCreatePayload,
+  BlogPostUpdatePayload,
+} from './contract.ts';
 import type { PageQuery, PageResult } from '@/types/data';
 
 const Api = {

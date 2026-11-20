@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { ROUTER_NAMES } from '@/router/routerNames.ts';
-import type { PublishPost } from '@/api';
+import type { PublishPost } from '#/blogPost';
 
 interface MetaConfig {
   showDate?: boolean;
